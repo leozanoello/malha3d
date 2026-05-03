@@ -1,0 +1,355 @@
+{{!-- Glow Effects --}}
+<div class="glow-orb orb-secondary"></div>
+<div class="glow-orb orb-primary"></div>
+
+<section class="section" style="padding-top: 12rem;">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="badge">
+                <span class="badge-dot"></span>
+                VALORIZAÇÃO DE ATIVOS
+            </div>
+            <h1 class="section-title text-gradient">Solicite seu Orçamento</h1>
+            <p class="section-subtitle">Transforme sua visão em um projeto industrial de alta precisão.</p>
+        </div>
+
+        <div class="asymmetric-grid">
+            {{!-- Main Form Bento --}}
+            <div class="bento-box col-8" data-aos="fade-right">
+                <div class="bento-header">
+                    <div class="icon-box"><i class="fas fa-calculator"></i></div>
+                    <h3>Especificações do Projeto</h3>
+                </div>
+
+                <form id="budgetForm" class="modern-form" enctype="multipart/form-data">
+                    <div class="form-section-title">Dados de Contato</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Nome Completo</label>
+                            <input type="text" id="name" name="name" placeholder="João Silva" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" id="email" name="email" placeholder="email@empresa.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section-title">Detalhes Industriais</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="projectType">Tipo de Projeto</label>
+                            <select id="projectType" name="projectType" required>
+                                <option value="" disabled selected>Selecione...</option>
+                                <option value="Modelagem 3D">Modelagem 3D</option>
+                                <option value="Renderizacao">Renderização 4K</option>
+                                <option value="Integracao ERP">Integração Ctx7 ERP</option>
+                                <option value="Consultoria">Consultoria Técnica</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="deadline">Prazo Desejado</label>
+                            <input type="date" id="deadline" name="deadline">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Descrição Técnica</label>
+                        <textarea id="description" name="description" rows="4" placeholder="Descreva os requisitos técnicos e objetivos do projeto..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Arquivos de Referência (Opcional)</label>
+                        <div class="file-upload-bento" id="dropZone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Arraste arquivos ou clique para selecionar</p>
+                            <span class="file-info">Máx 10MB por arquivo (JPG, PNG, PDF, DWG)</span>
+                            <input type="file" id="files" name="files" multiple style="display: none;">
+                        </div>
+                        <div id="fileList" class="file-chip-container"></div>
+                    </div>
+
+                    <button type="submit" class="btn-nav btn-primary" style="width: 100%; justify-content: center;">
+                        <span class="btn-text">Enviar Solicitação</span>
+                        <span class="loading" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
+                    </button>
+                    <div id="formMessage" class="form-status"></div>
+                </form>
+            </div>
+
+            {{!-- Sidebar Bentos --}}
+            <div class="col-4" style="display: grid; gap: 2rem;">
+                {{!-- Status Check --}}
+                <div class="bento-box" data-aos="fade-left" data-aos-delay="100">
+                    <div class="bento-header">
+                        <div class="icon-box"><i class="fas fa-search"></i></div>
+                        <h3>Status do Pedido</h3>
+                    </div>
+                    <p class="bento-text">Acompanhe o progresso da sua análise técnica.</p>
+                    <form id="statusForm" class="mini-status-form">
+                        <input type="text" id="budgetId" placeholder="Código: Z3D-0000" required>
+                        <button type="submit" class="btn-nav btn-glass" style="margin-top: 1rem; width: 100%; justify-content: center;">Verificar</button>
+                    </form>
+                    <div id="statusResult" class="status-mini-result"></div>
+                </div>
+
+                {{!-- FAQ Bento --}}
+                <div class="bento-box" data-aos="fade-left" data-aos-delay="200">
+                    <div class="bento-header">
+                        <div class="icon-box"><i class="fas fa-question-circle"></i></div>
+                        <h3>FAQ Rápido</h3>
+                    </div>
+                    <div class="faq-mini-list">
+                        <details>
+                            <summary>Prazo de resposta?</summary>
+                            <p>Análise técnica em até 24h úteis.</p>
+                        </details>
+                        <details>
+                            <summary>Formatos aceitos?</summary>
+                            <p>PDF, DWG, SKP, JPG, PNG.</p>
+                        </details>
+                        <details>
+                            <summary>Suporte Ctx7?</summary>
+                            <p>Incluído em projetos de integração.</p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .form-section-title {
+        color: var(--accent);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .form-section-title::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
+
+    .modern-form .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .modern-form .form-group {
+        margin-bottom: 2rem;
+    }
+
+    .modern-form label {
+        display: block;
+        margin-bottom: 0.75rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .modern-form input, .modern-form select, .modern-form textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 1rem 1.5rem;
+        color: white;
+        font-family: inherit;
+        transition: var(--transition);
+    }
+
+    .modern-form input:focus, .modern-form select:focus, .modern-form textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .file-upload-bento {
+        border: 2px dashed var(--border);
+        border-radius: 1.5rem;
+        padding: 3rem 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition);
+        background: rgba(255, 255, 255, 0.01);
+    }
+
+    .file-upload-bento:hover {
+        border-color: var(--accent);
+        background: rgba(255, 107, 53, 0.05);
+    }
+
+    .file-upload-bento i {
+        font-size: 2.5rem;
+        color: var(--muted);
+        margin-bottom: 1rem;
+    }
+
+    .file-info {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 0.5rem;
+    }
+
+    .file-chip-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+    }
+
+    .file-chip {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        padding: 0.5rem 1rem;
+        border-radius: 100px;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .file-chip button {
+        background: none;
+        border: none;
+        color: #EF4444;
+        cursor: pointer;
+    }
+
+    .mini-status-form input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 0.75rem 1rem;
+        color: white;
+    }
+
+    .faq-mini-list details {
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 0;
+    }
+
+    .faq-mini-list summary {
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .faq-mini-list summary::after {
+        content: '+';
+        color: var(--accent);
+        font-weight: bold;
+    }
+
+    .faq-mini-list details[open] summary::after {
+        content: '-';
+    }
+
+    .faq-mini-list p {
+        font-size: 0.85rem;
+        color: var(--muted);
+        padding-top: 0.5rem;
+    }
+
+    .form-status {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border-radius: 1rem;
+        display: none;
+        text-align: center;
+    }
+
+    .form-status.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid #10B981; }
+    .form-status.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid #EF4444; }
+
+    @media (max-width: 768px) {
+        .modern-form .form-row { grid-template-columns: 1fr; gap: 0; }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('files');
+        const fileList = document.getElementById('fileList');
+        let files = [];
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (e) => {
+            Array.from(e.target.files).forEach(file => addFile(file));
+        });
+
+        function addFile(file) {
+            files.push(file);
+            const chip = document.createElement('div');
+            chip.className = 'file-chip';
+            chip.innerHTML = `<span>${file.name}</span><button type="button">&times;</button>`;
+            chip.querySelector('button').onclick = () => {
+                files = files.filter(f => f !== file);
+                chip.remove();
+            };
+            fileList.appendChild(chip);
+        }
+
+        // Form Submission
+        const budgetForm = document.getElementById('budgetForm');
+        budgetForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = budgetForm.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            const formMessage = document.getElementById('formMessage');
+
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            loading.style.display = 'inline-block';
+
+            const formData = new FormData(budgetForm);
+            files.forEach(file => formData.append('files', file));
+
+            try {
+                const response = await fetch('/orcamento/solicitar', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.success) {
+                    formMessage.innerHTML = `Sucesso! ID: <strong>${result.budgetId}</strong>`;
+                    formMessage.className = 'form-status success';
+                    formMessage.style.display = 'block';
+                    budgetForm.reset();
+                    fileList.innerHTML = '';
+                    files = [];
+                } else {
+                    formMessage.textContent = result.message;
+                    formMessage.className = 'form-status error';
+                    formMessage.style.display = 'block';
+                }
+            } catch (err) {
+                formMessage.textContent = 'Erro ao enviar. Tente novamente.';
+                formMessage.className = 'form-status error';
+                formMessage.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline-block';
+                loading.style.display = 'none';
+            }
+        });
+    });
+</script>

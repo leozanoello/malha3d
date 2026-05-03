@@ -1,0 +1,131 @@
+<div class="mb-10">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-black text-white tracking-tight">Configurações do Sistema</h1>
+            <p class="text-sm text-gray-500 font-medium mt-1">Gerencie as diretrizes, chaves de API e preferências globais da Malha3D.</p>
+        </div>
+        <button onclick="addSetting()" class="bg-orange-500 text-white px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 hover:bg-orange-600 shadow-xl shadow-orange-500/20 transition-all active:scale-95">
+            <span class="material-symbols-outlined text-lg">add_circle</span>
+            Nova Chave
+        </button>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Navigation Tabs -->
+    <div class="lg:col-span-3 space-y-2">
+        <button class="w-full flex items-center gap-3 p-4 rounded-2xl bg-orange-500/10 text-orange-500 font-bold border border-orange-500/20 transition-all">
+            <span class="material-symbols-outlined">settings</span>
+            <span class="text-sm">Geral</span>
+        </button>
+        <button class="w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all">
+            <span class="material-symbols-outlined">api</span>
+            <span class="text-sm">Integrações & API</span>
+        </button>
+        <button class="w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all">
+            <span class="material-symbols-outlined">security</span>
+            <span class="text-sm">Segurança</span>
+        </button>
+        <button class="w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="text-sm">Notificações</span>
+        </button>
+        <button class="w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all">
+            <span class="material-symbols-outlined">database</span>
+            <span class="text-sm">Backup & Dados</span>
+        </button>
+    </div>
+
+    <!-- Settings Content -->
+    <div class="lg:col-span-9 space-y-6">
+        <!-- API Keys Card -->
+        <div class="glass-card p-8">
+            <div class="flex items-center justify-between mb-8">
+                <h3 class="text-xl font-black text-white flex items-center gap-3">
+                    <span class="material-symbols-outlined text-orange-500">key</span>
+                    Chaves de API & Conexões
+                </h3>
+                <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black rounded-lg uppercase tracking-wider border border-emerald-500/20">Sincronizado</span>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Supabase -->
+                <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-orange-500/30 transition-colors">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-[#3ecf8e]/10 rounded-xl flex items-center justify-center">
+                                <img src="https://supabase.com/favicons/favicon-32x32.png" class="w-6 h-6 opacity-80" alt="">
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Supabase Connection</h4>
+                                <p class="text-xs text-gray-500">Banco de dados principal e autenticação.</p>
+                            </div>
+                        </div>
+                        <button class="text-xs font-bold text-gray-400 hover:text-white transition-colors">Editar</button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="password" value="sb_publishable_key_example_12345" readonly class="flex-1 bg-black/20 border border-white/5 rounded-lg px-4 py-2 text-xs text-gray-400 font-mono focus:outline-none">
+                        <button class="p-2 text-gray-500 hover:text-orange-500 transition-colors">
+                            <span class="material-symbols-outlined text-sm">content_copy</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- OpenAI -->
+                <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-orange-500/30 transition-colors">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                                <span class="material-symbols-outlined text-gray-400">smart_toy</span>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">OpenAI Engine (IA)</h4>
+                                <p class="text-xs text-gray-500">Processamento de relatórios e insights preditivos.</p>
+                            </div>
+                        </div>
+                        <button class="text-xs font-bold text-gray-400 hover:text-white transition-colors">Editar</button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="password" value="sk-proj-ai-reports-key-mockup" readonly class="flex-1 bg-black/20 border border-white/5 rounded-lg px-4 py-2 text-xs text-gray-400 font-mono focus:outline-none">
+                        <button class="p-2 text-gray-500 hover:text-orange-500 transition-colors">
+                            <span class="material-symbols-outlined text-sm">content_copy</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Global Preferences -->
+        <div class="glass-card p-8">
+            <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
+                <span class="material-symbols-outlined text-orange-500">tune</span>
+                Preferências Globais
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                    <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Idioma Padrão</label>
+                    <select class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all">
+                        <option>Português (Brasil)</option>
+                        <option>English (US)</option>
+                        <option>Español</option>
+                    </select>
+                </div>
+                <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                    <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Moeda de Referência</label>
+                    <select class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all">
+                        <option>BRL (R$)</option>
+                        <option>USD ($)</option>
+                        <option>EUR (€)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end">
+                <button class="bg-white/5 hover:bg-white/10 text-white font-bold py-3 px-8 rounded-2xl transition-all active:scale-95 border border-white/10">
+                    Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

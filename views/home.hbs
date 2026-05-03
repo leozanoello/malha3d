@@ -1,0 +1,937 @@
+<script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.32/build/spline-viewer.js"></script>
+
+<div class="bg-glow-container" style="pointer-events: none;">
+    <!-- Spline 3D Background Interativo (Dark Mode Mesh / Architecture Abstract) -->
+    <spline-viewer url="https://prod.spline.design/y3bOQ91Z11J8uC9e/scene.splinecode" style="width: 100%; height: 100vh; position: absolute; top: 0; left: 0; z-index: -1;"></spline-viewer>
+    
+    <!-- Imagem de ambiente de arquitetura adicionada conforme solicitado -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('/public/images/modern_arch_hero.png') center/cover no-repeat; opacity: 0.4; z-index: -1; mix-blend-mode: overlay;"></div>
+
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, transparent 0%, var(--background) 90%); z-index: 0; pointer-events: none;"></div>
+</div>
+
+
+    {{!-- Glow Effects --}}
+    <div class="glow-orb orb-primary"></div>
+    <div class="glow-orb orb-secondary"></div>
+    <div class="glow-orb orb-accent"></div>
+
+    {{!-- Hero Section --}}
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content" data-aos="fade-up">
+                <div class="badge" data-aos="fade-down" data-aos-delay="200">
+                    <span class="badge-dot"></span>
+                    TECNOLOGIA MALHA3D
+                </div>
+                <h1 class="title-xl text-gradient">
+                    Arquitetura Digital <br>
+                    <span class="text-accent">Redefinida.</span>
+                </h1>
+                <p class="hero-description" data-aos="fade-up" data-aos-delay="400">
+                    Transformamos dados industriais em experiências visuais imersivas. 
+                    Integração nativa com ERP Ctx7 para uma gestão sem precedentes.
+                </p>
+                <div class="hero-actions" data-aos="fade-up" data-aos-delay="600">
+                    <a href="/orcamento" class="btn-nav btn-primary" style="padding: 1.25rem 2.5rem; font-size: 1.1rem;">Iniciar Projeto</a>
+                    <a href="/galeria" class="btn-nav btn-glass" style="padding: 1.25rem 2.5rem; font-size: 1.1rem;">Ver Portfólio</a>
+                </div>
+            </div>
+        </div>
+        
+        {{!-- Interactive 3D Mockup --}}
+        <div class="hero-3d-container" data-aos="zoom-out" data-aos-delay="800">
+            <spline-viewer url="https://prod.spline.design/6Wq1Q7nS4Z8dz2S9/scene.splinecode" style="width: 100%; height: 100%; pointer-events: none;"></spline-viewer>
+        </div>
+    </section>
+
+    {{!-- O Arsenal do Artista (Alternating Features) --}}
+    <section class="feature-section container" id="features">
+        <div class="feature-intro" data-aos="fade-up">
+            <h2 class="text-gradient">O Arsenal do Artista</h2>
+            <p>Conheça as ferramentas que vão transformar seu estúdio em uma máquina de renderização.</p>
+        </div>
+
+        <!-- 1. Projetos -->
+        <div class="feature-row" data-aos="fade-up">
+            <div class="feature-text">
+                <div class="feature-icon"><i class="fas fa-folder-open"></i></div>
+                <h3>Projetos</h3>
+                <p>Um Kanban visual feito sob medida para o fluxo de trabalho arquitetônico de alta performance. Controle rigoroso de versões, etapas avançadas de renderização, briefing detalhado com o cliente, gestão de prazos e alocação de equipe em tempo real. Cada detalhe do seu projeto é monitorado em uma interface limpa e intuitiva, permitindo que você identifique gargalos instantaneamente e otimize a produtividade do seu estúdio. Nunca mais perca um prazo, esqueça um ajuste ou deixe o cliente sem respostas.</p>
+                <a href="#" class="feature-link">Explorar Recurso <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-mockup">
+                <div class="mockup-card">
+                    <div class="mockup-ui">
+                        <div class="mockup-sidebar">
+                            <div class="mockup-sidebar-icon active"><i class="fas fa-folder"></i></div>
+                            <div class="mockup-sidebar-icon"><i class="fas fa-file-invoice"></i></div>
+                            <div class="mockup-sidebar-icon"><i class="fas fa-chart-line"></i></div>
+                            <div class="mockup-sidebar-icon" style="margin-top: auto;"><i class="fas fa-cog"></i></div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="mockup-header">
+                                <span class="mockup-title">Projetos Ativos</span>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <span class="mockup-badge" style="background: rgba(16, 185, 129, 0.1); color: #10B981;">3 Andamento</span>
+                                    <span class="mockup-badge" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6;">+ Novo Projeto</span>
+                                </div>
+                            </div>
+                            <div class="kanban-board">
+                                <div class="kanban-column">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <h4 style="color: var(--muted); font-size: 0.8rem;">MODELAGEM (2)</h4>
+                                        <i class="fas fa-ellipsis-h" style="color: var(--muted); font-size: 0.7rem;"></i>
+                                    </div>
+                                    <div class="kanban-item">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span class="mockup-badge" style="background: rgba(245, 158, 11, 0.1); color: #F59E0B; padding: 0.2rem 0.5rem; font-size: 0.6rem;">Alta Prioridade</span>
+                                            <span style="color: #EF4444; font-size: 0.7rem; font-weight: bold;"><i class="fas fa-fire"></i> Amanhã</span>
+                                        </div>
+                                        <strong style="color: white; font-size: 0.9rem;">Residencial Lake</strong>
+                                        <p style="color: var(--muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Construtora Noble</p>
+                                        <div class="kanban-progress"><div class="kanban-progress-bar" style="width: 85%;"></div></div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.7rem; font-size: 0.75rem; color: var(--muted);">
+                                            <div style="display: flex; gap: 0.5rem;">
+                                                <span><i class="fas fa-paperclip"></i> 3</span>
+                                                <span><i class="fas fa-comment"></i> 5</span>
+                                                <span><i class="fas fa-tasks"></i> 4/5</span>
+                                            </div>
+                                            <div class="avatar" style="width: 18px; height: 18px;"><img src="https://i.pravatar.cc/100?img=11" style="width:100%; border-radius:50%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="kanban-item" style="opacity: 0.8;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span class="mockup-badge" style="background: rgba(255, 255, 255, 0.1); color: var(--muted); padding: 0.2rem 0.5rem; font-size: 0.6rem;">Normal</span>
+                                            <span style="color: var(--muted); font-size: 0.7rem;">12 Mai</span>
+                                        </div>
+                                        <strong style="color: white; font-size: 0.9rem;">Loja Botânica</strong>
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.7rem; font-size: 0.75rem; color: var(--muted);">
+                                            <span><i class="fas fa-tasks"></i> 1/8</span>
+                                            <div class="avatar" style="width: 18px; height: 18px;"><img src="https://i.pravatar.cc/100?img=12" style="width:100%; border-radius:50%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="kanban-column">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <h4 style="color: var(--muted); font-size: 0.8rem;">RENDER (1)</h4>
+                                        <i class="fas fa-ellipsis-h" style="color: var(--muted); font-size: 0.7rem;"></i>
+                                    </div>
+                                    <div class="kanban-item" style="border: 1px solid rgba(59, 130, 246, 0.3); box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span class="mockup-badge" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6; padding: 0.2rem 0.5rem; font-size: 0.6rem;">Renderizando...</span>
+                                        </div>
+                                        <strong style="color: white; font-size: 0.9rem;">Fachada Corporate</strong>
+                                        <div class="avatar-group" style="margin-top: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+                                            <div style="display: flex;">
+                                                <div class="avatar" style="width: 20px; height: 20px; margin-left: -5px;"><img src="https://i.pravatar.cc/100?img=11" style="width:100%; border-radius:50%;"></div>
+                                                <div class="avatar" style="width: 20px; height: 20px; margin-left: -5px;"><img src="https://i.pravatar.cc/100?img=12" style="width:100%; border-radius:50%;"></div>
+                                            </div>
+                                            <span style="font-size: 0.7rem; color: #10B981; font-weight: bold;">45%</span>
+                                        </div>
+                                        <div class="kanban-progress" style="margin-top: 0.5rem;"><div class="kanban-progress-bar" style="width: 45%; background: #3B82F6; box-shadow: 0 0 10px #3B82F6;"></div></div>
+                                    </div>
+                                </div>
+                                <div class="kanban-column" style="opacity: 0.7;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <h4 style="color: var(--muted); font-size: 0.8rem;">APROVAÇÃO (1)</h4>
+                                        <i class="fas fa-ellipsis-h" style="color: var(--muted); font-size: 0.7rem;"></i>
+                                    </div>
+                                    <div class="kanban-item" style="border: 1px dashed rgba(16, 185, 129, 0.3);">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                            <span class="mockup-badge" style="background: rgba(16, 185, 129, 0.1); color: #10B981; padding: 0.2rem 0.5rem; font-size: 0.6rem;">Aguardando Cliente</span>
+                                        </div>
+                                        <strong style="color: white; font-size: 0.9rem;">Interiores Apto 32</strong>
+                                        <p style="color: var(--muted); font-size: 0.8rem; margin-bottom: 0.5rem;">Revisão Final (V3)</p>
+                                        <div style="display: flex; gap: 0.3rem;">
+                                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #10B981;"></span>
+                                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #10B981;"></span>
+                                            <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--muted);"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Propostas -->
+        <div class="feature-row" data-aos="fade-up">
+            <div class="feature-text">
+                <div class="feature-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                <h3>Propostas</h3>
+                <p>Crie orçamentos irresistíveis e de alta conversão em segundos. Esqueça o Word e PDF estático e pouco atraente. Encante seu cliente com uma apresentação comercial profissional, dinâmica, com aprovação digital e link de pagamento integrado. Personalize cada detalhe da sua proposta com a identidade visual do seu estúdio, insira imagens impactantes do seu portfólio e ofereça múltiplas opções de pacotes de serviços. Aumente seu ticket médio com uma experiência premium do início ao fim.</p>
+                <a href="#" class="feature-link">Explorar Recurso <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-mockup">
+                <div class="mockup-card">
+                    <div class="mockup-ui">
+                        <div class="mockup-sidebar">
+                            <div class="mockup-sidebar-icon"><i class="fas fa-folder"></i></div>
+                            <div class="mockup-sidebar-icon active"><i class="fas fa-file-invoice"></i></div>
+                            <div class="mockup-sidebar-icon"><i class="fas fa-chart-line"></i></div>
+                            <div class="mockup-sidebar-icon" style="margin-top: auto;"><i class="fas fa-cog"></i></div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="mockup-header">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span class="mockup-title">Propostas & Contratos</span>
+                                    <span style="color: #10B981; font-size: 0.75rem;"><i class="fas fa-chart-line"></i> Taxa de Conversão: 72%</span>
+                                </div>
+                                <span class="mockup-badge" style="background: var(--accent); color: white; cursor: pointer; border: none;">+ Nova Proposta</span>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                                <div style="background: rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                    <div style="font-size: 1.1rem; color: white; font-weight: bold;">12</div>
+                                    <div style="font-size: 0.7rem; color: var(--muted);">Em Negociação</div>
+                                </div>
+                                <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                    <div style="font-size: 1.1rem; color: #10B981; font-weight: bold;">R$ 48k</div>
+                                    <div style="font-size: 0.7rem; color: #10B981;">Aprovadas no Mês</div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 0.5rem; text-align: center;">
+                                    <div style="font-size: 1.1rem; color: white; font-weight: bold;">3</div>
+                                    <div style="font-size: 0.7rem; color: var(--muted);">Aguardando Assinatura</div>
+                                </div>
+                            </div>
+
+                            <div class="proposal-list">
+                                <div class="proposal-item header" style="font-size: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                    <span style="flex: 2;">Projeto / Cliente</span>
+                                    <span style="flex: 1;">Valor</span>
+                                    <span style="flex: 1;">Timeline</span>
+                                    <span style="flex: 1; text-align: right;">Status</span>
+                                </div>
+                                <div class="proposal-item" style="border-left: 2px solid #10B981;">
+                                    <div style="flex: 2; display: flex; flex-direction: column;">
+                                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <strong style="color: white; font-size: 0.9rem;">Fachada Shopping</strong>
+                                            <span style="font-size: 0.6rem; background: rgba(255,255,255,0.1); padding: 0.1rem 0.3rem; border-radius: 2px;">#PRJ-089</span>
+                                        </div>
+                                        <span style="color: var(--muted); font-size: 0.75rem;"><i class="fas fa-building"></i> Grupo Zx</span>
+                                    </div>
+                                    <strong style="flex: 1; color: white; font-size: 0.9rem;">R$ 15.400</strong>
+                                    <div style="flex: 1; display: flex; gap: 2px; align-items: center;">
+                                        <span style="width: 15px; height: 4px; background: #10B981; border-radius: 2px;"></span>
+                                        <span style="width: 15px; height: 4px; background: #10B981; border-radius: 2px;"></span>
+                                        <span style="width: 15px; height: 4px; background: #10B981; border-radius: 2px;"></span>
+                                    </div>
+                                    <span class="proposal-status" style="flex: 1; justify-content: flex-end; background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16,185,129,0.3);">Assinado</span>
+                                </div>
+                                <div class="proposal-item" style="border-left: 2px solid #F59E0B;">
+                                    <div style="flex: 2; display: flex; flex-direction: column;">
+                                        <strong style="color: white; font-size: 0.9rem;">Residência AL</strong>
+                                        <span style="color: var(--muted); font-size: 0.75rem;"><i class="fas fa-user"></i> Ana Luíza Arq</span>
+                                    </div>
+                                    <strong style="flex: 1; color: white; font-size: 0.9rem;">R$ 4.200</strong>
+                                    <div style="flex: 1; display: flex; gap: 2px; align-items: center;">
+                                        <span style="width: 15px; height: 4px; background: #10B981; border-radius: 2px;"></span>
+                                        <span style="width: 15px; height: 4px; background: #F59E0B; border-radius: 2px;"></span>
+                                        <span style="width: 15px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;"></span>
+                                    </div>
+                                    <span class="proposal-status" style="flex: 1; justify-content: flex-end; background: rgba(245, 158, 11, 0.1); color: #F59E0B; border: 1px solid rgba(245,158,11,0.3);">Lido: 10m atrás</span>
+                                </div>
+                                <div class="proposal-item" style="border-left: 2px solid var(--muted);">
+                                    <div style="flex: 2; display: flex; flex-direction: column;">
+                                        <strong style="color: white; font-size: 0.9rem;">Apto 302</strong>
+                                        <span style="color: var(--muted); font-size: 0.75rem;"><i class="fas fa-user"></i> Carlos M.</span>
+                                    </div>
+                                    <strong style="flex: 1; color: white; font-size: 0.9rem;">R$ 1.800</strong>
+                                    <div style="flex: 1; display: flex; gap: 2px; align-items: center;">
+                                        <span style="width: 15px; height: 4px; background: #10B981; border-radius: 2px;"></span>
+                                        <span style="width: 15px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;"></span>
+                                        <span style="width: 15px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;"></span>
+                                    </div>
+                                    <span class="proposal-status" style="flex: 1; justify-content: flex-end; background: rgba(255, 255, 255, 0.05); color: var(--muted); border: 1px solid rgba(255,255,255,0.1);">Enviado</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Dashboard -->
+        <div class="feature-row" data-aos="fade-up">
+            <div class="feature-text">
+                <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                <h3>Dashboard</h3>
+                <p>Tenha visão panorâmica e total do seu estúdio. Acompanhe o faturamento mensal, lucro líquido, taxa de conversão de vendas e métricas de produtividade da equipe em uma única tela interativa, atualizada em tempo real. Cruce dados históricos para identificar tendências de crescimento, períodos de sazonalidade e os serviços mais rentáveis do seu catálogo. Tome decisões estratégicas baseadas em dados reais e precisos, não em intuição, e escale seu negócio com segurança e previsibilidade.</p>
+                <a href="#" class="feature-link">Explorar Recurso <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-mockup">
+                <div class="mockup-card">
+                    <div class="mockup-ui">
+                        <div class="mockup-sidebar">
+                            <div class="mockup-sidebar-icon"><i class="fas fa-folder"></i></div>
+                            <div class="mockup-sidebar-icon"><i class="fas fa-file-invoice"></i></div>
+                            <div class="mockup-sidebar-icon active"><i class="fas fa-chart-pie"></i></div>
+                            <div class="mockup-sidebar-icon" style="margin-top: auto;"><i class="fas fa-cog"></i></div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="mockup-header">
+                                <span class="mockup-title">Visão Geral Executiva</span>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <span class="mockup-badge" style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);"><i class="fas fa-calendar-alt"></i> Este Mês</span>
+                                    <span class="mockup-badge" style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);"><i class="fas fa-download"></i> PDF</span>
+                                </div>
+                            </div>
+                            <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                                <div class="dash-card">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <div style="color: var(--muted); font-size: 0.75rem;">MRR (Receita)</div>
+                                        <i class="fas fa-arrow-up" style="color: #10B981; font-size: 0.7rem; background: rgba(16,185,129,0.1); padding: 0.2rem; border-radius: 50%;"></i>
+                                    </div>
+                                    <div style="color: white; font-size: 1.4rem; font-weight: bold;">R$ 42.5K</div>
+                                    <div style="color: #10B981; font-size: 0.7rem; margin-top: 0.25rem;">+12.5% vs Mês Ant.</div>
+                                </div>
+                                <div class="dash-card">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <div style="color: var(--muted); font-size: 0.75rem;">Win Rate</div>
+                                        <i class="fas fa-chart-line" style="color: var(--accent); font-size: 0.7rem; background: rgba(255,107,53,0.1); padding: 0.2rem; border-radius: 50%;"></i>
+                                    </div>
+                                    <div style="color: white; font-size: 1.4rem; font-weight: bold;">68%</div>
+                                    <div style="color: var(--accent); font-size: 0.7rem; margin-top: 0.25rem;">24 Propostas aceitas</div>
+                                </div>
+                                <div class="dash-card">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <div style="color: var(--muted); font-size: 0.75rem;">Ticket Médio</div>
+                                        <i class="fas fa-tags" style="color: #3B82F6; font-size: 0.7rem; background: rgba(59,130,246,0.1); padding: 0.2rem; border-radius: 50%;"></i>
+                                    </div>
+                                    <div style="color: white; font-size: 1.4rem; font-weight: bold;">R$ 1.8K</div>
+                                    <div style="color: #3B82F6; font-size: 0.7rem; margin-top: 0.25rem;">+R$ 200 vs Mês Ant.</div>
+                                </div>
+                            </div>
+                            <div class="dash-card" style="margin-top: 0.5rem; padding: 1.5rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                    <div style="color: white; font-size: 0.9rem; font-weight: bold;">Evolução de Receita Anual</div>
+                                    <div style="display: flex; gap: 1rem; font-size: 0.75rem; color: var(--muted);">
+                                        <span style="display: flex; align-items: center; gap: 0.3rem;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent);"></span> Faturado</span>
+                                        <span style="display: flex; align-items: center; gap: 0.3rem;"><span style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2);"></span> Projetado</span>
+                                    </div>
+                                </div>
+                                <div class="dash-chart-area" style="background: linear-gradient(0deg, rgba(255,107,53,0.15) 0%, rgba(255,107,53,0) 100%); border-bottom: 2px solid var(--accent); position: relative; height: 100px;">
+                                    <svg viewBox="0 0 100 30" style="width: 100%; height: 100%; position: absolute; bottom: 0; left: 0;" preserveAspectRatio="none">
+                                        <path d="M0,30 L0,20 C15,25 25,5 40,15 C55,25 70,5 85,15 L100,10 L100,30 Z" fill="rgba(255,107,53,0.2)"/>
+                                        <path d="M0,20 C15,25 25,5 40,15 C55,25 70,5 85,15 L100,10" fill="none" stroke="var(--accent)" stroke-width="2" style="filter: drop-shadow(0 0 5px rgba(255,107,53,0.5));"/>
+                                        <!-- Data Points -->
+                                        <circle cx="40" cy="15" r="2" fill="white" stroke="var(--accent)" stroke-width="1"/>
+                                        <circle cx="85" cy="15" r="2" fill="white" stroke="var(--accent)" stroke-width="1"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Financeiro -->
+        <div class="feature-row" data-aos="fade-up">
+            <div class="feature-text">
+                <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+                <h3>Financeiro</h3>
+                <p>Fluxo de caixa blindado e previsível. Organize todas as contas a pagar, recebimentos futuros, comissões de freelancers e saiba exatamente a saúde financeira do seu negócio para os próximos 6 meses. Nosso sistema categoriza automaticamente suas despesas, gera alertas de inadimplência e emite relatórios detalhados de lucratividade por projeto e por cliente. Chega de planilhas complexas e fechamentos de mês estressantes: tenha controle absoluto do seu dinheiro.</p>
+                <a href="#" class="feature-link">Explorar Recurso <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-mockup">
+                <div class="mockup-card">
+                    <div class="mockup-ui">
+                        <div class="mockup-sidebar">
+                            <div class="mockup-sidebar-icon"><i class="fas fa-folder"></i></div>
+                            <div class="mockup-sidebar-icon"><i class="fas fa-file-invoice"></i></div>
+                            <div class="mockup-sidebar-icon active"><i class="fas fa-wallet"></i></div>
+                            <div class="mockup-sidebar-icon" style="margin-top: auto;"><i class="fas fa-cog"></i></div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="mockup-header">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span class="mockup-title">Controle Financeiro</span>
+                                    <span style="color: var(--muted); font-size: 0.75rem;">Atualizado agora mesmo</span>
+                                </div>
+                                <span class="mockup-badge" style="background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16,185,129,0.3);"><i class="fas fa-shield-alt"></i> Caixa Saudável</span>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                                <div class="dash-card" style="flex: 1; position: relative; overflow: hidden;">
+                                    <div style="position: absolute; right: -10px; top: -10px; font-size: 4rem; color: rgba(255,255,255,0.02);"><i class="fas fa-university"></i></div>
+                                    <div style="color: var(--muted); font-size: 0.75rem; margin-bottom: 0.5rem;">Saldo Operacional</div>
+                                    <div style="color: white; font-size: 1.6rem; font-weight: bold;">R$ 16.450,00</div>
+                                </div>
+                                <div class="dash-card" style="flex: 1; position: relative; overflow: hidden; background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.2);">
+                                    <div style="position: absolute; right: -10px; top: -10px; font-size: 4rem; color: rgba(16,185,129,0.05);"><i class="fas fa-arrow-trend-up"></i></div>
+                                    <div style="color: #10B981; font-size: 0.75rem; margin-bottom: 0.5rem;">Projeção (60 dias)</div>
+                                    <div style="color: #10B981; font-size: 1.6rem; font-weight: bold;">R$ 48.200,00</div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                <span style="color: white; font-size: 0.9rem; font-weight: bold;">Lançamentos Futuros</span>
+                                <span style="color: var(--accent); font-size: 0.75rem; cursor: pointer;">Ver todos</span>
+                            </div>
+
+                            <div class="proposal-item" style="border-left: 3px solid #10B981; background: rgba(16, 185, 129, 0.05);">
+                                <div style="flex: 2; display: flex; flex-direction: column;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-arrow-down" style="color: #10B981; font-size: 0.8rem; background: rgba(16,185,129,0.1); padding: 0.3rem; border-radius: 50%;"></i>
+                                        <span style="color: white; font-size: 0.9rem;">Recebimento (Parcela 2/3)</span>
+                                    </div>
+                                    <span style="color: var(--muted); font-size: 0.75rem; margin-left: 1.8rem;">Residencial Lake • Vence em 3 dias</span>
+                                </div>
+                                <span style="flex: 1; text-align: right; color: #10B981; font-weight: bold; font-size: 1rem;">+ R$ 8.500</span>
+                            </div>
+                            
+                            <div class="proposal-item" style="border-left: 3px solid #EF4444; background: rgba(239, 68, 68, 0.05); margin-top: 0.5rem;">
+                                <div style="flex: 2; display: flex; flex-direction: column;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-arrow-up" style="color: #EF4444; font-size: 0.8rem; background: rgba(239,68,68,0.1); padding: 0.3rem; border-radius: 50%;"></i>
+                                        <span style="color: white; font-size: 0.9rem;">Pagamento Freelancers</span>
+                                    </div>
+                                    <span style="color: var(--muted); font-size: 0.75rem; margin-left: 1.8rem;">Marcos R., Luiza F. • Vence hoje</span>
+                                </div>
+                                <span style="flex: 1; text-align: right; color: #EF4444; font-weight: bold; font-size: 1rem;">- R$ 3.200</span>
+                            </div>
+
+                            <div class="proposal-item" style="border-left: 3px solid #F59E0B; background: rgba(245, 158, 11, 0.05); margin-top: 0.5rem;">
+                                <div style="flex: 2; display: flex; flex-direction: column;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <i class="fas fa-file-invoice" style="color: #F59E0B; font-size: 0.8rem; background: rgba(245,158,11,0.1); padding: 0.3rem; border-radius: 50%;"></i>
+                                        <span style="color: white; font-size: 0.9rem;">Softwares & Licenças</span>
+                                    </div>
+                                    <span style="color: var(--muted); font-size: 0.75rem; margin-left: 1.8rem;">Adobe, Spline, Corona • Vence em 5 dias</span>
+                                </div>
+                                <span style="flex: 1; text-align: right; color: #F59E0B; font-weight: bold; font-size: 1rem;">- R$ 850</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Metas -->
+        <div class="feature-row" data-aos="fade-up">
+            <div class="feature-text">
+                <div class="feature-icon"><i class="fas fa-trophy"></i></div>
+                <h3>Metas</h3>
+                <p>Transforme o trabalho em um jogo engajador. Defina objetivos agressivos de faturamento, captação de clientes e ganhe níveis de experiência (XP) conforme seu estúdio cresce. Estabeleça desafios semanais, mensais ou trimestrais, acompanhando o progresso em tempo real através de barras de evolução dinâmicas e emblemas exclusivos. Mantenha sua equipe altamente motivada com recompensas claras, placares de liderança e um painel de conquistas visualmente impecável e imersivo.</p>
+                <a href="#" class="feature-link">Explorar Recurso <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-mockup">
+                <div class="mockup-card">
+                    <div class="mockup-ui">
+                        <div class="mockup-sidebar">
+                            <div class="mockup-sidebar-icon"><i class="fas fa-chart-line"></i></div>
+                            <div class="mockup-sidebar-icon active"><i class="fas fa-bullseye"></i></div>
+                            <div class="mockup-sidebar-icon"><i class="fas fa-users"></i></div>
+                            <div class="mockup-sidebar-icon" style="margin-top: auto;"><i class="fas fa-cog"></i></div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="mockup-header" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; margin-bottom: 1rem;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span class="mockup-title">Progressão do Estúdio</span>
+                                    <span style="color: var(--muted); font-size: 0.75rem;">Temporada 3 - Q2 2024</span>
+                                </div>
+                                <span class="mockup-badge" style="background: linear-gradient(45deg, #FF6B35, #FFB235); color: white; border: none; box-shadow: 0 0 15px rgba(255,107,53,0.5);"><i class="fas fa-crown"></i> Rank Elite V</span>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1.5rem; align-items: center; margin-bottom: 1.5rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.05);">
+                                <div style="position: relative; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; background: rgba(255,107,53,0.1); border-radius: 50%; border: 2px dashed var(--accent);">
+                                    <i class="fas fa-dragon" style="font-size: 2.5rem; color: var(--accent); filter: drop-shadow(0 0 10px rgba(255,107,53,0.8));"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <h4 style="color: white; font-size: 1.5rem; margin-bottom: 0.2rem;">Nível 42</h4>
+                                        <span style="color: var(--accent); font-size: 0.7rem; font-weight: bold; background: rgba(255,107,53,0.1); padding: 0.2rem 0.5rem; border-radius: 4px;">Top 5% Global</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; color: var(--muted); font-size: 0.8rem; margin-bottom: 0.5rem;">
+                                        <span>Progresso para o Nível 43</span>
+                                        <span style="color: var(--accent); font-weight: bold;">8.5k / 10k XP</span>
+                                    </div>
+                                    <div class="xp-bar-container" style="height: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; overflow: hidden; margin: 0;">
+                                        <div class="xp-bar" style="width: 85%; height: 100%; background: linear-gradient(90deg, #FF6B35, #FFB235); box-shadow: 0 0 10px rgba(255,107,53,0.8);"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div style="background: rgba(16, 185, 129, 0.05); padding: 1rem; border-radius: 0.5rem; border: 1px solid rgba(16, 185, 129, 0.2);">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                                        <span style="color: #10B981; font-size: 0.7rem; text-transform: uppercase; font-weight: bold;">Desafio Mensal</span>
+                                        <i class="fas fa-medal" style="color: #10B981; font-size: 1.2rem;"></i>
+                                    </div>
+                                    <strong style="color: white; font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Bater R$ 50k em Vendas</strong>
+                                    <div class="xp-bar-container" style="height: 6px; margin: 0.5rem 0;">
+                                        <div class="xp-bar" style="width: 84%; background: #10B981; box-shadow: 0 0 10px #10B981;"></div>
+                                    </div>
+                                    <span style="color: #10B981; font-weight: bold; font-size: 0.8rem;">R$ 42k / R$ 50k</span>
+                                </div>
+
+                                <div style="background: rgba(59, 130, 246, 0.05); padding: 1rem; border-radius: 0.5rem; border: 1px solid rgba(59, 130, 246, 0.2);">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                                        <span style="color: #3B82F6; font-size: 0.7rem; text-transform: uppercase; font-weight: bold;">Qualidade</span>
+                                        <i class="fas fa-star" style="color: #3B82F6; font-size: 1.2rem;"></i>
+                                    </div>
+                                    <strong style="color: white; font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Zero Refações (7 Dias)</strong>
+                                    <div class="xp-bar-container" style="height: 6px; margin: 0.5rem 0;">
+                                        <div class="xp-bar" style="width: 100%; background: #3B82F6; box-shadow: 0 0 10px #3B82F6;"></div>
+                                    </div>
+                                    <span style="color: #3B82F6; font-weight: bold; font-size: 0.8rem;">Completado! +500 XP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Freelancers -->
+        <div class="feature-row" data-aos="fade-up">
+            <div class="feature-text">
+                <div class="feature-icon"><i class="fas fa-users"></i></div>
+                <h3>Freelancers</h3>
+                <p>Seu time sob controle absoluto. Escale sua produção sem dor de cabeça ou surpresas. Centralize contatos, gerencie contratos, monitore prazos de entrega e automatize pagamentos de artistas terceirizados em um só lugar seguro e organizado. Avalie o desempenho de cada profissional, crie anotações sobre suas especialidades (como renderização, modelagem orgânica ou animação) e construa um histórico de projetos bem-sucedidos. Tenha um verdadeiro banco de talentos premium sempre à disposição.</p>
+                <a href="#" class="feature-link">Explorar Recurso <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-mockup">
+                <div class="mockup-card">
+                    <div class="mockup-ui">
+                        <div class="mockup-sidebar">
+                            <div class="mockup-sidebar-icon"><i class="fas fa-folder"></i></div>
+                            <div class="mockup-sidebar-icon active"><i class="fas fa-users"></i></div>
+                            <div class="mockup-sidebar-icon"><i class="fas fa-wallet"></i></div>
+                            <div class="mockup-sidebar-icon" style="margin-top: auto;"><i class="fas fa-cog"></i></div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="mockup-header" style="margin-bottom: 1rem;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span class="mockup-title">Banco de Talentos</span>
+                                    <span style="color: var(--muted); font-size: 0.75rem;">12 Artistas Cadastrados</span>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <span class="mockup-badge" style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1);"><i class="fas fa-search"></i> Filtrar</span>
+                                    <span class="mockup-badge" style="background: rgba(59, 130, 246, 0.1); color: #3B82F6; cursor: pointer; border: 1px solid rgba(59,130,246,0.3);"><i class="fas fa-user-plus"></i> Convidar</span>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                                <span style="background: var(--accent); color: white; padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.75rem;">Todos</span>
+                                <span style="background: transparent; color: var(--muted); border: 1px solid rgba(255,255,255,0.1); padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.75rem;">Modeladores</span>
+                                <span style="background: transparent; color: var(--muted); border: 1px solid rgba(255,255,255,0.1); padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.75rem;">Animadores</span>
+                            </div>
+
+                            <div class="proposal-list">
+                                <div class="proposal-item" style="padding: 1rem; align-items: flex-start; background: rgba(0,0,0,0.2);">
+                                    <div class="avatar" style="width: 44px; height: 44px; margin-right: 1rem; border: 2px solid #10B981;"><img src="https://i.pravatar.cc/100?img=12" style="width:100%; border-radius:50%;"></div>
+                                    <div style="flex: 2; display: flex; flex-direction: column;">
+                                        <strong style="color: white; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">Marcos Ribeiro <i class="fas fa-check-circle" style="color: #3B82F6; font-size: 0.7rem;"></i></strong>
+                                        <span style="color: var(--muted); font-size: 0.75rem; margin-bottom: 0.5rem;">Modelagem Orgânica & Hard Surface</span>
+                                        <div style="display: flex; gap: 0.3rem;">
+                                            <span style="font-size: 0.65rem; background: rgba(255,255,255,0.05); padding: 0.1rem 0.4rem; border-radius: 4px; color: var(--muted);">Blender</span>
+                                            <span style="font-size: 0.65rem; background: rgba(255,255,255,0.05); padding: 0.1rem 0.4rem; border-radius: 4px; color: var(--muted);">ZBrush</span>
+                                        </div>
+                                    </div>
+                                    <div style="flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+                                        <span style="color: white; font-size: 1rem; font-weight: bold;">R$ 60/h</span>
+                                        <span class="proposal-status" style="background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid rgba(16,185,129,0.3);">Disponível</span>
+                                    </div>
+                                </div>
+                                <div class="proposal-item" style="padding: 1rem; align-items: flex-start; background: rgba(0,0,0,0.2);">
+                                    <div class="avatar" style="width: 44px; height: 44px; margin-right: 1rem; border: 2px solid #F59E0B;"><img src="https://i.pravatar.cc/100?img=5" style="width:100%; border-radius:50%;"></div>
+                                    <div style="flex: 2; display: flex; flex-direction: column;">
+                                        <strong style="color: white; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">Luiza Fernandez <i class="fas fa-check-circle" style="color: #3B82F6; font-size: 0.7rem;"></i></strong>
+                                        <span style="color: var(--muted); font-size: 0.75rem; margin-bottom: 0.5rem;">Renderização Unreal & Corona</span>
+                                        <div style="display: flex; gap: 0.3rem;">
+                                            <span style="font-size: 0.65rem; background: rgba(255,255,255,0.05); padding: 0.1rem 0.4rem; border-radius: 4px; color: var(--muted);">Unreal Engine 5</span>
+                                            <span style="font-size: 0.65rem; background: rgba(255,255,255,0.05); padding: 0.1rem 0.4rem; border-radius: 4px; color: var(--muted);">Corona</span>
+                                        </div>
+                                    </div>
+                                    <div style="flex: 1; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+                                        <span style="color: white; font-size: 1rem; font-weight: bold;">R$ 90/h</span>
+                                        <span class="proposal-status" style="background: rgba(245, 158, 11, 0.1); color: #F59E0B; border: 1px solid rgba(245,158,11,0.3);">Em Projeto</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Produtividade -->
+        <div class="feature-row" data-aos="fade-up">
+            <div class="feature-text">
+                <div class="feature-icon"><i class="fas fa-hourglass-half"></i></div>
+                <h3>Produtividade</h3>
+                <p>Precificação justa baseada em dados reais. O exclusivo Time Tracker inteligente permite que você saiba exatamente quanto tempo e custo cada artista gasta em cada imagem, animação ou modelagem. O sistema cruza as horas trabalhadas com o valor hora do profissional, gerando um custo de produção instantâneo que é comparado ao valor orçado. Descubra imediatamente quais projetos dão lucro e quais drenam seus recursos, ajustando seu valor cobrado com precisão cirúrgica e inteligência competitiva.</p>
+                <a href="#" class="feature-link">Explorar Recurso <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-mockup">
+                <div class="mockup-card">
+                    <div class="mockup-ui">
+                        <div class="mockup-sidebar">
+                            <div class="mockup-sidebar-icon"><i class="fas fa-chart-pie"></i></div>
+                            <div class="mockup-sidebar-icon active"><i class="fas fa-stopwatch"></i></div>
+                            <div class="mockup-sidebar-icon"><i class="fas fa-calendar-alt"></i></div>
+                            <div class="mockup-sidebar-icon" style="margin-top: auto;"><i class="fas fa-cog"></i></div>
+                        </div>
+                        <div class="mockup-content" style="display: flex; flex-direction: column; justify-content: space-between;">
+                            <div class="mockup-header" style="justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span class="mockup-title">Rastreio Ativo</span>
+                                    <span style="color: var(--muted); font-size: 0.75rem;">Projeto: Residencial Lake</span>
+                                </div>
+                                <span class="mockup-badge" style="background: rgba(239, 68, 68, 0.1); color: #EF4444; display: flex; align-items: center; gap: 0.5rem; border: 1px solid rgba(239,68,68,0.3);">
+                                    <span class="status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #EF4444; box-shadow: 0 0 10px rgba(239,68,68,0.8); animation: pulse 1.5s infinite;"></span>
+                                    Gravando
+                                </span>
+                            </div>
+                            
+                            <div style="text-align: center; margin: 2rem 0; position: relative;">
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; border-radius: 50%; border: 2px dashed rgba(239,68,68,0.2); animation: spin 20s linear infinite; pointer-events: none;"></div>
+                                <h2 style="font-family: 'Space Grotesk'; font-size: 4.5rem; color: white; line-height: 1; text-shadow: 0 0 30px rgba(239,68,68,0.2); margin-bottom: 0.5rem;">08:45<span style="font-size: 2.5rem; color: var(--muted);">:12</span></h2>
+                                <p style="color: var(--accent); font-size: 1.1rem; font-weight: bold; background: rgba(255,107,53,0.1); display: inline-block; padding: 0.3rem 1rem; border-radius: 99px;">Renderização - Cena 03 Comercial</p>
+                            </div>
+
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                                <div style="flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1rem; text-align: center;">
+                                    <div style="color: var(--muted); font-size: 0.7rem; text-transform: uppercase; margin-bottom: 0.25rem;">Custo Atual</div>
+                                    <strong style="color: white; font-size: 1.4rem;">R$ 420,00</strong>
+                                    <div style="font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem;">R$ 48/hora</div>
+                                </div>
+                                <div style="flex: 1; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 0.5rem; padding: 1rem; text-align: center;">
+                                    <div style="color: #10B981; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 0.25rem;">Orçamento Restante</div>
+                                    <strong style="color: #10B981; font-size: 1.4rem;">R$ 380,00</strong>
+                                    <div style="font-size: 0.7rem; color: #10B981; margin-top: 0.2rem;">47% Utilizado</div>
+                                </div>
+                            </div>
+
+                            <div class="xp-bar-container" style="height: 4px; margin: 0 0 1.5rem 0; background: rgba(16,185,129,0.2);">
+                                <div class="xp-bar" style="width: 47%; background: #10B981; box-shadow: 0 0 10px #10B981;"></div>
+                            </div>
+
+                            <button class="btn btn-primary" style="background: #EF4444; color: white; box-shadow: 0 5px 20px rgba(239,68,68,0.4); border: none; width: 100%; justify-content: center; padding: 1rem; font-size: 1rem; font-weight: bold;"><i class="fas fa-stop" style="margin-right: 0.5rem;"></i> Parar Cronômetro</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. Portfólio -->
+        <div class="feature-row" data-aos="fade-up">
+            <div class="feature-text">
+                <div class="feature-icon"><i class="fas fa-images"></i></div>
+                <h3>Portfólio</h3>
+                <p>O seu site de vendas automático. O sistema puxa automaticamente os seus melhores renders aprovados e cria, com um clique, um link de apresentação exclusivo, elegante e ultrarrápido para enviar a potenciais clientes. Você pode personalizar as galerias com tags, descrições do briefing original e detalhes técnicos que valorizam sua entrega. Cause um impacto imediato no primeiro contato com uma vitrine impecável, interativa e altamente profissional que vende seu trabalho por você.</p>
+                <a href="#" class="feature-link">Explorar Recurso <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-mockup">
+                <div class="mockup-card">
+                    <div class="mockup-ui">
+                        <div class="mockup-sidebar">
+                            <div class="mockup-sidebar-icon"><i class="fas fa-folder"></i></div>
+                            <div class="mockup-sidebar-icon active"><i class="fas fa-images"></i></div>
+                            <div class="mockup-sidebar-icon"><i class="fas fa-share-alt"></i></div>
+                            <div class="mockup-sidebar-icon" style="margin-top: auto;"><i class="fas fa-cog"></i></div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="mockup-header">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span class="mockup-title">Gestão de Vitrine</span>
+                                    <span style="color: var(--muted); font-size: 0.75rem;"><i class="fas fa-globe"></i> studiozano.com/portfolio</span>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: 0.2s;"><i class="fas fa-link"></i> Copiar</button>
+                                    <button style="background: var(--accent); border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.8rem; cursor: pointer; box-shadow: 0 0 10px rgba(255,107,53,0.3);"><i class="fas fa-eye"></i> Ver Ao Vivo</button>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.05);">
+                                <div style="flex: 1; text-align: center; border-right: 1px solid rgba(255,255,255,0.05);">
+                                    <div style="font-size: 1.2rem; color: white; font-weight: bold;">1.2k</div>
+                                    <div style="font-size: 0.7rem; color: var(--muted);">Visitas (Mês)</div>
+                                </div>
+                                <div style="flex: 1; text-align: center; border-right: 1px solid rgba(255,255,255,0.05);">
+                                    <div style="font-size: 1.2rem; color: white; font-weight: bold;">340</div>
+                                    <div style="font-size: 0.7rem; color: var(--muted);">Cliques em Fotos</div>
+                                </div>
+                                <div style="flex: 1; text-align: center;">
+                                    <div style="font-size: 1.2rem; color: #10B981; font-weight: bold;">12</div>
+                                    <div style="font-size: 0.7rem; color: #10B981;">Leads Gerados</div>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                <div style="position: relative; overflow: hidden; border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.1);">
+                                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=300&h=200&fit=crop" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; filter: brightness(0.8);">
+                                    <div style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.6rem; color: white; backdrop-filter: blur(4px);"><i class="fas fa-eye"></i> 450</div>
+                                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(0deg, rgba(0,0,0,0.9), transparent); padding: 1rem 0.5rem 0.5rem; color: white;">
+                                        <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 0.2rem;">Living Room Moderno</div>
+                                        <div style="display: flex; gap: 0.2rem;">
+                                            <span style="font-size: 0.55rem; background: var(--accent); padding: 0.1rem 0.3rem; border-radius: 2px;">#Interiores</span>
+                                            <span style="font-size: 0.55rem; background: rgba(255,255,255,0.2); padding: 0.1rem 0.3rem; border-radius: 2px;">#Luxo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="position: relative; overflow: hidden; border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.1);">
+                                    <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=300&h=200&fit=crop" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; filter: brightness(0.8);">
+                                    <div style="position: absolute; top: 0.5rem; right: 0.5rem; background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.6rem; color: white; backdrop-filter: blur(4px);"><i class="fas fa-eye"></i> 320</div>
+                                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(0deg, rgba(0,0,0,0.9), transparent); padding: 1rem 0.5rem 0.5rem; color: white;">
+                                        <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 0.2rem;">Cozinha Minimalista</div>
+                                        <div style="display: flex; gap: 0.2rem;">
+                                            <span style="font-size: 0.55rem; background: var(--accent); padding: 0.1rem 0.3rem; border-radius: 2px;">#Interiores</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. Chat da Equipe -->
+        <div class="feature-row" data-aos="fade-up">
+            <div class="feature-text">
+                <div class="feature-icon"><i class="fas fa-comments"></i></div>
+                <h3>Chat da Equipe</h3>
+                <p>Centralize a comunicação e elimine o caos do WhatsApp. Converse com sua equipe dentro de cada projeto específico, envie arquivos pesados, registre aprovações de etapas, links de referências e mantenha o histórico de decisões em um chat organizado, seguro e atrelado diretamente ao quadro do Kanban. Com nosso sistema de threads e menções, nenhuma instrução de feedback se perde. Toda a comunicação fica perfeitamente documentada e acessível a qualquer momento, garantindo alinhamento total entre os envolvidos.</p>
+                <a href="#" class="feature-link">Explorar Recurso <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-mockup">
+                <div class="mockup-card">
+                    <div class="mockup-ui">
+                        <div class="mockup-sidebar">
+                            <div class="mockup-sidebar-icon"><i class="fas fa-folder"></i></div>
+                            <div class="mockup-sidebar-icon active"><i class="fas fa-comments"></i></div>
+                            <div class="mockup-sidebar-icon"><i class="fas fa-users"></i></div>
+                            <div class="mockup-sidebar-icon" style="margin-top: auto;"><i class="fas fa-cog"></i></div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="mockup-header" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.75rem;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="color: var(--accent); font-size: 1.2rem;">#</span>
+                                        <span class="mockup-title">Residencial Lake</span>
+                                    </div>
+                                    <span style="color: var(--muted); font-size: 0.7rem;"><i class="fas fa-circle" style="color: #10B981; font-size: 0.5rem;"></i> 3 online agora</span>
+                                </div>
+                                <div class="avatar-group" style="display: flex;">
+                                    <div class="avatar" style="width: 28px; height: 28px; margin-left: -8px; border: 2px solid #1a1a1a;"><img src="https://i.pravatar.cc/100?img=11" style="width:100%; border-radius:50%;"></div>
+                                    <div class="avatar" style="width: 28px; height: 28px; margin-left: -8px; border: 2px solid #1a1a1a;"><img src="https://i.pravatar.cc/100?img=12" style="width:100%; border-radius:50%;"></div>
+                                    <div class="avatar" style="width: 28px; height: 28px; margin-left: -8px; border: 2px solid #1a1a1a; background: rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.6rem;">+2</div>
+                                </div>
+                            </div>
+                            <div style="padding-top: 1rem; display: flex; flex-direction: column; gap: 1rem; flex: 1;">
+                                <div style="align-self: flex-start; max-width: 85%;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem;">
+                                        <div class="avatar" style="width: 20px; height: 20px;"><img src="https://i.pravatar.cc/100?img=11" style="width:100%; border-radius:50%;"></div>
+                                        <strong style="color: white; font-size: 0.8rem;">Marcos</strong>
+                                        <span style="font-size: 0.65rem; color: var(--muted);">14:32</span>
+                                    </div>
+                                    <div class="chat-bubble chat-left" style="margin-bottom: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                                        O render da fachada já está pronto na nuvem! <i class="fas fa-cloud-upload-alt" style="margin-left: 0.5rem; color: #3B82F6;"></i>
+                                        <div style="margin-top: 0.5rem; background: rgba(0,0,0,0.4); padding: 0.5rem; border-radius: 0.5rem; display: flex; align-items: center; gap: 0.5rem; border: 1px solid rgba(255,255,255,0.05);">
+                                            <i class="fas fa-file-image" style="color: var(--accent); font-size: 1.2rem;"></i>
+                                            <div style="display: flex; flex-direction: column;">
+                                                <span style="color: white; font-size: 0.75rem;">render_final_v2.png</span>
+                                                <span style="color: var(--muted); font-size: 0.65rem;">14.2 MB</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 0.3rem; margin-left: 0.5rem; display: flex; gap: 0.3rem;">
+                                        <span style="background: rgba(255,255,255,0.1); padding: 0.1rem 0.4rem; border-radius: 10px; font-size: 0.7rem;">🔥 2</span>
+                                        <span style="background: rgba(255,255,255,0.1); padding: 0.1rem 0.4rem; border-radius: 10px; font-size: 0.7rem;">👀 1</span>
+                                    </div>
+                                </div>
+                                <div style="align-self: flex-end; max-width: 85%;">
+                                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; margin-bottom: 0.3rem;">
+                                        <span style="font-size: 0.65rem; color: var(--muted);">14:35</span>
+                                        <strong style="color: white; font-size: 0.8rem;">Você</strong>
+                                    </div>
+                                    <div class="chat-bubble chat-right" style="margin-bottom: 0; background: var(--accent); color: white; box-shadow: 0 5px 15px rgba(255,107,53,0.2);">
+                                        Ficou espetacular! 🚀 Vou compartilhar no portal do cliente para aprovação final.
+                                    </div>
+                                    <div style="text-align: right; margin-top: 0.2rem; color: #10B981; font-size: 0.65rem;"><i class="fas fa-check-double"></i> Lido</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 1rem; background: rgba(0,0,0,0.4); padding: 0.75rem; border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="fas fa-plus-circle" style="color: var(--muted); cursor: pointer; font-size: 1.1rem; transition: 0.2s;"></i>
+                                <input type="text" placeholder="Mensagem em #Residencial Lake..." style="background: transparent; border: none; color: white; outline: none; flex: 1; font-size: 0.85rem; font-family: 'Inter';">
+                                <i class="fas fa-smile" style="color: var(--muted); cursor: pointer; transition: 0.2s;"></i>
+                                <i class="fas fa-paper-plane" style="color: var(--accent); cursor: pointer; transition: 0.2s;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10. Agenda -->
+        <div class="feature-row" data-aos="fade-up" style="margin-bottom: 0;">
+            <div class="feature-text">
+                <div class="feature-icon"><i class="fas fa-calendar-alt"></i></div>
+                <h3>Agenda</h3>
+                <p>Sincronia total do seu tempo. Visualize rapidamente prazos críticos de entrega, reuniões agendadas com clientes, dias de pagamento e lançamentos financeiros em um único calendário unificado e inteligente. Integrado com Google Calendar e Outlook, o sistema permite filtrar a visualização por equipe, projeto ou tipo de evento. Receba alertas automáticos via e-mail e notificações push para você e seus colaboradores, garantindo que o seu estúdio nunca mais perca um compromisso ou deadline importante.</p>
+                <a href="#" class="feature-link">Explorar Recurso <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-mockup">
+                <div class="mockup-card">
+                    <div class="mockup-ui">
+                        <div class="mockup-sidebar">
+                            <div class="mockup-sidebar-icon"><i class="fas fa-folder"></i></div>
+                            <div class="mockup-sidebar-icon active"><i class="fas fa-calendar-alt"></i></div>
+                            <div class="mockup-sidebar-icon"><i class="fas fa-clock"></i></div>
+                            <div class="mockup-sidebar-icon" style="margin-top: auto;"><i class="fas fa-cog"></i></div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="mockup-header" style="margin-bottom: 1rem;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <span class="mockup-title">Agenda: Maio 2024</span>
+                                    <span style="color: var(--muted); font-size: 0.75rem;"><i class="fas fa-cloud"></i> 24°C • Parcialmente nublado</span>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <span class="mockup-badge" style="background: var(--accent); color: white; cursor: pointer; border: none; padding: 0.3rem 0.6rem;"><i class="fas fa-plus"></i> Novo</span>
+                                    <i class="fas fa-chevron-left" style="color: var(--muted); cursor: pointer; background: rgba(255,255,255,0.05); padding: 0.3rem; border-radius: 4px;"></i>
+                                    <i class="fas fa-chevron-right" style="color: white; cursor: pointer; background: rgba(255,255,255,0.1); padding: 0.3rem; border-radius: 4px;"></i>
+                                </div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 0.5rem; padding: 1rem; margin-bottom: 1.5rem;">
+                                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; text-align: center; color: var(--muted); font-size: 0.75rem; margin-bottom: 0.75rem; font-weight: bold;">
+                                    <div>DOM</div><div>SEG</div><div>TER</div><div>QUA</div><div>QUI</div><div>SEX</div><div>SÁB</div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.3rem; text-align: center; color: white; font-size: 0.85rem;">
+                                    <div style="opacity: 0.3; padding: 0.4rem;">28</div><div style="opacity: 0.3; padding: 0.4rem;">29</div><div style="opacity: 0.3; padding: 0.4rem;">30</div><div style="background: rgba(255,107,53,0.2); color: var(--accent); border-radius: 0.25rem; font-weight: bold; border: 1px solid var(--accent); padding: 0.4rem;">1</div><div style="padding: 0.4rem;">2</div><div style="padding: 0.4rem;">3</div><div style="padding: 0.4rem;">4</div>
+                                    <div style="padding: 0.4rem;">5</div><div style="padding: 0.4rem;">6</div><div style="padding: 0.4rem;">7</div><div style="padding: 0.4rem;">8</div><div style="padding: 0.4rem;">9</div><div style="position: relative; padding: 0.4rem; background: rgba(59,130,246,0.1); border-radius: 0.25rem; color: #3B82F6;">10</div><div style="padding: 0.4rem;">11</div>
+                                    <div style="padding: 0.4rem;">12</div><div style="padding: 0.4rem;">13</div><div style="padding: 0.4rem;">14</div><div style="background: rgba(16,185,129,0.2); color: #10B981; border-radius: 0.25rem; font-weight: bold; padding: 0.4rem; position: relative; border: 1px solid rgba(16,185,129,0.4);">15</div><div style="padding: 0.4rem;">16</div><div style="padding: 0.4rem;">17</div><div style="padding: 0.4rem;">18</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <div style="color: white; font-size: 0.9rem; font-weight: bold; margin-bottom: 0.25rem;">Eventos de Hoje (Dia 15)</div>
+                                <div style="display: flex; align-items: stretch; gap: 1rem; padding: 0.75rem; background: rgba(255,107,53,0.05); border-left: 3px solid var(--accent); border-radius: 0 0.5rem 0.5rem 0;">
+                                    <div style="color: var(--accent); font-weight: bold; font-size: 0.9rem; width: 45px; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                                        14:00<span style="font-size: 0.65rem; color: var(--muted); font-weight: normal;">15:30</span>
+                                    </div>
+                                    <div style="flex: 1; border-left: 1px solid rgba(255,255,255,0.05); padding-left: 1rem;">
+                                        <div style="color: white; font-size: 0.9rem; font-weight: bold;">Reunião Briefing: Lake</div>
+                                        <div style="color: var(--muted); font-size: 0.75rem; margin-top: 0.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                                            <i class="fas fa-video" style="color: #3B82F6;"></i> Google Meet <span style="background: rgba(255,255,255,0.1); padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.65rem; color: white;">Acessar Link</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; align-items: stretch; gap: 1rem; padding: 0.75rem; background: rgba(16,185,129,0.05); border-left: 3px solid #10B981; border-radius: 0 0.5rem 0.5rem 0;">
+                                    <div style="color: #10B981; font-weight: bold; font-size: 0.9rem; width: 45px; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                                        18:00<span style="font-size: 0.65rem; color: var(--muted); font-weight: normal;">Deadline</span>
+                                    </div>
+                                    <div style="flex: 1; border-left: 1px solid rgba(255,255,255,0.05); padding-left: 1rem;">
+                                        <div style="color: white; font-size: 0.9rem; font-weight: bold;">Entrega Final: Apto 32</div>
+                                        <div style="color: var(--muted); font-size: 0.75rem; margin-top: 0.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                                            <i class="fas fa-check-circle" style="color: #10B981;"></i> Prazo Crítico
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section-padding container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Quem usa, não volta pro caos</h2>
+            <p class="section-subtitle">Estúdios de Arquitetura e Freelancers estão transformando suas rotinas com o Zano3D.</p>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card" data-aos="fade-up" data-aos-delay="0">
+                <div style="color: var(--accent); margin-bottom: 1rem;"><i class="fas fa-quote-left fa-2x"></i></div>
+                <p style="color: white; font-size: 1.1rem; line-height: 1.6;">"Antes do Zano3D, eu perdia 40% do meu tempo cobrando cliente. Hoje, meu estúdio roda no piloto automático."</p>
+                <div class="testimonial-user">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200" alt="Carlos Mendes">
+                    <div>
+                        <strong style="color: white; display: block;">Carlos Mendes</strong>
+                        <span style="color: var(--muted); font-size: 0.8rem;">CEO, ArchViz Studio</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                <div style="color: var(--accent); margin-bottom: 1rem;"><i class="fas fa-quote-left fa-2x"></i></div>
+                <p style="color: white; font-size: 1.1rem; line-height: 1.6;">"O sistema de Propostas é surreal. Fechei um contrato de R$ 15k só porque o cliente ficou impressionado."</p>
+                <div class="testimonial-user">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200" alt="Juliana Paiva">
+                    <div>
+                        <strong style="color: white; display: block;">Juliana Paiva</strong>
+                        <span style="color: var(--muted); font-size: 0.8rem;">Freelancer 3D Sênior</span>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                <div style="color: var(--accent); margin-bottom: 1rem;"><i class="fas fa-quote-left fa-2x"></i></div>
+                <p style="color: white; font-size: 1.1rem; line-height: 1.6;">"O controle financeiro salvou meu ano. Finalmente sei para onde está indo o dinheiro de cada render."</p>
+                <div class="testimonial-user">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" alt="Roberto Fischer">
+                    <div>
+                        <strong style="color: white; display: block;">Roberto Fischer</strong>
+                        <span style="color: var(--muted); font-size: 0.8rem;">Sócio, Fischer Arquitetura</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section-padding container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Planos Flexíveis</h2>
+            <p class="section-subtitle">Comece pequeno e cresça conosco. Cancele quando quiser.</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card" data-aos="fade-up">
+                <h3 style="color: white; font-size: 1.5rem;">Freelancer</h3>
+                <p style="color: var(--muted);">Ideal para artistas solo.</p>
+                <div class="pricing-price">R$ 49,90<span>/mês</span></div>
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check-circle"></i> Até 5 Projetos Ativos</li>
+                    <li><i class="fas fa-check-circle"></i> Propostas Ilimitadas</li>
+                    <li><i class="fas fa-check-circle"></i> Financeiro Básico</li>
+                </ul>
+                <button class="btn btn-outline" style="width: 100%; justify-content: center;">Começar Teste Grátis</button>
+            </div>
+            
+            <div class="pricing-card popular" data-aos="fade-up" data-aos-delay="100">
+                <h3 style="color: white; font-size: 1.5rem;">Estúdio Pro</h3>
+                <p style="color: var(--muted);">Para equipes em crescimento.</p>
+                <div class="pricing-price">R$ 129,90<span>/mês</span></div>
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check-circle"></i> Projetos Ilimitados</li>
+                    <li><i class="fas fa-check-circle"></i> Gestão de Freelancers</li>
+                    <li><i class="fas fa-check-circle"></i> Pipeline 3D Completo</li>
+                </ul>
+                <button class="btn btn-primary" style="width: 100%; justify-content: center;">Testar por 30 Dias</button>
+            </div>
+
+            <div class="pricing-card" data-aos="fade-up" data-aos-delay="200">
+                <h3 style="color: white; font-size: 1.5rem;">Enterprise</h3>
+                <p style="color: var(--muted);">Potência máxima.</p>
+                <div class="pricing-price">Consultar</div>
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check-circle"></i> API Personalizada</li>
+                    <li><i class="fas fa-check-circle"></i> Gerente de Conta</li>
+                    <li><i class="fas fa-check-circle"></i> Treinamento</li>
+                </ul>
+                <button class="btn btn-outline" style="width: 100%; justify-content: center;">Falar com Consultor</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="section-padding container" style="text-align: center;">
+        <h2 class="title-xl text-gradient" data-aos="fade-up">Eleve o Nível do<br>seu Projeto.</h2>
+        <div style="margin-top: 3rem;" data-aos="fade-up" data-aos-delay="100">
+            <a href="#" class="btn btn-primary" style="font-size: 1.2rem; padding: 1.5rem 3rem;">Agendar Demonstração</a>
+        </div>
+    </section>

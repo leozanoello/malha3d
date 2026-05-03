@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <meta name="description" content="Malha3D - Renderização e Modelagem 3D Profissional. Transforme suas ideias em realidade com precisão e arte.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Dependencies -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="/public/css/style.css?v=anoello" rel="stylesheet">
+    
+    {{{_sections.head}}}
+</head>
+<body>
+    {{!-- Shared Navbar for All Pages --}}
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <span>MALHA<span class="text-accent">3D</span></span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link">Início</a></li>
+                <li><a href="/galeria" class="nav-link">Galeria</a></li>
+                <li><a href="/orcamento" class="nav-link">Orçamento</a></li>
+                <li><a href="/contato" class="nav-link">Contato</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="/admin/login" class="btn-nav btn-glass">Login</a>
+                <a href="/orcamento" class="btn-nav btn-primary">Começar</a>
+            </div>
+        </div>
+    </nav>
+
+    {{!-- Main Content --}}
+    <main>
+        {{{body}}}
+    </main>
+
+    {{!-- Footer --}}
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="nav-logo" style="margin-bottom: 1.5rem;">
+                        <div class="logo-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <span style="color: white;">MALHA<span class="text-accent">3D</span></span>
+                    </div>
+                    <p class="footer-description">
+                        Líder em visualização 3D e integração ERP para indústrias modernas. Transformando complexidade em clareza visual.
+                    </p>
+                    <div class="social-links">
+                        <a href="https://instagram.com/zanoello.3d" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/554920181541" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-nav">
+                    <h4 class="footer-title">Plataforma</h4>
+                    <ul class="footer-list">
+                        <li><a href="/" class="footer-link">Início</a></li>
+                        <li><a href="/galeria" class="footer-link">Galeria</a></li>
+                        <li><a href="/orcamento" class="footer-link">Orçamentos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-nav">
+                    <h4 class="footer-title">Serviços</h4>
+                    <ul class="footer-list">
+                        <li><a href="#" class="footer-link">Ctx7 ERP</a></li>
+                        <li><a href="#" class="footer-link">Modelagem 3D</a></li>
+                        <li><a href="#" class="footer-link">Renderização</a></li>
+                    </ul>
+                </div>
+                <div class="footer-nav">
+                    <h4 class="footer-title">Contato</h4>
+                    <ul class="footer-list">
+                        <li><a href="/contato" class="footer-link">Suporte</a></li>
+                        <li><a href="mailto:contato@Malha3D.com.br" class="footer-link">E-mail</a></li>
+                        <li><a href="tel:+554920181541" class="footer-link">+55 (49) 2018-1541</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Malha3D. Direitos reservados.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacidade</a>
+                    <a href="#">Termos</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            easing: 'ease-out-cubic',
+            once: true,
+            mirror: false
+        });
+
+        // Smart Navbar Scroll
+        const nav = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Bento Box Interactive Effect
+        document.querySelectorAll('.bento-box').forEach(box => {
+            box.addEventListener('mousemove', e => {
+                const rect = box.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                box.style.setProperty('--mouse-x', `${x}%`);
+                box.style.setProperty('--mouse-y', `${y}%`);
+            });
+        });
+    </script>
+    {{{_sections.scripts}}}
+</body>
+</html>

@@ -1,0 +1,9 @@
+node_modules/
+public/
+tests/
+scratch/
+fluxer_dl/
+logs/
+*.json
+*.html
+*.md

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Malha3D</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/admin.css" rel="stylesheet">
+    
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body class="admin-body">
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-lock"></i> Acesso Administrativo
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="adminUsername" class="form-label">Usuário</label>
+                            <input type="text" class="form-control" id="adminUsername" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminPassword" class="form-label">Senha</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="adminPassword" required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                Lembrar-me
+                            </label>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt"></i> Entrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Admin Panel -->
+    <div id="adminPanel" class="admin-panel d-none">
+        <!-- Sidebar -->
+        <nav class="admin-sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-cube"></i>
+                    <span>Malha3D</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#gallery" data-section="gallery">
+                            <i class="fas fa-images"></i>
+                            <span>Galeria</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#calculator" data-section="calculator">
+                            <i class="fas fa-calculator"></i>
+                            <span>Calculadora</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#calculations" data-section="calculations">
+                            <i class="fas fa-history"></i>
+                            <span>Cálculos</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#settings" data-section="settings">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name">Administrador</span>
+                        <span class="user-role">Admin</span>
+                    </div>
+                </div>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-content">
+                    <div class="header-title">
+                        <h1 id="currentSectionTitle">Dashboard</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item active">Painel Administrativo</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="viewSiteBtn">
+                            <i class="fas fa-external-link-alt"></i>
+                            Ver Site
+                        </button>
+                        <div class="notifications">
+                            <button class="btn-notification" id="notificationBtn">
+                                <i class="fas fa-bell"></i>
+                                <span class="notification-badge">3</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="admin-content">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="admin-section active">
+                    <div class="row">
+                        <!-- Stats Cards -->
+                        <div class="col-md-3 mb-4">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-images"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3 id="totalImages">0</h3>
+                                    <p>Total de Imagens</p>
+                                    <span class="stat-change positive">+12%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-calculator"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3 id="totalCalculations">0</h3>
+                                    <p>Cálculos Realizados</p>
+                                    <span class="stat-change positive">+8%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3 id="totalViews">0</h3>
+                                    <p>Visualizações</p>
+                                    <span class="stat-change positive">+25%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <h3 id="totalContacts">0</h3>
+                                    <p>Contatos</p>
+                                    <span class="stat-change negative">-3%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row -->
+                    <div class="row">
+                        <div class="col-md-8 mb-4">
+                            <div class="chart-card">
+                                <div class="card-header">
+                                    <h5>Estatísticas de Acesso</h5>
+                                    <div class="card-actions">
+                                        <button class="btn btn-sm btn-outline-secondary">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="accessChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="chart-card">
+                                <div class="card-header">
+                                    <h5>Tipos de Cálculo</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="calculationChart" width="300" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="activity-card">
+                                <div class="card-header">
+                                    <h5>Atividades Recentes</h5>
+                                    <button class="btn btn-sm btn-outline-primary">Ver Todas</button>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recentActivities" class="activity-list">
+                                        <!-- Activities will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Gallery Management Section -->
+                <section id="gallery" class="admin-section">
+                    <div class="section-header">
+                        <h2>Gerenciamento de Galeria</h2>
+                        <button class="btn btn-primary" id="addImageBtn">
+                            <i class="fas fa-plus"></i>
+                            Adicionar Imagem
+                        </button>
+                    </div>
+
+                    <!-- Filters and Search -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="search-box">
+                                <input type="text" class="form-control" id="imageSearch" placeholder="Pesquisar imagens...">
+                                <i class="fas fa-search search-icon"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="categoryFilter">
+                                <option value="">Todas Categorias</option>
+                                <option value="residential">Residencial</option>
+                                <option value="commercial">Comercial</option>
+                                <option value="industrial">Industrial</option>
+                                <option value="landscape">Paisagismo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="sortBy">
+                                <option value="newest">Mais Recentes</option>
+                                <option value="oldest">Mais Antigas</option>
+                                <option value="name">Nome</option>
+                                <option value="featured">Destaques</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Image Grid -->
+                    <div class="image-grid" id="imageGrid">
+                        <!-- Images will be loaded here -->
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center" id="pagination">
+                                <!-- Pagination will be loaded here -->
+                            </ul>
+                        </nav>
+                    </div>
+                </section>
+
+                <!-- Calculator Configuration Section -->
+                <section id="calculator" class="admin-section">
+                    <div class="section-header">
+                        <h2>Configuração da Calculadora</h2>
+                        <button class="btn btn-success" id="saveCalculatorBtn">
+                            <i class="fas fa-save"></i>
+                            Salvar Alterações
+                        </button>
+                    </div>
+
+                    <form id="calculatorConfigForm">
+                        <!-- Step 1 Configuration -->
+                        <div class="config-card">
+                            <div class="card-header">
+                                <h5>Etapa 1: Tipo de Projeto</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Opção A</label>
+                                            <input type="text" class="form-control" name="step1_a_label" placeholder="Nome da opção">
+                                            <input type="number" class="form-control mt-2" name="step1_a_multiplier" placeholder="Multiplicador" step="0.01">
+                                            <input type="number" class="form-control mt-2" name="step1_a_base_price" placeholder="Preço base" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Opção B</label>
+                                            <input type="text" class="form-control" name="step1_b_label" placeholder="Nome da opção">
+                                            <input type="number" class="form-control mt-2" name="step1_b_multiplier" placeholder="Multiplicador" step="0.01">
+                                            <input type="number" class="form-control mt-2" name="step1_b_base_price" placeholder="Preço base" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Opção C</label>
+                                            <input type="text" class="form-control" name="step1_c_label" placeholder="Nome da opção">
+                                            <input type="number" class="form-control mt-2" name="step1_c_multiplier" placeholder="Multiplicador" step="0.01">
+                                            <input type="number" class="form-control mt-2" name="step1_c_base_price" placeholder="Preço base" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 Configuration -->
+                        <div class="config-card">
+                            <div class="card-header">
+                                <h5>Etapa 2: Complexidade</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Opção A</label>
+                                            <input type="text" class="form-control" name="step2_a_label" placeholder="Nome da opção">
+                                            <input type="number" class="form-control mt-2" name="step2_a_multiplier" placeholder="Multiplicador" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Opção B</label>
+                                            <input type="text" class="form-control" name="step2_b_label" placeholder="Nome da opção">
+                                            <input type="number" class="form-control mt-2" name="step2_b_multiplier" placeholder="Multiplicador" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Opção C</label>
+                                            <input type="text" class="form-control" name="step2_c_label" placeholder="Nome da opção">
+                                            <input type="number" class="form-control mt-2" name="step2_c_multiplier" placeholder="Multiplicador" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 Configuration -->
+                        <div class="config-card">
+                            <div class="card-header">
+                                <h5>Etapa 3: Prazo de Entrega</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Opção A</label>
+                                            <input type="text" class="form-control" name="step3_a_label" placeholder="Nome da opção">
+                                            <input type="number" class="form-control mt-2" name="step3_a_multiplier" placeholder="Multiplicador" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Opção B</label>
+                                            <input type="text" class="form-control" name="step3_b_label" placeholder="Nome da opção">
+                                            <input type="number" class="form-control mt-2" name="step3_b_multiplier" placeholder="Multiplicador" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Opção C</label>
+                                            <input type="text" class="form-control" name="step3_c_label" placeholder="Nome da opção">
+                                            <input type="number" class="form-control mt-2" name="step3_c_multiplier" placeholder="Multiplicador" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Square Meter Configuration -->
+                        <div class="config-card">
+                            <div class="card-header">
+                                <h5>Configuração de Metros Quadrados</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Preço por m² (Base)</label>
+                                            <input type="number" class="form-control" name="base_price_per_sqm" placeholder="Preço base por m²" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Moeda</label>
+                                            <select class="form-select" name="currency">
+                                                <option value="BRL">R$ (Real Brasileiro)</option>
+                                                <option value="USD">$ (Dólar Americano)</option>
+                                                <option value="EUR">€ (Euro)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Área Mínima (m²)</label>
+                                            <input type="number" class="form-control" name="min_area" placeholder="Área mínima" step="0.1" min="1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Área Máxima (m²)</label>
+                                            <input type="number" class="form-control" name="max_area" placeholder="Área máxima" step="0.1" min="1">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Calculations History Section -->
+                <section id="calculations" class="admin-section">
+                    <div class="section-header">
+                        <h2>Histórico de Cálculos</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-outline-secondary" id="exportCalculationsBtn">
+                                <i class="fas fa-download"></i>
+                                Exportar
+                            </button>
+                            <button class="btn btn-outline-danger" id="clearHistoryBtn">
+                                <i class="fas fa-trash"></i>
+                                Limpar Histórico
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <input type="date" class="form-control" id="calculationDateFrom" placeholder="Data de">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="date" class="form-control" id="calculationDateTo" placeholder="Data até">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="calculationTypeFilter">
+                                <option value="">Todos os Tipos</option>
+                                <option value="residential">Residencial</option>
+                                <option value="commercial">Comercial</option>
+                                <option value="industrial">Industrial</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary w-100" id="filterCalculationsBtn">
+                                <i class="fas fa-filter"></i>
+                                Filtrar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Calculations Table -->
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped" id="calculationsTable">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Cliente</th>
+                                    <th>Tipo</th>
+                                    <th>Área (m²)</th>
+                                    <th>Valor</th>
+                                    <th>Detalhes</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="calculationsTableBody">
+                                <!-- Calculations will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <nav aria-label="Calculations pagination">
+                            <ul class="pagination justify-content-center" id="calculationsPagination">
+                                <!-- Pagination will be loaded here -->
+                            </ul>
+                        </nav>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings" class="admin-section">
+                    <div class="section-header">
+                        <h2>Configurações do Sistema</h2>
+                        <button class="btn btn-success" id="saveSettingsBtn">
+                            <i class="fas fa-save"></i>
+                            Salvar Configurações
+                        </button>
+                    </div>
+
+                    <form id="settingsForm">
+                        <!-- Site Settings -->
+                        <div class="config-card">
+                            <div class="card-header">
+                                <h5>Configurações do Site</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Título do Site</label>
+                                            <input type="text" class="form-control" name="site_title" value="Malha3D - Renderizações Arquitetônicas">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>E-mail de Contato</label>
+                                            <input type="email" class="form-control" name="contact_email" value="contato@Malha3D.com.br">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Telefone</label>
+                                            <input type="tel" class="form-control" name="contact_phone" value="(11) 99999-9999">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Endereço</label>
+                                            <input type="text" class="form-control" name="contact_address" value="São Paulo, SP">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Security Settings -->
+                        <div class="config-card">
+                            <div class="card-header">
+                                <h5>Configurações de Segurança</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Alterar Senha</label>
+                                            <input type="password" class="form-control" name="new_password" placeholder="Nova senha">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Confirmar Nova Senha</label>
+                                            <input type="password" class="form-control" name="confirm_password" placeholder="Confirmar senha">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="enable_2fa" id="enable2FA">
+                                    <label class="form-check-label" for="enable2FA">
+                                        Ativar autenticação de dois fatores
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Backup Settings -->
+                        <div class="config-card">
+                            <div class="card-header">
+                                <h5>Backup e Restauração</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-primary" id="backupBtn">
+                                            <i class="fas fa-download"></i>
+                                            Fazer Backup
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-outline-primary" id="restoreBtn">
+                                            <i class="fas fa-upload"></i>
+                                            Restaurar Backup
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Image Upload Modal -->
+    <div class="modal fade" id="imageUploadModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-upload"></i>
+                        Upload de Imagens
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="imageUploadForm">
+                        <div class="upload-area" id="uploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h5>Arraste as imagens aqui</h5>
+                            <p>ou clique para selecionar</p>
+                            <input type="file" id="imageFiles" multiple accept="image/*" style="display: none;">
+                        </div>
+                        <div id="imagePreview" class="image-preview"></div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Categoria</label>
+                                    <select class="form-select" name="image_category" required>
+                                        <option value="">Selecione uma categoria</option>
+                                        <option value="residential">Residencial</option>
+                                        <option value="commercial">Comercial</option>
+                                        <option value="industrial">Industrial</option>
+                                        <option value="landscape">Paisagismo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Projeto</label>
+                                    <input type="text" class="form-control" name="image_project" placeholder="Nome do projeto">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label>Descrição</label>
+                            <textarea class="form-control" name="image_description" rows="3" placeholder="Descrição da imagem"></textarea>
+                        </div>
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" name="image_featured" id="featuredImage">
+                            <label class="form-check-label" for="featuredImage">
+                                Marcar como destaque
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="uploadImagesBtn">
+                        <i class="fas fa-upload"></i>
+                        Fazer Upload
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Edit Modal -->
+    <div class="modal fade" id="imageEditModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit"></i>
+                        Editar Imagem
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="imageEditForm">
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" class="form-control" name="edit_title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <select class="form-select" name="edit_category" required>
+                                <option value="residential">Residencial</option>
+                                <option value="commercial">Comercial</option>
+                                <option value="industrial">Industrial</option>
+                                <option value="landscape">Paisagismo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Projeto</label>
+                            <input type="text" class="form-control" name="edit_project">
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <textarea class="form-control" name="edit_description" rows="3"></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="edit_featured" id="editFeatured">
+                            <label class="form-check-label" for="editFeatured">
+                                Marcar como destaque
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveImageBtn">
+                        <i class="fas fa-save"></i>
+                        Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

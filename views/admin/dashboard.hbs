@@ -1,0 +1,135 @@
+<!-- Header with Glass Effect -->
+<div class="mb-4 p-4 glass-card border-none bg-gradient-to-br from-white/5 to-white/[0.02]">
+    {{#if info}}
+    <div class="mb-3 p-2.5 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center gap-2 animate-pulse">
+        <div class="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-blue-500 text-sm">info</span>
+        </div>
+        <div>
+            <p class="text-[9px] font-black text-blue-500 uppercase tracking-widest">Aviso do Sistema</p>
+            <p class="text-[9px] font-bold text-blue-400/80">{{info}}</p>
+        </div>
+    </div>
+    {{/if}}
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div>
+            <h1 class="text-xl font-black text-white tracking-tight mb-0.5">
+                Sistema <span class="text-gradient">Malha3D</span>
+            </h1>
+            <p class="text-gray-400 font-medium text-xs">
+                Bem-vindo ao centro de comando, <span class="text-orange-500">{{user.name}}</span>.
+            </p>
+        </div>
+        <div class="flex items-center gap-2">
+            <div class="glass-card px-3 py-1.5 flex items-center gap-1.5 border-white/5 rounded-xl">
+                <span class="material-symbols-outlined text-orange-500 text-xs">schedule</span>
+                <span class="text-[10px] font-bold text-gray-300" id="currentDate">03 Maio, 2026</span>
+            </div>
+            <button onclick="openModal('novaDespesaModal')" class="bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-500 font-black py-1.5 px-3 rounded-xl transition-all flex items-center gap-1.5 text-[10px]">
+                <span class="material-symbols-outlined text-xs">remove</span> Despesa
+            </button>
+            <button onclick="openModal('novaReceitaModal')" class="bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-500 font-black py-1.5 px-3 rounded-xl transition-all flex items-center gap-1.5 text-[10px]">
+                <span class="material-symbols-outlined text-xs">add</span> Receita
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard Widgets Area -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+    <!-- Orçamentos Widget -->
+    <div class="glass-card p-4 flex flex-col h-full rounded-2xl border-l-2 border-l-blue-500">
+        <div class="flex justify-between items-start mb-3">
+            <div>
+                <h3 class="text-xs font-black text-white">Orçamentos</h3>
+                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Aguardando Resposta</p>
+            </div>
+            <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm">request_quote</span>
+            </div>
+        </div>
+        <div class="flex-grow flex flex-col justify-center">
+            <p class="text-2xl font-black text-white mb-0.5">12</p>
+            <p class="text-[10px] text-blue-400 font-medium">4 novos hoje</p>
+        </div>
+    </div>
+
+    <!-- Pedidos/Projetos Widget -->
+    <div class="glass-card p-4 flex flex-col h-full rounded-2xl border-l-2 border-l-emerald-500">
+        <div class="flex justify-between items-start mb-3">
+            <div>
+                <h3 class="text-xs font-black text-white">Pedidos Ativos</h3>
+                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Em Produção</p>
+            </div>
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm">view_kanban</span>
+            </div>
+        </div>
+        <div class="flex-grow flex flex-col justify-center">
+            <p class="text-2xl font-black text-white mb-0.5">{{performance.activeProjects}}</p>
+            <p class="text-[10px] text-emerald-400 font-medium">3 em fase de entrega</p>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div class="glass-card p-4 flex flex-col h-full rounded-2xl border-l-2 border-l-indigo-500">
+        <div class="flex justify-between items-start mb-3">
+            <div>
+                <h3 class="text-xs font-black text-white">Mensagens</h3>
+                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Comunicação Interna</p>
+            </div>
+            <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center relative">
+                <span class="material-symbols-outlined text-sm">forum</span>
+                <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse border-2 border-[#0B0F19]"></span>
+            </div>
+        </div>
+        <div class="flex-grow flex flex-col justify-center">
+            <p class="text-2xl font-black text-white mb-0.5">5</p>
+            <p class="text-[10px] text-indigo-400 font-medium">Novas menções não lidas</p>
+        </div>
+    </div>
+
+    <!-- Agenda Widget -->
+    <div class="glass-card p-4 flex flex-col h-full rounded-2xl border-l-2 border-l-rose-500">
+        <div class="flex justify-between items-start mb-3">
+            <div>
+                <h3 class="text-xs font-black text-white">Agenda Hoje</h3>
+                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Reuniões & Prazos</p>
+            </div>
+            <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center">
+                <span class="material-symbols-outlined text-sm">calendar_month</span>
+            </div>
+        </div>
+        <div class="flex-grow flex flex-col justify-center">
+            <p class="text-2xl font-black text-white mb-0.5">2</p>
+            <p class="text-[10px] text-rose-400 font-medium">Próx: Reunião Cliente às 14h</p>
+        </div>
+    </div>
+</div>
+
+<!-- Main Panels -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <!-- Performance Resumo -->
+    <div class="lg:col-span-3 glass-card p-5 rounded-2xl">
+        <h3 class="text-sm font-black text-white mb-3 flex items-center gap-2">
+            <span class="material-symbols-outlined text-orange-500 text-base">monitoring</span>
+            Visão Financeira & Conversão
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col justify-center">
+                <span class="text-[10px] font-bold text-gray-400 mb-0.5">Receita Estimada Mensal</span>
+                <span class="text-xl font-black text-orange-500">{{formatCurrency performance.estimatedRevenue}}</span>
+            </div>
+            <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col justify-center">
+                <span class="text-[10px] font-bold text-gray-400 mb-0.5">Taxa de Conversão Leads</span>
+                <span class="text-xl font-black text-emerald-500">{{performance.conversionRate}}%</span>
+            </div>
+        </div>
+        <div class="mt-3 p-3 rounded-xl bg-blue-500/5 border border-blue-500/10">
+            <p class="text-[10px] text-blue-400/80 font-medium leading-relaxed">
+                <strong class="text-blue-500 font-bold">Insight IA:</strong> 
+                Com base nos últimos 30 dias, a probabilidade de fechar os 4 orçamentos pendentes é de 68%. Recomendamos entrar em contato com os clientes em até 48 horas para aumentar a conversão.
+            </p>
+        </div>
+    </div>
+</div>

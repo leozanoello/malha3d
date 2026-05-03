@@ -1,0 +1,77 @@
+<!-- Header -->
+<div class="mb-10 p-8 glass-card border-none bg-gradient-to-br from-white/5 to-white/[0.02]">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+            <h1 class="text-4xl font-black text-white tracking-tight mb-2">
+                Portal do <span class="text-gradient">Cliente</span>
+            </h1>
+            <p class="text-gray-400 font-medium">
+                Gerencie o acesso, visualize entregas e configure a experiência dos clientes <span class="text-orange-500">Malha3D</span>.
+            </p>
+        </div>
+        <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center gap-3">
+            <span class="material-symbols-outlined">person_add</span>
+            Convidar Cliente
+        </button>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+    <div class="glass-card p-8 border-white/5 flex flex-col items-center text-center group">
+        <div class="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 mb-4 border border-orange-500/20 group-hover:scale-110 transition-transform shadow-lg shadow-orange-500/10">
+            <span class="material-symbols-outlined text-2xl">groups</span>
+        </div>
+        <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">Clientes Ativos</p>
+        <h2 class="text-3xl font-black text-white tracking-tight">0</h2>
+    </div>
+
+    <div class="glass-card p-8 border-white/5 flex flex-col items-center text-center group">
+        <div class="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 mb-4 border border-blue-500/20 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/10">
+            <span class="material-symbols-outlined text-2xl">visibility</span>
+        </div>
+        <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">Acessos Hoje</p>
+        <h2 class="text-3xl font-black text-white tracking-tight">0</h2>
+    </div>
+
+    <div class="glass-card p-8 border-white/5 flex flex-col items-center text-center group">
+        <div class="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500 mb-4 border border-emerald-500/20 group-hover:scale-110 transition-transform shadow-lg shadow-emerald-500/10">
+            <span class="material-symbols-outlined text-2xl">thumb_up</span>
+        </div>
+        <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">Aprovações</p>
+        <h2 class="text-3xl font-black text-white tracking-tight">0</h2>
+    </div>
+
+    <div class="glass-card p-8 border-white/5 flex flex-col items-center text-center group">
+        <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-4 border border-purple-500/20 group-hover:scale-110 transition-transform shadow-lg shadow-purple-500/10">
+            <span class="material-symbols-outlined text-2xl">download</span>
+        </div>
+        <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">Downloads</p>
+        <h2 class="text-3xl font-black text-white tracking-tight">0</h2>
+    </div>
+</div>
+
+<!-- Empty State -->
+<div class="glass-card border-white/5 overflow-hidden">
+    <div class="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
+        <h3 class="text-lg font-black text-white tracking-tight flex items-center gap-3">
+            <span class="material-symbols-outlined text-orange-500">badge</span>
+            Clientes com Acesso ao Portal
+        </h3>
+    </div>
+    <div class="px-8 py-20 text-center">
+        <div class="flex flex-col items-center gap-6">
+            <div class="w-24 h-24 bg-white/[0.02] rounded-3xl flex items-center justify-center border border-white/5">
+                <span class="material-symbols-outlined text-5xl text-gray-700">supervised_user_circle</span>
+            </div>
+            <div>
+                <p class="text-lg font-black text-white tracking-tight mb-2">Nenhum cliente configurado</p>
+                <p class="text-sm text-gray-500 max-w-md mx-auto">Convide seus clientes para o portal onde eles poderão acompanhar o progresso dos projetos, aprovar entregas e fazer download dos arquivos finalizados.</p>
+            </div>
+            <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-8 rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2 mt-4">
+                <span class="material-symbols-outlined text-sm">person_add</span>
+                Configurar Primeiro Cliente
+            </button>
+        </div>
+    </div>
+</div>

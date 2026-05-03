@@ -1,0 +1,262 @@
+{{!-- Glow Effects --}}
+<div class="glow-orb orb-primary"></div>
+<div class="glow-orb orb-accent"></div>
+
+<section class="section" style="padding-top: 12rem;">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <div class="badge">
+                <span class="badge-dot"></span>
+                CONEXÃO DIRETA
+            </div>
+            <h1 class="section-title text-gradient">Entre em Contato</h1>
+            <p class="section-subtitle">Estamos prontos para elevar o nível do seu projeto industrial.</p>
+        </div>
+
+        <div class="asymmetric-grid">
+            {{!-- Contact Form Bento --}}
+            <div class="bento-box col-8" data-aos="fade-right">
+                <div class="bento-header">
+                    <div class="icon-box"><i class="fas fa-paper-plane"></i></div>
+                    <h3>Envie sua Mensagem</h3>
+                </div>
+                
+                <form id="contactForm" class="modern-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Nome Completo</label>
+                            <input type="text" id="name" name="name" placeholder="Ex: João Silva" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-mail Corporativo</label>
+                            <input type="email" id="email" name="email" placeholder="email@empresa.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Telefone / WhatsApp</label>
+                            <input type="tel" id="phone" name="phone" placeholder="(00) 00000-0000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Assunto</label>
+                            <select id="subject" name="subject" required>
+                                <option value="" disabled selected>Selecione um tópico</option>
+                                <option value="Orcamento">Solicitar Orçamento</option>
+                                <option value="Parceria">Proposta de Parceria</option>
+                                <option value="Suporte">Suporte Técnico Ctx7</option>
+                                <option value="Geral">Assunto Geral</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Mensagem Detalhada</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Como podemos ajudar seu negócio hoje?" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-nav btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
+                        <span class="btn-text">Enviar Mensagem</span>
+                        <span class="loading" style="display: none;"><i class="fas fa-circle-notch fa-spin"></i></span>
+                    </button>
+                    <div id="formMessage" class="form-status"></div>
+                </form>
+            </div>
+
+            {{!-- Contact Info Cards --}}
+            <div class="col-4" style="display: grid; gap: 2rem;">
+                {{!-- WhatsApp Bento --}}
+                <div class="bento-box" data-aos="fade-left" data-aos-delay="100">
+                    <div class="bento-header">
+                        <div class="icon-box" style="color: #25D366; border-color: rgba(37, 211, 102, 0.2);"><i class="fab fa-whatsapp"></i></div>
+                        <h3>WhatsApp</h3>
+                    </div>
+                    <p class="bento-text">Atendimento instantâneo para dúvidas e suporte imediato.</p>
+                    <a href="https://wa.me/554920181541" target="_blank" class="btn-nav btn-glass" style="margin-top: 1.5rem;">(49) 2018-1541</a>
+                </div>
+
+                {{!-- Email Bento --}}
+                <div class="bento-box" data-aos="fade-left" data-aos-delay="200">
+                    <div class="bento-header">
+                        <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                        <h3>E-mail</h3>
+                    </div>
+                    <p class="bento-text">Envie propostas detalhadas ou especificações técnicas.</p>
+                    <a href="mailto:atelie@zanoello.com" class="btn-nav btn-glass" style="margin-top: 1.5rem;">atelie@zanoello.com</a>
+                </div>
+
+                {{!-- Instagram Bento --}}
+                <div class="bento-box" data-aos="fade-left" data-aos-delay="300">
+                    <div class="bento-header">
+                        <div class="icon-box" style="color: #E1306C; border-color: rgba(225, 48, 108, 0.2);"><i class="fab fa-instagram"></i></div>
+                        <h3>Instagram</h3>
+                    </div>
+                    <p class="bento-text">Siga nossa jornada criativa e bastidores dos projetos.</p>
+                    <a href="https://instagram.com/zanoello.3d" target="_blank" class="btn-nav btn-glass" style="margin-top: 1.5rem;">@zanoello.3d</a>
+                </div>
+            </div>
+        </div>
+
+        {{!-- Location Bento (Full Width) --}}
+        <div class="bento-box col-12" style="margin-top: 4rem;" data-aos="fade-up">
+            <div class="bento-header">
+                <div class="icon-box"><i class="fas fa-map-marker-alt"></i></div>
+                <div>
+                    <h3>Zanoello Headquarters</h3>
+                    <p class="section-subtitle" style="text-align: left; margin: 0;">Lacerdópolis, Santa Catarina — Brasil</p>
+                </div>
+                <a href="https://maps.google.com/?q=Zanoello+3D" target="_blank" class="btn-nav btn-glass" style="margin-left: auto;">Ver no Mapa</a>
+            </div>
+            <div class="map-placeholder">
+                {{!-- Interactive Map or static representaiton --}}
+                <div class="map-overlay"></div>
+                <img src="https://images.unsplash.com/photo-1524666041070-9d87656c25bb?q=80&w=2000&auto=format&fit=crop" alt="Localização" style="width: 100%; height: 300px; object-fit: cover; opacity: 0.3;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .modern-form {
+        margin-top: 1.5rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 1rem 1.5rem;
+        color: white;
+        font-family: inherit;
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        background: rgba(255, 107, 53, 0.05);
+        box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .form-group select option {
+        background: #030303;
+        color: white;
+    }
+
+    .form-status {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border-radius: 1rem;
+        display: none;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .form-status.success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10B981;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .form-status.error {
+        background: rgba(239, 68, 68, 0.1);
+        color: #EF4444;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .map-placeholder {
+        border-radius: 1.5rem;
+        overflow: hidden;
+        position: relative;
+        background: #000;
+    }
+
+    .map-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, #030303, transparent);
+        z-index: 1;
+    }
+
+    @media (max-width: 1024px) {
+        .form-row { grid-template-columns: 1fr; gap: 0; }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const contactForm = document.getElementById('contactForm');
+        const formMessage = document.getElementById('formMessage');
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const submitBtn = contactForm.querySelector('button[type="submit"]');
+                const btnText = submitBtn.querySelector('.btn-text');
+                const loading = submitBtn.querySelector('.loading');
+                
+                // Show loading state
+                submitBtn.disabled = true;
+                btnText.style.display = 'none';
+                loading.style.display = 'inline-block';
+                formMessage.style.display = 'none';
+                
+                const formData = new FormData(contactForm);
+                const data = Object.fromEntries(formData.entries());
+                
+                try {
+                    const response = await fetch('/contato/enviar', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        formMessage.textContent = result.message || 'Mensagem enviada com sucesso!';
+                        formMessage.className = 'form-status success';
+                        formMessage.style.display = 'block';
+                        contactForm.reset();
+                    } else {
+                        formMessage.textContent = result.message || 'Erro ao enviar mensagem.';
+                        formMessage.className = 'form-status error';
+                        formMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    formMessage.textContent = 'Erro de conexão. Tente novamente.';
+                    formMessage.className = 'form-status error';
+                    formMessage.style.display = 'block';
+                } finally {
+                    submitBtn.disabled = false;
+                    btnText.style.display = 'inline-block';
+                    loading.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>

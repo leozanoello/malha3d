@@ -1,0 +1,49 @@
+[Unit]
+Description=Zanoello 3D Landing Page
+Documentation=https://github.com/zanoello3d/landing-page
+After=network.target mysql.service redis.service
+Wants=mysql.service redis.service
+
+[Service]
+Type=forking
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/zanoello3d
+Environment=NODE_ENV=production
+Environment=PATH=/usr/bin:/usr/local/bin
+EnvironmentFile=-/var/www/zanoello3d/.env
+
+# PM2
+ExecStart=/usr/local/bin/pm2 start /var/www/zanoello3d/ecosystem.config.js --env production
+ExecReload=/usr/local/bin/pm2 reload /var/www/zanoello3d/ecosystem.config.js --env production
+ExecStop=/usr/local/bin/pm2 stop /var/www/zanoello3d/ecosystem.config.js
+ExecStartPost=/usr/local/bin/pm2 save
+
+# Configurações de processo
+Restart=always
+RestartSec=10
+StartLimitInterval=60s
+StartLimitBurst=3
+
+# Configurações de segurança
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/www/zanoello3d/logs
+ReadWritePaths=/var/www/zanoello3d/uploads
+ReadWritePaths=/var/www/zanoello3d/backups
+ReadWritePaths=/var/log/pm2
+
+# Limites de recursos
+LimitNOFILE=65536
+LimitNPROC=4096
+MemoryLimit=1G
+CPUQuota=200%
+
+# Logging
+StandardOutput=append:/var/log/zanoello3d/app.log
+StandardError=append:/var/log/zanoello3d/error.log
+SyslogIdentifier=zanoello3d
+
+[Install]
+WantedBy=multi-user.target
