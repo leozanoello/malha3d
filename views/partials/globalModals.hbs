@@ -1,0 +1,374 @@
+<!-- Global Modals for Zanoello Dashboard -->
+
+<!-- <!-- 1. Modal: Criar Novo Projeto (Archviz High-Density Compact) -->
+<div class="modal fade" id="newProjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] bg-[#0a0c10]/98 backdrop-blur-3xl overflow-hidden scale-95">
+            <div class="modal-header border-white/5 p-5 bg-white/[0.02]">
+                <h2 class="text-lg font-black text-white tracking-tight flex items-center gap-3">
+                    <span class="material-symbols-outlined text-orange-500 text-xl">rocket_launch</span>
+                    Novo Projeto 3D <span class="text-[9px] bg-orange-500/10 text-orange-500 px-2 py-0.5 rounded uppercase font-black">Workflow Pro</span>
+                </h2>
+                <button type="button" class="btn-close btn-close-white scale-75 opacity-30" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="globalNewProjectForm" class="p-0">
+                <div class="modal-body p-6 space-y-6 no-scrollbar max-h-[85vh] overflow-y-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <!-- Left Column: Core Info -->
+                        <div class="lg:col-span-3 space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="space-y-1.5 col-span-2">
+                                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Título do Projeto</label>
+                                    <input type="text" name="title" required class="input-premium-compact h-10" placeholder="Ex: Residência Alpha">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Stakeholder</label>
+                                    <div class="flex gap-1">
+                                        <select name="client" class="input-premium-compact h-10 flex-1">
+                                            <option value="">Selecione...</option>
+                                            <option value="Alpha Arch">Alpha Arch</option>
+                                            <option value="Privado">Privado</option>
+                                        </select>
+                                        <button type="button" class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-orange-500 hover:bg-orange-500/10 transition-all" data-bs-toggle="modal" data-bs-target="#newRegistryModal">
+                                            <span class="material-symbols-outlined text-sm">person_add</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SPECIFIC 3D WORKFLOW -->
+                            <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-5">
+                                <h4 class="text-[10px] font-black text-orange-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-xs">settings_input_component</span> Pipeline de Produção
+                                </h4>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div class="space-y-1.5">
+                                        <label class="text-[8px] font-black text-gray-600 uppercase tracking-widest">Tipo de Visualização</label>
+                                        <select name="vizType" class="input-premium-compact h-9">
+                                            <option value="Interior">Interior</option>
+                                            <option value="Exterior">Exterior</option>
+                                            <option value="Animation">Animação</option>
+                                            <option value="VR">Tour Virtual VR</option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <label class="text-[8px] font-black text-gray-600 uppercase tracking-widest">Soft. Modelagem</label>
+                                        <select name="software" class="input-premium-compact h-9">
+                                            <option value="3ds Max">3ds Max</option>
+                                            <option value="Blender">Blender</option>
+                                            <option value="Unreal Engine">Unreal Engine</option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <label class="text-[8px] font-black text-gray-600 uppercase tracking-widest">Motor de Render</label>
+                                        <select name="renderEngine" class="input-premium-compact h-9">
+                                            <option value="Corona">Corona</option>
+                                            <option value="V-Ray">V-Ray</option>
+                                            <option value="Lumen/Nanite">Lumen (UE5)</option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <label class="text-[8px] font-black text-gray-600 uppercase tracking-widest">Nível de Detalhe</label>
+                                        <select name="lod" class="input-premium-compact h-9">
+                                            <option value="Low">Conceitual</option>
+                                            <option value="High">Foto-realismo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Briefing Técnico</label>
+                                <textarea name="description" rows="2" class="input-premium-compact resize-none py-3" placeholder="Informações cruciais para a produção..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Sidebar -->
+                        <div class="space-y-4">
+                            <div class="bg-white/[0.02] p-5 rounded-2xl border border-white/5 space-y-4">
+                                <h4 class="text-[9px] font-black text-emerald-500 uppercase tracking-[0.2em] mb-2">Comercial</h4>
+                                <div class="space-y-1.5">
+                                    <label class="text-[8px] font-black text-gray-600 uppercase tracking-widest">Valor do Projeto (R$)</label>
+                                    <input type="number" name="price" class="input-premium-compact h-10 text-emerald-400 font-black" placeholder="0,00">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[8px] font-black text-gray-600 uppercase tracking-widest">Prazo Final</label>
+                                    <input type="date" name="deadline" class="input-premium-compact h-10">
+                                </div>
+                                <div class="pt-2 space-y-2">
+                                    <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 cursor-pointer hover:bg-white/10 transition-all border border-white/5">
+                                        <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">Prioridade Alta</span>
+                                        <input type="checkbox" name="isHighPriority" class="w-4 h-4 rounded bg-black/40 border-white/10 text-orange-500 focus:ring-0">
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center justify-center gap-2 text-[10px] uppercase tracking-widest">
+                                <span class="material-symbols-outlined text-sm">check_circle</span>
+                                CRIAR PROJETO
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>rm>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Modal: Novo Cadastro (Stakeholders / CRM Compact) -->
+<div class="modal fade" id="newRegistryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] bg-[#0a0c10]/98 backdrop-blur-3xl overflow-hidden scale-90">
+            <div class="modal-header border-white/5 p-6">
+                <h2 class="text-lg font-black text-white tracking-tight flex items-center gap-3">
+                    <span class="material-symbols-outlined text-orange-500">person_add</span>
+                    Identificar Stakeholder
+                </h2>
+                <button type="button" class="btn-close btn-close-white scale-75 opacity-30" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="globalRegistryForm" class="p-0">
+                <div class="modal-body p-6 space-y-5">
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Tipo de Stakeholder</label>
+                        <select name="category" class="input-premium-compact h-10" required>
+                            <option value="Cliente">Cliente Final</option>
+                            <option value="Lead">Lead / Prospect</option>
+                            <option value="Parceiro">Parceiro / Freelancer</option>
+                            <option value="Fornecedor">Fornecedor / Hardware</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Nome / Studio</label>
+                        <input type="text" name="name" required class="input-premium-compact h-10" placeholder="Ex: Studio Alpha Arch">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">E-mail</label>
+                            <input type="email" name="email" required class="input-premium-compact h-10" placeholder="contato@empresa.com">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">WhatsApp</label>
+                            <input type="text" name="phone" class="input-premium-compact h-10" placeholder="(00) 00000-0000">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Cidade</label>
+                            <input type="text" name="city" class="input-premium-compact h-10" placeholder="Cidade">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Status Contato</label>
+                            <select name="status" class="input-premium-compact h-10">
+                                <option value="Ativo">Ativo</option>
+                                <option value="Prospect">Em Negociação</option>
+                                <option value="Inativo">Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-white/10 hover:bg-white/20 text-white font-black py-4 rounded-xl transition-all text-[10px] uppercase tracking-widest border border-white/10 mt-4">
+                        CONFIRMAR CADASTRO
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 3. Modal: Nova Transação Financeira -->
+<div class="modal fade" id="newTransactionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2.5rem] bg-[#0a0c10]/95 backdrop-blur-3xl overflow-hidden">
+            <div class="modal-header border-white/5 p-8 flex flex-col items-start gap-4">
+                <div class="flex items-center justify-between w-full">
+                    <h2 class="text-xl font-black text-white tracking-tighter flex items-center gap-3">
+                        <span class="material-symbols-outlined text-orange-500">payments</span>
+                        Nova Transação <span class="text-[9px] bg-cyber-500/10 text-cyber-500 px-2 py-0.5 rounded uppercase font-black">Enterprise Finance</span>
+                    </h2>
+                    <button type="button" class="btn-close btn-close-white scale-75 opacity-30" data-bs-dismiss="modal"></button>
+                </div>
+                
+                <!-- Modal Tabs -->
+                <ul class="nav nav-tabs border-0 flex gap-6 w-full" id="transactionModalTabs">
+                    <li class="nav-item">
+                        <button class="nav-link active border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-cyber-500 py-2 px-0 relative group" data-bs-toggle="tab" data-bs-target="#trans-details">
+                            Dados da Transação
+                            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-cyber-500"></div>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" data-bs-toggle="tab" data-bs-target="#trans-concilia">
+                            Conciliação & Anexos
+                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyber-500 group-hover:w-full transition-all"></div>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <form id="globalTransactionForm" class="p-0">
+                <div class="modal-body p-8 tab-content">
+                    <!-- Tab 1: Basic Info -->
+                    <div class="tab-pane fade show active space-y-6" id="trans-details">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Tipo de Fluxo</label>
+                                <select name="type" class="input-premium h-12">
+                                    <option value="receita">Receita (+)</option>
+                                    <option value="despesa">Despesa (-)</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Valor Transação (R$)</label>
+                                <input type="number" name="amount" required step="0.01" class="input-premium h-12 text-lg font-black" placeholder="0,00">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Descrição do Lançamento</label>
+                            <input type="text" name="description" required class="input-premium h-12" placeholder="Ex: Parcela 1/3 - Projeto Alpha Arch">
+                        </div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Plano de Contas</label>
+                                <select name="accountPlan" class="input-premium h-12">
+                                    <option value="Serviços 3D">Serviços 3D / Archviz</option>
+                                    <option value="Assinaturas">Assinaturas SaaS</option>
+                                    <option value="Softwares">Softwares & Plugins</option>
+                                    <option value="Marketing">Marketing & Ads</option>
+                                    <option value="Infraestrutura">Infra & Hardware</option>
+                                    <option value="Pessoal">Pessoal / Pro-labore</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Centro de Custo</label>
+                                <select name="costCenter" class="input-premium h-12">
+                                    <option value="Geral">Administrativo Geral</option>
+                                    <option value="Produção">Produção 3D</option>
+                                    <option value="Vendas">Comercial & Vendas</option>
+                                    <option value="P&D">P&D / Inovação</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Conciliation -->
+                    <div class="tab-pane fade space-y-6" id="trans-concilia">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Data de Vencimento</label>
+                                <input type="date" name="dueDate" required class="input-premium h-12">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Meio de Recebimento/Pagto</label>
+                                <select name="paymentMethod" class="input-premium h-12">
+                                    <option value="PIX">PIX (Instantâneo)</option>
+                                    <option value="Boleto">Boleto Bancário</option>
+                                    <option value="Cartão">Cartão de Crédito</option>
+                                    <option value="Transferência">TED / DOC</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Status Atual</label>
+                            <select name="status" class="input-premium h-12">
+                                <option value="pendente">Pendente / Em Aberto</option>
+                                <option value="pago">Liquidado / Pago</option>
+                                <option value="atrasado">Vencido / Atrasado</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-8 border-t border-white/5">
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-5 rounded-2xl shadow-xl shadow-emerald-600/20 transition-all text-[10px] uppercase tracking-[0.2em]">
+                        Registrar Transação Financeira
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .input-premium-compact {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 0.75rem;
+        padding: 0.5rem 0.875rem;
+        font-size: 0.7rem;
+        color: white;
+        transition: all 0.2s ease;
+        font-weight: 600;
+        outline: none;
+    }
+    .input-premium-compact:focus {
+        background-color: rgba(255, 255, 255, 0.04);
+        border-color: rgba(249, 115, 22, 0.4);
+    }
+    .input-premium-compact::placeholder { color: rgba(255, 255, 255, 0.15); }
+    
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Global Project Form
+    document.getElementById('globalNewProjectForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(this).entries());
+        data.isFeatured = this.isFeatured?.checked || false;
+        
+        try {
+            const res = await fetch('/admin/api/projects', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if(result.success) window.location.reload();
+            else alert('Erro: ' + result.message);
+        } catch(err) { console.error(err); }
+    });
+
+    // Global Registry Form
+    document.getElementById('globalRegistryForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        
+        try {
+            const res = await fetch('/admin/api/contatos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if(result.success) window.location.reload();
+            else alert('Erro: ' + result.message);
+        } catch(err) { console.error(err); }
+    });
+
+    // Global Transaction Form
+    document.getElementById('globalTransactionForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(this).entries());
+        data.isRecurring = this.isRecurring?.checked || false;
+        
+        try {
+            const res = await fetch('/admin/api/finance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if(result.success) window.location.reload();
+            else alert('Erro: ' + result.message);
+        } catch(err) { console.error(err); }
+    });
+});
+</script>

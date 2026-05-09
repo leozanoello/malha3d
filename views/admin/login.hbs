@@ -1,155 +1,270 @@
-<div class="min-h-screen bg-[#0a0a0a] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-['Plus_Jakarta_Sans']">
-    <!-- Abstract Background Decor -->
-    <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-orange-500/5 via-transparent to-transparent -z-10"></div>
-    <div class="absolute -top-48 -right-48 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[150px] animate-pulse -z-10"></div>
-    <div class="absolute -bottom-48 -left-48 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[150px] animate-pulse -z-10"></div>
+<div class="min-h-screen w-full flex items-center justify-center p-4 lg:p-8 font-['Plus_Jakarta_Sans'] relative overflow-hidden bg-[#030712]">
+    <!-- Dynamic Background Orbs -->
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-orange-500/20 rounded-full blur-[120px] animate-pulse"></div>
+    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-500/20 rounded-full blur-[120px] animate-pulse"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-500/5 rounded-full blur-[150px]"></div>
 
-    <div class="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-6">
-        <!-- Logo -->
-        <div class="flex justify-center mb-10">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center shadow-[0_0_40px_rgba(249,115,22,0.4)] ring-1 ring-white/20">
-                    <span class="font-black text-2xl text-white">M</span>
+    <!-- Main Container -->
+    <div class="w-full max-w-5xl flex flex-col lg:flex-row gap-4 relative z-10">
+        
+        <!-- Left Card: Branding & Impact -->
+        <div class="lg:flex-[1.1] liquid-glass rounded-[2rem] p-6 lg:p-12 flex flex-col justify-between overflow-hidden group">
+            <!-- Glass Reflection Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-30 pointer-events-none"></div>
+            
+            <div class="relative z-10">
+                <div class="flex items-center gap-4 mb-12">
+                    <div class="w-16 h-16 liquid-glass-btn rounded-2xl flex items-center justify-center shadow-2xl">
+                        <img src="/images/logo.svg" alt="Logo" class="w-10 h-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-3xl font-black tracking-tighter text-white">ZANOELLO<span class="text-orange-500">3D</span></span>
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Visualização Arquitetônica</span>
+                    </div>
                 </div>
-                <div class="flex flex-col">
-                    <span class="text-3xl font-black tracking-tighter text-white">MALHA<span class="text-orange-500">3D</span></span>
-                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.4em] -mt-1">Neural Dashboard</span>
+
+                <div class="space-y-6">
+                    <h1 class="text-4xl lg:text-6xl font-black text-white leading-tight">
+                        Transformando <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">Visões</span> em Realidade <span class="text-orange-500">Imersiva</span>.
+                    </h1>
+                    <p class="text-lg text-gray-400 font-medium leading-relaxed max-w-lg">
+                        O futuro da arquitetura passa pela renderização neural e design de alta fidelidade. Bem-vindo ao seu novo centro de comando.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-12 relative z-10">
+                <div class="flex items-center gap-6">
+                    <div class="flex -space-x-3">
+                        <div class="w-10 h-10 rounded-full border-2 border-[#030712] bg-gray-800 flex items-center justify-center overflow-hidden">
+                            <img src="https://ui-avatars.com/api/?name=User+1&background=random" alt="User">
+                        </div>
+                        <div class="w-10 h-10 rounded-full border-2 border-[#030712] bg-gray-800 flex items-center justify-center overflow-hidden">
+                            <img src="https://ui-avatars.com/api/?name=User+2&background=random" alt="User">
+                        </div>
+                        <div class="w-10 h-10 rounded-full border-2 border-[#030712] bg-gray-800 flex items-center justify-center overflow-hidden">
+                            <img src="https://ui-avatars.com/api/?name=User+3&background=random" alt="User">
+                        </div>
+                    </div>
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">
+                        +500 arquitetos já utilizam nosso ecossistema
+                    </p>
                 </div>
             </div>
         </div>
-        <div class="text-center">
-            <h2 class="text-2xl font-black text-white tracking-tight">Portal de Comando</h2>
-            <p class="mt-2 text-sm text-gray-500 font-medium tracking-wide">
-                Identificação necessária para acesso ao ecossistema.
-            </p>
-        </div>
-    </div>
 
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
-        <div class="glass-card p-10 border-white/5 bg-white/[0.01] shadow-2xl backdrop-blur-2xl relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 opacity-50"></div>
-            
+        <!-- Right Card: Login Form -->
+        <div class="lg:flex-1 liquid-glass rounded-[2rem] p-6 lg:p-10 flex flex-col justify-center">
+            <div class="mb-10">
+                <h2 class="text-2xl font-black text-white tracking-tight">Identificação</h2>
+                <p class="text-sm text-gray-500 font-medium mt-2">Acesse sua conta para gerenciar seus projetos.</p>
+            </div>
+
             {{#if error}}
-            <div class="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-4 animate-shake">
-                <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined text-red-500 text-xl">security</span>
+            <div class="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-4 animate-shake">
+                <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0 text-red-500">
+                    <span class="material-symbols-outlined">security</span>
                 </div>
-                <div>
-                    <p class="text-xs font-black text-red-500 uppercase tracking-widest">Erro de Acesso</p>
-                    <p class="text-[11px] font-bold text-red-400/80">{{error}}</p>
-                </div>
+                <p class="text-xs font-bold text-red-400">{{error}}</p>
             </div>
             {{/if}}
 
-            <form class="space-y-8" action="/admin/login" method="POST" id="loginForm">
-                <div class="space-y-3">
-                    <label for="email" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-1">E-mail de Acesso</label>
+            <form action="/admin/login" method="POST" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] ml-1">E-mail de Acesso</label>
                     <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                            <span class="material-symbols-outlined text-gray-600 group-focus-within:text-orange-500 transition-colors text-lg">alternate_email</span>
-                        </div>
-                        <input id="email" name="email" type="email" autocomplete="email" required 
-                            class="block w-full pl-14 pr-5 py-4 bg-white/[0.03] border border-white/5 text-white text-sm font-bold rounded-2xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500/50 focus:bg-white/[0.05] transition-all outline-none placeholder:text-gray-700"
-                            placeholder="admin@malha3d.com">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-orange-500 transition-colors">alternate_email</span>
+                        <input type="email" name="email" required 
+                            class="w-full pl-11 pr-4 py-3 liquid-glass-input rounded-xl text-white text-sm font-bold outline-none border border-white/5 focus:border-orange-500/50 transition-all"
+                            placeholder="exemplo@zanoello.com">
                     </div>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-2">
                     <div class="flex justify-between items-center px-1">
-                        <label for="password" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">Senha Secreta</label>
-                        <a href="#" class="text-[10px] font-black text-orange-500/60 hover:text-orange-500 uppercase tracking-widest transition-colors">Esqueceu?</a>
+                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Senha Secreta</label>
+                        <a href="#" class="text-[10px] font-black text-orange-500/60 hover:text-orange-500 uppercase tracking-widest">Esqueceu?</a>
                     </div>
                     <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                            <span class="material-symbols-outlined text-gray-600 group-focus-within:text-orange-500 transition-colors text-lg">key</span>
-                        </div>
-                        <input id="password" name="password" type="password" autocomplete="current-password" required 
-                            class="block w-full pl-14 pr-14 py-4 bg-white/[0.03] border border-white/5 text-white text-sm font-bold rounded-2xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500/50 focus:bg-white/[0.05] transition-all outline-none placeholder:text-gray-700"
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-orange-500 transition-colors">lock</span>
+                        <input type="password" name="password" id="password" required 
+                            class="w-full pl-11 pr-11 py-3 liquid-glass-input rounded-xl text-white text-sm font-bold outline-none border border-white/5 focus:border-orange-500/50 transition-all"
                             placeholder="••••••••">
-                        <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-5 flex items-center text-gray-600 hover:text-orange-500 transition-colors">
+                        <button type="button" id="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-orange-500 transition-colors">
                             <span class="material-symbols-outlined text-lg" id="eyeIcon">visibility</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="flex items-center">
-                    <input id="remember-me" name="remember-me" type="checkbox" 
-                        class="h-5 w-5 bg-white/5 border-white/10 text-orange-500 focus:ring-orange-500/20 rounded-lg transition-all cursor-pointer">
-                    <label for="remember-me" class="ml-3 block text-xs font-black text-gray-500 uppercase tracking-widest cursor-pointer select-none">Manter sessão ativa</label>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="remember-me" name="remember-me" class="w-5 h-5 liquid-glass-checkbox rounded-lg cursor-pointer accent-orange-500">
+                    <label for="remember-me" class="text-[10px] font-black text-gray-500 uppercase tracking-widest cursor-pointer select-none">Manter sessão ativa</label>
                 </div>
 
-                <div class="pt-2">
-                    <button type="submit" id="submitBtn" class="w-full flex justify-center items-center py-5 px-6 border border-transparent rounded-2xl shadow-2xl shadow-orange-500/40 text-sm font-black text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-500/20 transition-all transform active:scale-[0.98] group">
-                        <span id="btnText" class="flex items-center gap-3 tracking-[0.2em] uppercase">
-                            Inicializar Painel
-                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">bolt</span>
-                        </span>
-                        <div id="btnLoader" class="hidden">
-                            <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        </div>
-                    </button>
-                </div>
+                <button type="submit" class="w-full py-4 liquid-glass-btn rounded-xl text-white font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center gap-3">
+                    Entrar no Sistema
+                    <span class="material-symbols-outlined text-base">arrow_forward</span>
+                </button>
             </form>
 
-            <div class="mt-12 pt-8 border-t border-white/5 flex flex-col items-center gap-6">
-                <div class="flex items-center gap-3 text-gray-600 text-[10px] font-black uppercase tracking-[0.3em]">
-                    <span class="material-symbols-outlined text-sm text-emerald-500/60">verified_user</span>
-                    Encryption Active: AES-256
+            <div class="mt-10 space-y-6">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/5"></div></div>
+                    <div class="relative flex justify-center text-[9px] uppercase tracking-[0.3em] font-black">
+                        <span class="px-4 bg-transparent text-gray-600">Ou continue com</span>
+                    </div>
                 </div>
-                <a href="/" class="text-[10px] font-black text-gray-500 hover:text-white flex items-center gap-3 transition-colors uppercase tracking-[0.2em] group">
-                    <span class="material-symbols-outlined text-base group-hover:-translate-x-1 transition-transform">arrow_back</span>
-                    Abortar Missão
-                </a>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <button class="liquid-glass-btn py-4 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all">
+                        <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" class="w-6 h-6" alt="Meta">
+                    </button>
+                    <button class="liquid-glass-btn py-4 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all">
+                        <img src="https://www.svgrepo.com/show/511330/apple-173.svg" class="w-6 h-6 invert" alt="Apple">
+                    </button>
+                    <button class="liquid-glass-btn py-4 rounded-2xl flex items-center justify-center hover:bg-white/10 transition-all">
+                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-6 h-6" alt="Google">
+                    </button>
+                </div>
+
+                <div class="text-center pt-4">
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Ainda não tem acesso?</p>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#registerModal" class="mt-2 text-xs font-black text-white hover:text-orange-500 transition-colors uppercase tracking-[0.2em] flex items-center justify-center gap-2 group w-full">
+                        Criar cadastro
+                        <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform text-orange-500">person_add</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-    
-    <!-- Build Info -->
-    <div class="mt-10 text-center relative z-10">
-        <p class="text-[10px] font-black text-gray-700 uppercase tracking-[0.5em]">Malha3D v4.0.2 // STABLE BUILD</p>
+
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content liquid-glass border-white/10 rounded-[2.5rem] overflow-hidden bg-[#030712]/90">
+                <div class="modal-header border-white/5 p-8">
+                    <h5 class="modal-title text-2xl font-black text-white tracking-tight flex items-center gap-3">
+                        <span class="material-symbols-outlined text-orange-500">rocket_launch</span>
+                        Nova Identidade
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white opacity-30 hover:opacity-100" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-10">
+                    <form action="/admin/register" method="POST" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Primeiro Nome</label>
+                                <input name="firstName" type="text" required class="w-full px-5 py-4 liquid-glass-input rounded-2xl text-white text-sm font-bold outline-none border border-white/5 focus:border-orange-500/50">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Sobrenome</label>
+                                <input name="lastName" type="text" required class="w-full px-5 py-4 liquid-glass-input rounded-2xl text-white text-sm font-bold outline-none border border-white/5 focus:border-orange-500/50">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">E-mail Corporativo</label>
+                            <input name="email" type="email" required class="w-full px-5 py-4 liquid-glass-input rounded-2xl text-white text-sm font-bold outline-none border border-white/5 focus:border-orange-500/50">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Senha</label>
+                                <input name="password" type="password" required class="w-full px-5 py-4 liquid-glass-input rounded-2xl text-white text-sm font-bold outline-none border border-white/5 focus:border-orange-500/50">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Confirmar Senha</label>
+                                <input name="confirmPassword" type="password" required class="w-full px-5 py-4 liquid-glass-input rounded-2xl text-white text-sm font-bold outline-none border border-white/5 focus:border-orange-500/50">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-5 liquid-glass-btn rounded-2xl text-white font-black uppercase tracking-[0.2em] text-xs bg-orange-500 shadow-xl shadow-orange-500/20">
+                            Criar Conta Agora
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <style>
+    .liquid-glass {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 
+            0 8px 32px 0 rgba(0, 0, 0, 0.8),
+            inset 0 0 80px rgba(255, 255, 255, 0.01);
+        position: relative;
+        z-index: 1;
+    }
+
+    .liquid-glass::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+            to right,
+            transparent,
+            rgba(255, 255, 255, 0.05),
+            transparent
+        );
+        transform: skewX(-25deg);
+        animation: glass-shimmer 8s infinite linear;
+        pointer-events: none;
+    }
+
+    @keyframes glass-shimmer {
+        0% { left: -100%; }
+        20% { left: 200%; }
+        100% { left: 200%; }
+    }
+
+    .liquid-glass-input {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(5px);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .liquid-glass-btn {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .liquid-glass-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .liquid-glass-checkbox {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     @keyframes shake {
         0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-6px); }
-        75% { transform: translateX(6px); }
+        25% { transform: translateX(-8px); }
+        75% { transform: translateX(8px); }
     }
     .animate-shake { animation: shake 0.4s ease-in-out 0s 2; }
-    
-    .glass-card {
-        backdrop-filter: blur(40px);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('loginForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = document.getElementById('btnText');
-        const btnLoader = document.getElementById('btnLoader');
-        const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');
+        const toggleBtn = document.getElementById('togglePassword');
         const eyeIcon = document.getElementById('eyeIcon');
 
-        // Toggle Password Visibility
-        togglePassword.addEventListener('click', () => {
-            const isPassword = passwordInput.type === 'password';
-            passwordInput.type = isPassword ? 'text' : 'password';
-            eyeIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
-        });
-
-        // Form Submission
-        form.addEventListener('submit', () => {
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-70');
-            btnText.classList.add('hidden');
-            btnLoader.classList.remove('hidden');
+        toggleBtn?.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            eyeIcon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
         });
     });
 </script>

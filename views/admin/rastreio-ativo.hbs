@@ -1,0 +1,263 @@
+<div class="p-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-black text-white tracking-tight">Rastreio <span class="text-orange-500">Ativo</span></h1>
+            <p class="text-gray-400 text-sm mt-1">Precificação justa baseada em dados reais e inteligência competitiva.</p>
+        </div>
+        <button class="px-6 py-3 rounded-2xl bg-orange-500 text-white font-bold shadow-lg shadow-orange-500/30 hover:bg-orange-600 transition-all flex items-center gap-2" data-bs-toggle="modal" data-bs-target="#startTimeTrackerModal">
+            <span class="material-symbols-outlined">play_arrow</span> Iniciar Rastreio
+        </button>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="glass-card p-6 border-white/5 bg-white/2">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                    <span class="material-symbols-outlined">timer</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Horas Totais (Mês)</p>
+                    <h3 class="text-2xl font-black text-white">164h <span class="text-xs text-green-500 font-bold">+12%</span></h3>
+                </div>
+            </div>
+        </div>
+        <div class="glass-card p-6 border-white/5 bg-white/2">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                    <span class="material-symbols-outlined">payments</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Custo de Produção</p>
+                    <h3 class="text-2xl font-black text-white">R$ 8.420</h3>
+                </div>
+            </div>
+        </div>
+        <div class="glass-card p-6 border-white/5 bg-white/2">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-500">
+                    <span class="material-symbols-outlined">trending_up</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Margem de Lucro Médio</p>
+                    <h3 class="text-2xl font-black text-white">42%</h3>
+                </div>
+            </div>
+        </div>
+        <div class="glass-card p-6 border-white/5 bg-white/2">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500">
+                    <span class="material-symbols-outlined">monitoring</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Eficiência Global</p>
+                    <h3 class="text-2xl font-black text-white">94%</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Trackers & Recent Logs -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Live Trackers -->
+        <div class="lg:col-span-1">
+            <div class="glass-card p-6 border-white/5 bg-white/2 h-full">
+                <h3 class="text-lg font-black text-white mb-6 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> Rastreios em Tempo Real
+                </h3>
+                
+                <div class="space-y-4">
+                    {{#each activeLogs}}
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-all">
+                            <button class="w-8 h-8 rounded-lg bg-red-500/20 text-red-500 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-sm">stop</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-[10px] font-bold text-white uppercase">
+                                {{firstLetter user.name}}
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white">{{project.title}}</h4>
+                                <p class="text-[10px] text-gray-500 font-bold uppercase">{{taskType}}</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <div class="text-2xl font-black text-white tracking-tighter counter" data-start="{{startTime}}">02:45:12</div>
+                            <div class="text-[10px] font-black text-orange-500 uppercase tracking-widest">R$ 145,00 acumulado</div>
+                        </div>
+                    </div>
+                    {{else}}
+                    <div class="text-center py-12 opacity-50">
+                        <span class="material-symbols-outlined text-4xl mb-2">hourglass_empty</span>
+                        <p class="text-xs font-bold uppercase tracking-widest">Nenhum rastreio ativo</p>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+
+        <!-- History & Comparison -->
+        <div class="lg:col-span-2">
+            <div class="glass-card p-6 border-white/5 bg-white/2">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-black text-white">Análise de Custo x Lucro</h3>
+                    <div class="flex gap-2">
+                        <button class="p-2 rounded-xl bg-white/5 text-gray-400 hover:text-white transition-all"><span class="material-symbols-outlined text-sm">filter_list</span></button>
+                        <button class="p-2 rounded-xl bg-white/5 text-gray-400 hover:text-white transition-all"><span class="material-symbols-outlined text-sm">download</span></button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b border-white/5">
+                                <th class="pb-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Projeto</th>
+                                <th class="pb-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Artista</th>
+                                <th class="pb-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Tempo</th>
+                                <th class="pb-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Custo Real</th>
+                                <th class="pb-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Orçado</th>
+                                <th class="pb-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Lucro</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            {{#each timeLogs}}
+                            <tr class="group hover:bg-white/2 transition-all">
+                                <td class="py-4">
+                                    <span class="text-xs font-bold text-white">{{project.title}}</span>
+                                </td>
+                                <td class="py-4">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[8px] font-bold text-white uppercase">{{firstLetter user.name}}</div>
+                                        <span class="text-[10px] text-gray-400">{{user.name}}</span>
+                                    </div>
+                                </td>
+                                <td class="py-4">
+                                    <span class="text-[10px] font-bold text-white">{{durationMinutes}} min</span>
+                                </td>
+                                <td class="py-4">
+                                    <span class="text-[10px] font-bold text-white">{{formatCurrency totalCost}}</span>
+                                </td>
+                                <td class="py-4">
+                                    <span class="text-[10px] font-bold text-gray-400">{{formatCurrency project.budget.estimatedValue}}</span>
+                                </td>
+                                <td class="py-4 text-right">
+                                    <span class="px-2 py-1 rounded-lg {{#if isProfitable}}bg-green-500/10 text-green-500{{else}}bg-red-500/10 text-red-500{{/if}} text-[10px] font-black uppercase">
+                                        {{formatCurrency profit}} ({{profitMargin}}%)
+                                    </span>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Iniciar Rastreio -->
+<div class="modal fade" id="startTimeTrackerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card p-4 border-white/10 bg-dark-950/95">
+            <div class="flex justify-between items-center mb-6 px-4">
+                <h3 class="text-xl font-black text-white uppercase tracking-tighter">Iniciar <span class="text-orange-500">Time Tracker</span></h3>
+                <button type="button" class="text-gray-500 hover:text-white" data-bs-dismiss="modal"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form id="trackerForm" class="p-4 space-y-6">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Selecionar Projeto</label>
+                    <select class="input-premium" name="projectId">
+                        <option value="">Selecione um projeto...</option>
+                        {{#each projects}}
+                        <option value="{{id}}">{{title}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Tipo de Atividade</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="relative cursor-pointer group">
+                            <input type="radio" name="taskType" value="modeling" class="sr-only peer">
+                            <div class="p-3 rounded-xl border border-white/5 bg-white/2 text-center transition-all peer-checked:bg-orange-500/20 peer-checked:border-orange-500">
+                                <span class="material-symbols-outlined text-lg mb-1 block group-hover:scale-110 transition-transform">layers</span>
+                                <span class="text-[8px] font-bold text-gray-400 peer-checked:text-white uppercase">Modelagem</span>
+                            </div>
+                        </label>
+                        <label class="relative cursor-pointer group">
+                            <input type="radio" name="taskType" value="rendering" class="sr-only peer">
+                            <div class="p-3 rounded-xl border border-white/5 bg-white/2 text-center transition-all peer-checked:bg-orange-500/20 peer-checked:border-orange-500">
+                                <span class="material-symbols-outlined text-lg mb-1 block group-hover:scale-110 transition-transform">photo_camera</span>
+                                <span class="text-[8px] font-bold text-gray-400 peer-checked:text-white uppercase">Render</span>
+                            </div>
+                        </label>
+                        <label class="relative cursor-pointer group">
+                            <input type="radio" name="taskType" value="post_production" class="sr-only peer">
+                            <div class="p-3 rounded-xl border border-white/5 bg-white/2 text-center transition-all peer-checked:bg-orange-500/20 peer-checked:border-orange-500">
+                                <span class="material-symbols-outlined text-lg mb-1 block group-hover:scale-110 transition-transform">magic_button</span>
+                                <span class="text-[8px] font-bold text-gray-400 peer-checked:text-white uppercase">Pós-Produção</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">O que você vai fazer agora?</label>
+                    <textarea class="input-premium h-24" placeholder="Ex: Modelagem do mobiliário da suíte master..."></textarea>
+                </div>
+                <button type="submit" class="w-full py-4 rounded-2xl bg-orange-500 text-white font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    Começar Produção
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Logic for Timer Counter
+    function updateCounters() {
+        document.querySelectorAll('.counter').forEach(el => {
+            if (!el.dataset.start) return;
+            const startTime = new Date(el.dataset.start);
+            const now = new Date();
+            const diff = now - startTime;
+            
+            const hours = Math.floor(diff / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+            
+            el.innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        });
+    }
+    
+    setInterval(updateCounters, 1000);
+
+    // Form submission
+    document.getElementById('trackerForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        
+        try {
+            const response = await fetch('/admin/api/tracker/start', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (result.success) window.location.reload();
+        } catch (err) { console.error(err); }
+    });
+
+    async function stopTracker() {
+        try {
+            const response = await fetch('/admin/api/tracker/stop', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const result = await response.json();
+            if (result.success) window.location.reload();
+        } catch (err) { console.error(err); }
+    }
+</script>

@@ -144,10 +144,60 @@ class EmailService {
     return results;
   }
 
-  async sendBudgetNotification(budget) {
+  async sendProjectNotification(budget) {
     return this.sendAdminNotification(process.env.EMAIL_CONTACT, {
-      title: `Novo Orçamento Solicitado - ${budget.name}`,
+      title: `🚀 Novo Orçamento Solicitado - ${budget.name}`,
       message: `Novo orçamento de ${budget.name} (${budget.email})`
+    });
+  }
+
+  // --- ARCHVIZ CREATIVE AUTOMATIONS ---
+
+  async sendProjectProductionStart(project, clientEmail, clientName) {
+    return this.sendEmail({
+      to: clientEmail,
+      subject: `✨ A magia começou: ${project.title} está em produção!`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; color: #1a1a1a;">
+          <h2 style="color: #10b981;">Olá, ${clientName}!</h2>
+          <p>Sua visão está ganhando forma. Acabamos de dar o "Play" na produção do projeto <strong>${project.title}</strong>.</p>
+          <p>Nossa equipe de artistas 3D já está trabalhando na iluminação, texturização e composição para garantir que cada detalhe seja impecável.</p>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+          <p style="font-size: 12px; color: #666;">Fique atento ao seu dashboard para atualizações em tempo real.</p>
+        </div>
+      `
+    });
+  }
+
+  async sendProjectReviewReady(project, clientEmail, clientName) {
+    return this.sendEmail({
+      to: clientEmail,
+      subject: `📸 Renders prontos para sua apreciação: ${project.title}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; color: #1a1a1a;">
+          <h2 style="color: #6366f1;">As luzes estão acesas!</h2>
+          <p>Olá, ${clientName}. Temos novidades empolgantes.</p>
+          <p>A primeira versão dos renders para o projeto <strong>${project.title}</strong> está disponível para sua revisão.</p>
+          <p>Acesse o portal do cliente para validar os ângulos e a atmosfera que criamos.</p>
+          <a href="${process.env.APP_URL}/meus-projetos" style="display: inline-block; padding: 12px 24px; background: #6366f1; color: white; text-decoration: none; border-radius: 8px; margin-top: 20px;">Revisar Agora</a>
+        </div>
+      `
+    });
+  }
+
+  async sendProjectFinished(project, clientEmail, clientName) {
+    return this.sendEmail({
+      to: clientEmail,
+      subject: `🏁 Entrega Finalizada: ${project.title}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; color: #1a1a1a;">
+          <h2 style="color: #f59e0b;">Projeto Concluído!</h2>
+          <p>Olá, ${clientName}. É hora de impressionar o mundo.</p>
+          <p>O projeto <strong>${project.title}</strong> foi finalizado com sucesso e todos os arquivos em alta resolução estão prontos para download.</p>
+          <p>Foi um prazer transformar essa ideia em realidade com você.</p>
+          <p>Até o próximo render!</p>
+        </div>
+      `
     });
   }
 }

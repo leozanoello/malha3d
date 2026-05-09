@@ -1,0 +1,74 @@
+<div class="space-y-6 animate-in fade-in duration-700">
+    <div class="glass-card p-8 border-none bg-gradient-to-br from-white/5 to-white/[0.02]">
+        <h1 class="text-3xl font-black text-white tracking-tight">Resultados da Pesquisa: <span class="text-orange-500">"{{query}}"</span></h1>
+        <p class="text-gray-400 mt-2 font-medium">Localizamos os seguintes registros em todo o ecossistema Malha3D.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Budgets / Leads -->
+        <div class="space-y-4">
+            <h3 class="text-xs font-black text-gray-500 uppercase tracking-widest px-2">Leads & Propostas ({{budgets.length}})</h3>
+            <div class="space-y-3">
+                {{#each budgets}}
+                <a href="/admin/crm?id={{this.id}}" class="block glass-card p-4 border-white/5 bg-white/5 hover:bg-white/10 transition-all group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                            <span class="material-symbols-outlined">description</span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white group-hover:text-orange-500 transition-colors">{{this.name}}</h4>
+                            <p class="text-[10px] text-gray-500">{{this.email}}</p>
+                        </div>
+                    </div>
+                </a>
+                {{else}}
+                <p class="text-xs text-gray-600 italic px-2">Nenhum lead encontrado.</p>
+                {{/each}}
+            </div>
+        </div>
+
+        <!-- Clients / Stakeholders -->
+        <div class="space-y-4">
+            <h3 class="text-xs font-black text-gray-500 uppercase tracking-widest px-2">Stakeholders ({{clients.length}})</h3>
+            <div class="space-y-3">
+                {{#each clients}}
+                <a href="/admin/contatos?search={{this.name}}" class="block glass-card p-4 border-white/5 bg-white/5 hover:bg-white/10 transition-all group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                            <span class="material-symbols-outlined">person</span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white group-hover:text-blue-500 transition-colors">{{this.name}}</h4>
+                            <p class="text-[10px] text-gray-500">{{this.company}} • {{this.category}}</p>
+                        </div>
+                    </div>
+                </a>
+                {{else}}
+                <p class="text-xs text-gray-600 italic px-2">Nenhum contato encontrado.</p>
+                {{/each}}
+            </div>
+        </div>
+
+        <!-- Projects -->
+        <div class="space-y-4">
+            <h3 class="text-xs font-black text-gray-500 uppercase tracking-widest px-2">Projetos ({{projects.length}})</h3>
+            <div class="space-y-3">
+                {{#each projects}}
+                <a href="/admin/projetos/kanban" class="block glass-card p-4 border-white/5 bg-white/5 hover:bg-white/10 transition-all group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                            <span class="material-symbols-outlined">rocket_launch</span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white group-hover:text-emerald-500 transition-colors">{{this.title}}</h4>
+                            <p class="text-[10px] text-gray-500">{{this.client}} • {{this.category}}</p>
+                        </div>
+                    </div>
+                </a>
+                {{else}}
+                <p class="text-xs text-gray-600 italic px-2">Nenhum projeto encontrado.</p>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</div>

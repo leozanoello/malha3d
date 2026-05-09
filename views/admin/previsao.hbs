@@ -1,0 +1,229 @@
+<div class="container-fluid py-4">
+    <div class="flex items-center justify-between mb-10">
+        <div>
+            <h1 class="text-3xl font-black text-white tracking-tight">Previsão & <span class="text-cyber-500">Analytics</span></h1>
+            <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mt-1">Inteligência Comercial Archviz</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="glass-card px-4 py-2 border-white/5 flex items-center gap-3">
+                <span class="material-symbols-outlined text-cyber-500">calendar_today</span>
+                <span class="text-[10px] font-black text-white uppercase tracking-widest">{{formatDate now 'long'}}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="glass-card p-6 border-white/10 relative overflow-hidden group">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-all"></div>
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center border border-green-500/20">
+                    <span class="material-symbols-outlined text-green-500">payments</span>
+                </div>
+                <div>
+                    <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Faturamento (Mês)</h4>
+                    <p class="text-2xl font-black text-white">{{formatCurrency stats.billingWon}}</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold text-green-500 bg-green-500/10 px-2 py-0.5 rounded-full">+12% vs mês ant.</span>
+            </div>
+        </div>
+
+        <div class="glass-card p-6 border-white/10 relative overflow-hidden group">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-cyber-500/10 rounded-full blur-2xl group-hover:bg-cyber-500/20 transition-all"></div>
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-2xl bg-cyber-500/10 flex items-center justify-center border border-cyber-500/20">
+                    <span class="material-symbols-outlined text-cyber-500">account_tree</span>
+                </div>
+                <div>
+                    <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Valor em Negociação</h4>
+                    <p class="text-2xl font-black text-white">{{formatCurrency stats.totalInNegotiation}}</p>
+                </div>
+            </div>
+            <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-cyber-500 h-full w-[65%] shadow-[0_0_10px_#00f2ff]"></div>
+            </div>
+        </div>
+
+        <div class="glass-card p-6 border-white/10 relative overflow-hidden group">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-all"></div>
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
+                    <span class="material-symbols-outlined text-orange-500">avg_time</span>
+                </div>
+                <div>
+                    <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Ticket Médio</h4>
+                    <p class="text-2xl font-black text-white">{{formatCurrency stats.ticketMedio}}</p>
+                </div>
+            </div>
+            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Baseado em contratos ganhos</p>
+        </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Weighted Funnel -->
+        <div class="lg:col-span-2 glass-card p-8 border-white/10">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h3 class="text-lg font-black text-white tracking-tight">Funil Ponderado <span class="text-gray-500 text-sm font-medium ml-2">(Expected Revenue)</span></h3>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Previsão de recebíveis por probabilidade de fechamento</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-cyber-500 rounded-full shadow-[0_0_8px_#00f2ff]"></div>
+                    <span class="text-[10px] font-black text-white uppercase tracking-widest">Valor Esperado</span>
+                </div>
+            </div>
+            <div class="h-[350px]">
+                <canvas id="weightedFunnelChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Win Rate -->
+        <div class="glass-card p-8 border-white/10">
+            <div class="mb-8">
+                <h3 class="text-lg font-black text-white tracking-tight">Taxa de Conversão <span class="text-gray-500 text-sm font-medium ml-2">(Win Rate)</span></h3>
+                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Ganhos vs Perdidos (Mês Atual)</p>
+            </div>
+            <div class="h-[280px] flex items-center justify-center">
+                <canvas id="winRateChart"></canvas>
+            </div>
+            <div class="mt-8 grid grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 text-center">
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Taxa Final</p>
+                    <p class="text-xl font-black text-green-500" id="winRateValue">0%</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 text-center">
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Status</p>
+                    <p class="text-xl font-black text-cyber-500">Estável</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2 -->
+    <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
+        <!-- Loss Reasons -->
+        <div class="glass-card p-8 border-white/10">
+            <div class="mb-8">
+                <h3 class="text-lg font-black text-white tracking-tight">Motivos de Perda <span class="text-gray-500 text-sm font-medium ml-2">(Churn Analysis)</span></h3>
+                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Por que os orçamentos não foram fechados?</p>
+            </div>
+            <div class="h-[300px]">
+                <canvas id="lossReasonsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chartsData = {{{json charts}}};
+    
+    // Configurações Globais
+    Chart.defaults.color = 'rgba(255, 255, 255, 0.5)';
+    Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+    Chart.defaults.font.weight = '600';
+
+    // 1. Weighted Funnel Chart
+    new Chart(document.getElementById('weightedFunnelChart'), {
+        type: 'bar',
+        data: {
+            labels: chartsData.funnel.labels,
+            datasets: [{
+                label: 'Receita Prevista (R$)',
+                data: chartsData.funnel.data,
+                backgroundColor: 'rgba(0, 242, 255, 0.1)',
+                borderColor: '#00f2ff',
+                borderWidth: 2,
+                borderRadius: 12,
+                hoverBackgroundColor: 'rgba(0, 242, 255, 0.2)',
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
+                    ticks: {
+                        callback: function(value) {
+                            return 'R$ ' + value.toLocaleString('pt-BR');
+                        }
+                    }
+                },
+                x: {
+                    grid: { display: false, drawBorder: false }
+                }
+            }
+        }
+    });
+
+    // 2. Win Rate Chart
+    const winRateChart = new Chart(document.getElementById('winRateChart'), {
+        type: 'doughnut',
+        data: {
+            labels: chartsData.winRate.labels,
+            datasets: [{
+                data: chartsData.winRate.data,
+                backgroundColor: ['#10b981', '#ef4444'],
+                borderWidth: 0,
+                hoverOffset: 20
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '80%',
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { padding: 20, usePointStyle: true }
+                }
+            }
+        }
+    });
+
+    // Calcular taxa de win rate
+    const total = chartsData.winRate.data[0] + chartsData.winRate.data[1];
+    const rate = total > 0 ? Math.round((chartsData.winRate.data[0] / total) * 100) : 0;
+    document.getElementById('winRateValue').innerText = rate + '%';
+
+    // 3. Loss Reasons Chart
+    new Chart(document.getElementById('lossReasonsChart'), {
+        type: 'bar',
+        data: {
+            labels: chartsData.lossReasons.labels,
+            datasets: [{
+                label: 'Ocorrências',
+                data: chartsData.lossReasons.data,
+                backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                borderColor: '#f97316',
+                borderWidth: 2,
+                borderRadius: 8,
+                indexAxis: 'y',
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
+                    beginAtZero: true
+                },
+                y: {
+                    grid: { display: false, drawBorder: false }
+                }
+            }
+        }
+    });
+});
+</script>

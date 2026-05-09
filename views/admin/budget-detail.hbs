@@ -243,7 +243,7 @@
                 <button type="button" class="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3" onclick="scheduleFollowUp()">
                     <span class="material-symbols-outlined text-lg text-purple-400">calendar_month</span> Agendar Follow-up
                 </button>
-                <button type="button" class="w-full bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20 text-orange-500 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3" onclick="createProject()">
+                <button type="button" class="w-full bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20 text-orange-500 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3" data-bs-toggle="modal" data-bs-target="#newProjectModal">
                     <span class="material-symbols-outlined text-lg">rocket_launch</span> Criar Projeto
                 </button>
             </div>
@@ -760,11 +760,102 @@ async function addFollowUpNote(title, reminderDate) {
 }
 
 // Create project
-function createProject() {
-    if (confirm('Deseja criar um projeto baseado neste orçamento?')) {
-        window.location.href = `/admin/projetos/criar?budgetId={{budget.id}}`;
+// Create Project handled by modal now
+</script>
+
+<!-- Modal: Novo Projeto (Compacto / Liquid Glass) -->
+<div class="modal fade" id="newProjectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] bg-[#0a0c10]/95 backdrop-blur-3xl overflow-hidden">
+            <div class="modal-header border-white/5 p-4">
+                <h2 class="text-sm font-black text-white tracking-tight flex items-center gap-2">
+                    <span class="material-symbols-outlined text-orange-500 text-base">rocket_launch</span>
+                    Criar Projeto
+                </h2>
+                <button type="button" class="btn-close btn-close-white scale-75 opacity-30" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="newProjectForm">
+                <input type="hidden" name="budgetId" value="{{budget.id}}">
+                <div class="modal-body p-5 space-y-4">
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Título do Projeto</label>
+                        <input type="text" name="title" value="{{budget.title}}" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Categoria</label>
+                            <select name="category" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+                                <option value="render" class="bg-[#0f0f0f]">Render</option>
+                                <option value="3d" class="bg-[#0f0f0f]">3D</option>
+                                <option value="animation" class="bg-[#0f0f0f]">Animação</option>
+                                <option value="product" class="bg-[#0f0f0f]">Produto</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Ano</label>
+                            <input type="number" name="year" value="2026" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Cliente</label>
+                        <input type="text" name="client" value="{{budget.clientName}}" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Descrição Curta</label>
+                        <textarea name="description" rows="2" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all resize-none">{{budget.description}}</textarea>
+                    </div>
+
+                    <div class="flex items-center gap-4 pt-2">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="checkbox" name="isActive" checked class="w-3.5 h-3.5 rounded bg-white/5 border-white/20 text-orange-500 focus:ring-orange-500/30">
+                            <span class="text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors">Ativar</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="checkbox" name="isFeatured" class="w-3.5 h-3.5 rounded bg-white/5 border-white/20 text-orange-500 focus:ring-orange-500/30">
+                            <span class="text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors">Destaque</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-5 bg-black/20 border-t border-white/5 flex gap-3">
+                    <button type="button" class="flex-1 px-4 py-3 text-[9px] font-black text-gray-500 uppercase tracking-widest hover:text-white transition-all" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="flex-2 bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-6 rounded-xl shadow-lg shadow-orange-500/20 transition-all text-[9px] uppercase tracking-widest">
+                        Lançar Projeto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('newProjectForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    data.isActive = formData.has('isActive');
+    data.isFeatured = formData.has('isFeatured');
+    
+    try {
+        const response = await fetch('/admin/api/projects', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        if (result.success) {
+            window.location.href = '/admin/projetos/kanban';
+        } else {
+            alert('Erro: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error creating project:', error);
+        alert('Erro ao criar projeto');
     }
-}
+});
 </script>
  = `/admin/projetos/criar?budgetId={{budget.id}}`;
     }

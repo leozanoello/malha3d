@@ -58,12 +58,24 @@ const FinanceTransaction = sequelize.define('FinanceTransaction', {
     allowNull: true,
     defaultValue: 'unica'
   },
+  budgetId: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
   projectId: {
-    type: DataTypes.STRING,
+    type: DataTypes.UUID,
     allowNull: true
   },
   notes: {
     type: DataTypes.TEXT,
+    allowNull: true
+  },
+  accountPlan: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  costCenter: {
+    type: DataTypes.STRING,
     allowNull: true
   },
   attachment: {

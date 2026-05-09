@@ -11,20 +11,46 @@ const FinanceTransaction = require('./FinanceTransaction');
 const Revision = require('./Revision');
 const Delivery = require('./Delivery');
 const CalendarEvent = require('./CalendarEvent');
+const KanbanColumn = require('./KanbanColumn');
+const CRMTask = require('./CRMTask');
+const TimeLog = require('./TimeLog');
+const Freelancer = require('./Freelancer');
+const PortfolioItem = require('./PortfolioItem');
+const ProjectTemplate = require('./ProjectTemplate');
+const Instance = require('./Instance');
+const SubscriptionPlan = require('./SubscriptionPlan');
+const SystemLog = require('./SystemLog');
+const Webhook = require('./Webhook');
+const NotificationTemplate = require('./NotificationTemplate');
+const BudgetContact = require('./BudgetContact');
 
 // Relacionamentos Budget e Client
-Client.hasMany(Budget, { as: 'budgets', foreignKey: 'clientId' });
+Client.hasMany(Budget, { as: 'budgets', foreignKey: 'clientId', onDelete: 'SET NULL' });
 Budget.belongsTo(Client, { as: 'client', foreignKey: 'clientId' });
 
-// Relacionamentos Budget e CRMNote
-Budget.hasMany(CRMNote, { as: 'crmNotes', foreignKey: 'budgetId' });
+// Relacionamentos para múltiplos contatos (M:N)
+Budget.belongsToMany(Client, { through: BudgetContact, as: 'contacts', foreignKey: 'budgetId' });
+Client.belongsToMany(Budget, { through: BudgetContact, as: 'crmBudgets', foreignKey: 'clientId' });
+Budget.hasMany(BudgetContact, { as: 'budgetContactLinks', foreignKey: 'budgetId' });
+
+Budget.hasMany(CRMNote, { as: 'crmNotes', foreignKey: 'budgetId', onDelete: 'CASCADE' });
 CRMNote.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
 
+// Relacionamento Project e Budget
+Budget.hasOne(Project, { as: 'project', foreignKey: 'budgetId' });
+Project.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
+Project.belongsTo(Client, { as: 'customer', foreignKey: 'clientId' });
+Client.hasMany(Project, { as: 'projects', foreignKey: 'clientId' });
+
+// Relacionamentos Budget e CRMTask
+Budget.hasMany(CRMTask, { as: 'crmTasks', foreignKey: 'budgetId', onDelete: 'CASCADE' });
+CRMTask.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
+
 // Relacionamentos Project
-Project.hasMany(Revision, { as: 'revisions', foreignKey: 'projectId' });
+Project.hasMany(Revision, { as: 'revisions', foreignKey: 'projectId', onDelete: 'CASCADE' });
 Revision.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
 
-Project.hasMany(Delivery, { as: 'deliveries', foreignKey: 'projectId' });
+Project.hasMany(Delivery, { as: 'deliveries', foreignKey: 'projectId', onDelete: 'CASCADE' });
 Delivery.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
 
 // Relacionamentos Calendar
@@ -34,8 +60,24 @@ Client.hasMany(CalendarEvent, { as: 'calendarEvents', foreignKey: 'contactId' })
 CalendarEvent.belongsTo(Client, { as: 'client', foreignKey: 'contactId' });
 
 // Relacionamentos Finance
-Budget.hasMany(FinanceTransaction, { as: 'transactions', foreignKey: 'budgetId' });
+Budget.hasMany(FinanceTransaction, { as: 'budgetTransactions', foreignKey: 'budgetId', onDelete: 'SET NULL' });
 FinanceTransaction.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
+Project.hasMany(FinanceTransaction, { as: 'transactions', foreignKey: 'projectId', onDelete: 'SET NULL' });
+FinanceTransaction.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
+
+// Relacionamentos Time Tracking
+Project.hasMany(TimeLog, { as: 'timeLogs', foreignKey: 'projectId', onDelete: 'CASCADE' });
+TimeLog.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
+User.hasMany(TimeLog, { as: 'timeLogs', foreignKey: 'userId', onDelete: 'CASCADE' });
+TimeLog.belongsTo(User, { as: 'user', foreignKey: 'userId' });
+
+// Relacionamentos Freelancers
+Freelancer.hasMany(TimeLog, { as: 'timeLogs', foreignKey: 'freelancerId' });
+TimeLog.belongsTo(Freelancer, { as: 'freelancer', foreignKey: 'freelancerId' });
+
+// Relacionamentos Portfolio
+Project.hasOne(PortfolioItem, { as: 'portfolio', foreignKey: 'projectId' });
+PortfolioItem.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
 
 module.exports = {
   sequelize,
@@ -51,5 +93,17 @@ module.exports = {
   FinanceTransaction,
   Revision,
   Delivery,
-  CalendarEvent
+  CalendarEvent,
+  KanbanColumn,
+  CRMTask,
+  TimeLog,
+  Freelancer,
+  PortfolioItem,
+  ProjectTemplate,
+  Instance,
+  SubscriptionPlan,
+  SystemLog,
+  Webhook,
+  NotificationTemplate,
+  BudgetContact
 };

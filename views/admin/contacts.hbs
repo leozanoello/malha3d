@@ -16,7 +16,7 @@
                 </span>
                 <input type="text" placeholder="Buscar no ecossistema..." class="bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-6 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all w-64">
             </div>
-            <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center gap-3" data-bs-toggle="modal" data-bs-target="#newContactModal">
+            <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center gap-3" data-bs-toggle="modal" data-bs-target="#newRegistryModal">
                 <span class="material-symbols-outlined">person_add</span>
                 Novo Contato
             </button>
@@ -46,7 +46,7 @@
         <div class="flex items-start justify-between mb-6 relative z-10">
             <div class="flex items-center gap-4">
                 <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center text-orange-500 font-black text-xl border border-orange-500/20 group-hover:scale-110 transition-transform">
-                    {{#firstLetter this.name}}{{/firstLetter}}
+                    {{firstLetter this.name}}
                 </div>
                 <div>
                     <h3 class="text-base font-black text-white leading-tight mb-1">{{this.name}}</h3>
@@ -73,9 +73,14 @@
                 <span class="material-symbols-outlined text-sm opacity-50">mail</span>
                 <span class="text-xs font-medium truncate">{{this.email}}</span>
             </div>
-            <div class="flex items-center gap-3 text-gray-400">
-                <span class="material-symbols-outlined text-sm opacity-50">call</span>
-                <span class="text-xs font-medium">{{formatPhone this.phone}}</span>
+            <div class="flex items-center justify-between gap-3 text-gray-400">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-sm opacity-50">call</span>
+                    <span class="text-xs font-medium">{{formatPhone this.phone}}</span>
+                </div>
+                <a href="{{formatWhatsappLink this.phone this.name 'lead'}}" target="_blank" class="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 transition-all flex items-center justify-center">
+                    <i class="fab fa-whatsapp text-xs"></i>
+                </a>
             </div>
             <div class="flex items-center gap-3 text-gray-400">
                 <span class="material-symbols-outlined text-sm opacity-50">lan</span>
@@ -100,99 +105,9 @@
         </div>
         <h3 class="text-xl font-black text-white mb-2">Nenhum contato encontrado</h3>
         <p class="text-gray-500 font-medium mb-8">Comece adicionando seu primeiro lead ou cliente ao ecossistema.</p>
-        <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-8 rounded-2xl shadow-xl shadow-orange-500/20 transition-all" data-bs-toggle="modal" data-bs-target="#newContactModal">
+        <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-8 rounded-2xl shadow-xl shadow-orange-500/20 transition-all" data-bs-toggle="modal" data-bs-target="#newRegistryModal">
             Adicionar Contato
         </button>
     </div>
     {{/each}}
 </div>
-
-<!-- New Contact Modal -->
-<div class="modal fade" id="newContactModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card border-white/10 bg-[#0f0f0f]/95 backdrop-blur-2xl">
-            <div class="modal-header border-white/5 p-8">
-                <h5 class="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                    <span class="material-symbols-outlined text-orange-500">add_reaction</span>
-                    Novo Contato no Ecossistema
-                </h5>
-                <button type="button" class="btn-close btn-close-white opacity-50 hover:opacity-100 transition-opacity" data-bs-dismiss="modal"></button>
-            </div>
-            <form id="newContactForm">
-                <div class="modal-body p-8 space-y-6">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Nome / Razão Social</label>
-                        <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">E-mail</label>
-                            <input type="email" name="email" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Telefone</label>
-                            <input type="text" name="phone" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Tipo</label>
-                            <select name="type" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
-                                <option value="PF" class="bg-[#0f0f0f]">Pessoa Física (PF)</option>
-                                <option value="PJ" class="bg-[#0f0f0f]">Pessoa Jurídica (PJ)</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Categoria</label>
-                            <select name="category" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
-                                <option value="Cliente" class="bg-[#0f0f0f]">Cliente</option>
-                                <option value="Lead" class="bg-[#0f0f0f]">Lead</option>
-                                <option value="Parceiro" class="bg-[#0f0f0f]">Parceiro</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Empresa / Cargo</label>
-                        <input type="text" name="company" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all" placeholder="Ex: Studio Alpha - Arquiteto">
-                    </div>
-                </div>
-                <div class="modal-footer border-white/5 p-8">
-                    <button type="button" class="px-6 py-3 text-xs font-black text-gray-500 uppercase tracking-widest hover:text-white transition-all" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-8 rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">person_add</span>
-                        Cadastrar
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-document.getElementById('newContactForm')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
-    
-    try {
-        const response = await fetch('/admin/api/contatos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        
-        const result = await response.json();
-        if (result.success) {
-            window.location.reload();
-        } else {
-            alert('Erro: ' + result.message);
-        }
-    } catch (error) {
-        console.error('Error creating contact:', error);
-        alert('Erro ao processar solicitação');
-    }
-});
-</script>

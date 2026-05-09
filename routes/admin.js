@@ -1,5 +1,11 @@
 const express = require('express');
-const { Budget, CRMNote, Project, Testimonial, User, Setting, Client, FinanceTransaction, Revision, Delivery, CalendarEvent } = require('../models');
+const { 
+  Budget, CRMNote, CRMTask, Project, Testimonial, User, Setting, 
+  Client, FinanceTransaction, Revision, Delivery, CalendarEvent, 
+  KanbanColumn, TimeLog, Freelancer, PortfolioItem, ProjectTemplate,
+  Instance, SubscriptionPlan, SystemLog, Webhook, NotificationTemplate,
+  sequelize 
+} = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
@@ -7,8 +13,12 @@ const path = require('path');
 const fs = require('fs').promises;
 
 const router = express.Router();
+const emailService = require('../services/emailService');
 
-// Middleware de autenticação
+// ==========================================
+// MIDDLEWARES
+// ==========================================
+
 const requireAuth = async (req, res, next) => {
   if (!req.session.userId) {
     return res.redirect('/admin/login');
@@ -28,37 +38,28 @@ const requireAuth = async (req, res, next) => {
   }
 };
 
-// Configuração do multer para uploads
-const storage = multer.diskStorage({
-  destination: async (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '../public/uploads');
-    try {
-      await fs.mkdir(uploadDir, { recursive: true });
-      cb(null, uploadDir);
-    } catch (error) {
-      cb(error, uploadDir);
+const checkPermission = (module) => {
+  return (req, res, next) => {
+    if (req.user && req.user.role === 'admin') {
+      return next();
     }
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-    const ext = path.extname(file.originalname);
-    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-  }
-});
-
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Apenas arquivos de imagem são permitidos'), false);
+    if (req.user && req.user.permissions && req.user.permissions[module]) {
+      return next();
     }
-  }
-});
 
-// Login
+    res.status(403).render('admin/error', {
+      layout: 'admin',
+      title: 'Acesso Negado',
+      message: 'Você não tem permissão para acessar este módulo.',
+      user: req.user
+    });
+  };
+};
+
+// ==========================================
+// AUTHENTICATION
+// ==========================================
+
 router.get('/login', (req, res) => {
   if (req.session.userId) {
     return res.redirect('/admin');
@@ -71,1252 +72,939 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
-
   try {
-    const user = await User.findOne({ where: { email, role: 'admin' } });
-
+    const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.render('admin/login', {
-        layout: 'login',
-        title: 'Login - Admin',
-        error: 'Credenciais inválidas'
-      });
+      return res.render('admin/login', { layout: 'login', title: 'Login - Admin', error: 'Credenciais inválidas' });
     }
-
     const isValidPassword = await bcrypt.compare(password, user.password);
-
     if (!isValidPassword) {
-      return res.render('admin/login', {
-        layout: 'login',
-        title: 'Login - Admin',
-        error: 'Credenciais inválidas'
-      });
+      return res.render('admin/login', { layout: 'login', title: 'Login - Admin', error: 'Credenciais inválidas' });
     }
-
     req.session.userId = user.id;
-    req.session.user = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      avatar: user.avatar
-    };
+    req.session.user = user.toJSON();
     res.redirect('/admin');
-
   } catch (error) {
     console.error('Login error:', error);
-    res.render('admin/login', {
-      layout: 'login',
-      title: 'Login - Admin',
-      error: 'Erro ao fazer login'
-    });
+    res.render('admin/login', { layout: 'login', title: 'Login - Admin', error: 'Erro ao fazer login' });
   }
 });
 
-// Logout
-router.post('/logout', (req, res) => {
+router.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/admin/login');
 });
 
-// Dashboard
+// ==========================================
+// DASHBOARD PRINCIPAL
+// ==========================================
+
 router.get('/', requireAuth, async (req, res) => {
   try {
-    // Calcular métricas reais
-    const [
-      totalBudgets,
-      newBudgets,
-      closedBudgets,
-      activeProjectsCount,
-      totalRevenueData
-    ] = await Promise.all([
-      Budget.count(),
-      Budget.count({ where: { status: 'novo' } }),
-      Budget.count({ where: { status: 'fechado' } }),
-      Project.count({ where: { isActive: true } }),
-      Budget.sum('estimatedValue', { where: { status: { [Op.not]: 'perdido' } } })
-    ]);
+    const budgetCount = await Budget.count();
+    const projectCount = await Project.count();
+    const clientCount = await Client.count();
+    
+    // Financial Health Assessment
+    const transactions = await FinanceTransaction.findAll();
+    const overdueExpenses = transactions.filter(t => t.type === 'despesa' && t.status === 'pendente' && new Date(t.dueDate) < new Date());
+    const totalOverdue = overdueExpenses.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+    
+    const recentTransactions = await FinanceTransaction.findAll({ limit: 5, order: [['createdAt', 'DESC']] });
 
-    const conversionRate = totalBudgets > 0 ? Math.round((closedBudgets / totalBudgets) * 100) : 0;
-    const performance = {
-      activeProjects: activeProjectsCount,
-      estimatedRevenue: totalRevenueData || 0,
-      conversionRate: conversionRate
-    };
-
-    const recentBudgets = await Budget.findAll({
-      order: [['createdAt', 'DESC']],
-      limit: 10,
-      include: [{
-        model: CRMNote,
-        as: 'crmNotes',
-        attributes: ['id', 'type', 'title', 'createdAt'],
-        limit: 3,
-        order: [['createdAt', 'DESC']]
-      }]
-    });
+    const newBudgetsCount = await Budget.count({ where: { status: 'novo' } });
+    const activeProjectsCount = await Project.count({ where: { status: 'producao' } }); // Ajustado para o status correto
+    
+    // Performance metrics
+    const totalWonValue = await Budget.sum('estimatedValue', { where: { winStatus: 'ganho' } }) || 0;
+    const totalWonCount = await Budget.count({ where: { winStatus: 'ganho' } });
+    const totalLostCount = await Budget.count({ where: { winStatus: 'perdido' } });
+    const conversionRate = (totalWonCount + totalLostCount) > 0 
+      ? Math.round((totalWonCount / (totalWonCount + totalLostCount)) * 100) 
+      : 0;
 
     res.render('admin/dashboard', {
       layout: 'admin',
-      title: 'Dashboard Malha3D',
+      title: 'Painel de Controle',
       currentPage: 'dashboard',
       user: req.user,
-      performance,
-      stats: {
-        totalBudgets,
-        newBudgets,
-        closedBudgets,
-        activeProjects: activeProjectsCount
+      stats: { 
+        budgets: budgetCount, 
+        newBudgets: newBudgetsCount,
+        totalBudgets: budgetCount,
+        projects: projectCount, 
+        activeProjects: activeProjectsCount,
+        clients: clientCount,
+        financialRisk: totalOverdue > 5000 ? 'high' : (totalOverdue > 0 ? 'medium' : 'low'),
+        totalOverdue
       },
-      recentBudgets
+      performance: {
+        estimatedRevenue: totalWonValue,
+        conversionRate: conversionRate
+      },
+      recentTransactions: recentTransactions.map(t => t.get({ plain: true }))
     });
   } catch (error) {
     console.error('Dashboard error:', error);
-    res.render('admin/dashboard', {
-      layout: 'admin',
-      title: 'Dashboard Malha3D',
-      user: req.user,
-      stats: { totalBudgets: 0, pendingBudgets: 0, approvedBudgets: 0, rejectedBudgets: 0, totalProjects: 0, totalTestimonials: 0, totalNotes: 0 },
-      recentBudgets: [],
-      recentProjects: []
-    });
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar dashboard' });
   }
 });
 
-// Budgets Management
-router.get('/orcamentos', requireAuth, async (req, res) => {
+// ==========================================
+// CRM & VENDAS (PIPELINES)
+// ==========================================
+
+router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res) => {
   try {
-    const { page = 1, limit = 20, status, search } = req.query;
-    const offset = (page - 1) * limit;
-
-    const where = {};
-    if (status) {where.status = status;}
-    if (search) {
-      where[Op.or] = [
-        { name: { [Op.iLike]: `%${search}%` } },
-        { email: { [Op.iLike]: `%${search}%` } },
-        { phone: { [Op.iLike]: `%${search}%` } }
-      ];
-    }
-
-    const { count, rows: budgets } = await Budget.findAndCountAll({
-      where,
-      order: [['createdAt', 'DESC']],
-      limit: parseInt(limit),
-      offset: parseInt(offset),
-      include: [{
-        model: CRMNote,
-        as: 'crmNotes',
-        attributes: ['id', 'type', 'title', 'createdAt'],
-        limit: 3,
-        order: [['createdAt', 'DESC']]
-      }]
+    const columns = (await KanbanColumn.findAll({ where: { type: 'vendas' }, order: [['order', 'ASC']] })).map(c => c.get({ plain: true }));
+    const dealsRaw = await Budget.findAll({ 
+      where: { winStatus: 'aberto' },
+      order: [['order', 'ASC'], ['createdAt', 'DESC']] 
     });
+    const deals = dealsRaw.map(d => {
+      const data = d.get({ plain: true });
+      // Fallback para campos novos (Graceful Degradation)
+      data.visualStyle = data.visualStyle || "";
+      data.inputFormats = data.inputFormats || [];
+      data.imagesCount = data.imagesCount || 0;
+      data.animationSeconds = data.animationSeconds || 0;
+      data.panoramasCount = data.panoramasCount || 0;
+      data.winStatus = data.winStatus || "aberto";
+      return data;
+    });
+    
+    const kanban = {};
+    const pipelineTotals = {};
+    columns.forEach(col => {
+      const colDeals = deals.filter(d => d.status === col.statusKey);
+      kanban[col.statusKey] = colDeals;
+      pipelineTotals[col.statusKey] = colDeals.reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0);
+    });
+    const totalNegotiationValue = deals.reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0);
 
-    const totalPages = Math.ceil(count / limit);
+    // === Analytics Logic (Merged from /previsao) ===
+    const stats = {
+      billingWon: deals.filter(d => d.winStatus === 'ganho').reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0),
+      totalInNegotiation: deals.filter(d => d.winStatus === 'aberto').reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0),
+      ticketMedio: 0,
+      conversionRate: 0
+    };
 
-    res.render('admin/budgets', {
-      layout: 'admin',
-      title: 'Orçamentos - Admin',
-      currentPage: 'budgets',
-      user: req.user,
-      budgets,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        totalPages,
-        totalItems: count,
-        hasNext: page < totalPages,
-        hasPrev: page > 1
+    const wonDeals = deals.filter(d => d.winStatus === 'ganho');
+    stats.ticketMedio = wonDeals.length > 0 ? stats.billingWon / wonDeals.length : 0;
+
+    const lostDealsCount = deals.filter(d => d.winStatus === 'perdido').length;
+    stats.conversionRate = (wonDeals.length + lostDealsCount) > 0 
+      ? (wonDeals.length / (wonDeals.length + lostDealsCount)) * 100 
+      : 0;
+
+    const charts = {
+      funnel: {
+        labels: columns.map(c => c.title),
+        data: columns.map(c => {
+          const colDeals = deals.filter(d => d.status === c.statusKey);
+          return colDeals.reduce((sum, d) => sum + ((parseFloat(d.estimatedValue) || 0) * ((parseFloat(d.probability) || 0) / 100)), 0);
+        })
       },
-      filters: { status, search }
-    });
-
-  } catch (error) {
-    console.error('Budgets list error:', error);
-    res.render('admin/budgets', {
-      layout: 'admin',
-      title: 'Orçamentos - Admin',
-      user: req.user,
-      budgets: [],
-      pagination: { page: 1, limit: 20, totalPages: 1, totalItems: 0, hasNext: false, hasPrev: false },
-      filters: {}
-    });
-  }
-});
-
-// Budget Detail
-router.get('/orcamentos/:id', requireAuth, async (req, res) => {
-  try {
-    const budget = await Budget.findByPk(req.params.id, {
-      include: [{
-        model: CRMNote,
-        as: 'crmNotes',
-        include: [{
-          model: User,
-          attributes: ['name']
-        }],
-        order: [['createdAt', 'DESC']]
-      }]
-    });
-
-    if (!budget) {
-      return res.status(404).render('admin/error', {
-        layout: 'admin',
-        title: 'Orçamento não encontrado',
-        user: req.user,
-        message: 'Orçamento não encontrado'
-      });
-    }
-
-    res.render('admin/budget-detail', {
-      layout: 'admin',
-      title: `Orçamento #${budget.id} - Admin`,
-      currentPage: 'budgets',
-      user: req.user,
-      budget
-    });
-  } catch (error) {
-    console.error('Budget detail error:', error);
-    res.status(500).render('admin/error', {
-      layout: 'admin',
-      title: 'Erro',
-      user: req.user,
-      message: 'Erro ao carregar detalhes do orçamento'
-    });
-  }
-});
-
-// Preview proposal (Image 1 style)
-router.get('/orcamentos/:id/preview', requireAuth, async (req, res) => {
-  try {
-    const budget = await Budget.findByPk(req.params.id, {
-      include: [{ model: Client, as: 'client' }]
-    });
-    if (!budget) {
-      return res.status(404).render('admin/error', { layout: 'admin', message: 'Orçamento não encontrado' });
-    }
-    res.render('admin/budget-preview', {
-      layout: 'admin',
-      title: `Preview: ${budget.name}`,
-      currentPage: 'budgets',
-      user: req.user,
-      budget
-    });
-  } catch (error) {
-    console.error('Budget Preview Error:', error);
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar preview' });
-  }
-});
-
-// Update Budget Status
-router.post('/orcamentos/:id/status', requireAuth, async (req, res) => {
-  try {
-    const { status, notes } = req.body;
-    const budget = await Budget.findByPk(req.params.id);
-
-    if (!budget) {
-      return res.status(404).json({ success: false, message: 'Orçamento não encontrado' });
-    }
-
-    await budget.update({ status });
-
-    // Add CRM note
-    if (notes) {
-      await CRMNote.create({
-        budgetId: budget.id,
-        type: 'status_change',
-        title: `Status alterado para: ${status}`,
-        content: notes,
-        createdBy: req.user.id
-      });
-    }
-
-    res.json({ success: true, message: 'Status atualizado com sucesso' });
-
-  } catch (error) {
-    console.error('Update budget status error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao atualizar status' });
-  }
-});
-
-// Add CRM Note
-router.post('/orcamentos/:id/notas', requireAuth, async (req, res) => {
-  try {
-    const { type, title, content, reminderDate, tags } = req.body;
-
-    await CRMNote.create({
-      budgetId: req.params.id,
-      type,
-      title,
-      content,
-      reminderDate: reminderDate || null,
-      tags: tags ? JSON.parse(tags) : [],
-      createdBy: req.user.id
-    });
-
-    res.json({ success: true, message: 'Nota adicionada com sucesso' });
-
-  } catch (error) {
-    console.error('Add CRM note error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao adicionar nota' });
-  }
-});
-
-// Projects Management
-router.get('/projetos', requireAuth, async (req, res) => {
-  try {
-    const { page = 1, limit = 20, category, featured } = req.query;
-    const offset = (page - 1) * limit;
-
-    const where = {};
-    if (category) {where.category = category;}
-    if (featured !== undefined) {where.isFeatured = featured === 'true';}
-
-    const { count, rows: projects } = await Project.findAndCountAll({
-      where,
-      order: [['order', 'ASC'], ['createdAt', 'DESC']],
-      limit: parseInt(limit),
-      offset: parseInt(offset)
-    });
-
-    const totalPages = Math.ceil(count / limit);
-
-    res.render('admin/projects', {
-      layout: 'admin',
-      title: 'Projetos Malha3D',
-      currentPage: 'projects',
-      user: req.user,
-      projects,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        totalPages,
-        totalItems: count,
-        hasNext: page < totalPages,
-        hasPrev: page > 1
+      winRate: {
+        labels: ['Ganhos', 'Perdidos'],
+        data: [wonDeals.length, lostDealsCount]
       },
-      filters: { category, featured }
-    });
-
-  } catch (error) {
-    console.error('Projects list error:', error);
-    res.render('admin/projects', {
-      layout: 'admin',
-      title: 'Projetos Malha3D',
-      user: req.user,
-      projects: [],
-      pagination: { page: 1, limit: 20, totalPages: 1, totalItems: 0, hasNext: false, hasPrev: false },
-      filters: {}
-    });
-  }
-});
-
-// Create/Edit Project
-router.get('/projetos/novo', requireAuth, (req, res) => {
-  res.render('admin/project-form', {
-    layout: 'admin',
-    title: 'Novo Projeto - Admin',
-    currentPage: 'projects',
-    user: req.user,
-    project: null
-  });
-});
-
-router.get('/projetos/:id/editar', requireAuth, async (req, res) => {
-  try {
-    const project = await Project.findByPk(req.params.id);
-
-    if (!project) {
-      return res.status(404).render('admin/error', {
-        layout: 'admin',
-        title: 'Projeto não encontrado',
-        user: req.user,
-        message: 'Projeto não encontrado'
-      });
-    }
-
-    res.render('admin/project-form', {
-      layout: 'admin',
-      title: 'Editar Projeto - Admin',
-      currentPage: 'projects',
-      user: req.user,
-      project
-    });
-
-  } catch (error) {
-    console.error('Edit project error:', error);
-    res.status(500).render('admin/error', {
-      layout: 'admin',
-      title: 'Erro',
-      user: req.user,
-      message: 'Erro ao carregar projeto'
-    });
-  }
-});
-
-router.post('/projetos', requireAuth, upload.fields([
-  { name: 'image', maxCount: 1 },
-  { name: 'thumbnail', maxCount: 1 }
-]), async (req, res) => {
-  try {
-    const { title, description, category, tags, client, year, isFeatured, isActive, order } = req.body;
-
-    const projectData = {
-      title,
-      description,
-      category,
-      tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
-      client,
-      year: parseInt(year),
-      isFeatured: isFeatured === 'true',
-      isActive: isActive === 'true',
-      order: parseInt(order) || 0
+      lossReasons: {
+        labels: [...new Set(deals.filter(d => d.lossReason).map(d => d.lossReason))],
+        data: []
+      }
     };
+    charts.lossReasons.data = charts.lossReasons.labels.map(reason => 
+      deals.filter(d => d.lossReason === reason).length
+    );
 
-    // Handle file uploads
-    if (req.files) {
-      if (req.files.image) {
-        projectData.image = `/uploads/${req.files.image[0].filename}`;
-      }
-      if (req.files.thumbnail) {
-        projectData.thumbnail = `/uploads/${req.files.thumbnail[0].filename}`;
-      }
-    }
-
-    await Project.create(projectData);
-
-    res.redirect('/admin/projetos');
-
-  } catch (error) {
-    console.error('Create project error:', error);
-    res.status(500).render('admin/error', {
-      layout: 'admin',
-      title: 'Erro',
-      user: req.user,
-      message: 'Erro ao criar projeto'
-    });
-  }
-});
-
-router.post('/projetos/:id', requireAuth, upload.fields([
-  { name: 'image', maxCount: 1 },
-  { name: 'thumbnail', maxCount: 1 }
-]), async (req, res) => {
-  try {
-    const { title, description, category, tags, client, year, isFeatured, isActive, order } = req.body;
-
-    const project = await Project.findByPk(req.params.id);
-    if (!project) {
-      return res.status(404).json({ success: false, message: 'Projeto não encontrado' });
-    }
-
-    const projectData = {
-      title,
-      description,
-      category,
-      tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
-      client,
-      year: parseInt(year),
-      isFeatured: isFeatured === 'true',
-      isActive: isActive === 'true',
-      order: parseInt(order) || 0
-    };
-
-    // Handle file uploads
-    if (req.files) {
-      if (req.files.image) {
-        projectData.image = `/uploads/${req.files.image[0].filename}`;
-      }
-      if (req.files.thumbnail) {
-        projectData.thumbnail = `/uploads/${req.files.thumbnail[0].filename}`;
-      }
-    }
-
-    await project.update(projectData);
-
-    res.redirect('/admin/projetos');
-
-  } catch (error) {
-    console.error('Update project error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao atualizar projeto' });
-  }
-});
-
-// Delete Project
-router.delete('/projetos/:id', requireAuth, async (req, res) => {
-  try {
-    const project = await Project.findByPk(req.params.id);
-
-    if (!project) {
-      return res.status(404).json({ success: false, message: 'Projeto não encontrado' });
-    }
-
-    await project.destroy();
-    res.json({ success: true, message: 'Projeto excluído com sucesso' });
-
-  } catch (error) {
-    console.error('Delete project error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao excluir projeto' });
-  }
-});
-
-// Testimonials Management
-router.get('/depoimentos', requireAuth, async (req, res) => {
-  try {
-    const { page = 1, limit = 20, active } = req.query;
-    const offset = (page - 1) * limit;
-
-    const where = {};
-    if (active !== undefined) {where.isActive = active === 'true';}
-
-    const { count, rows: testimonials } = await Testimonial.findAndCountAll({
-      where,
-      order: [['order', 'ASC'], ['createdAt', 'DESC']],
-      limit: parseInt(limit),
-      offset: parseInt(offset)
-    });
-
-    const totalPages = Math.ceil(count / limit);
-
-    res.render('admin/testimonials', {
-      layout: 'admin',
-      title: 'Depoimentos - Admin',
-      currentPage: 'testimonials',
-      user: req.user,
-      testimonials,
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        totalPages,
-        totalItems: count,
-        hasNext: page < totalPages,
-        hasPrev: page > 1
-      },
-      filters: { active }
-    });
-
-  } catch (error) {
-    console.error('Testimonials list error:', error);
-    res.render('admin/testimonials', {
-      layout: 'admin',
-      title: 'Depoimentos - Admin',
-      user: req.user,
-      testimonials: [],
-      pagination: { page: 1, limit: 20, totalPages: 1, totalItems: 0, hasNext: false, hasPrev: false },
-      filters: {}
-    });
-  }
-});
-
-// Create/Edit Testimonial
-router.get('/depoimentos/novo', requireAuth, (req, res) => {
-  res.render('admin/testimonial-form', {
-    layout: 'admin',
-    title: 'Novo Depoimento - Admin',
-    user: req.user,
-    testimonial: null
-  });
-});
-
-router.get('/depoimentos/:id/editar', requireAuth, async (req, res) => {
-  try {
-    const testimonial = await Testimonial.findByPk(req.params.id);
-
-    if (!testimonial) {
-      return res.status(404).render('admin/error', {
-        layout: 'admin',
-        title: 'Depoimento não encontrado',
-        user: req.user,
-        message: 'Depoimento não encontrado'
-      });
-    }
-
-    res.render('admin/testimonial-form', {
-      layout: 'admin',
-      title: 'Editar Depoimento - Admin',
-      user: req.user,
-      testimonial
-    });
-
-  } catch (error) {
-    console.error('Edit testimonial error:', error);
-    res.status(500).render('admin/error', {
-      layout: 'admin',
-      title: 'Erro',
-      user: req.user,
-      message: 'Erro ao carregar depoimento'
-    });
-  }
-});
-
-router.post('/depoimentos', requireAuth, upload.single('avatar'), async (req, res) => {
-  try {
-    const { name, company, role, content, rating, isActive, order } = req.body;
-
-    const testimonialData = {
-      name,
-      company,
-      role,
-      content,
-      rating: parseInt(rating),
-      isActive: isActive === 'true',
-      order: parseInt(order) || 0
-    };
-
-    if (req.file) {
-      testimonialData.avatar = `/uploads/${req.file.filename}`;
-    }
-
-    await Testimonial.create(testimonialData);
-
-    res.redirect('/admin/depoimentos');
-
-  } catch (error) {
-    console.error('Create testimonial error:', error);
-    res.status(500).render('admin/error', {
-      layout: 'admin',
-      title: 'Erro',
-      user: req.user,
-      message: 'Erro ao criar depoimento'
-    });
-  }
-});
-
-router.post('/depoimentos/:id', requireAuth, upload.single('avatar'), async (req, res) => {
-  try {
-    const { name, company, role, content, rating, isActive, order } = req.body;
-
-    const testimonial = await Testimonial.findByPk(req.params.id);
-    if (!testimonial) {
-      return res.status(404).json({ success: false, message: 'Depoimento não encontrado' });
-    }
-
-    const testimonialData = {
-      name,
-      company,
-      role,
-      content,
-      rating: parseInt(rating),
-      isActive: isActive === 'true',
-      order: parseInt(order) || 0
-    };
-
-    if (req.file) {
-      testimonialData.avatar = `/uploads/${req.file.filename}`;
-    }
-
-    await testimonial.update(testimonialData);
-
-    res.redirect('/admin/depoimentos');
-
-  } catch (error) {
-    console.error('Update testimonial error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao atualizar depoimento' });
-  }
-});
-
-// Delete Testimonial
-router.delete('/depoimentos/:id', requireAuth, async (req, res) => {
-  try {
-    const testimonial = await Testimonial.findByPk(req.params.id);
-
-    if (!testimonial) {
-      return res.status(404).json({ success: false, message: 'Depoimento não encontrado' });
-    }
-
-    await testimonial.destroy();
-    res.json({ success: true, message: 'Depoimento excluído com sucesso' });
-
-  } catch (error) {
-    console.error('Delete testimonial error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao excluir depoimento' });
-  }
-});
-
-// Settings Management
-router.get('/configuracoes', requireAuth, async (req, res) => {
-  try {
-    const settings = await Setting.findAll({
-      order: [['group', 'ASC'], ['order', 'ASC']]
-    });
-
-    const groupedSettings = {};
-    settings.forEach(setting => {
-      if (!groupedSettings[setting.group]) {
-        groupedSettings[setting.group] = [];
-      }
-      groupedSettings[setting.group].push(setting);
-    });
-
-    res.render('admin/settings', {
-      layout: 'admin',
-      title: 'Configurações - Admin',
-      currentPage: 'settings',
-      user: req.user,
-      groupedSettings
-    });
-
-  } catch (error) {
-    console.error('Settings error:', error);
-    res.render('admin/settings', {
-      layout: 'admin',
-      title: 'Configurações - Admin',
-      user: req.user,
-      groupedSettings: {}
-    });
-  }
-});
-
-router.post('/configuracoes', requireAuth, async (req, res) => {
-  try {
-    const updates = Object.entries(req.body);
-
-    for (const [key, value] of updates) {
-      await Setting.update({ value }, { where: { key } });
-    }
-
-    res.json({ success: true, message: 'Configurações atualizadas com sucesso' });
-
-  } catch (error) {
-    console.error('Update settings error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao atualizar configurações' });
-  }
-});
-
-router.get('/usuarios', requireAuth, async (req, res) => {
-  try {
-    const users = await User.findAll({
-      order: [['name', 'ASC']]
-    });
-
-    res.render('admin/users', {
-      layout: 'admin',
-      title: 'Controle de Acessos Malha3D',
-      currentPage: 'users',
-      user: req.user,
-      users
-    });
-  } catch (error) {
-    console.error('Users route error:', error);
-    res.redirect('/admin');
-  }
-});
-
-// Temporary redirects for new menu items (Coming Soon)
-const comingSoon = (req, res) => {
-  res.render('admin/dashboard', {
-    layout: 'admin',
-    title: 'Dashboard Malha3D',
-    currentPage: 'dashboard',
-    user: req.user,
-    info: 'Esta funcionalidade está sendo implementada e estará disponível em breve no seu ecossistema 3DFLOW.',
-    stats: { totalBudgets: 0, pendingBudgets: 0, approvedBudgets: 0, rejectedBudgets: 0, totalProjects: 0, totalTestimonials: 0, totalNotes: 0 },
-    recentBudgets: [],
-    recentProjects: []
-  });
-};
-
-// CRM Kanban
-router.get('/crm', requireAuth, async (req, res) => {
-  try {
-    const budgets = await Budget.findAll({
-      order: [['updatedAt', 'DESC']],
-      include: [{ model: Client, as: 'client' }]
-    });
-
-    // Agrupar por status para o Kanban
-    const kanban = {
-      novo: budgets.filter(b => b.status === 'novo'),
-      em_andamento: budgets.filter(b => b.status === 'em_andamento'),
-      respondido: budgets.filter(b => b.status === 'respondido'),
-      fechado: budgets.filter(b => b.status === 'fechado'),
-      perdido: budgets.filter(b => b.status === 'perdido')
-    };
-
-    const pipelineValue = Object.values(kanban).flat().reduce((acc, b) => acc + (parseFloat(b.estimatedValue) || 0), 0);
-
-    res.render('admin/crm', {
-      layout: 'admin',
-      title: 'CRM Kanban Malha3D',
-      currentPage: 'crm',
-      user: req.user,
-      kanban,
-      stats: {
-        totalLeads: budgets.length,
-        pipelineValue: pipelineValue
-      }
+    res.render('admin/negociacoes', { 
+      layout: 'admin', 
+      title: 'CRM - Inteligência Comercial', 
+      currentPage: 'negociacoes', 
+      user: req.user, 
+      columns, 
+      kanban, 
+      pipelineTotals, 
+      totalNegotiationValue,
+      stats,
+      charts
     });
   } catch (error) {
     console.error('CRM Route Error:', error);
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar CRM' });
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro no pipeline de vendas' });
   }
 });
 
-// Contacts List
-router.get('/contatos', requireAuth, async (req, res) => {
+router.post('/negociacoes/:id/confirm-project', requireAuth, async (req, res) => {
   try {
-    const clients = await Client.findAll({
-      order: [['name', 'ASC']]
+    const { id } = req.params;
+    const budget = await Budget.findByPk(id);
+    if (!budget) return res.status(404).json({ success: false, error: 'Negociação não encontrada' });
+
+    // Clonar para Projeto com integridade total de dados
+    await Project.create({
+      title: budget.name,
+      client: budget.name || 'Cliente Direto',
+      clientId: budget.clientId, // Manter o ID do cliente se existir
+      category: budget.projectType === 'Arquitetônico' ? 'arquitetonico' : (budget.projectType === 'Renderização' ? 'outro' : 'outro'),
+      software: budget.targetSoftware || budget.software, // Garantir cópia do software
+      renderEngine: budget.renderEngine || 'D5 Render', // Respeitar o briefing se existir
+      price: budget.estimatedValue,
+      deadline: budget.deadline,
+      totalArea: budget.totalArea, // Metragem (IMPORTANTE)
+      tags: budget.tags, // Tags/Requisitos
+      description: budget.description, // Descrição/Briefing completo
+      startDate: new Date(),
+      status: 'producao',
+      budgetId: budget.id,
+      image: 'default-project.jpg' 
     });
 
-    const stats = {
-      total: clients.length,
-      pf: clients.filter(c => c.type === 'PF').length,
-      pj: clients.filter(c => c.type === 'PJ').length
-    };
-
-    res.render('admin/contacts', {
-      layout: 'admin',
-      title: 'Gestão de Contatos Malha3D',
-      currentPage: 'contacts',
-      user: req.user,
-      contacts: clients,
-      stats
+    // Atualizar Negociação
+    await budget.update({ 
+      status: 'fechado', 
+      winStatus: 'ganho',
+      closeDate: new Date()
     });
+
+    // Automação Financeira: Gerar Sinal de 50%
+    await FinanceTransaction.create({
+      type: 'receita',
+      description: `Sinal (50%) - Projeto: ${budget.name}`,
+      payer: budget.clientName || 'Cliente Direto',
+      amount: (parseFloat(budget.estimatedValue) || 0) / 2,
+      status: 'pendente',
+      category: 'projeto_render',
+      dueDate: new Date(),
+      budgetId: budget.id,
+      projectId: null // Será vinculado depois se necessário
+    });
+
+    // Automação: Comissão de Indicação (10% se houver origem externa)
+    if (budget.origin && budget.origin !== 'website' && budget.origin !== 'direto' && budget.origin !== 'Google' && budget.origin !== 'Instagram') {
+      await FinanceTransaction.create({
+        type: 'despesa',
+        description: `Comissão de Indicação - Projeto: ${budget.name} (${budget.origin})`,
+        beneficiary: budget.origin,
+        amount: (parseFloat(budget.estimatedValue) || 0) * 0.10,
+        status: 'pendente',
+        category: 'vendas',
+        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 dias para pagar
+        budgetId: budget.id
+      });
+    }
+
+    // Automação de E-mail: Boas-vindas Criativo
+    if (budget.email) {
+      emailService.sendProjectProductionStart(budget, budget.email, budget.clientName || 'Cliente').catch(err => console.error('Erro e-mail onboarding:', err));
+    }
+
+    res.json({ success: true });
   } catch (error) {
-    console.error('Contacts error:', error);
-    res.redirect('/admin');
+    console.error('Conversion Error:', error);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// Finance Dashboard
-router.get('/financeiro', requireAuth, async (req, res) => {
+router.get('/previsao', requireAuth, checkPermission('crm'), async (req, res) => {
   try {
-    const transactions = await FinanceTransaction.findAll({
-      order: [['dueDate', 'ASC']],
-      limit: 10
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    const allDeals = await Budget.findAll();
+    const deals = allDeals.map(d => {
+      const data = d.get({ plain: true });
+      data.winStatus = data.winStatus || "aberto";
+      data.estimatedValue = parseFloat(data.estimatedValue) || 0;
+      data.probability = parseFloat(data.probability) || 0;
+      return data;
     });
 
-    const [incomes, expenses] = await Promise.all([
-      FinanceTransaction.sum('amount', { where: { type: 'receita', status: 'pago' } }),
-      FinanceTransaction.sum('amount', { where: { type: 'despesa', status: 'pago' } })
-    ]);
+    // KPIs
+    const wonThisMonth = deals.filter(d => d.winStatus === 'ganho' && new Date(d.updatedAt) >= firstDayOfMonth);
+    const billingWon = wonThisMonth.reduce((sum, d) => sum + d.estimatedValue, 0);
+    const inNegotiation = deals.filter(d => d.winStatus === 'aberto');
+    const totalInNegotiation = inNegotiation.reduce((sum, d) => sum + d.estimatedValue, 0);
+    const wonTotalCount = deals.filter(d => d.winStatus === 'ganho').length;
+    const ticketMedio = wonTotalCount > 0 ? (deals.filter(d => d.winStatus === 'ganho').reduce((sum, d) => sum + d.estimatedValue, 0) / wonTotalCount) : 0;
+
+    // Chart 1: Weighted Funnel (Next 6 months)
+    const months = [];
+    const weightedRevenue = [];
+    for (let i = 0; i < 6; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const monthLabel = d.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+      months.push(monthLabel);
+      
+      const monthDeals = inNegotiation.filter(deal => {
+        const estDate = deal.expectedRevenueDate || deal.deadline;
+        if (!estDate) return false;
+        const ed = new Date(estDate);
+        return ed.getMonth() === d.getMonth() && ed.getFullYear() === d.getFullYear();
+      });
+      
+      const weighted = monthDeals.reduce((sum, deal) => {
+        return sum + deal.estimatedValue * (deal.probability / 100);
+      }, 0);
+      weightedRevenue.push(weighted);
+    }
 
     const stats = {
-      totalReceived: incomes || 0,
-      totalPaid: expenses || 0,
-      netResult: (incomes || 0) - (expenses || 0)
+      billingWon,
+      totalInNegotiation,
+      ticketMedio
     };
 
-    res.render('admin/finance', {
-      layout: 'admin',
-      title: 'Financeiro Empresarial',
-      currentPage: 'finance',
+    const chartsData = {
+      funnel: {
+        labels: months,
+        data: weightedRevenue
+      },
+      lossReasons: {
+        labels: ['Preço', 'Prazo', 'Concorrente', 'Outros'],
+        data: [
+          deals.filter(d => d.lossReason === 'Preço').length,
+          deals.filter(d => d.lossReason === 'Prazo').length,
+          deals.filter(d => d.lossReason === 'Concorrente').length,
+          deals.filter(d => d.lossReason === 'Outros').length
+        ]
+      }
+    };
+
+    res.render('admin/previsao', { 
+      layout: 'admin', 
+      title: 'Previsão Comercial', 
+      currentPage: 'previsao', 
       user: req.user,
       stats,
-      recentIncomes: transactions.filter(t => t.type === 'receita'),
-      recentExpenses: transactions.filter(t => t.type === 'despesa')
+      chartsData: JSON.stringify(chartsData)
     });
   } catch (error) {
-    console.error('Finance Route Error:', error);
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar financeiro' });
+    console.error('Forecast Route Error:', error);
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro na previsão comercial' });
   }
 });
 
-// Revisions Dashboard
-router.get('/revisoes', requireAuth, async (req, res) => {
+router.get('/propostas', requireAuth, checkPermission('proposals'), async (req, res) => {
   try {
-    const revisions = await Revision.findAll({
-      order: [['createdAt', 'DESC']]
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    const allDeals = await Budget.findAll();
+    const deals = allDeals.map(d => {
+      const data = d.get({ plain: true });
+      data.winStatus = data.winStatus || "aberto";
+      data.estimatedValue = parseFloat(data.estimatedValue) || 0;
+      data.probability = parseFloat(data.probability) || 0;
+      return data;
     });
 
-    res.render('admin/revisions', {
+    const wonThisMonth = deals.filter(d => d.winStatus === 'ganho' && new Date(d.updatedAt) >= firstDayOfMonth);
+    const billingWon = wonThisMonth.reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0);
+    const inNegotiation = deals.filter(d => d.winStatus === 'aberto');
+    const totalInNegotiation = inNegotiation.reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0);
+    const wonTotalCount = deals.filter(d => d.winStatus === 'ganho').length;
+    const ticketMedio = wonTotalCount > 0 ? (deals.filter(d => d.winStatus === 'ganho').reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0) / wonTotalCount) : 0;
+
+    // Chart 1: Weighted Funnel (Next 6 months)
+    const months = [];
+    const weightedRevenue = [];
+    for (let i = 0; i < 6; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const monthLabel = d.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+      months.push(monthLabel);
+      
+      const monthDeals = inNegotiation.filter(deal => {
+        const estDate = deal.expectedRevenueDate || deal.deadline;
+        if (!estDate) return false;
+        const ed = new Date(estDate);
+        return ed.getMonth() === d.getMonth() && ed.getFullYear() === d.getFullYear();
+      });
+      
+      const weighted = monthDeals.reduce((sum, deal) => {
+        return sum + (parseFloat(deal.estimatedValue) || 0) * (deal.probability / 100);
+      }, 0);
+      weightedRevenue.push(weighted);
+    }
+
+    // Chart 2: Win Rate (Current Month)
+    const lostThisMonth = deals.filter(d => d.winStatus === 'perdido' && new Date(d.updatedAt) >= firstDayOfMonth).length;
+    const winRateData = [wonThisMonth.length, lostThisMonth];
+
+    // Chart 3: Loss Reasons
+    const lossReasonsMap = {};
+    deals.filter(d => d.winStatus === 'perdido' && d.lossReason).forEach(d => {
+      lossReasonsMap[d.lossReason] = (lossReasonsMap[d.lossReason] || 0) + 1;
+    });
+    const lossReasonsLabels = Object.keys(lossReasonsMap);
+    const lossReasonsValues = Object.values(lossReasonsMap);
+
+    res.render('admin/previsao', {
       layout: 'admin',
-      title: 'Controle de Revisões',
-      currentPage: 'revisions',
+      title: 'Previsão & Analytics',
+      currentPage: 'previsao',
       user: req.user,
-      revisions,
-      totalImpact: 0,
-      totalVersions: revisions.length
+      stats: { billingWon, totalInNegotiation, ticketMedio },
+      charts: {
+        funnel: { labels: months, data: weightedRevenue },
+        winRate: { labels: ['Ganhou', 'Perdeu'], data: winRateData },
+        lossReasons: { labels: lossReasonsLabels, data: lossReasonsValues }
+      }
     });
   } catch (error) {
-    console.error('Revisions Route Error:', error);
+    console.error('Forecast Route Error:', error);
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar previsões' });
+  }
+});
+
+// API para colunas do Kanban
+router.post('/kanban/columns', requireAuth, async (req, res) => {
+  try {
+    const { title, color, type } = req.body;
+    const statusKey = title.toLowerCase().replace(/\s+/g, '_');
+    const order = await KanbanColumn.count({ where: { type } });
+    const column = await KanbanColumn.create({ title, color, statusKey, type, order });
+    res.json(column);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.put('/kanban/columns/:id', requireAuth, async (req, res) => {
+  try {
+    await KanbanColumn.update(req.body, { where: { id: req.params.id } });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete('/kanban/columns/:id', requireAuth, async (req, res) => {
+  try {
+    const col = await KanbanColumn.findByPk(req.params.id);
+    if (col) {
+      // Reatribuir cards para a primeira coluna disponível se necessário
+      await col.destroy();
+    }
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/negociacoes/:id/update-status', requireAuth, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const budget = await Budget.findByPk(req.params.id);
+    if (!budget) return res.status(404).json({ error: 'Negociação não encontrada' });
+    
+    await budget.update({ status });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/negociacoes/:id/status', requireAuth, async (req, res) => {
+  try {
+    const { winStatus, lossReason } = req.body;
+    const budget = await Budget.findByPk(req.params.id);
+    if (!budget) return res.status(404).json({ error: 'Negociação não encontrada' });
+    
+    await budget.update({ winStatus, lossReason });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/crm', requireAuth, checkPermission('crm'), async (req, res) => {
+  try {
+    const columns = (await KanbanColumn.findAll({ where: { type: 'leads' }, order: [['order', 'ASC']] })).map(c => c.get({ plain: true }));
+    const budgetsRaw = await Budget.findAll({ order: [['createdAt', 'DESC']] });
+    const budgets = budgetsRaw.map(b => b.get({ plain: true }));
+    
+    const kanban = {};
+    columns.forEach(col => { kanban[col.statusKey] = budgets.filter(b => b.status === col.statusKey); });
+
+    // Cálculo de VGV (Valor Geral de Vendas)
+    const totalVgv = budgets.reduce((acc, curr) => acc + parseFloat(curr.estimatedValue || 0), 0);
+
+    res.render('admin/crm', { layout: 'admin', title: 'Pipeline de Leads', currentPage: 'crm', user: req.user, columns, kanban, totalVgv });
+  } catch (error) {
+    console.error('CRM Route Error:', error);
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro no CRM: ' + error.message });
+  }
+});
+
+router.get('/orcamentos', requireAuth, async (req, res) => {
+  try {
+    const budgets = (await Budget.findAll({ order: [['createdAt', 'DESC']] })).map(b => b.get({ plain: true }));
+    res.render('admin/budgets', { layout: 'admin', title: 'Propostas Comercial', currentPage: 'budgets', user: req.user, budgets });
+  } catch (error) {
+    console.error('Orcamentos Route Error:', error);
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar orçamentos: ' + error.message });
+  }
+});
+
+router.get('/orcamento/:id', requireAuth, async (req, res) => {
+  try {
+    const budget = await Budget.findByPk(req.params.id);
+    if (!budget) return res.status(404).render('admin/error', { layout: 'admin', message: 'Orçamento não encontrado' });
+    res.render('admin/budget-detail', { layout: 'admin', title: `Orçamento #${budget.id}`, currentPage: 'budgets', user: req.user, budget: budget.get({ plain: true }) });
+  } catch (error) {
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar detalhes do orçamento' });
+  }
+});
+
+router.get('/budget-generator', requireAuth, async (req, res) => {
+  res.render('admin/budget-generator', { layout: 'admin', title: 'Gerador Dinâmico', currentPage: 'budget-generator', user: req.user });
+});
+
+router.get('/modelos', requireAuth, async (req, res) => {
+  try {
+    const templates = (await ProjectTemplate.findAll({ order: [['name', 'ASC']] })).map(t => t.get({ plain: true }));
+    res.render('admin/learning', { layout: 'admin', title: 'Modelos & Academy', currentPage: 'models', user: req.user, templates });
+  } catch (error) {
+    console.error('Modelos Route Error:', error);
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar modelos' });
+  }
+});
+
+router.get('/agenda', requireAuth, async (req, res) => {
+  try {
+    const events = (await CalendarEvent.findAll({ order: [['startTime', 'ASC']] })).map(e => e.get({ plain: true }));
+    res.render('admin/calendar', { layout: 'admin', title: 'Agenda de Produção', currentPage: 'calendar', user: req.user, events });
+  } catch (error) {
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar agenda' });
+  }
+});
+
+router.get('/rastreio-ativo', requireAuth, async (req, res) => {
+  try {
+    const timeLogs = (await TimeLog.findAll({ limit: 50, order: [['startTime', 'DESC']], include: [{ model: Project, as: 'project' }, { model: User, as: 'user' }] })).map(l => l.get({ plain: true }));
+    res.render('admin/rastreio-ativo', { layout: 'admin', title: 'Rastreio Ativo', currentPage: 'active-tracking', user: req.user, timeLogs });
+  } catch (error) {
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar rastreio' });
+  }
+});
+
+// ==========================================
+// PROJETOS & PRODUÇÃO
+// ==========================================
+
+router.get('/projetos', requireAuth, async (req, res) => {
+  try {
+    const projects = (await Project.findAll({ order: [['createdAt', 'DESC']] })).map(p => p.get({ plain: true }));
+    res.render('admin/projects', { layout: 'admin', title: 'Lista de Projetos', currentPage: 'projects', user: req.user, projects });
+  } catch (error) {
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar lista de projetos' });
+  }
+});
+
+// Revisões
+router.get('/api/projects/:id/revisions', requireAuth, async (req, res) => {
+  try {
+    const revisions = await Revision.findAll({ where: { projectId: req.params.id }, order: [['createdAt', 'DESC']] });
+    res.json({ success: true, revisions });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post('/api/projects/:id/revisions', requireAuth, async (req, res) => {
+  try {
+    const revision = await Revision.create({ ...req.body, projectId: req.params.id });
+    res.json({ success: true, revision });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/api/revisions/:id', requireAuth, async (req, res) => {
+  try {
+    await Revision.destroy({ where: { id: req.params.id } });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.get('/projetos/kanban', requireAuth, async (req, res) => {
+  try {
+    const columns = (await KanbanColumn.findAll({ where: { type: 'project' }, order: [['order', 'ASC']] })).map(c => c.get({ plain: true }));
+    const projectsRaw = await Project.findAll({ 
+      order: [['order', 'ASC'], ['createdAt', 'DESC']],
+      include: [{ model: Client, as: 'customer' }]
+    });
+    const projects = projectsRaw.map(p => p.get({ plain: true }));
+    
+    const kanbanColumns = columns.map(col => ({
+      ...col,
+      name: col.title,
+      projects: projects.filter(p => p.status === col.statusKey)
+    }));
+    
+    res.render('admin/projects-kanban', { layout: 'admin', title: 'Gestão de Projetos', currentPage: 'projects', user: req.user, columns: kanbanColumns });
+  } catch (error) {
+    console.error('CRITICAL KANBAN ERROR:', error);
+    res.status(500).render('admin/error', { 
+      layout: 'admin', 
+      message: 'Erro ao carregar projetos: ' + error.message,
+      error: error
+    });
+  }
+});
+
+router.post('/api/projects/move', requireAuth, async (req, res) => {
+  try {
+    const { projectId, status } = req.body;
+    const project = await Project.findByPk(projectId);
+    
+    if (!project) {
+      return res.status(404).json({ success: false, message: 'Projeto não encontrado' });
+    }
+
+    await project.update({ status });
+
+    // Automações de Comunicação Criativa
+    try {
+        const fullProject = await Project.findByPk(projectId, { include: [{ model: Client, as: 'client' }] });
+        const clientEmail = fullProject.client?.email || fullProject.budget?.email;
+        const clientName = fullProject.client?.name || 'Cliente';
+
+        if (clientEmail) {
+            if (status === 'revisao') {
+                await emailService.sendProjectReviewReady(fullProject, clientEmail, clientName);
+            } else if (status === 'finalizado') {
+                await emailService.sendProjectFinished(fullProject, clientEmail, clientName);
+            }
+        }
+    } catch (notifErr) {
+        console.error('Erro na automação de e-mail:', notifErr);
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Project Move Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// --- DELIVERY MANAGEMENT ROUTES ---
+router.get('/api/projects/:id/deliveries', requireAuth, async (req, res) => {
+  try {
+    const deliveries = await Delivery.findAll({
+      where: { projectId: req.params.id },
+      order: [['createdAt', 'DESC']]
+    });
+    res.json(deliveries);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post('/api/projects/:id/deliveries', requireAuth, async (req, res) => {
+  try {
+    const { title, downloadUrl, scheduledDate } = req.body;
+    const delivery = await Delivery.create({
+      title,
+      downloadUrl,
+      scheduledDate: scheduledDate || new Date(),
+      projectId: req.params.id,
+      status: 'pendente'
+    });
+    res.json({ success: true, delivery });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.put('/api/deliveries/:id', requireAuth, async (req, res) => {
+  try {
+    const delivery = await Delivery.findByPk(req.params.id);
+    if (!delivery) return res.status(404).json({ success: false, message: 'Entrega não encontrada' });
+    
+    await delivery.update(req.body);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/api/deliveries/:id', requireAuth, async (req, res) => {
+  try {
+    const delivery = await Delivery.findByPk(req.params.id);
+    if (!delivery) return res.status(404).json({ success: false, message: 'Entrega não encontrada' });
+    
+    await delivery.destroy();
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.get('/blocos-3d', requireAuth, async (req, res) => {
+  res.render('admin/assets', { layout: 'admin', title: 'Biblioteca de Blocos 3D', currentPage: 'blocks', user: req.user });
+});
+
+router.get('/revisoes', requireAuth, async (req, res) => {
+  try {
+    const revisions = (await Revision.findAll({ order: [['createdAt', 'DESC']], include: [{ model: Project, as: 'project' }] })).map(r => r.get({ plain: true }));
+    res.render('admin/revisions', { layout: 'admin', title: 'Controle de Revisões', currentPage: 'revisions', user: req.user, revisions });
+  } catch (error) {
     res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar revisões' });
   }
 });
 
-// Deliveries Dashboard
 router.get('/entregas', requireAuth, async (req, res) => {
   try {
-    const deliveries = await Delivery.findAll({
-      order: [['scheduledDate', 'ASC']]
-    });
-
-    const projects = await Project.findAll({
-      attributes: ['id', 'title'],
-      order: [['title', 'ASC']]
-    });
-
-    res.render('admin/deliveries', {
-      layout: 'admin',
-      title: 'Controle de Entregas',
-      currentPage: 'deliveries',
-      user: req.user,
-      deliveries,
-      projects,
-      stats: {
-        pending: deliveries.filter(d => d.status === 'pendente').length,
-        delivered: deliveries.filter(d => d.status === 'entregue').length,
-        approved: deliveries.filter(d => d.status === 'aprovado').length
-      }
-    });
+    const deliveries = (await Delivery.findAll({ order: [['createdAt', 'DESC']], include: [{ model: Project, as: 'project' }] })).map(d => d.get({ plain: true }));
+    res.render('admin/deliveries', { layout: 'admin', title: 'Gestão de Entregas', currentPage: 'deliveries', user: req.user, deliveries });
   } catch (error) {
-    console.error('Deliveries Route Error:', error);
     res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar entregas' });
   }
 });
 
-// Calendar Dashboard
-router.get('/agenda', requireAuth, async (req, res) => {
-  res.render('admin/calendar', {
-    layout: 'admin',
-    title: 'Agenda Inteligente',
-    currentPage: 'calendar',
-    user: req.user
-  });
-});
+// ==========================================
+// FINANCEIRO & RELATÓRIOS
+// ==========================================
 
-// Projects Kanban View
-router.get('/projetos/kanban', requireAuth, async (req, res) => {
+router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, res) => {
   try {
-    const projects = await Project.findAll({
-      order: [['updatedAt', 'DESC']]
+    const transactions = (await FinanceTransaction.findAll({ order: [['dueDate', 'DESC']] })).map(t => t.get({ plain: true }));
+    const projectsRaw = await Project.findAll({ where: { status: { [Op.ne]: 'finalizado' } } });
+    const projects = projectsRaw.map(p => p.get({ plain: true }));
+    
+    // Calcular Lucratividade por Projeto
+    const projectProfits = projects.map(p => {
+      const pTransactions = transactions.filter(t => t.projectId === p.id || t.budgetId === p.budgetId);
+      const income = pTransactions.filter(t => t.type === 'receita').reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+      const expenses = pTransactions.filter(t => t.type === 'despesa').reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+      return {
+        id: p.id,
+        name: p.title,
+        price: parseFloat(p.price) || 0,
+        income,
+        expenses,
+        profit: income - expenses,
+        margin: income > 0 ? ((income - expenses) / income * 100).toFixed(1) : 0
+      };
     });
 
-    res.render('admin/projects-kanban', {
-      layout: 'admin',
-      title: 'Quadro de Projetos',
-      currentPage: 'projects',
-      user: req.user,
-      projects
+    const income = transactions.filter(t => t.type === 'receita').reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+    const expense = transactions.filter(t => t.type === 'despesa').reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+    
+    // BI Metrics
+    const avgMargin = projectProfits.length > 0 
+      ? (projectProfits.reduce((sum, p) => sum + parseFloat(p.margin), 0) / projectProfits.length).toFixed(1) 
+      : 0;
+
+    const expenseCategories = transactions
+      .filter(t => t.type === 'despesa')
+      .reduce((acc, t) => {
+        acc[t.category] = (acc[t.category] || 0) + parseFloat(t.amount);
+        return acc;
+      }, {});
+
+    res.render('admin/finance', { 
+      layout: 'admin', 
+      title: 'Fluxo Financeiro', 
+      currentPage: 'finance', 
+      user: req.user, 
+      transactions, 
+      activeProjects: projects.map(p => ({ id: p.id, name: p.title })), 
+      projectProfits,
+      bi: { avgMargin, expenseCategories },
+      stats: { income, expense, balance: income - expense } 
     });
   } catch (error) {
-    console.error('Projects Kanban Error:', error);
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar quadro' });
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar financeiro' });
   }
 });
 
-// Productivity Dashboard
+router.post('/api/financeiro', requireAuth, async (req, res) => {
+  try {
+    const transaction = await FinanceTransaction.create(req.body);
+    res.json({ success: true, transaction });
+  } catch (error) {
+    console.error('Finance API Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.get('/relatorios', requireAuth, async (req, res) => {
+  res.render('admin/ai-reports', { layout: 'admin', title: 'Relatórios & BI', currentPage: 'reports', user: req.user });
+});
+
 router.get('/produtividade', requireAuth, async (req, res) => {
-  res.render('admin/productivity', {
-    layout: 'admin',
-    title: 'Análise de Produtividade',
-    currentPage: 'productivity',
-    user: req.user,
-    stats: { avgTime: '4.2h', completionRate: '92%' }
-  });
+  res.render('admin/productivity', { layout: 'admin', title: 'KPIs de Produtividade', currentPage: 'productivity', user: req.user });
 });
 
-// Goals & KPIs
-router.get('/metas', requireAuth, async (req, res) => {
+// ==========================================
+// COLABORAÇÃO & MARKETPLACE
+// ==========================================
+
+router.get('/automacoes', requireAuth, async (req, res) => {
+  res.render('admin/automacoes', { layout: 'admin', title: 'Automações Inteligentes', currentPage: 'automations', user: req.user });
+});
+
+router.get('/previsao', requireAuth, async (req, res) => {
   try {
-    const currentProgress = await Budget.sum('estimatedValue', { 
-      where: { 
-        status: 'fechado',
-        updatedAt: { [Op.gte]: new Date(new Date().getFullYear(), new Date().getMonth(), 1) }
-      } 
-    }) || 0;
-
-    res.render('admin/goals', {
-      layout: 'admin',
-      title: 'Metas & KPIs Malha3D',
-      currentPage: 'goals',
-      user: req.user,
-      monthlyGoal: 50000,
-      currentProgress
-    });
-  } catch (error) {
-    console.error('Goals error:', error);
-    res.redirect('/admin');
-  }
-});
-
-// Assets Library
-router.get('/assets', requireAuth, async (req, res) => {
-  res.render('admin/assets', {
-    layout: 'admin',
-    title: 'Arsenal 3D - Biblioteca de Assets',
-    currentPage: 'assets',
-    user: req.user
-  });
-});
-
-// Freelancers Management
-router.get('/freelancers', requireAuth, async (req, res) => {
-  res.render('admin/freelancers', {
-    layout: 'admin',
-    title: 'Rede de Freelancers Especialistas',
-    currentPage: 'freelancers',
-    user: req.user
-  });
-});
-
-// Portfolio Management
-router.get('/portfolio', requireAuth, async (req, res) => {
-  res.render('admin/portfolio', {
-    layout: 'admin',
-    title: 'Gestão de Portfólio',
-    currentPage: 'portfolio',
-    user: req.user
-  });
-});
-
-// Internal Chat
-router.get('/chat', requireAuth, async (req, res) => {
-  res.render('admin/chat', {
-    layout: 'admin',
-    title: 'Chat Interno da Equipe',
-    currentPage: 'chat',
-    user: req.user
-  });
-});
-
-// Client Portal Admin
-router.get('/portal-cliente', requireAuth, async (req, res) => {
-  res.render('admin/client-portal', {
-    layout: 'admin',
-    title: 'Gestão do Portal do Cliente',
-    currentPage: 'client-portal',
-    user: req.user
-  });
-});
-
-// Learning & Academy
-router.get('/aprendizado', requireAuth, async (req, res) => {
-  res.render('admin/learning', {
-    layout: 'admin',
-    title: 'Academia Malha3D',
-    currentPage: 'learning',
-    user: req.user
-  });
-});
-
-// AI Reports
-router.get('/relatorios-ia', requireAuth, async (req, res) => {
-  res.render('admin/ai-reports', {
-    layout: 'admin',
-    title: 'Relatórios & Insights IA',
-    currentPage: 'ai-reports',
-    user: req.user
-  });
-});
-
-// Appearance & Branding
-router.get('/aparencia', requireAuth, async (req, res) => {
-  res.render('admin/appearance', {
-    layout: 'admin',
-    title: 'Aparência & Branding',
-    currentPage: 'appearance',
-    user: req.user
-  });
-});
-
-// API Endpoints
-router.get('/api/budgets', requireAuth, async (req, res) => {
-  try {
-    const { startDate, endDate, status } = req.query;
-    const where = {};
-
-    if (startDate && endDate) {
-      where.createdAt = {
-        [Op.between]: [new Date(startDate), new Date(endDate)]
-      };
-    }
-
-    if (status) {where.status = status;}
-
-    const budgets = await Budget.findAll({
-      where,
-      attributes: ['id', 'status', 'projectType', 'estimatedValue', 'createdAt'],
-      order: [['createdAt', 'DESC']]
-    });
-
-    res.json({ success: true, data: budgets });
-
-  } catch (error) {
-    console.error('API budgets error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao buscar orçamentos' });
-  }
-});
-
-router.get('/api/stats', requireAuth, async (req, res) => {
-  try {
-    const { period = 'month' } = req.query;
-
-    let dateFilter = {};
-    const now = new Date();
-
-    if (period === 'week') {
-      dateFilter = {
-        createdAt: {
-          [Op.gte]: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-        }
-      };
-    } else if (period === 'month') {
-      dateFilter = {
-        createdAt: {
-          [Op.gte]: new Date(now.getFullYear(), now.getMonth(), 1)
-        }
-      };
-    } else if (period === 'year') {
-      dateFilter = {
-        createdAt: {
-          [Op.gte]: new Date(now.getFullYear(), 0, 1)
-        }
-      };
-    }
-
-    const stats = await Promise.all([
-      Budget.count({ where: dateFilter }),
-      Budget.count({ where: { ...dateFilter, status: 'fechado' } }),
-      Budget.count({ where: { ...dateFilter, status: 'novo' } }),
-      Project.count({ where: dateFilter })
-    ]);
-
-    res.json({
-      success: true,
-      data: {
-        totalBudgets: stats[0],
-        approvedBudgets: stats[1],
-        pendingBudgets: stats[2],
-        totalProjects: stats[3]
-      }
-    });
-
-  } catch (error) {
-    console.error('API stats error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao buscar estatísticas' });
-  }
-});
-
-// Create Lead (Budget)
-router.post('/api/leads', requireAuth, async (req, res) => {
-  try {
-    const { name, email, phone, projectType, estimatedValue, description } = req.body;
-    
-    const lead = await Budget.create({
-      name,
-      email,
-      phone,
-      projectType,
-      estimatedValue: estimatedValue || 0,
-      description,
-      status: 'novo',
-      source: 'manual_admin'
-    });
-    
-    res.json({ success: true, message: 'Lead criado com sucesso', data: lead });
-  } catch (error) {
-    console.error('API create lead error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao criar lead' });
-  }
-});
-
-// Create Contact (Client)
-router.post('/api/contatos', requireAuth, async (req, res) => {
-  try {
-    const { name, type, email, phone, company, category } = req.body;
-    
-    const client = await Client.create({
-      name,
-      type,
-      email,
-      phone,
-      company,
-      category,
-      source: 'admin'
-    });
-    
-    res.json({ success: true, message: 'Contato criado com sucesso', data: client });
-  } catch (error) {
-    console.error('API create contact error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao criar contato' });
-  }
-});
-
-// Create Finance Transaction
-router.post('/api/financeiro', requireAuth, upload.single('anexo'), async (req, res) => {
-  try {
-    const { type, description, amount, dueDate, category, favorecido, competencia, paymentMethod, contaBancaria, status, recurrence, projectId, observacoes } = req.body;
-    
-    const transactionData = {
-      type,
-      description,
-      amount: amount || 0,
-      dueDate,
-      category,
-      beneficiary: favorecido,
-      competenceDate: competencia ? new Date(competencia + '-01') : null,
-      paymentMethod,
-      bankAccount: contaBancaria,
-      status: status || 'pendente',
-      recurrence: recurrence || 'unica',
-      projectId: projectId || null,
-      notes: observacoes
+    const stats = {
+      billingWon: 45000,
+      totalInNegotiation: 120000,
+      ticketMedio: 15000
     };
-
-    if (req.file) {
-      transactionData.attachment = `/uploads/${req.file.filename}`;
-    }
-    
-    const transaction = await FinanceTransaction.create(transactionData);
-    
-    res.json({ success: true, message: 'Transação criada com sucesso', data: transaction });
+    const charts = {
+      funnel: { labels: ['Lead', 'Proposta', 'Negociação', 'Ajustes'], data: [50000, 30000, 20000, 10000] },
+      winRate: { labels: ['Ganhos', 'Perdidos'], data: [12, 5] },
+      lossReasons: { labels: ['Preço', 'Prazo', 'Escopo', 'Concorrência'], data: [5, 2, 1, 3] }
+    };
+    res.render('admin/previsao', { layout: 'admin', title: 'Previsão & Analytics', currentPage: 'previsao', user: req.user, stats, charts });
   } catch (error) {
-    console.error('API create finance error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao criar transação' });
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar previsões' });
   }
 });
 
-// Create Calendar Event
-router.post('/api/agenda', requireAuth, async (req, res) => {
+router.get('/agenda', requireAuth, async (req, res) => {
+  res.render('admin/calendar', { layout: 'admin', title: 'Agenda do Estúdio', currentPage: 'calendar', user: req.user });
+});
+
+router.get('/marketing-ia', requireAuth, async (req, res) => {
+  res.render('admin/marketing-ia', { layout: 'admin', title: 'Marketing Inteligente', currentPage: 'marketing-ia', user: req.user });
+});
+
+router.get('/avancado', requireAuth, checkPermission('admin'), async (req, res) => {
+  res.render('admin/advanced-admin', { layout: 'admin', title: 'Painel Administrativo Avançado', currentPage: 'advanced-admin', user: req.user });
+});
+
+router.get('/rastreio-ativo', requireAuth, async (req, res) => {
+  res.render('admin/rastreio-ativo', { layout: 'admin', title: 'Rastreio Ativo de Projetos', currentPage: 'active-tracking', user: req.user });
+});
+
+router.get('/templates-email', requireAuth, async (req, res) => {
+  res.render('admin/automacoes', { layout: 'admin', title: 'Templates de E-mail', currentPage: 'email-templates', user: req.user });
+});
+
+router.get('/marketplace', requireAuth, async (req, res) => {
+  res.render('admin/marketplace', { layout: 'admin', title: 'Marketplace 3D', currentPage: 'marketplace', user: req.user });
+});
+
+router.get('/chat', requireAuth, async (req, res) => {
+  res.render('admin/chat', { layout: 'admin', title: 'Chat da Equipe', currentPage: 'chat', user: req.user });
+});
+
+router.get('/aprendizado', requireAuth, async (req, res) => {
+  res.render('admin/learning', { layout: 'admin', title: 'Academia Zanoello', currentPage: 'learning', user: req.user });
+});
+
+router.get('/freelancers', requireAuth, async (req, res) => {
   try {
-    const { title, startTime, endTime, type, description } = req.body;
-    
-    const event = await CalendarEvent.create({
-      title,
-      startTime,
-      endTime,
-      type,
-      description
-    });
-    
-    res.json({ success: true, message: 'Evento agendado com sucesso', data: event });
+    const freelancers = (await Freelancer.findAll({ order: [['name', 'ASC']] })).map(f => f.get({ plain: true }));
+    res.render('admin/freelancers', { layout: 'admin', title: 'Gestão de Freelancers', currentPage: 'freelancers', user: req.user, freelancers });
   } catch (error) {
-    console.error('API create event error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao agendamento' });
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar freelancers' });
   }
 });
 
-// Create Delivery
-router.post('/api/entregas', requireAuth, async (req, res) => {
+router.get('/portal-cliente', requireAuth, async (req, res) => {
+  res.render('admin/client-portal', { layout: 'admin', title: 'Painel do Cliente', currentPage: 'client-portal', user: req.user });
+});
+
+// ==========================================
+// REGISTROS & STAKEHOLDERS
+// ==========================================
+
+router.get('/contatos', requireAuth, async (req, res) => {
   try {
-    const { title, scheduledDate, projectId, status } = req.body;
-    
-    const delivery = await Delivery.create({
-      title,
-      scheduledDate,
-      projectId: projectId || null,
-      status: status || 'pendente',
-      confirmation: false
-    });
-    
-    res.json({ success: true, message: 'Entrega registrada com sucesso', data: delivery });
+    const clients = (await Client.findAll({ order: [['name', 'ASC']] })).map(c => c.get({ plain: true }));
+    res.render('admin/contacts', { layout: 'admin', title: 'Contatos & CRM', currentPage: 'contacts', user: req.user, clients });
   } catch (error) {
-    console.error('API create delivery error:', error);
-    res.status(500).json({ success: false, message: 'Erro ao registrar entrega' });
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar contatos' });
   }
 });
 
-// Documents Management
-router.get('/documentos', requireAuth, async (req, res) => {
-  res.render('admin/documents', {
-    layout: 'admin',
-    title: 'Documentos & Contratos',
-    currentPage: 'documents',
-    user: req.user
-  });
+router.get('/registros', requireAuth, async (req, res) => {
+  res.render('admin/registries', { layout: 'admin', title: 'Central de Registros', currentPage: 'registries', user: req.user });
+});
+
+router.get('/portfolio', requireAuth, async (req, res) => {
+  try {
+    const items = (await PortfolioItem.findAll({ order: [['createdAt', 'DESC']] })).map(i => i.get({ plain: true }));
+    res.render('admin/portfolio', { layout: 'admin', title: 'Gestão de Portfólio', currentPage: 'portfolio', user: req.user, portfolioItems: items });
+  } catch (error) {
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar portfólio' });
+  }
+});
+
+// ==========================================
+// CONFIGURAÇÕES & ADMINISTRAÇÃO
+// ==========================================
+
+router.get('/configuracoes', requireAuth, async (req, res) => {
+  res.render('admin/settings', { layout: 'admin', title: 'Configurações do Sistema', currentPage: 'settings', user: req.user });
+});
+
+router.get('/empresa', requireAuth, async (req, res) => {
+  res.render('admin/empresa', { layout: 'admin', title: 'Dados da Empresa', currentPage: 'company', user: req.user });
+});
+
+router.get('/dados-bancarios', requireAuth, async (req, res) => {
+  res.render('admin/bank-details', { layout: 'admin', title: 'Dados Bancários', currentPage: 'bank', user: req.user });
+});
+
+router.get('/meus-planos', requireAuth, async (req, res) => {
+  res.render('admin/meus-planos', { layout: 'admin', title: 'Plano & Assinatura', currentPage: 'plans', user: req.user });
+});
+
+router.get('/avancado', requireAuth, async (req, res) => {
+  try {
+    const users = (await User.findAll({ order: [['name', 'ASC']] })).map(u => u.get({ plain: true }));
+    const instances = (await Instance.findAll({ order: [['type', 'ASC']] })).map(i => i.get({ plain: true }));
+    const plans = (await SubscriptionPlan.findAll({ order: [['price', 'ASC']] })).map(p => p.get({ plain: true }));
+    const webhooks = (await Webhook.findAll({ order: [['event', 'ASC']] })).map(w => w.get({ plain: true }));
+    const notifications = (await NotificationTemplate.findAll({ order: [['name', 'ASC']] })).map(n => n.get({ plain: true }));
+    const logs = (await SystemLog.findAll({ limit: 100, order: [['createdAt', 'DESC']] })).map(l => l.get({ plain: true }));
+    
+    // Configurações globais (Banking, Security, Backup)
+    const settingsRaw = await Setting.findAll({ where: { group: ['banking', 'security', 'backup'] } });
+    const settings = {};
+    settingsRaw.forEach(s => { settings[s.key] = s.value; });
+
+    res.render('admin/advanced-admin', { 
+      layout: 'admin', 
+      title: 'Administração Avançada', 
+      currentPage: 'advanced-admin', 
+      user: req.user, 
+      users,
+      instances,
+      plans,
+      webhooks,
+      notifications,
+      logs,
+      settings
+    });
+  } catch (error) {
+    console.error('Advanced Admin Error:', error);
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro no painel avançado: ' + error.message });
+  }
+});
+
+router.get('/deployment', requireAuth, checkPermission('devops'), async (req, res) => {
+  res.render('admin/deployment', { layout: 'admin', title: 'Pipeline CI/CD', currentPage: 'deployment', user: req.user });
+});
+
+router.post('/api/deploy', requireAuth, checkPermission('devops'), async (req, res) => {
+  const runDeploy = require('../scripts/git-deploy');
+  try {
+    const result = await runDeploy(`Deploy via Dashboard por ${req.user.name}`);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 module.exports = router;

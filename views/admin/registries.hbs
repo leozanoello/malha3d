@@ -1,0 +1,148 @@
+<div class="compact-mode">
+    <div class="mb-8 p-10 glass-card border-0 bg-gradient-to-br from-white/10 to-white/[0.02] relative overflow-hidden rounded-[2.5rem]">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[100px] -mr-32 -mt-32"></div>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-4 relative z-10">
+            <div>
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-500 d-flex align-items-center justify-center shadow-lg shadow-orange-500/20">
+                        <i class="bi bi-journal-text text-white fs-4"></i>
+                    </div>
+                    <h1 class="h3 mb-0 text-white fw-black">Central de <span class="text-orange-500">Registros</span></h1>
+                </div>
+                <p class="text-gray-400 small mb-0 uppercase tracking-widest font-bold">Gestão estratégica de fornecedores e prestadores de serviços</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-orange rounded-xl px-4 py-2.5 text-xs font-black uppercase tracking-widest shadow-lg shadow-orange-500/20" data-bs-toggle="modal" data-bs-target="#modalAddRegistry">
+                    <i class="bi bi-plus-lg me-2"></i>Novo Registro
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Fornecedores Column -->
+        <div class="glass-card p-8 border-white/5 rounded-[2.5rem] bg-black/20">
+            <h3 class="text-lg font-black text-white uppercase tracking-tight mb-6 flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-orange-500"></span> Fornecedores
+            </h3>
+            <div class="space-y-4">
+                {{#each fornecedores}}
+                <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-orange-500/30 transition-all group cursor-pointer registry-card" data-id="{{this.id}}">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="text-sm font-black text-white group-hover:text-orange-500 transition-colors">{{this.name}}</h4>
+                            <p class="text-[10px] text-gray-500 uppercase font-bold">{{this.category}}</p>
+                        </div>
+                        <span class="px-2 py-1 rounded text-[8px] font-black uppercase bg-orange-500/10 text-orange-500">Premium</span>
+                    </div>
+                    <div class="flex gap-4 text-[10px] text-gray-400">
+                        <span class="flex items-center gap-1"><i class="bi bi-telephone"></i> {{this.phone}}</span>
+                        <span class="flex items-center gap-1"><i class="bi bi-geo-alt"></i> {{this.city}}</span>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <!-- Prestadores Column -->
+        <div class="glass-card p-8 border-white/5 rounded-[2.5rem] bg-black/20">
+            <h3 class="text-lg font-black text-white uppercase tracking-tight mb-6 flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-blue-400"></span> Prestadores (Terceirizados)
+            </h3>
+            <div class="space-y-4">
+                {{#each prestadores}}
+                <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-blue-500/30 transition-all group cursor-pointer registry-card" data-id="{{this.id}}">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="text-sm font-black text-white group-hover:text-blue-400 transition-colors">{{this.name}}</h4>
+                            <p class="text-[10px] text-gray-500 uppercase font-bold">{{this.specialty}}</p>
+                        </div>
+                        <div class="flex gap-1">
+                            <i class="bi bi-star-fill text-warning" style="font-size: 8px;"></i>
+                            <i class="bi bi-star-fill text-warning" style="font-size: 8px;"></i>
+                            <i class="bi bi-star-fill text-warning" style="font-size: 8px;"></i>
+                            <i class="bi bi-star-fill text-warning" style="font-size: 8px;"></i>
+                            <i class="bi bi-star-half text-warning" style="font-size: 8px;"></i>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 text-[10px] text-gray-400">
+                        <span class="flex items-center gap-1"><i class="bi bi-briefcase"></i> {{this.projects}} Projetos</span>
+                        <span class="flex items-center gap-1"><i class="bi bi-clock"></i> Entrega: {{this.reliability}}%</span>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Registry Detail (Mock) -->
+<div class="modal fade" id="modalRegistryDetail" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content glass-card border-white/10 bg-black/90 backdrop-blur-3xl rounded-[2.5rem] overflow-hidden">
+            <div class="modal-body p-10 relative">
+                <button type="button" class="absolute top-8 right-8 text-gray-500 hover:text-white transition-colors" data-bs-dismiss="modal">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                
+                <div class="flex items-start gap-8 mb-10">
+                    <div class="w-24 h-24 rounded-3xl bg-orange-500/20 flex items-center justify-center border border-orange-500/30">
+                        <span class="material-symbols-outlined text-4xl text-orange-500">storefront</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <h2 class="text-2xl font-black text-white uppercase tracking-tight" id="detail-name">Nome do Parceiro</h2>
+                            <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[9px] font-black uppercase tracking-widest">Ativo</span>
+                        </div>
+                        <p class="text-sm text-gray-400 uppercase font-black tracking-widest" id="detail-category">Categoria / Especialidade</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6 mb-10">
+                    <div class="p-6 rounded-2xl bg-white/5 border border-white/5">
+                        <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Volume Mensal</p>
+                        <p class="text-lg font-black text-white">R$ 12.450</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-white/5 border border-white/5">
+                        <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Nível de Serviço</p>
+                        <p class="text-lg font-black text-blue-400">SLA 98%</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-white/5 border border-white/5">
+                        <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Última Entrega</p>
+                        <p class="text-lg font-black text-orange-500">12 Mai</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <h4 class="text-xs font-black text-white uppercase tracking-widest border-b border-white/5 pb-4">Histórico de Pedidos / Contratos</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/5">
+                            <span class="text-[10px] text-gray-300">#ORD-4562 - Modelagem de Ativos Urbanos</span>
+                            <span class="text-[10px] font-black text-white">R$ 3.200,00</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/5">
+                            <span class="text-[10px] text-gray-300">#ORD-4498 - Texturização PBR - Coleção Outono</span>
+                            <span class="text-[10px] font-black text-white">R$ 1.850,00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const detailModal = new bootstrap.Modal(document.getElementById('modalRegistryDetail'));
+
+    document.addEventListener('click', function(e) {
+        const card = e.target.closest('.registry-card');
+        if (card) {
+            const id = card.dataset.id;
+            // Logic to populate and show modal (mock for now)
+            console.log('Showing registry detail for ID:', id);
+            detailModal.show();
+        }
+    });
+});
+</script>

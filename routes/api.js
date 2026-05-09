@@ -1,7 +1,42 @@
 const express = require('express');
 const router = express.Router();
-const { Project, Testimonial, Setting, Budget, CRMNote, sequelize } = require('../models');
+const { Project, Testimonial, Setting, Budget, CRMNote, Client, BudgetContact, sequelize } = require('../models');
+const { Op } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
+
+// Rota para pesquisa global
+router.get('/global-search', async (req, res, next) => {
+  try {
+    const query = req.query.q;
+    if (!query) return res.json({ deals: [], projects: [], contacts: [] });
+
+    const [budgets, projects, clients] = await Promise.all([
+      Budget.findAll({
+        where: { name: { [Op.iLike]: `%${query}%` } },
+        limit: 5,
+        attributes: ['id', 'name']
+      }),
+      Project.findAll({
+        where: { title: { [Op.iLike]: `%${query}%` } },
+        limit: 5,
+        attributes: ['id', 'title']
+      }),
+      Client.findAll({
+        where: { name: { [Op.iLike]: `%${query}%` } },
+        limit: 5,
+        attributes: ['id', 'name']
+      })
+    ]);
+
+    res.json({
+      budgets,
+      projects: projects.map(p => ({ id: p.id, name: p.title })),
+      clients
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // Rota para buscar projetos
 router.get('/projects', async (req, res, next) => {
@@ -145,14 +180,17 @@ router.get('/budgets/:id', async (req, res, next) => {
 router.post('/budgets', async (req, res, next) => {
   try {
     const data = {
-      name: req.body.name || req.body.clientName,
-      email: req.body.email || req.body.clientEmail,
-      phone: req.body.phone || req.body.clientPhone,
-      projectType: req.body.projectType || 'Outro',
-      description: req.body.description || '',
+      ...req.body,
       trackingCode: `TZ-${uuidv4().substring(0, 8).toUpperCase()}`,
-      status: 'novo'
+      status: req.body.status || 'leads'
     };
+
+    // Garantir que campos numéricos sejam números
+    if (data.estimatedValue) data.estimatedValue = parseFloat(data.estimatedValue);
+    if (data.probability) data.probability = parseInt(data.probability);
+    if (data.imagesCount) data.imagesCount = parseInt(data.imagesCount);
+    if (data.animationSeconds) data.animationSeconds = parseInt(data.animationSeconds);
+    if (data.panoramasCount) data.panoramasCount = parseInt(data.panoramasCount);
 
     const budget = await Budget.create(data);
     res.status(201).json({ budget });
@@ -204,6 +242,82 @@ router.post('/budgets/:id/notes', async (req, res, next) => {
       type: 'note'
     });
     res.status(201).json({ note });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// === CLIENTS & CONTACTS ===
+
+// Rota para buscar clientes (Autocomplete)
+router.get('/clients/search', async (req, res, next) => {
+  try {
+    const query = req.query.q || '';
+    const clients = await Client.findAll({
+      where: {
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${query}%` } },
+          { email: { [Op.iLike]: `%${query}%` } },
+          { company: { [Op.iLike]: `%${query}%` } }
+        ]
+      },
+      limit: 10
+    });
+    res.json(clients);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Buscar contatos vinculados a uma negociação
+router.get('/budgets/:id/contacts', async (req, res, next) => {
+  try {
+    const budget = await Budget.findByPk(req.params.id, {
+      include: [{
+        model: Client,
+        as: 'contacts',
+        through: { attributes: ['responsibilityLevel', 'isPrimary'] }
+      }]
+    });
+    if (!budget) return res.status(404).json({ error: 'Negociação não encontrada' });
+    res.json(budget.contacts);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Vincular contato a uma negociação
+router.post('/budgets/:id/contacts', async (req, res, next) => {
+  try {
+    const { clientId, responsibilityLevel, isPrimary } = req.body;
+    
+    // Se for primário, remover primário dos outros
+    if (isPrimary) {
+      await BudgetContact.update({ isPrimary: false }, { where: { budgetId: req.params.id } });
+    }
+
+    const [link, created] = await BudgetContact.findOrCreate({
+      where: { budgetId: req.params.id, clientId },
+      defaults: { responsibilityLevel, isPrimary }
+    });
+
+    if (!created) {
+      await link.update({ responsibilityLevel, isPrimary });
+    }
+
+    res.json({ success: true, link });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Remover vínculo de contato
+router.delete('/budgets/:id/contacts/:clientId', async (req, res, next) => {
+  try {
+    await BudgetContact.destroy({
+      where: { budgetId: req.params.id, clientId: req.params.clientId }
+    });
+    res.json({ success: true });
   } catch (error) {
     next(error);
   }

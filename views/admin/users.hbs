@@ -9,7 +9,7 @@
                 Controle de acessos, permissões e perfis administrativos do ecossistema <span class="text-orange-500">Malha3D</span>.
             </p>
         </div>
-        <button onclick="addUser()" class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center gap-3">
+        <button id="btn-add-user" class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center gap-3">
             <span class="material-symbols-outlined">person_add</span>
             Novo Usuário
         </button>
@@ -70,7 +70,7 @@
                     <td class="px-8 py-6">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center text-orange-500 font-black text-sm border border-orange-500/20 group-hover:scale-110 transition-transform shadow-lg shadow-orange-500/10">
-                                {{#firstLetter this.name}}{{/firstLetter}}
+                                {{firstLetter this.name}}
                             </div>
                             <div>
                                 <p class="text-sm font-black text-white mb-0.5 group-hover:text-orange-500 transition-colors">{{this.name}}</p>
@@ -115,3 +115,12 @@
         </table>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('btn-add-user')?.addEventListener('click', function() {
+        // Logic to open add user modal or form
+        console.log('Add user clicked');
+        alert('Funcionalidade de adicionar usuário');
+    });
+});
+</script>

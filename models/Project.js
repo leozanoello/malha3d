@@ -57,8 +57,48 @@ const Project = sequelize.define('Project', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: 'briefing'
+  },
   year: {
     type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  budgetId: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
+  clientId: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
+  software: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  renderEngine: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  complexity: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  priority: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  price: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: true
+  },
+  deadline: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  startDate: {
+    type: DataTypes.DATE,
     allowNull: true
   }
 }, {

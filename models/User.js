@@ -9,10 +9,15 @@ const User = sequelize.define('User', {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      len: [3, 100]
-    }
+    allowNull: true
+  },
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: true
   },
   email: {
     type: DataTypes.STRING,
@@ -45,9 +50,31 @@ const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
+  isVerified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  verificationCode: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   lastLogin: {
     type: DataTypes.DATE,
     allowNull: true
+  },
+  permissions: {
+    type: DataTypes.JSON,
+    defaultValue: {
+      crm: true,
+      projects: true,
+      finance: false,
+      freelancers: false,
+      company: false
+    }
+  },
+  hourlyRate: {
+    type: DataTypes.DECIMAL(10, 2),
+    defaultValue: 0.00
   }
 }, {
   tableName: 'users',

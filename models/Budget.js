@@ -16,14 +16,14 @@ const Budget = sequelize.define('Budget', {
   },
   email: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
     validate: {
       isEmail: true
     }
   },
   phone: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   projectType: {
     type: DataTypes.ENUM(
@@ -39,13 +39,10 @@ const Budget = sequelize.define('Budget', {
   },
   description: {
     type: DataTypes.TEXT,
-    allowNull: false,
-    validate: {
-      len: [10, 2000]
-    }
+    allowNull: true
   },
   status: {
-    type: DataTypes.ENUM('novo', 'em_andamento', 'respondido', 'fechado', 'perdido'),
+    type: DataTypes.STRING,
     defaultValue: 'novo'
   },
   priority: {
@@ -58,6 +55,14 @@ const Budget = sequelize.define('Budget', {
   },
   deadline: {
     type: DataTypes.DATE,
+    allowNull: true
+  },
+  startDate: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  renderValue: {
+    type: DataTypes.DECIMAL(10, 2),
     allowNull: true
   },
   notes: {
@@ -75,6 +80,112 @@ const Budget = sequelize.define('Budget', {
   userAgent: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  color: {
+    type: DataTypes.STRING,
+    defaultValue: '#f97316' // Laranja padrão
+  },
+  tags: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  probability: {
+    type: DataTypes.INTEGER,
+    defaultValue: 50,
+    validate: { min: 0, max: 100 }
+  },
+  leadImage: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  software: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  renderEngine: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  targetSoftware: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  complexity: {
+    type: DataTypes.ENUM('Baixa', 'Média', 'Alta', 'Ultra'),
+    defaultValue: 'Média'
+  },
+  expectedRevenueDate: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  order: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  visualStyle: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  inputFormats: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  nextActionDate: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  nextActionNote: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    defaultValue: ""
+  },
+  imagesCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  staticImagesCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  animationSeconds: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  panoramasCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  winStatus: {
+    type: DataTypes.ENUM('aberto', 'ganho', 'perdido'),
+    defaultValue: 'aberto'
+  },
+  lossReason: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: ""
+  },
+  closeDate: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'close_date'
+  },
+  totalArea: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: true,
+    field: 'total_area'
+  },
+  origin: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  period: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  linkedBudgetId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    field: 'linked_budget_id'
   }
 }, {
   tableName: 'budgets',

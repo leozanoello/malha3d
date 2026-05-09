@@ -1,250 +1,492 @@
-<!-- Header -->
-<div class="mb-10 p-8 glass-card border-none bg-gradient-to-br from-white/5 to-white/[0.02]">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-            <h1 class="text-4xl font-black text-white tracking-tight mb-2">
-                Pipeline de <span class="text-gradient">Vendas</span>
-            </h1>
-            <p class="text-gray-400 font-medium">
-                Gerencie seus leads e oportunidades com inteligência <span class="text-orange-500">Malha3D</span>.
-            </p>
-        </div>
-        <div class="flex items-center gap-4">
-            <div class="glass-card px-6 py-3 flex items-center gap-3 border-white/5">
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Valor em Pipeline</span>
-                <span class="text-lg font-black text-orange-500">{{formatCurrency stats.pipelineValue}}</span>
+<!-- 
+    ZANOELLO 3D - CRM PREMIUM (LEADS & PROSPECTS)
+    Design: Liquid Glass / Ultra High Density / ArchViz Focused
+-->
+
+<div class="crm-wrapper animate-in fade-in duration-700">
+    <!-- Header: Business Intelligence & Quick Actions -->
+    <div class="mb-10 p-10 glass-card border-none bg-gradient-to-br from-white/10 to-white/[0.02] relative overflow-hidden rounded-[3rem]">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-orange-500/10 blur-[120px] -mr-48 -mt-48 animate-pulse"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/5 blur-[100px] -ml-32 -mb-32"></div>
+        
+        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-8 relative z-10">
+            <div>
+                <div class="flex items-center gap-4 mb-3">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center shadow-2xl shadow-orange-500/40">
+                        <span class="material-symbols-outlined text-white text-2xl">hub</span>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-black text-white tracking-tighter leading-none">
+                            Central de <span class="text-gradient">Leads</span>
+                        </h1>
+                        <p class="text-gray-400 font-bold text-[10px] uppercase tracking-[0.3em] mt-1">Intelligence CRM & Acquisition</p>
+                    </div>
+                </div>
             </div>
-            <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center gap-3" data-bs-toggle="modal" data-bs-target="#newLeadModal">
-                <span class="material-symbols-outlined">add_circle</span>
-                Novo Lead
+            
+            <div class="flex flex-wrap items-center gap-4">
+                <!-- Stats Summary -->
+                <div class="flex gap-6 px-8 py-4 bg-black/40 rounded-3xl border border-white/5 backdrop-blur-md">
+                    <div class="text-center">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Total Leads</p>
+                        <p class="text-xl font-black text-white">{{length budgets}}</p>
+                    </div>
+                    <div class="w-px h-8 bg-white/10 self-center"></div>
+                    <div class="text-center">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Conversão</p>
+                        <p class="text-xl font-black text-orange-500">24%</p>
+                    </div>
+                </div>
+
+                <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-10 rounded-2xl shadow-2xl shadow-orange-500/30 transition-all flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95" data-bs-toggle="modal" data-bs-target="#newLeadModal">
+                    <span class="material-symbols-outlined text-base">person_add</span>
+                    Capturar Novo Lead
+                </button>
+            </div>
+        </div>
+
+        <!-- Sub-Navigation -->
+        <div class="flex items-center gap-3 mt-12 p-2 bg-black/30 rounded-[1.5rem] w-fit border border-white/5">
+            <button class="px-10 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all flex items-center gap-2 bg-orange-500 text-white shadow-xl shadow-orange-500/20 tab-btn-nav active" data-tab="kanban">
+                <span class="material-symbols-outlined text-sm">view_kanban</span> Pipeline
+            </button>
+            <button class="px-10 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl text-gray-500 hover:text-white transition-all flex items-center gap-2 tab-btn-nav" data-tab="forecast">
+                <span class="material-symbols-outlined text-sm">query_stats</span> Previsão
+            </button>
+            <button class="px-10 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl text-gray-500 hover:text-white transition-all flex items-center gap-2 tab-btn-nav" data-tab="templates">
+                <span class="material-symbols-outlined text-sm">auto_awesome</span> Biblioteca
             </button>
         </div>
     </div>
-</div>
 
-<!-- Kanban Board -->
-<div class="flex gap-6 overflow-x-auto pb-8 snap-x no-scrollbar">
-    <!-- Novo Contato -->
-    <div class="flex-shrink-0 w-85 snap-start">
-        <div class="flex items-center justify-between mb-6 px-4">
-            <h3 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-3">
-                <span class="w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
-                Novas Oportunidades
-                <span class="bg-white/5 px-2 py-0.5 rounded text-[10px]">{{length kanban.novo}}</span>
-            </h3>
-        </div>
-        
-        <div class="space-y-4">
-            {{#each kanban.novo}}
-            <div class="glass-card p-6 border-white/5 hover:bg-white/5 hover:border-orange-500/30 transition-all cursor-pointer group">
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-[9px] font-black text-blue-400 bg-blue-500/10 px-2 py-1 rounded uppercase tracking-wider">Prospect</span>
-                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{{formatDate this.createdAt}}</span>
-                </div>
-                <h4 class="text-base font-black text-white mb-1 group-hover:text-orange-500 transition-colors">{{this.name}}</h4>
-                <p class="text-xs text-gray-400 mb-6 line-clamp-2">{{this.description}}</p>
-                
-                <div class="flex items-center justify-between pt-4 border-t border-white/5">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-[11px] font-black text-orange-500">
-                            {{#firstLetter this.name}}{{/firstLetter}}
+    <!-- Main Content Area -->
+    <div id="crm-main-content">
+        <!-- View 1: KANBAN -->
+        <div id="tab-kanban" class="tab-pane active">
+            <div class="flex gap-8 overflow-x-auto pb-12 min-h-[800px] scrollbar-premium px-2">
+                {{#each columns}}
+                <div class="flex-shrink-0 w-[320px] flex flex-col gap-6">
+                    <!-- Column Header -->
+                    <div class="flex items-center justify-between px-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-8 rounded-full shadow-[0_0_20px_rgba(249,115,22,0.4)]" style="background-color: {{this.color}}"></div>
+                            <div>
+                                <h4 class="text-[12px] font-black text-white uppercase tracking-[0.2em]">{{this.title}}</h4>
+                                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">{{length (lookup ../kanban this.statusKey)}} Leads</p>
+                            </div>
                         </div>
-                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{{this.projectType}}</span>
-                    </div>
-                    <span class="text-sm font-black text-white">{{formatCurrency this.estimatedValue}}</span>
-                </div>
-            </div>
-            {{/each}}
-        </div>
-    </div>
-
-    <!-- Em Negociação -->
-    <div class="flex-shrink-0 w-85 snap-start">
-        <div class="flex items-center justify-between mb-6 px-4">
-            <h3 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-3">
-                <span class="w-2 h-2 bg-orange-500 rounded-full shadow-[0_0_10px_rgba(249,115,22,0.5)]"></span>
-                Em Negociação
-                <span class="bg-white/5 px-2 py-0.5 rounded text-[10px]">{{length kanban.em_andamento}}</span>
-            </h3>
-        </div>
-        
-        <div class="space-y-4">
-            {{#each kanban.em_andamento}}
-            <div class="glass-card p-6 border-white/5 hover:bg-white/5 hover:border-orange-500/30 transition-all cursor-pointer group">
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-[9px] font-black text-orange-400 bg-orange-500/10 px-2 py-1 rounded uppercase tracking-wider">Negociação</span>
-                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{{formatDate this.createdAt}}</span>
-                </div>
-                <h4 class="text-base font-black text-white mb-1 group-hover:text-orange-500 transition-colors">{{this.name}}</h4>
-                <p class="text-xs text-gray-400 mb-6 line-clamp-2">{{this.description}}</p>
-                
-                <div class="flex items-center justify-between pt-4 border-t border-white/5">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-[11px] font-black text-orange-500">
-                            {{#firstLetter this.name}}{{/firstLetter}}
+                        <div class="dropdown">
+                            <button class="w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-gray-500 hover:text-white transition-all" data-bs-toggle="dropdown">
+                                <span class="material-symbols-outlined text-sm">more_vert</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark glass-card border-white/10 p-2 rounded-2xl shadow-2xl">
+                                <li><a class="dropdown-item text-[10px] font-black uppercase tracking-widest py-3 flex items-center gap-3 rounded-xl hover:bg-orange-500 btn-edit-col" href="#" data-id="{{this.id}}" data-title="{{this.title}}" data-color="{{this.color}}">
+                                    <span class="material-symbols-outlined text-sm">settings</span> Editar Etapa
+                                </a></li>
+                                <li><a class="dropdown-item text-[10px] font-black uppercase tracking-widest py-3 flex items-center gap-3 rounded-xl text-red-400 hover:bg-red-500 hover:text-white btn-delete-col" href="#" data-id="{{this.id}}">
+                                    <span class="material-symbols-outlined text-sm">delete</span> Excluir
+                                </a></li>
+                            </ul>
                         </div>
-                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{{this.projectType}}</span>
-                    </div>
-                    <span class="text-sm font-black text-white">{{formatCurrency this.estimatedValue}}</span>
-                </div>
-            </div>
-            {{/each}}
-        </div>
-    </div>
-
-    <!-- Proposta Enviada -->
-    <div class="flex-shrink-0 w-85 snap-start">
-        <div class="flex items-center justify-between mb-6 px-4">
-            <h3 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-3">
-                <span class="w-2 h-2 bg-purple-500 rounded-full shadow-[0_0_10px_rgba(168,85,247,0.5)]"></span>
-                Proposta Enviada
-                <span class="bg-white/5 px-2 py-0.5 rounded text-[10px]">{{length kanban.respondido}}</span>
-            </h3>
-        </div>
-        
-        <div class="space-y-4">
-            {{#each kanban.respondido}}
-            <div class="glass-card p-6 border-white/5 hover:bg-white/5 hover:border-orange-500/30 transition-all cursor-pointer group">
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-[9px] font-black text-purple-400 bg-purple-500/10 px-2 py-1 rounded uppercase tracking-wider">Closing</span>
-                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{{formatDate this.createdAt}}</span>
-                </div>
-                <h4 class="text-base font-black text-white mb-1 group-hover:text-orange-500 transition-colors">{{this.name}}</h4>
-                <p class="text-xs text-gray-400 mb-6 line-clamp-2">{{this.description}}</p>
-                
-                <div class="flex items-center justify-between pt-4 border-t border-white/5">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-[11px] font-black text-orange-500">
-                            {{#firstLetter this.name}}{{/firstLetter}}
-                        </div>
-                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{{this.projectType}}</span>
-                    </div>
-                    <span class="text-sm font-black text-white">{{formatCurrency this.estimatedValue}}</span>
-                </div>
-            </div>
-            {{/each}}
-        </div>
-    </div>
-
-    <!-- Fechado -->
-    <div class="flex-shrink-0 w-85 snap-start">
-        <div class="flex items-center justify-between mb-6 px-4">
-            <h3 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-3">
-                <span class="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]"></span>
-                Contrato Fechado
-                <span class="bg-white/5 px-2 py-0.5 rounded text-[10px]">{{length kanban.fechado}}</span>
-            </h3>
-        </div>
-        
-        <div class="space-y-4">
-            {{#each kanban.fechado}}
-            <div class="glass-card p-6 border-white/5 hover:bg-white/5 hover:border-green-500/30 transition-all cursor-pointer group">
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-[9px] font-black text-green-400 bg-green-500/10 px-2 py-1 rounded uppercase tracking-wider">Ganho</span>
-                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{{formatDate this.createdAt}}</span>
-                </div>
-                <h4 class="text-base font-black text-white mb-1 group-hover:text-green-500 transition-colors">{{this.name}}</h4>
-                <p class="text-xs text-gray-400 mb-6 line-clamp-2">{{this.description}}</p>
-                
-                <div class="flex items-center justify-between pt-4 border-t border-white/5">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center text-[11px] font-black text-green-500">
-                            {{#firstLetter this.name}}{{/firstLetter}}
-                        </div>
-                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{{this.projectType}}</span>
-                    </div>
-                    <span class="text-sm font-black text-white">{{formatCurrency this.estimatedValue}}</span>
-                </div>
-            </div>
-            {{/each}}
-        </div>
-    </div>
-</div>
-
-<!-- New Lead Modal -->
-<div class="modal fade" id="newLeadModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card border-white/10 bg-[#0f0f0f]/95 backdrop-blur-2xl">
-            <div class="modal-header border-white/5 p-8">
-                <h5 class="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                    <span class="material-symbols-outlined text-orange-500">person_add</span>
-                    Capturar Novo Lead
-                </h5>
-                <button type="button" class="btn-close btn-close-white opacity-50 hover:opacity-100 transition-opacity" data-bs-dismiss="modal"></button>
-            </div>
-            <form id="newLeadForm">
-                <div class="modal-body p-8 space-y-6">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Nome Completo</label>
-                        <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">E-mail</label>
-                            <input type="email" name="email" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
+                    <!-- Kanban Drop Zone -->
+                    <div class="kanban-drop-zone p-3 rounded-[2.5rem] border border-transparent hover:border-white/5 hover:bg-white/[0.01] transition-all flex-1 flex flex-col gap-5 min-h-[600px]" 
+                         id="col-{{this.statusKey}}" 
+                         data-status="{{this.statusKey}}">
+                        
+                        {{#each (lookup ../kanban this.statusKey)}}
+                            {{> kanbanCard lead=this}}
+                        {{/each}}
+
+                        {{#unless (length (lookup ../kanban this.statusKey))}}
+                        <div class="flex-1 border-2 border-dashed border-white/[0.03] rounded-[2rem] flex flex-col items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
+                            <span class="material-symbols-outlined text-5xl mb-4 text-gray-600">move_item</span>
+                            <p class="text-[9px] font-black uppercase tracking-widest text-gray-500">Mover Lead para cá</p>
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">WhatsApp</label>
-                            <input type="text" name="phone" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Tipo de Projeto</label>
-                        <select name="projectType" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all cursor-pointer">
-                            <option value="Renderização" class="bg-[#0f0f0f]">Renderização</option>
-                            <option value="Modelagem 3D" class="bg-[#0f0f0f]">Modelagem 3D</option>
-                            <option value="Animação" class="bg-[#0f0f0f]">Animação</option>
-                            <option value="Visita Virtual" class="bg-[#0f0f0f]">Visita Virtual</option>
-                        </select>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Valor Estimado</label>
-                        <input type="number" name="estimatedValue" step="0.01" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all" placeholder="0.00">
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Notas Iniciais</label>
-                        <textarea name="description" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all resize-none"></textarea>
+                        {{/unless}}
                     </div>
                 </div>
-                <div class="modal-footer border-white/5 p-8">
-                    <button type="button" class="px-6 py-3 text-xs font-black text-gray-500 uppercase tracking-widest hover:text-white transition-all" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-8 rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">rocket_launch</span>
-                        Criar Lead
-                    </button>
+                {{/each}}
+            </div>
+        </div>
+
+        <!-- View 2: FORECAST (Intelligence) -->
+        <div id="tab-forecast" class="tab-pane hidden animate-in slide-in-from-bottom-4 duration-500">
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
+                <div class="xl:col-span-2 space-y-10">
+                    <div class="glass-card p-10 border-white/5 bg-black/20 rounded-[3rem]">
+                        <h3 class="text-xl font-black text-white mb-10 flex items-center gap-3">
+                            <span class="material-symbols-outlined text-orange-500">insights</span> Previsão de Receita (IA)
+                        </h3>
+                        <div class="h-[400px] w-full relative">
+                            <!-- Chart Placeholder for Chart.js -->
+                            <canvas id="forecastChart"></canvas>
+                        </div>
+                    </div>
                 </div>
-            </form>
+                
+                <div class="space-y-8">
+                    <div class="glass-card p-8 border-white/5 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-[2.5rem]">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">VGV Estimado (Total)</p>
+                        <h4 class="text-4xl font-black text-emerald-400 tracking-tighter">R$ {{numberFormat totalVgv 2 ',' '.'}}</h4>
+                        <p class="text-[9px] text-gray-500 font-bold uppercase mt-4">Calculado com base em {{length budgets}} leads ativos</p>
+                    </div>
+
+                    <div class="glass-card p-8 border-white/5 bg-white/5 rounded-[2.5rem] space-y-6">
+                        <h5 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Peso por Etapa</h5>
+                        {{#each columns}}
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase">{{this.title}}</span>
+                                <span class="text-[10px] font-black text-white">85%</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                <div class="h-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.4)]" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View 3: TEMPLATES (Library) -->
+        <div id="tab-templates" class="tab-pane hidden animate-in zoom-in duration-500">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="template-grid">
+                <!-- Loaded via JS -->
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Modal: Manage Lead (Ultra Advanced) -->
+<div class="modal fade" id="manageLeadModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[3rem] bg-[#0c0e12]/95 backdrop-blur-3xl overflow-hidden">
+            <div class="modal-body p-0 flex h-[85vh]">
+                <!-- Sidebar Nav -->
+                <div class="w-24 border-r border-white/5 flex flex-col items-center py-10 gap-8 bg-black/20">
+                    <button class="modal-tab-btn active w-14 h-14 rounded-2xl flex items-center justify-center transition-all group" data-tab="details">
+                        <span class="material-symbols-outlined text-2xl">person</span>
+                        <span class="absolute left-24 px-3 py-1 bg-orange-500 text-white text-[8px] font-black uppercase tracking-widest rounded opacity-0 group-hover:opacity-100 transition-all">Perfil</span>
+                    </button>
+                    <button class="modal-tab-btn w-14 h-14 rounded-2xl flex items-center justify-center transition-all group" data-tab="briefing">
+                        <span class="material-symbols-outlined text-2xl">description</span>
+                        <span class="absolute left-24 px-3 py-1 bg-orange-500 text-white text-[8px] font-black uppercase tracking-widest rounded opacity-0 group-hover:opacity-100 transition-all">Briefing</span>
+                    </button>
+                    <button class="modal-tab-btn w-14 h-14 rounded-2xl flex items-center justify-center transition-all group" data-tab="tasks">
+                        <span class="material-symbols-outlined text-2xl">task_alt</span>
+                        <span class="absolute left-24 px-3 py-1 bg-orange-500 text-white text-[8px] font-black uppercase tracking-widest rounded opacity-0 group-hover:opacity-100 transition-all">Tarefas</span>
+                    </button>
+                    <button class="modal-tab-btn w-14 h-14 rounded-2xl flex items-center justify-center transition-all group" data-tab="ai">
+                        <span class="material-symbols-outlined text-2xl text-orange-500">psychology</span>
+                        <span class="absolute left-24 px-3 py-1 bg-orange-500 text-white text-[8px] font-black uppercase tracking-widest rounded opacity-0 group-hover:opacity-100 transition-all">Predict</span>
+                    </button>
+                </div>
+
+                <!-- Main Content -->
+                <div class="flex-1 flex flex-col">
+                    <header class="p-10 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
+                        <div class="flex items-center gap-6">
+                            <div class="w-16 h-16 rounded-[1.5rem] overflow-hidden border-2 border-orange-500/30 p-1">
+                                <img id="modalLeadImgTag" src="" class="w-full h-full object-cover rounded-xl">
+                            </div>
+                            <div>
+                                <h2 id="modalLeadName" class="text-3xl font-black text-white tracking-tighter mb-1">Lead Name</h2>
+                                <div class="flex items-center gap-3">
+                                    <span id="modalLeadStatus" class="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-[9px] font-black text-orange-500 uppercase tracking-widest">Status</span>
+                                    <span class="text-[9px] font-bold text-gray-500 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-xs">history</span>
+                                        Criado há 3 dias
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-all" data-bs-dismiss="modal">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </header>
+
+                    <div class="flex-1 overflow-y-auto p-12 custom-scrollbar">
+                        <!-- Pane: DETAILS -->
+                        <div id="modal-tab-details" class="modal-pane space-y-10">
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                                <div class="lg:col-span-2 space-y-10">
+                                    <div class="grid grid-cols-2 gap-8">
+                                        <div class="p-6 rounded-[2rem] bg-white/5 border border-white/10">
+                                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-4">Informações de Contato</p>
+                                            <div class="space-y-4">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="material-symbols-outlined text-orange-500 text-sm">mail</span>
+                                                    <span id="detailEmail" class="text-[11px] font-bold text-white">email@exemplo.com</span>
+                                                </div>
+                                                <div class="flex items-center gap-3">
+                                                    <span class="material-symbols-outlined text-emerald-500 text-sm">call</span>
+                                                    <span id="detailPhone" class="text-[11px] font-bold text-white">(11) 99999-9999</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-6 rounded-[2rem] bg-white/5 border border-white/10">
+                                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-4">Interesse Técnico</p>
+                                            <div class="space-y-4">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-[10px] font-bold text-gray-500">Software</span>
+                                                    <span id="detailSoftware" class="text-[10px] font-black text-white uppercase">3ds Max</span>
+                                                </div>
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-[10px] font-bold text-gray-500">Tipo Projeto</span>
+                                                    <span id="detailProjectType" class="text-[10px] font-black text-white uppercase">Residencial</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <h4 class="text-[11px] font-black text-white uppercase tracking-widest">Breve Descrição</h4>
+                                        <div class="p-8 rounded-[2.5rem] bg-white/5 border border-white/5 min-h-[150px]">
+                                            <p id="detailDescription" class="text-sm text-gray-400 leading-relaxed italic">Nenhuma descrição informada.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-8">
+                                    <div class="p-8 rounded-[2.5rem] bg-emerald-500/5 border border-emerald-500/10 text-center">
+                                        <p class="text-[9px] font-black text-emerald-500 uppercase tracking-[0.2em] mb-4">Valor Estimado</p>
+                                        <h3 id="detailValue" class="text-3xl font-black text-white tracking-tighter">R$ 0,00</h3>
+                                    </div>
+                                    <div class="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 space-y-6">
+                                        <button class="w-full py-4 rounded-2xl bg-orange-500 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-orange-500/20">Gerar Orçamento</button>
+                                        <button class="w-full py-4 rounded-2xl bg-white/5 text-gray-400 font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">Abrir WhatsApp</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pane: BRIEFING -->
+                        <div id="modal-tab-briefing" class="modal-pane hidden animate-in slide-in-from-right-4">
+                            <div class="space-y-6">
+                                <h4 class="text-xl font-black text-white tracking-tighter">Briefing Completo</h4>
+                                <div id="briefingContent" class="p-10 rounded-[3rem] bg-white/[0.02] border border-white/5 min-h-[300px]">
+                                    <!-- Dynamic content -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-gradient {
+        background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .modal-tab-btn {
+        background: transparent;
+        color: rgba(255,255,255,0.3);
+        border: 1px solid transparent;
+        position: relative;
+    }
+    .modal-tab-btn.active {
+        background: rgba(249, 115, 22, 0.1);
+        color: #f97316;
+        border-color: rgba(249, 115, 22, 0.2);
+    }
+    .modal-tab-btn:hover:not(.active) {
+        color: white;
+        background: rgba(255,255,255,0.05);
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+    .scrollbar-premium::-webkit-scrollbar { height: 6px; }
+    .scrollbar-premium::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
+    .scrollbar-premium::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+    .scrollbar-premium::-webkit-scrollbar-thumb:hover { background: rgba(249,115,22,0.3); }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-document.getElementById('newLeadForm')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
-    
-    try {
-        const response = await fetch('/admin/api/leads', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+document.addEventListener('DOMContentLoaded', function() {
+    // === TAB SWITCHING ===
+    function switchTab(tabId, el) {
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+        const targetTab = document.getElementById(`tab-${tabId}`);
+        if (targetTab) targetTab.classList.remove('hidden');
+        
+        document.querySelectorAll('.tab-btn-nav').forEach(btn => {
+            btn.classList.remove('bg-orange-500', 'text-white', 'shadow-xl', 'shadow-orange-500/20');
+            btn.classList.add('text-gray-500');
         });
         
-        const result = await response.json();
-        if (result.success) {
-            window.location.reload();
-        } else {
-            alert('Erro: ' + result.message);
-        }
-    } catch (error) {
-        console.error('Error creating lead:', error);
-        alert('Erro ao processar solicitação');
+        el.classList.add('bg-orange-500', 'text-white', 'shadow-xl', 'shadow-orange-500/20');
+        el.classList.remove('text-gray-500');
+
+        if (tabId === 'forecast') initForecastChart();
+        if (tabId === 'templates') loadTemplates();
     }
+
+    document.querySelectorAll('.tab-btn-nav').forEach(btn => {
+        btn.addEventListener('click', function() {
+            switchTab(this.dataset.tab, this);
+        });
+    });
+
+    // === MODAL TAB SWITCHING ===
+    function switchModalTab(tabId, el) {
+        document.querySelectorAll('.modal-pane').forEach(p => p.classList.add('hidden'));
+        const target = document.getElementById(`modal-tab-${tabId}`);
+        if (target) target.classList.remove('hidden');
+        
+        document.querySelectorAll('.modal-tab-btn').forEach(btn => btn.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    document.querySelectorAll('.modal-tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            switchModalTab(this.dataset.tab, this);
+        });
+    });
+
+    // === LEAD MANAGEMENT ===
+    window.manageLead = function(leadData) {
+        const data = typeof leadData === 'string' ? JSON.parse(leadData) : leadData;
+        
+        document.getElementById('modalLeadName').innerText = data.name;
+        document.getElementById('modalLeadStatus').innerText = (data.status || '').replace('_', ' ');
+        document.getElementById('modalLeadImgTag').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`;
+        
+        document.getElementById('detailEmail').innerText = data.email;
+        document.getElementById('detailPhone').innerText = data.phone || '(Não informado)';
+        document.getElementById('detailSoftware').innerText = data.software || 'N/A';
+        document.getElementById('detailValue').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.estimatedValue || 0);
+        document.getElementById('detailDescription').innerText = data.description || 'Nenhuma descrição informada.';
+        
+        const modalEl = document.getElementById('manageLeadModal');
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+    };
+
+    // === FORECAST CHART ===
+    let crmChart = null;
+    function initForecastChart() {
+        const ctx = document.getElementById('forecastChart');
+        if (!ctx) return;
+        
+        if (crmChart) crmChart.destroy();
+        
+        crmChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'Receita Prevista',
+                    data: [12000, 19000, 15000, 25000, 22000, 30000],
+                    borderColor: '#f97316',
+                    borderWidth: 4,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                    pointRadius: 6,
+                    pointBackgroundColor: '#f97316',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { display: false },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 10, weight: 'bold' } }
+                    }
+                }
+            }
+        });
+    }
+
+    // === TEMPLATE LIBRARY ===
+    function loadTemplates() {
+        const grid = document.getElementById('template-grid');
+        if (!grid) return;
+        grid.innerHTML = '<div class="col-span-4 py-20 text-center"><div class="animate-spin w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full mx-auto mb-6"></div><p class="text-[10px] text-gray-500 font-black uppercase tracking-[0.3em]">Sincronizando Biblioteca de Ativos...</p></div>';
+
+        fetch('/admin/api/templates')
+            .then(res => res.json())
+            .then(templates => {
+                grid.innerHTML = '';
+                templates.forEach(tpl => {
+                    const card = document.createElement('div');
+                    card.className = 'glass-card p-6 border-white/5 bg-white/5 hover:bg-white/10 transition-all cursor-pointer group relative overflow-hidden rounded-3xl';
+                    card.innerHTML = `
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-[8px] bg-orange-500/10 text-orange-500 px-3 py-1 rounded-lg font-black uppercase tracking-widest border border-orange-500/20">${tpl.category}</span>
+                            </div>
+                            <h5 class="text-[12px] font-black text-white group-hover:text-orange-500 transition-colors mb-2 uppercase">${tpl.name}</h5>
+                            <p class="text-[10px] text-gray-500 line-clamp-3 leading-relaxed">${tpl.content}</p>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-orange-500/0 to-orange-500/0 group-hover:from-orange-500/5 group-hover:to-transparent transition-all"></div>
+                    `;
+                    grid.appendChild(card);
+                });
+            })
+            .catch(err => {
+                grid.innerHTML = '<p class="text-center text-red-500">Erro ao carregar modelos.</p>';
+            });
+    }
+
+    // === EVENT DELEGATION FOR DYNAMIC ELEMENTS ===
+    document.addEventListener('click', function(e) {
+        // Edit Column
+        const editColBtn = e.target.closest('.btn-edit-col');
+        if (editColBtn) {
+            e.preventDefault();
+            if (window.editColumn) {
+                window.editColumn(editColBtn.dataset.id, editColBtn.dataset.title, editColBtn.dataset.color);
+            }
+            return;
+        }
+
+        // Delete Column
+        const deleteColBtn = e.target.closest('.btn-delete-col');
+        if (deleteColBtn) {
+            e.preventDefault();
+            if (window.deleteColumn) {
+                window.deleteColumn(deleteColBtn.dataset.id);
+            }
+            return;
+        }
+
+        // Manage Lead (Card Click)
+        const leadCard = e.target.closest('.kanban-card-main');
+        const editLeadBtn = e.target.closest('.btn-edit-lead');
+        
+        if (editLeadBtn) {
+            e.stopPropagation();
+            if (window.manageLead) window.manageLead(editLeadBtn.dataset.lead);
+            return;
+        }
+        
+        if (leadCard && !e.target.closest('button')) {
+            if (window.manageLead) window.manageLead(leadCard.dataset.lead);
+        }
+    });
+
+    document.addEventListener('dragstart', function(e) {
+        const card = e.target.closest('.kanban-card-main');
+        if (card && window.onDragStart) {
+            window.onDragStart(e, card.dataset.id);
+        }
+    });
 });
 </script>
-

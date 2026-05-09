@@ -5,27 +5,29 @@
 
 /* Admin Panel Variables */
 :root {
-    --admin-primary: #6366f1;
-    --admin-primary-dark: #4f46e5;
-    --admin-secondary: #a855f7;
-    --admin-accent: #ff6b35;
+    --admin-primary: #f97316;
+    --admin-primary-dark: #ea580c;
+    --admin-secondary: #fb923c;
+    --admin-accent: #fdba74;
     --admin-success: #10b981;
     --admin-warning: #f59e0b;
     --admin-danger: #ef4444;
     --admin-info: #3b82f6;
     --admin-light: #f8f9fa;
-    --admin-dark: #111827;
-    --admin-darker: #0f0f12;
-    --admin-gray: #9ca3af;
+    --admin-dark: #0a0c10;
+    --admin-darker: #050507;
+    --admin-gray: #6b7280;
     --admin-gray-light: #e5e7eb;
-    --admin-gray-dark: #374151;
-    --admin-sidebar-width: 280px;
+    --admin-gray-dark: #1f2937;
+    --admin-sidebar-width: 260px;
     --admin-sidebar-collapsed-width: 80px;
     --admin-header-height: 70px;
-    --admin-border-radius: 12px;
-    --admin-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --admin-border: rgba(255, 255, 255, 0.08);
-    --admin-card-bg: rgba(255, 255, 255, 0.03);
+    --admin-border-radius: 24px;
+    --admin-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --admin-border: rgba(255, 255, 255, 0.05);
+    --admin-card-bg: rgba(255, 255, 255, 0.02);
+    --glass-blur: 40px;
+    --glass-saturate: 200%;
 }
 
 /* Admin Body */
@@ -45,7 +47,9 @@
 /* Sidebar */
 .admin-sidebar {
     width: var(--admin-sidebar-width);
-    background: var(--admin-darker);
+    background: rgba(15, 15, 18, 0.7);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
     border-right: 1px solid var(--admin-border);
     position: fixed;
     top: 0;
@@ -237,8 +241,10 @@
 
 /* Header */
 .admin-header {
-    background: linear-gradient(135deg, var(--admin-dark) 0%, var(--admin-darker) 100%);
-    border-bottom: 1px solid rgba(255, 107, 53, 0.2);
+    background: rgba(15, 15, 18, 0.7);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border-bottom: 1px solid var(--admin-border);
     height: var(--admin-header-height);
     position: sticky;
     top: 0;
@@ -310,20 +316,51 @@
     text-align: center;
 }
 
-/* Cards */
-.card {
-    background: var(--admin-card-bg);
-    border: 1px solid var(--admin-border);
-    border-radius: 16px;
-    backdrop-filter: blur(10px);
-    transition: var(--admin-transition);
+/* Cards with Liquid Glass Effect */
+.glass-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.4),
+        inset 0 0 80px rgba(255, 255, 255, 0.01);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     overflow: hidden;
-    margin-bottom: 2rem;
+    position: relative;
 }
 
-.card:hover {
-    border-color: rgba(99, 102, 241, 0.3);
-    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.glass-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.05),
+        transparent
+    );
+    transition: 0.5s;
+    pointer-events: none;
+}
+
+.glass-card:hover::after {
+    left: 100%;
 }
 
 .card-header {
@@ -528,8 +565,36 @@
 }
 
 .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.btn-primary, .btn-success, .btn-danger, .btn-warning {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after, .btn-success::after, .btn-danger::after, .btn-warning::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: 0.5s;
+    pointer-events: none;
+}
+
+.btn:hover::after {
+    left: 100%;
 }
 
 .btn-primary {

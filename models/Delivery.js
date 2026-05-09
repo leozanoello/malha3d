@@ -23,6 +23,14 @@ const Delivery = sequelize.define('Delivery', {
   confirmation: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
+  },
+  projectId: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
+  downloadUrl: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
 }, {
   tableName: 'deliveries'

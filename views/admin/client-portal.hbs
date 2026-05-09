@@ -1,77 +1,200 @@
 <!-- Header -->
-<div class="mb-10 p-8 glass-card border-none bg-gradient-to-br from-white/5 to-white/[0.02]">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="mb-10 p-8 glass-card border-none bg-[#003559] relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/5 blur-[100px] -mr-32 -mt-32"></div>
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
         <div>
             <h1 class="text-4xl font-black text-white tracking-tight mb-2">
                 Portal do <span class="text-gradient">Cliente</span>
             </h1>
             <p class="text-gray-400 font-medium">
-                Gerencie o acesso, visualize entregas e configure a experiência dos clientes <span class="text-orange-500">Malha3D</span>.
+                Gerencie o acesso, visualize entregas e configure a experiência dos clientes <span class="text-orange-500 font-black">ZANOELLO 3D</span>.
             </p>
         </div>
-        <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center gap-3">
-            <span class="material-symbols-outlined">person_add</span>
-            Convidar Cliente
-        </button>
-    </div>
-</div>
-
-<!-- Stats -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-    <div class="glass-card p-8 border-white/5 flex flex-col items-center text-center group">
-        <div class="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 mb-4 border border-orange-500/20 group-hover:scale-110 transition-transform shadow-lg shadow-orange-500/10">
-            <span class="material-symbols-outlined text-2xl">groups</span>
-        </div>
-        <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">Clientes Ativos</p>
-        <h2 class="text-3xl font-black text-white tracking-tight">0</h2>
-    </div>
-
-    <div class="glass-card p-8 border-white/5 flex flex-col items-center text-center group">
-        <div class="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500 mb-4 border border-blue-500/20 group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/10">
-            <span class="material-symbols-outlined text-2xl">visibility</span>
-        </div>
-        <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">Acessos Hoje</p>
-        <h2 class="text-3xl font-black text-white tracking-tight">0</h2>
-    </div>
-
-    <div class="glass-card p-8 border-white/5 flex flex-col items-center text-center group">
-        <div class="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500 mb-4 border border-emerald-500/20 group-hover:scale-110 transition-transform shadow-lg shadow-emerald-500/10">
-            <span class="material-symbols-outlined text-2xl">thumb_up</span>
-        </div>
-        <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">Aprovações</p>
-        <h2 class="text-3xl font-black text-white tracking-tight">0</h2>
-    </div>
-
-    <div class="glass-card p-8 border-white/5 flex flex-col items-center text-center group">
-        <div class="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-500 mb-4 border border-purple-500/20 group-hover:scale-110 transition-transform shadow-lg shadow-purple-500/10">
-            <span class="material-symbols-outlined text-2xl">download</span>
-        </div>
-        <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">Downloads</p>
-        <h2 class="text-3xl font-black text-white tracking-tight">0</h2>
-    </div>
-</div>
-
-<!-- Empty State -->
-<div class="glass-card border-white/5 overflow-hidden">
-    <div class="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
-        <h3 class="text-lg font-black text-white tracking-tight flex items-center gap-3">
-            <span class="material-symbols-outlined text-orange-500">badge</span>
-            Clientes com Acesso ao Portal
-        </h3>
-    </div>
-    <div class="px-8 py-20 text-center">
-        <div class="flex flex-col items-center gap-6">
-            <div class="w-24 h-24 bg-white/[0.02] rounded-3xl flex items-center justify-center border border-white/5">
-                <span class="material-symbols-outlined text-5xl text-gray-700">supervised_user_circle</span>
-            </div>
-            <div>
-                <p class="text-lg font-black text-white tracking-tight mb-2">Nenhum cliente configurado</p>
-                <p class="text-sm text-gray-500 max-w-md mx-auto">Convide seus clientes para o portal onde eles poderão acompanhar o progresso dos projetos, aprovar entregas e fazer download dos arquivos finalizados.</p>
-            </div>
-            <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-8 rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2 mt-4">
+        <div class="flex gap-4">
+            <button class="bg-white/5 hover:bg-white/10 text-white font-black py-4 px-6 rounded-2xl border border-white/10 transition-all flex items-center gap-2 text-[10px] uppercase tracking-widest">
+                <span class="material-symbols-outlined text-sm">settings</span>
+                Configurações Globais
+            </button>
+            <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/20 transition-all flex items-center gap-3 text-[10px] uppercase tracking-widest">
                 <span class="material-symbols-outlined text-sm">person_add</span>
-                Configurar Primeiro Cliente
+                Novo Convite
             </button>
         </div>
     </div>
+</div>
+
+<!-- 3D Artist Specific Features Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div class="glass-card p-8 border-white/5 bg-gradient-to-br from-orange-500/10 to-transparent">
+        <div class="flex items-center gap-4 mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center text-white">
+                <span class="material-symbols-outlined text-2xl">view_in_ar</span>
+            </div>
+            <div>
+                <h4 class="text-sm font-black text-white uppercase tracking-tight">Preview VR/360</h4>
+                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Experiência Imersiva</p>
+            </div>
+        </div>
+        <p class="text-xs text-gray-400 leading-relaxed mb-6">Habilite a visualização imersiva para que seus clientes possam "caminhar" pelos ambientes via browser ou headset.</p>
+        <div class="flex items-center justify-between p-4 rounded-xl bg-black/20 border border-white/5">
+            <span class="text-[10px] font-black text-white uppercase tracking-widest">Auto-gerar links 360</span>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" checked>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card p-8 border-white/5 bg-gradient-to-br from-blue-500/10 to-transparent">
+        <div class="flex items-center gap-4 mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center text-white">
+                <span class="material-symbols-outlined text-2xl">cloud_done</span>
+            </div>
+            <div>
+                <h4 class="text-sm font-black text-white uppercase tracking-tight">Entrega Progressiva</h4>
+                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Stream de Assets</p>
+            </div>
+        </div>
+        <p class="text-xs text-gray-400 leading-relaxed mb-6">Sincronização automática com Render Farms. O cliente recebe notificação instantânea de cada frame finalizado.</p>
+        <div class="flex items-center justify-between p-4 rounded-xl bg-black/20 border border-white/5">
+            <span class="text-[10px] font-black text-white uppercase tracking-widest">Sincronizar Cloud</span>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" checked>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card p-8 border-white/5 bg-gradient-to-br from-emerald-500/10 to-transparent">
+        <div class="flex items-center gap-4 mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white">
+                <span class="material-symbols-outlined text-2xl">history_edu</span>
+            </div>
+            <div>
+                <h4 class="text-sm font-black text-white uppercase tracking-tight">Aprovação Digital</h4>
+                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Legal & Contratos</p>
+            </div>
+        </div>
+        <p class="text-xs text-gray-400 leading-relaxed mb-6">Coleta de assinaturas digitais e aceites formais de cada etapa do projeto diretamente no portal.</p>
+        <div class="flex items-center justify-between p-4 rounded-xl bg-black/20 border border-white/5">
+            <span class="text-[10px] font-black text-white uppercase tracking-widest">Assinatura Ativa</span>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-8 space-y-8">
+        <!-- Client List -->
+        <div class="glass-card border-white/5 overflow-hidden">
+            <div class="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.01]">
+                <div>
+                    <h3 class="text-lg font-black text-white tracking-tight flex items-center gap-3">
+                        <span class="material-symbols-outlined text-orange-500">groups</span>
+                        Gestão de Acessos
+                    </h3>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em] mt-1">Total de {{clientsWithAccess.length}} clientes cadastrados</p>
+                </div>
+            </div>
+            
+            <div class="divide-y divide-white/5">
+                {{#each clientsWithAccess}}
+                <div class="p-6 hover:bg-white/[0.02] transition-all group flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 font-black border border-orange-500/10 group-hover:rotate-3 transition-all text-xl">
+                            {{firstLetter this.name}}
+                        </div>
+                        <div>
+                            <p class="text-sm font-black text-white mb-1">{{this.name}}</p>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[9px] text-gray-500 font-black uppercase tracking-widest">{{this.company}}</span>
+                                <span class="w-1 h-1 rounded-full bg-gray-700"></span>
+                                <span class="text-[9px] text-orange-500/80 font-black uppercase tracking-widest">{{this.email}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-8">
+                        <div class="text-right hidden xl:block">
+                            <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Status do Portal</p>
+                            <div class="flex items-center gap-2 justify-end">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span class="text-[10px] font-black text-white uppercase tracking-tight">Ativo</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="w-10 h-10 rounded-xl bg-white/5 text-gray-400 hover:text-white hover:bg-orange-500 transition-all flex items-center justify-center" title="Configurar Permissões">
+                                <span class="material-symbols-outlined text-lg">tune</span>
+                            </button>
+                            <button class="w-10 h-10 rounded-xl bg-white/5 text-gray-400 hover:text-white hover:bg-blue-500 transition-all flex items-center justify-center" title="Impedir Visualização">
+                                <span class="material-symbols-outlined text-lg">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {{else}}
+                <div class="p-20 text-center">
+                    <div class="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10">
+                        <span class="material-symbols-outlined text-4xl text-gray-700">person_off</span>
+                    </div>
+                    <h4 class="text-xl font-black text-white mb-2 tracking-tight">Nenhum cliente sincronizado</h4>
+                    <p class="text-sm text-gray-500 max-w-sm mx-auto mb-8 font-medium">Os clientes aparecem aqui automaticamente após serem cadastrados no CRM ou via convite direto.</p>
+                    <button class="bg-orange-500 text-white font-black py-4 px-10 rounded-2xl shadow-xl shadow-orange-500/20 text-[10px] uppercase tracking-widest">Importar do CRM</button>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="lg:col-span-4 space-y-8">
+        <!-- Interactive Markup Switch -->
+        <div class="glass-card p-8 border-white/5 bg-[#0a0c10]">
+            <h3 class="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
+                <span class="material-symbols-outlined text-orange-500">edit_note</span>
+                Ferramentas de Revisão
+            </h3>
+            <div class="space-y-6">
+                <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-black text-white uppercase tracking-tight">Markup 2D/3D</span>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" checked>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-500 leading-relaxed">Permite que o cliente faça anotações diretamente sobre os renders e modelos 3D.</p>
+                </div>
+                <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-black text-white uppercase tracking-tight">Chat de Projeto</span>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" checked>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-500 leading-relaxed">Canal direto de comunicação exclusivo para cada entrega ou versão do render.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portal Branding -->
+        <div class="glass-card p-8 border-white/5">
+            <h3 class="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-8">Personalização</h3>
+            <div class="space-y-6">
+                <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-4">Logotipo no Portal</label>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white/5 rounded-xl border border-dashed border-white/10 flex items-center justify-center cursor-pointer hover:border-orange-500 transition-all">
+                            <span class="material-symbols-outlined text-gray-600">upload</span>
+                        </div>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Upload .PNG / .SVG</p>
+                    </div>
+                </div>
+                <button class="w-full py-4 rounded-xl bg-orange-500/10 text-orange-500 font-black text-[10px] uppercase tracking-widest border border-orange-500/20 hover:bg-orange-500 hover:text-white transition-all shadow-lg shadow-orange-500/5">
+                    Salvar Identidade Visual
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+/div>
 </div>

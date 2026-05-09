@@ -1,0 +1,166 @@
+<div class="compact-mode">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h4 mb-0 text-white">Informações Bancárias</h1>
+            <p class="text-muted small mb-0">Dados para faturamento e recebimentos via PIX</p>
+        </div>
+        <button type="submit" form="bankForm" class="btn btn-primary btn-sm px-4">
+            <i class="bi bi-save me-2"></i>Salvar Dados
+        </button>
+    </div>
+
+    <form id="bankForm" action="/admin/dados-bancarios" method="POST">
+        <div class="row g-3">
+            <!-- Titularidade -->
+            <div class="col-12">
+                <div class="glass-card p-3">
+                    <h6 class="text-primary mb-3"><i class="bi bi-person-badge me-2"></i>Titularidade</h6>
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <div class="form-floating">
+                                <input type="text" name="fullName" class="form-control" id="fullName" placeholder="Nome Completo" required>
+                                <label for="fullName">Nome Completo / Razão Social *</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" name="document" class="form-control" id="document" placeholder="CPF/CNPJ" required>
+                                <label for="document">CPF/CNPJ *</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" name="address" class="form-control" id="address" placeholder="Endereço">
+                                <label for="address">Endereço Completo</label>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-floating">
+                                <input type="text" name="city" class="form-control" id="city" placeholder="Cidade">
+                                <label for="city">Cidade</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="text" name="state" class="form-control" id="state" placeholder="Estado">
+                                <label for="state">Estado</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" name="zipCode" class="form-control" id="zipCode" placeholder="CEP">
+                                <label for="zipCode">CEP</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dados Bancários -->
+            <div class="col-md-6">
+                <div class="glass-card p-3 h-100">
+                    <h6 class="text-primary mb-3"><i class="bi bi-bank me-2"></i>Conta Bancária</h6>
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <div class="form-floating">
+                                <input type="text" name="bankName" class="form-control" id="bankName" placeholder="Banco">
+                                <label for="bankName">Banco</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" name="bankCode" class="form-control" id="bankCode" placeholder="Código">
+                                <label for="bankCode">Código do Banco</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" name="agency" class="form-control" id="agency" placeholder="Agência">
+                                <label for="agency">Agência</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-floating">
+                                <input type="text" name="accountNumber" class="form-control" id="accountNumber" placeholder="Conta">
+                                <label for="accountNumber">Número da Conta</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <select name="accountType" class="form-select" id="accountType">
+                                    <option value="corrente">Conta Corrente</option>
+                                    <option value="poupanca">Conta Poupança</option>
+                                    <option value="pagamento">Conta de Pagamento</option>
+                                </select>
+                                <label for="accountType">Tipo de Conta</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PIX -->
+            <div class="col-md-6">
+                <div class="glass-card p-3 h-100">
+                    <h6 class="text-primary mb-3"><i class="bi bi-qr-code me-2"></i>Chave PIX</h6>
+                    <div class="row g-2">
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <select name="pixType" class="form-select" id="pixType">
+                                    <option value="cpf">CPF</option>
+                                    <option value="cnpj">CNPJ</option>
+                                    <option value="email">E-mail</option>
+                                    <option value="phone">Telefone</option>
+                                    <option value="random">Chave Aleatória</option>
+                                </select>
+                                <label for="pixType">Tipo de Chave PIX</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" name="pixKey" class="form-control" id="pixKey" placeholder="Chave PIX">
+                                <label for="pixKey">Chave PIX</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 rounded bg-white bg-opacity-5 border border-white border-opacity-10">
+                        <p class="small text-muted mb-0">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Estas informações serão utilizadas para gerar cobranças e notas fiscais automaticamente pelo sistema.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+.form-floating > .form-control,
+.form-floating > .form-select {
+    height: calc(3rem + 2px);
+    line-height: 1.25;
+}
+.form-floating > label {
+    padding: 0.75rem 0.75rem;
+}
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+}
+.form-control, .form-select {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+}
+.form-control:focus, .form-select:focus {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: var(--bs-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.1);
+}
+.form-floating > label {
+    color: rgba(255, 255, 255, 0.5);
+}
+</style>

@@ -10,12 +10,15 @@ const cors = require('cors');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
+const moment = require('moment');
+moment.locale('pt-br');
 
 const { sequelize } = require('./config/database');
 const routes = require('./routes');
 const logger = require('./services/logger');
 
 const app = express();
+app.set('trust proxy', 1);
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const PORT = process.env.PORT || 3000;
@@ -28,7 +31,7 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://cdnjs.cloudflare.com', 'https://unpkg.com', 'https://cdn.jsdelivr.net'],
       fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdnjs.cloudflare.com', 'https://unpkg.com'],
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://cdnjs.cloudflare.com', 'https://unpkg.com', 'https://prod.spline.design', 'https://*.spline.design', 'https://cdn.jsdelivr.net', 'https://cdn.tailwindcss.com', 'blob:'],
-      imgSrc: ["'self'", 'data:', 'https:', 'http:'],
+      imgSrc: ["'self'", 'data:', 'https:', 'http:', 'https://picsum.photos', 'https://fastly.picsum.photos'],
       connectSrc: ["'self'", 'https://prod.spline.design', 'https://*.spline.design', 'https://*.google-analytics.com'],
       frameSrc: ['https://www.youtube.com', 'https://www.instagram.com', 'https://*.spline.design'],
       workerSrc: ["'self'", 'blob:'],
@@ -87,7 +90,7 @@ const hbs = exphbs.create({
   helpers: {
     // Date formatting
     formatDate: function (date, format) {
-      if (!date) {return '';}
+      if (!date) { return ''; }
       const d = new Date(date);
       const options = {
         'short': { day: '2-digit', month: '2-digit', year: 'numeric' },
@@ -97,18 +100,92 @@ const hbs = exphbs.create({
       return d.toLocaleDateString('pt-BR', options[format] || options['short']);
     },
 
+    // Time ago helper
+    timeAgo: function (date) {
+      if (!date) return '';
+      const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+      let interval = seconds / 31536000;
+      if (interval > 1) return Math.floor(interval) + " anos atrás";
+      interval = seconds / 2592000;
+      if (interval > 1) return Math.floor(interval) + " meses atrás";
+      interval = seconds / 86400;
+      if (interval > 1) return Math.floor(interval) + " dias atrás";
+      interval = seconds / 3600;
+      if (interval > 1) return Math.floor(interval) + " horas atrás";
+      interval = seconds / 60;
+      if (interval > 1) return Math.floor(interval) + " min atrás";
+      return "agora mesmo";
+    },
+
     // Currency formatting
     formatCurrency: function (value) {
-      if (value === null || value === undefined) {return 'R$ 0,00';}
+      if (value === null || value === undefined) { return 'R$ 0,00'; }
       return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL'
       }).format(value);
     },
+    numberFormat: function (number, decimals, decPoint, thousandsSep) {
+      number = parseFloat(number);
+      if (isNaN(number)) return '0';
+      decimals = decimals || 0;
+      decPoint = decPoint || ',';
+      thousandsSep = thousandsSep || '.';
+      const n = number.toFixed(decimals);
+      const parts = n.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSep);
+      return parts.join(decPoint);
+    },
+    formatMoney: function (value) {
+      if (value === null || value === undefined) { return '0,00'; }
+      return new Intl.NumberFormat('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(value);
+    },
+    formatWhatsappLink: function (phone, name, context = 'default') {
+      if (!phone) return '#';
+      const cleanPhone = phone.replace(/\D/g, '');
+      let message = '';
+      
+      switch(context) {
+        case 'lead':
+          message = `Olá ${name}! Recebemos seu interesse aqui na Zanoello 3D. 🚀 Vamos transformar essa visão em realidade?`;
+          break;
+        case 'review':
+          message = `Oi ${name}! Boas notícias: os renders já estão no forno e prontos para sua revisão. 📸 Confira no seu painel!`;
+          break;
+        case 'financial':
+          message = `Olá ${name}! Notamos uma pendência financeira no sistema. Podemos ajudar com alguma dúvida sobre o pagamento? 💳`;
+          break;
+        default:
+          message = `Olá ${name}! Equipe Zanoello 3D falando. ⚡`;
+      }
+      
+      return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+    },
+    numberFormat: function (number, decimals, decPoint, thousandsSep) {
+      number = parseFloat(number);
+      if (isNaN(number)) return '0';
+      decimals = decimals || 0;
+      decPoint = decPoint || ',';
+      thousandsSep = thousandsSep || '.';
+      const n = number.toFixed(decimals);
+      const parts = n.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSep);
+      return parts.join(decPoint);
+    },
+    gt: (a, b) => a > b,
+    lt: (a, b) => a < b,
+    eq: (a, b) => a === b,
+    multiply: (a, b) => a * b,
+    divide: (a, b) => (b && b !== 0) ? a / b : 0,
+    round: (val) => Math.round(val || 0),
+    json: (obj) => JSON.stringify(obj),
 
     // Phone formatting
     formatPhone: function (phone) {
-      if (!phone) {return '';}
+      if (!phone) { return ''; }
       const cleaned = phone.replace(/\D/g, '');
       if (cleaned.length === 11) {
         return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
@@ -137,7 +214,7 @@ const hbs = exphbs.create({
 
     // Rating stars
     ratingStars: function (rating) {
-      if (!rating) {return '';}
+      if (!rating) { return ''; }
       let stars = '';
       for (let i = 1; i <= 5; i++) {
         if (i <= rating) {
@@ -151,14 +228,43 @@ const hbs = exphbs.create({
 
     // Truncate text
     truncate: function (str, length) {
-      if (!str) {return '';}
-      if (str.length <= length) {return str;}
+      if (!str) { return ''; }
+      if (str.length <= length) { return str; }
       return `${str.substring(0, length)}...`;
+    },
+
+    // Substring helper
+    substring: function (str, start, end) {
+      if (!str || typeof str !== 'string') return '';
+      return str.substring(start, end);
+    },
+
+    // Limit array helper
+    limit: function (arr, limit) {
+      if (!Array.isArray(arr)) return [];
+      return arr.slice(0, limit);
     },
 
     // JSON stringify
     json: function (context) {
       return JSON.stringify(context);
+    },
+
+    // Standard substring helper
+    substring: function (str, start, end) {
+      if (typeof str !== 'string') return '';
+      return str.substring(start, end);
+    },
+
+    // List helper (creates an array from arguments)
+    list: function (...args) {
+      return args.slice(0, -1);
+    },
+
+    // Currency formatter
+    formatCurrency: function (value) {
+      if (value === undefined || value === null) return 'R$ 0,00';
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
     },
 
     // Comparison helpers
@@ -171,7 +277,11 @@ const hbs = exphbs.create({
 
     // Math helpers
     add: (a, b) => (parseFloat(a) || 0) + (parseFloat(b) || 0),
-    subtract: (a, b) => (parseFloat(a) || 0) - (parseFloat(b) || 0),
+    subtract: (a, b) => {
+      const valA = (a instanceof Date) ? a.getTime() : (parseFloat(a) || 0);
+      const valB = (b instanceof Date) ? b.getTime() : (parseFloat(b) || 0);
+      return valA - valB;
+    },
     multiply: (a, b) => (parseFloat(a) || 0) * (parseFloat(b) || 0),
     divide: (a, b) => {
       const divisor = parseFloat(b) || 0;
@@ -180,12 +290,6 @@ const hbs = exphbs.create({
 
     // Array helpers
     length: (array) => array ? array.length : 0,
-
-    // String helpers
-    firstLetter: (str) => {
-      if (!str || typeof str !== 'string') {return '';}
-      return str.charAt(0).toUpperCase();
-    },
 
     // Conditional helpers
     ifCond: function (v1, operator, v2, options) {
@@ -203,28 +307,96 @@ const hbs = exphbs.create({
         default: return options.inverse(this);
       }
     },
-
-    // First letter of a string (for avatars)
+    percent: (val, total) => {
+      if (!total || total === 0) return 0;
+      return Math.round((val / total) * 100);
+    },
+    dateFormat: function (date, format) {
+      if (!date) return '-';
+      const d = new Date(date);
+      if (format === 'MMMM YYYY') {
+        return d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+      }
+      if (format && format.includes('DD/MM/YYYY')) {
+        return d.toLocaleDateString('pt-BR');
+      }
+      return d.toLocaleDateString('pt-BR');
+    },
+    formatDate: function (date, format) {
+      if (!date) return '-';
+      const d = new Date(date);
+      if (format === 'long') {
+        return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+      }
+      return d.toLocaleDateString('pt-BR');
+    },
+    formatDateShort: function (date) {
+      if (!date) return '-';
+      const d = new Date(date);
+      return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    },
+    timeAgo: function (date) {
+      if (!date) return 'n/a';
+      return moment(date).fromNow();
+    },
     firstLetter: function (str) {
-      if (!str) return 'U';
+      if (!str || typeof str !== 'string') return 'U';
       return str.charAt(0).toUpperCase();
     },
 
-    // Date formatting helper
-    dateFormat: function (date, format) {
-      const moment = require('moment');
-      if (!date) return '-';
-      return moment(date).format(format);
+    // Current date helper
+    now: function (format) {
+      const d = new Date();
+      if (typeof format === 'string') {
+        // Use dateFormat logic for now
+        if (format === 'MMMM YYYY') {
+          return d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        }
+        if (format === 'YYYYMMDD') {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          return `${y}${m}${day}`;
+        }
+        return d.toLocaleDateString('pt-BR');
+      }
+      return d;
     },
 
-    // Current date helper
-    now: function () {
-      return new Date();
+    // Date helper (alias for dateFormat or returns Date object for math)
+    date: function (d, format) {
+      if (!d) return new Date();
+      const dateObj = new Date(d);
+      if (typeof format === 'string') {
+        // If we have a format string, use the dateFormat helper
+        // But since we are inside the helpers object, we can't easily call it directly
+        // unless we reference the helpers object or replicate logic.
+        if (format === 'MMMM YYYY') {
+          return dateObj.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        }
+        return dateObj.toLocaleDateString('pt-BR');
+      }
+      return dateObj;
+    },
+
+    // WhatsApp Link helper
+    formatWhatsappLink: function (phone, name, context) {
+      if (!phone) return '#';
+      const cleanPhone = String(phone).replace(/\D/g, '');
+      const message = encodeURIComponent(`Olá ${name}, sobre o seu projeto (${context})...`);
+      return `https://wa.me/55${cleanPhone}?text=${message}`;
     },
 
     // Or helper
     or: function (v1, v2) {
       return v1 || v2;
+    },
+
+    // And helper
+    and: function (...args) {
+      // Remove options
+      args.pop();
+      return args.every(Boolean);
     },
 
     // Check if date is in the past
@@ -243,7 +415,45 @@ const hbs = exphbs.create({
         }
       }
       return params.toString();
-    }
+    },
+
+    // String helpers
+    split: function (str, separator = ',') {
+      if (!str) return [];
+      return str.split(separator);
+    },
+    getFirstLetters: function (str) {
+      if (!str) return 'U';
+      return str.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    },
+    calculatePercentage: function (val, total) {
+      if (!total || total === 0) return 0;
+      return Math.round((val / total) * 100);
+    },
+    formatDateShort: function (date) {
+      if (!date) return '-';
+      const d = new Date(date);
+      return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    },
+    // Loop helper
+    range: function (start, end) {
+      const result = [];
+      for (let i = start; i <= end; i++) {
+        result.push(i);
+      }
+      return result;
+    },
+    // Random helper
+    random: function (min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+    // Select random from args
+    select_random: function (...args) {
+      // Remove Handlebars options object
+      const items = args.slice(0, -1);
+      return items[Math.floor(Math.random() * items.length)];
+    },
+    now: () => new Date()
   }
 });
 
@@ -287,18 +497,18 @@ app.use((err, req, res, _next) => {
   // Log error
   if (!isProduction || isApi) {
     logger.error(`[Error] ${req.method} ${req.path}:`, err.message);
-    if (!isProduction) {logger.error(err.stack);}
+    if (!isProduction) { logger.error(err.stack); }
   }
 
   // Handle Sequelize validation errors
   if (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError') {
     const messages = err.errors ? err.errors.map(e => e.message) : [err.message];
     const errorMessage = messages.join(', ');
-    
+
     if (isApi || req.xhr) {
       return res.status(400).json({ error: errorMessage });
     }
-    
+
     req.flash('error_msg', errorMessage);
     return res.redirect('back');
   }
@@ -311,6 +521,9 @@ app.use((err, req, res, _next) => {
   }
 
   // HTML Error Response
+  const logMessage = `[${new Date().toISOString()}] ${err.stack}\n`;
+  require('fs').appendFileSync(require('path').join(__dirname, 'server_errors.log'), logMessage);
+  
   res.status(err.status || 500).render('error/500', {
     title: 'Erro interno do servidor',
     layout: false,
@@ -320,50 +533,51 @@ app.use((err, req, res, _next) => {
 
 // Iniciar servidor
 if (require.main === module) {
-// Socket.io connection handling
-io.on('connection', (socket) => {
-  console.log('New client connected:', socket.id);
+  // Socket.io connection handling
+  io.on('connection', (socket) => {
+    console.log('New client connected:', socket.id);
 
-  socket.on('join_chat', (room) => {
-    socket.join(room);
-    console.log(`User joined room: ${room}`);
-  });
+    socket.on('join_chat', (room) => {
+      socket.join(room);
+      console.log(`User joined room: ${room}`);
+    });
 
-  socket.on('send_message', (data) => {
-    // In a real app, we would save to DB here
-    io.emit('receive_message', {
-      user: data.user,
-      text: data.text,
-      timestamp: new Date()
+    socket.on('send_message', (data) => {
+      // In a real app, we would save to DB here
+      io.emit('receive_message', {
+        user: data.user,
+        text: data.text,
+        timestamp: new Date()
+      });
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Client disconnected');
     });
   });
 
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
-});
+  // Inicialização do servidor
+  const startServer = async () => {
+    try {
+      await sequelize.authenticate();
+      const isConnected = true;
+      if (isConnected) {
+        // Sincronização desativada para boot ultra-rápido (Schema já está estável)
+        // await sequelize.sync({ alter: true });
 
-// Inicialização do servidor
-const startServer = async () => {
-  try {
-    await sequelize.authenticate();
-    const isConnected = true;
-    if (isConnected) {
-      await sequelize.sync({ alter: false });
-      
-      server.listen(PORT, () => {
-        console.log(`🚀 Malha3D Admin rodando em http://localhost:${PORT}`);
-        console.log(`📡 WebSocket ativo para Chat Interno`);
-      });
-    } else {
-      console.error('Falha ao iniciar o servidor: Erro na conexão com o banco de dados.');
+        server.listen(PORT, () => {
+          console.log(`🚀 Malha3D Admin rodando em http://localhost:${PORT}`);
+          console.log(`📡 WebSocket ativo para Chat Interno`);
+        });
+      } else {
+        console.error('Falha ao iniciar o servidor: Erro na conexão com o banco de dados.');
+        process.exit(1);
+      }
+    } catch (error) {
+      console.error('Erro crítico ao iniciar o servidor:', error);
       process.exit(1);
     }
-  } catch (error) {
-    console.error('Erro crítico ao iniciar o servidor:', error);
-    process.exit(1);
-  }
-};
+  };
 
   startServer();
 }

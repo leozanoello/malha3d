@@ -1,0 +1,244 @@
+<div class="space-y-6 animate-in fade-in duration-700">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-white tracking-tight">Automações <span class="text-orange-500 text-lg">Inteligent</span></h1>
+            <p class="text-gray-400 text-sm mt-1 font-medium">Orquestre seu estúdio com fluxos de trabalho autônomos e integrados.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <button class="glass-button secondary px-4 py-2 text-xs font-bold flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">history</span> Histórico
+            </button>
+            <button class="glass-button primary px-4 py-2 text-xs font-bold flex items-center gap-2 shadow-lg shadow-orange-500/20">
+                <span class="material-symbols-outlined text-sm">add</span> Novo Fluxo
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="glass-card p-4 border-white/5 bg-white/5 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <span class="material-symbols-outlined text-4xl text-orange-500">bolt</span>
+            </div>
+            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Execuções 24h</p>
+            <h3 class="text-2xl font-black text-white mt-1">1.284</h3>
+            <div class="flex items-center gap-2 mt-2">
+                <span class="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">+12%</span>
+                <span class="text-[10px] text-gray-500 font-medium italic">vs ontem</span>
+            </div>
+        </div>
+        <div class="glass-card p-4 border-white/5 bg-white/5 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <span class="material-symbols-outlined text-4xl text-blue-500">smart_toy</span>
+            </div>
+            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Bots Ativos</p>
+            <h3 class="text-2xl font-black text-white mt-1">8</h3>
+            <div class="flex items-center gap-1 mt-2">
+                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span class="text-[10px] text-gray-400 font-bold uppercase">Todos Online</span>
+            </div>
+        </div>
+        <div class="glass-card p-4 border-white/5 bg-white/5 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <span class="material-symbols-outlined text-4xl text-purple-500">schedule</span>
+            </div>
+            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Tempo Economizado</p>
+            <h3 class="text-2xl font-black text-white mt-1">42h</h3>
+            <p class="text-[10px] text-gray-500 mt-2 font-medium italic">Estimativa mensal</p>
+        </div>
+        <div class="glass-card p-4 border-white/5 bg-white/5 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <span class="material-symbols-outlined text-4xl text-orange-500">error</span>
+            </div>
+            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Falhas Críticas</p>
+            <h3 class="text-2xl font-black text-white mt-1">0</h3>
+            <p class="text-[10px] text-emerald-500 mt-2 font-bold uppercase tracking-wider">Sistema Estável</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Flows -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="glass-card border-white/5 bg-white/5 overflow-hidden">
+                <div class="p-4 border-b border-white/5 flex items-center justify-between">
+                    <h2 class="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
+                        <span class="material-symbols-outlined text-orange-500 text-lg">workflow</span> Fluxos de Trabalho Ativos
+                    </h2>
+                    <span class="text-[10px] text-gray-500 font-bold">8 Total</span>
+                </div>
+                <div class="divide-y divide-white/5">
+                    <!-- Flow 1 -->
+                    <div class="p-4 hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                                    <span class="material-symbols-outlined">mail</span>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-white group-hover:text-orange-500 transition-colors">Onboarding de Cliente Archviz</h4>
+                                    <p class="text-xs text-gray-500 font-medium">Trigger: Novo Contrato Assinado (DocuSign)</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <div class="hidden md:block text-right">
+                                    <p class="text-[10px] font-black text-gray-600 uppercase">Última Run</p>
+                                    <p class="text-[10px] text-white font-bold">Há 15 min</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <label class="relative inline-flex items-center cursor-pointer scale-75">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                                    </label>
+                                    <button class="p-2 text-gray-500 hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-lg">more_vert</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flow 2 -->
+                    <div class="p-4 hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                                    <span class="material-symbols-outlined">folder_zip</span>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-white group-hover:text-blue-500 transition-colors">Organização de Assets de Projeto</h4>
+                                    <p class="text-xs text-gray-500 font-medium">Trigger: Pasta Criada no Google Drive</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <div class="hidden md:block text-right">
+                                    <p class="text-[10px] font-black text-gray-600 uppercase">Última Run</p>
+                                    <p class="text-[10px] text-white font-bold">Ontem, 22:10</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <label class="relative inline-flex items-center cursor-pointer scale-75">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+                                    </label>
+                                    <button class="p-2 text-gray-500 hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-lg">more_vert</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flow 3 -->
+                    <div class="p-4 hover:bg-white/5 transition-colors group">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
+                                    <span class="material-symbols-outlined">payments</span>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-white group-hover:text-purple-500 transition-colors">Conciliação de Comissões Render</h4>
+                                    <p class="text-xs text-gray-500 font-medium">Trigger: Pagamento Confirmado no Stripe</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <div class="hidden md:block text-right">
+                                    <p class="text-[10px] font-black text-gray-600 uppercase">Última Run</p>
+                                    <p class="text-[10px] text-white font-bold">Há 2 horas</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <label class="relative inline-flex items-center cursor-pointer scale-75">
+                                        <input type="checkbox" checked class="sr-only peer">
+                                        <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                                    </label>
+                                    <button class="p-2 text-gray-500 hover:text-white transition-colors">
+                                        <span class="material-symbols-outlined text-lg">more_vert</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Webhook Integrations -->
+            <div class="glass-card border-white/5 bg-white/5 p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
+                        <span class="material-symbols-outlined text-blue-500 text-lg">api</span> Webhooks & Integrações
+                    </h2>
+                    <button class="text-[10px] text-gray-500 font-bold hover:text-white underline uppercase">Ver Todos</button>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="glass-card p-3 border-white/5 bg-white/5 flex flex-col items-center gap-2 hover:bg-white/10 transition-colors cursor-pointer group">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111615.png" class="w-8 h-8 group-hover:scale-110 transition-transform grayscale hover:grayscale-0" alt="Slack">
+                        <span class="text-[10px] font-bold text-gray-400">Slack</span>
+                        <span class="text-[8px] bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded uppercase font-black tracking-widest">Ativo</span>
+                    </div>
+                    <div class="glass-card p-3 border-white/5 bg-white/5 flex flex-col items-center gap-2 hover:bg-white/10 transition-colors cursor-pointer group">
+                        <img src="https://cdn-icons-png.flaticon.com/512/174/174881.png" class="w-8 h-8 group-hover:scale-110 transition-transform grayscale hover:grayscale-0" alt="WhatsApp">
+                        <span class="text-[10px] font-bold text-gray-400">WhatsApp</span>
+                        <span class="text-[8px] bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded uppercase font-black tracking-widest">Ativo</span>
+                    </div>
+                    <div class="glass-card p-3 border-white/5 bg-white/5 flex flex-col items-center gap-2 hover:bg-white/10 transition-colors cursor-pointer group">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968853.png" class="w-8 h-8 group-hover:scale-110 transition-transform grayscale hover:grayscale-0" alt="Trello">
+                        <span class="text-[10px] font-bold text-gray-400">Trello</span>
+                        <span class="text-[8px] bg-orange-500/10 text-orange-500 px-1.5 py-0.5 rounded uppercase font-black tracking-widest">Pendente</span>
+                    </div>
+                    <div class="glass-card p-3 border-white/5 bg-white/5 flex flex-col items-center gap-2 hover:bg-white/10 transition-colors cursor-pointer group">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968747.png" class="w-8 h-8 group-hover:scale-110 transition-transform grayscale hover:grayscale-0" alt="Dropbox">
+                        <span class="text-[10px] font-bold text-gray-400">Dropbox</span>
+                        <span class="text-[8px] bg-white/5 text-gray-600 px-1.5 py-0.5 rounded uppercase font-black tracking-widest">Offline</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Actions -->
+        <div class="space-y-6">
+            <!-- Health Monitor -->
+            <div class="glass-card border-white/5 bg-white/5 p-4 overflow-hidden relative group">
+                <div class="absolute -right-4 -bottom-4 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl transition-transform group-hover:scale-150"></div>
+                <h3 class="text-xs font-black text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-emerald-500 text-lg">health_and_safety</span> Integridade da Rede
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-gray-400">Latência da API</span>
+                        <span class="text-[10px] font-bold text-emerald-500">24ms (Excelente)</span>
+                    </div>
+                    <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                        <div class="bg-emerald-500 h-full w-[95%]"></div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-gray-400">Throughput de Dados</span>
+                        <span class="text-[10px] font-bold text-blue-500">420 req/sec</span>
+                    </div>
+                    <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                        <div class="bg-blue-500 h-full w-[65%]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Templates -->
+            <div class="glass-card border-white/5 bg-white/5 p-4">
+                <h3 class="text-xs font-black text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-orange-500 text-lg">extension</span> Marketplace de Templates
+                </h3>
+                <div class="space-y-3">
+                    <div class="p-3 bg-white/5 border border-white/5 rounded-xl hover:border-orange-500/30 transition-all cursor-pointer group">
+                        <h4 class="text-[11px] font-black text-white">Pipeline Archviz Pro</h4>
+                        <p class="text-[9px] text-gray-500 mt-1">Setup completo para estúdios de renderização.</p>
+                    </div>
+                    <div class="p-3 bg-white/5 border border-white/5 rounded-xl hover:border-blue-500/30 transition-all cursor-pointer group">
+                        <h4 class="text-[11px] font-black text-white">Follow-up Automático</h4>
+                        <p class="text-[9px] text-gray-500 mt-1">E-mails inteligentes baseados em interação.</p>
+                    </div>
+                    <div class="p-3 bg-white/5 border border-white/5 rounded-xl hover:border-purple-500/30 transition-all cursor-pointer group">
+                        <h4 class="text-[11px] font-black text-white">Backup Multi-Cloud</h4>
+                        <p class="text-[9px] text-gray-500 mt-1">Segurança tripla para seus assets 3D.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

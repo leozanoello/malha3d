@@ -1,5 +1,20 @@
 <!-- Header with Glass Effect -->
 <div class="mb-4 p-4 glass-card border-none bg-gradient-to-br from-white/5 to-white/[0.02]">
+    {{#if (ne stats.financialRisk 'low')}}
+    <div class="mb-4 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-between animate-pulse">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-red-500">
+                <span class="material-symbols-outlined text-2xl">warning</span>
+            </div>
+            <div>
+                <h4 class="text-xs font-black text-white uppercase tracking-widest">Alerta Financeiro</h4>
+                <p class="text-[10px] text-red-400 font-bold">Existem {{formatCurrency stats.totalOverdue}} em despesas atrasadas que precisam de atenção.</p>
+            </div>
+        </div>
+        <a href="/admin/financeiro" class="px-4 py-2 bg-red-500 text-white text-[9px] font-black uppercase rounded-lg hover:bg-red-600 transition-all">Resolver Agora</a>
+    </div>
+    {{/if}}
+
     {{#if info}}
     <div class="mb-3 p-2.5 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center gap-2 animate-pulse">
         <div class="w-6 h-6 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
@@ -41,7 +56,7 @@
     <div class="glass-card p-4 flex flex-col h-full rounded-2xl border-l-2 border-l-blue-500">
         <div class="flex justify-between items-start mb-3">
             <div>
-                <h3 class="text-xs font-black text-white">Orçamentos</h3>
+                <h3 class="text-xs font-black text-white">Oportunidades</h3>
                 <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Aguardando Resposta</p>
             </div>
             <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
@@ -49,8 +64,8 @@
             </div>
         </div>
         <div class="flex-grow flex flex-col justify-center">
-            <p class="text-2xl font-black text-white mb-0.5">12</p>
-            <p class="text-[10px] text-blue-400 font-medium">4 novos hoje</p>
+            <p class="text-2xl font-black text-white mb-0.5">{{stats.newBudgets}}</p>
+            <p class="text-[10px] text-blue-400 font-medium">{{stats.totalBudgets}} total este mês</p>
         </div>
     </div>
 
@@ -66,8 +81,8 @@
             </div>
         </div>
         <div class="flex-grow flex flex-col justify-center">
-            <p class="text-2xl font-black text-white mb-0.5">{{performance.activeProjects}}</p>
-            <p class="text-[10px] text-emerald-400 font-medium">3 em fase de entrega</p>
+            <p class="text-2xl font-black text-white mb-0.5">{{stats.activeProjects}}</p>
+            <p class="text-[10px] text-emerald-400 font-medium">Projetos em produção</p>
         </div>
     </div>
 

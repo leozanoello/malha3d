@@ -58,54 +58,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Página de galeria completa
-router.get('/galeria', async (req, res) => {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = 9;
-    const offset = (page - 1) * limit;
-    const category = req.query.categoria || 'all';
-
-    const whereClause = { isActive: true };
-    if (category !== 'all') {
-      whereClause.category = category;
-    }
-
-    const { count, rows: projects } = await Project.findAndCountAll({
-      where: whereClause,
-      order: [['order', 'ASC'], ['createdAt', 'DESC']],
-      limit: limit,
-      offset: offset
-    });
-
-    const totalPages = Math.ceil(count / limit);
-
-    res.render('galeria', {
-      title: 'Galeria de Projetos - Zanoello 3D',
-      projects: projects,
-      currentPage: page,
-      totalPages: totalPages,
-      totalProjects: count,
-      currentCategory: category,
-      categories: [
-        { value: 'all', label: 'Todos' },
-        { value: 'interior', label: 'Interiores' },
-        { value: 'exterior', label: 'Exteriores' },
-        { value: 'produto', label: 'Produtos' },
-        { value: 'arquitetonico', label: 'Arquitetônico' },
-        { value: 'animacao', label: 'Animação' },
-        { value: 'outro', label: 'Outros' }
-      ]
-    });
-  } catch (error) {
-    console.error('Erro ao carregar galeria:', error);
-    res.render('galeria', {
-      title: 'Erro ao carregar galeria',
-      error: process.env.NODE_ENV === 'development' ? error : {}
-    });
-  }
-});
-
 // Página de contato
 router.get('/contato', (req, res) => {
   res.render('contato', {

@@ -1,113 +1,288 @@
-<!-- Header -->
-<div class="mb-6 p-5 glass-card border-none bg-gradient-to-br from-white/5 to-white/[0.02]">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-white tracking-tight mb-1">
-                Projetos
-            </h1>
-            <p class="text-xs text-gray-400 font-medium">Gestão de projetos de Archviz</p>
+<!-- 
+    ZANOELLO 3D - PIPELINE DE PRODUÇÃO ARCHVIZ 
+    Refatoração de Alta Performance e Densidade de Dados
+-->
+
+<div class="flex flex-col h-[calc(100vh-100px)] overflow-hidden">
+    <!-- Header de Produção -->
+    <div class="flex items-center justify-between p-6 bg-dark-950/40 backdrop-blur-md border-b border-white/5">
+        <div class="flex items-center gap-4">
+            <div class="p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20">
+                <span class="material-symbols-outlined text-indigo-400 text-2xl">precision_manufacturing</span>
+            </div>
+            <div>
+                <h1 class="text-xl font-black text-white tracking-tighter">Workflow de <span class="text-indigo-400">Produção</span></h1>
+                <div class="flex items-center gap-3 mt-1">
+                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Controle de Ativos Malha3D</span>
+                    <div class="w-1 h-1 rounded-full bg-gray-700"></div>
+                    <span class="text-[9px] font-black text-indigo-400 uppercase tracking-widest">{{columns.length}} Etapas</span>
+                </div>
+            </div>
         </div>
-        <div class="flex flex-col sm:flex-row gap-3">
-            <div class="flex rounded-xl overflow-hidden border border-white/10 bg-white/5">
-                <button class="px-4 py-2 text-xs font-black text-orange-500 bg-orange-500/10 flex items-center gap-2 transition-all">
+
+        <div class="flex items-center gap-3">
+             <div class="flex bg-black/40 p-1 rounded-xl border border-white/5">
+                <a href="/admin/projetos/kanban" class="px-5 py-2 text-[9px] font-black text-indigo-400 bg-indigo-400/10 rounded-lg flex items-center gap-2 transition-all uppercase tracking-widest">
                     <span class="material-symbols-outlined text-sm">view_kanban</span> Quadro
-                </button>
-                <button class="px-4 py-2 text-xs font-black text-gray-500 hover:text-white hover:bg-white/5 flex items-center gap-2 transition-all">
+                </a>
+                <a href="/admin/projetos" class="px-5 py-2 text-[9px] font-black text-gray-500 hover:text-white rounded-lg flex items-center gap-2 transition-all uppercase tracking-widest">
                     <span class="material-symbols-outlined text-sm">list</span> Lista
-                </button>
+                </a>
+            </div>
+            <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-black py-3 px-6 rounded-xl shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 text-[9px] uppercase tracking-widest" data-bs-toggle="modal" data-bs-target="#newProjectModal">
+                <span class="material-symbols-outlined text-sm">add_circle</span> Novo Projeto
+            </button>
+        </div>
+    </div>
+
+    <!-- Quadro Kanban de Produção -->
+    <div id="productionKanban" class="flex-1 overflow-x-auto p-6 scrollbar-premium">
+        <div class="flex gap-6 h-full min-w-max">
+            {{#each columns}}
+            <div class="w-[320px] flex flex-col bg-white/[0.01] rounded-[2rem] border border-white/5 p-4 group/col transition-all">
+                <!-- Column Header -->
+                <div class="flex items-center justify-between mb-4 px-2">
+                    <div class="flex items-center gap-3">
+                        <div class="w-1 h-4 rounded-full" style="background-color: {{this.color}}"></div>
+                        <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em]">{{this.name}}</h3>
+                        <span class="bg-white/5 text-gray-500 text-[9px] font-black px-2 py-0.5 rounded-full border border-white/5">{{this.projects.length}}</span>
+                    </div>
+                    <button class="text-gray-600 hover:text-white transition-all opacity-0 group-hover/col:opacity-100"><span class="material-symbols-outlined text-sm">more_vert</span></button>
+                </div>
+
+                <!-- Cards Container -->
+                <div class="flex-1 space-y-4 kanban-list overflow-y-auto no-scrollbar pb-10" data-status="{{this.statusKey}}">
+                    {{#each this.projects}}
+                    <div class="glass-card p-5 group cursor-grab active:cursor-grabbing border-l-2 transition-all hover:border-indigo-400/50 hover:bg-white/[0.03] kanban-item" 
+                         style="border-left-color: {{../color}}"
+                         data-id="{{this.id}}">
+                        
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex gap-2">
+                                <span class="text-[8px] font-black text-indigo-400 bg-indigo-400/10 px-2 py-0.5 rounded uppercase tracking-tighter">{{this.category}}</span>
+                                {{#if this.complexity}}
+                                <span class="text-[8px] font-black {{#if (eq this.complexity 'Ultra')}}text-purple-400 bg-purple-400/10{{else if (eq this.complexity 'Alta')}}text-red-400 bg-red-400/10{{else}}text-blue-400 bg-blue-400/10{{/if}} px-2 py-0.5 rounded uppercase tracking-tighter">
+                                    {{this.complexity}}
+                                </span>
+                                {{/if}}
+                            </div>
+                            <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                                {{#if this.customer.phone}}
+                                <a href="{{formatWhatsappLink this.customer.phone this.customer.name 'review'}}" target="_blank" class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 flex items-center justify-center transition-all">
+                                    <i class="fab fa-whatsapp text-xs"></i>
+                                </a>
+                                {{/if}}
+                                <button onclick="openRevisions('{{this.id}}', '{{this.title}}')" class="w-7 h-7 rounded-lg bg-orange-500/10 text-orange-500 hover:bg-orange-500/20 flex items-center justify-center transition-all" title="Revisões">
+                                    <span class="material-symbols-outlined text-sm">history_edu</span>
+                                </button>
+                                <button onclick="editProject('{{this.id}}')" class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-500 hover:text-white"><span class="material-symbols-outlined text-sm">edit</span></button>
+                            </div>
+                        </div>
+
+                        <h4 class="text-xs font-black text-white tracking-tight leading-snug mb-1">{{this.title}}</h4>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase truncate">{{this.client}}</p>
+
+                        <div class="mt-4 grid grid-cols-2 gap-3">
+                             <div class="p-2 rounded-xl bg-white/[0.02] border border-white/5">
+                                <div class="flex items-center gap-1.5 mb-1">
+                                    <span class="material-symbols-outlined text-[10px] text-gray-600">view_in_ar</span>
+                                    <span class="text-[8px] font-black text-gray-600 uppercase">Software</span>
+                                </div>
+                                <span class="text-[9px] font-bold text-gray-300">{{this.software}}</span>
+                            </div>
+                            <div class="p-2 rounded-xl bg-white/[0.02] border border-white/5">
+                                <div class="flex items-center gap-1.5 mb-1">
+                                    <span class="material-symbols-outlined text-[10px] text-gray-600">shutter_speed</span>
+                                    <span class="text-[8px] font-black text-gray-600 uppercase">Motor</span>
+                                </div>
+                                <span class="text-[9px] font-bold text-gray-300">{{this.renderEngine}}</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                            <div class="flex -space-x-2">
+                                <div class="w-6 h-6 rounded-full border-2 border-dark-950 bg-indigo-500 flex items-center justify-center text-[8px] font-black text-white" title="Responsável: Zanoello">Z</div>
+                                {{#if (gt this.priority 'media')}}
+                                <div class="w-2.5 h-2.5 rounded-full bg-red-500 absolute -top-1 -right-1 border-2 border-dark-950 animate-ping"></div>
+                                {{/if}}
+                            </div>
+                            <div class="flex items-center gap-2 {{#if (isPast this.deadline)}}text-red-500{{else if (lt (subtract (date this.deadline) (now)) 259200000)}}text-amber-500{{else}}text-gray-500{{/if}} group-hover:text-amber-500 transition-all">
+                                <span class="material-symbols-outlined text-xs">calendar_today</span>
+                                <span class="text-[9px] font-black">{{formatDateShort this.deadline}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+
+<!-- SortableJS integration -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.kanban-list').forEach(column => {
+        new Sortable(column, {
+            group: 'production',
+            animation: 150,
+            ghostClass: 'opacity-20',
+            dragClass: 'rotate-2',
+            onEnd: async (evt) => {
+                const projectId = evt.item.dataset.id;
+                const newStatus = evt.to.dataset.status;
+                
+                try {
+                    const response = await fetch('/admin/api/projects/move', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ projectId, status: newStatus })
+                    });
+                    const result = await response.json();
+                    if (!result.success) {
+                        alert('Erro ao mover projeto: ' + result.message);
+                        window.location.reload();
+                    }
+                } catch (e) {
+                    console.error(e);
+                    window.location.reload();
+                }
+            }
+        });
+    });
+});
+
+<!-- Modal de Revisões -->
+<div class="modal fade" id="revisionsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] overflow-hidden bg-[#0a0c10]">
+            <div class="modal-header border-none p-8 pb-0">
+                <div>
+                    <h2 class="text-xl font-black text-white tracking-tight" id="revProjectTitle">Projeto</h2>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-1">Histórico de Alterações e Feedback</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white opacity-30" data-bs-dismiss="modal"></button>
             </div>
             
-            <button class="bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white text-xs font-black py-2 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-sm">upload</span> Importar
-            </button>
-            <button class="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white text-xs font-black py-2 px-4 rounded-xl shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-sm">auto_awesome</span> Criar com IA
-            </button>
-            <button class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-black py-2 px-4 rounded-xl shadow-lg shadow-orange-500/40 transition-all flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-sm">add</span> Novo Projeto
-            </button>
+            <div class="modal-body p-8 space-y-6">
+                <!-- New Revision Form -->
+                <form id="newRevisionForm" class="p-6 bg-white/[0.02] border border-white/5 rounded-2xl space-y-4">
+                    <input type="hidden" id="revProjectId" name="projectId">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Descrição do Pedido de Alteração</label>
+                        <textarea name="description" required class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-xs text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all h-24" placeholder="Descreva o que o cliente pediu para mudar..."></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Impacto Financeiro (R$)</label>
+                            <input type="number" name="financialImpact" value="0" class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-xs text-white">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Impacto Prazo (Dias)</label>
+                            <input type="number" name="deadlineImpact" value="0" class="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-xs text-white">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-black py-3 rounded-xl text-[10px] uppercase tracking-widest transition-all">
+                        Registrar Nova Revisão
+                    </button>
+                </form>
+
+                <!-- Revisions List -->
+                <div class="space-y-4 max-h-[400px] overflow-y-auto pr-2 scrollbar-premium" id="revisionsList">
+                    <!-- Dynamic Content -->
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="flex gap-4 overflow-x-auto pb-6 snap-x">
-    <!-- Briefing -->
-    <div class="min-w-[240px] flex-1 bg-[#030712]/40 border border-white/5 rounded-2xl p-3 snap-start">
-        <div class="flex justify-between items-center mb-4 px-1">
-            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Briefing</span>
-            <span class="bg-white/10 text-white text-[9px] font-black px-2 py-0.5 rounded-md">1</span>
-        </div>
-        <div class="space-y-3">
-            <div class="glass-card p-3 group">
-                <div class="w-full h-24 rounded-lg overflow-hidden mb-3">
-                    <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Briefing">
-                </div>
-                <h6 class="text-xs font-black text-white mb-1 leading-tight">Bancada para máquina de café</h6>
-                <p class="text-[9px] text-gray-500 font-bold mb-3 line-clamp-2">Bancada industrial para café</p>
-                <a href="/admin/projetos" class="block w-full py-2 rounded-lg bg-white/5 hover:bg-orange-500 hover:text-white border border-white/10 hover:border-transparent text-center text-[10px] font-black text-gray-400 uppercase tracking-widest transition-all">Abrir Projeto</a>
-            </div>
-        </div>
-    </div>
+<script>
+let currentProjectId = null;
 
-    <!-- Modelagem -->
-    <div class="min-w-[240px] flex-1 bg-[#030712]/40 border border-white/5 rounded-2xl p-3 snap-start">
-        <div class="flex justify-between items-center mb-4 px-1">
-            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Modelagem</span>
-            <span class="bg-white/10 text-white text-[9px] font-black px-2 py-0.5 rounded-md">1</span>
-        </div>
-        <div class="space-y-3">
-            <div class="glass-card p-3 group">
-                <div class="w-full h-24 rounded-lg overflow-hidden mb-3">
-                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Modelagem">
-                </div>
-                <h6 class="text-xs font-black text-white mb-1 leading-tight">fdsafas</h6>
-                <p class="text-[9px] text-gray-500 font-bold mb-3 line-clamp-2">Link da primeira campanha para WhatsApp</p>
-                <a href="/admin/projetos" class="block w-full py-2 rounded-lg bg-white/5 hover:bg-orange-500 hover:text-white border border-white/10 hover:border-transparent text-center text-[10px] font-black text-gray-400 uppercase tracking-widest transition-all">Abrir Projeto</a>
-            </div>
-        </div>
-    </div>
+async function openRevisions(id, title) {
+    currentProjectId = id;
+    document.getElementById('revProjectTitle').textContent = `Revisões: ${title}`;
+    document.getElementById('revProjectId').value = id;
+    
+    const modal = new bootstrap.Modal(document.getElementById('revisionsModal'));
+    modal.show();
+    
+    loadRevisions(id);
+}
 
-    <!-- Texturização -->
-    <div class="min-w-[240px] flex-1 bg-[#030712]/40 border border-white/5 rounded-2xl p-3 snap-start">
-        <div class="flex justify-between items-center mb-4 px-1">
-            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Texturização</span>
-            <span class="bg-white/10 text-white text-[9px] font-black px-2 py-0.5 rounded-md">1</span>
-        </div>
-        <div class="space-y-3">
-            <div class="glass-card p-3 group border-l-4 border-l-orange-500">
-                <div class="w-full h-24 rounded-lg overflow-hidden mb-3">
-                    <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=400" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Texturização">
+async function loadRevisions(id) {
+    const list = document.getElementById('revisionsList');
+    list.innerHTML = '<p class="text-center text-gray-500 py-10 animate-pulse">Carregando histórico...</p>';
+    
+    try {
+        const response = await fetch(`/admin/api/projects/${id}/revisions`);
+        const data = await response.json();
+        
+        if (data.success && data.revisions.length > 0) {
+            list.innerHTML = data.revisions.map(rev => `
+                <div class="p-5 bg-white/5 border border-white/5 rounded-2xl flex justify-between items-start group">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-[8px] font-black px-2 py-0.5 rounded bg-orange-500/10 text-orange-500 uppercase tracking-widest border border-orange-500/20">v${rev.version}</span>
+                            <span class="text-[8px] font-black px-2 py-0.5 rounded bg-white/5 text-gray-400 uppercase tracking-widest border border-white/5">${new Date(rev.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <p class="text-[11px] text-gray-300 leading-relaxed">${rev.description}</p>
+                        <div class="flex gap-4 mt-3">
+                            ${rev.financialImpact > 0 ? `<span class="text-[9px] font-bold text-red-400">+ R$ ${rev.financialImpact}</span>` : ''}
+                            ${rev.deadlineImpact > 0 ? `<span class="text-[9px] font-bold text-orange-400">+ ${rev.deadlineImpact} dias</span>` : ''}
+                        </div>
+                    </div>
+                    <button onclick="deleteRevision('${rev.id}')" class="opacity-0 group-hover:opacity-100 p-2 text-gray-600 hover:text-red-500 transition-all">
+                        <span class="material-symbols-outlined text-sm">delete</span>
+                    </button>
                 </div>
-                <h6 class="text-xs font-black text-white mb-1 leading-tight">Reforma Apartamento</h6>
-                <p class="text-[9px] text-gray-500 font-bold mb-2 line-clamp-2">Projeto gerado a partir da proposta #6925a13de</p>
-                <div class="flex items-center mb-3">
-                    <span class="text-emerald-500 font-black text-[10px]">$ 400.00</span>
-                </div>
-                <a href="/admin/projetos" class="block w-full py-2 rounded-lg bg-white/5 hover:bg-orange-500 hover:text-white border border-white/10 hover:border-transparent text-center text-[10px] font-black text-gray-400 uppercase tracking-widest transition-all">Abrir Projeto</a>
-            </div>
-        </div>
-    </div>
+            `).join('');
+        } else {
+            list.innerHTML = '<div class="text-center py-10 opacity-30"><span class="material-symbols-outlined text-4xl mb-2">history</span><p class="text-[10px] uppercase font-black">Nenhuma revisão registrada</p></div>';
+        }
+    } catch (err) {
+        list.innerHTML = '<p class="text-red-500 text-center">Erro ao carregar</p>';
+    }
+}
 
-    <!-- Iluminação -->
-    <div class="min-w-[240px] flex-1 bg-[#030712]/40 border border-white/5 rounded-2xl p-3 snap-start">
-        <div class="flex justify-between items-center mb-4 px-1">
-            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Iluminação</span>
-            <span class="bg-white/10 text-white text-[9px] font-black px-2 py-0.5 rounded-md">0</span>
-        </div>
-        <div class="min-h-[120px] border-2 border-dashed border-white/5 rounded-xl flex items-center justify-center">
-            <span class="text-[10px] font-bold text-gray-600">Vazio</span>
-        </div>
-    </div>
-</div>
+document.getElementById('newRevisionForm')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(this).entries());
+    
+    try {
+        const response = await fetch(`/admin/api/projects/${currentProjectId}/revisions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (result.success) {
+            this.reset();
+            loadRevisions(currentProjectId);
+        }
+    } catch (err) { console.error(err); }
+});
+
+async function deleteRevision(id) {
+    if (!confirm('Excluir esta revisão?')) return;
+    try {
+        const response = await fetch(`/admin/api/revisions/${id}`, { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) loadRevisions(currentProjectId);
+    } catch (err) { console.error(err); }
+}
+
+function editProject(id) {
+    window.location.href = `/admin/projetos/${id}/edit`;
+}
+</script>
 
 <style>
-    /* Add slight scale effect on hover for cards */
-    .glass-card {
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
-    }
-    .glass-card:hover {
-        transform: scale(1.05) translateY(-2px);
-        z-index: 10;
-        position: relative;
-    }
+    .scrollbar-premium::-webkit-scrollbar { height: 8px; }
+    .scrollbar-premium::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+    .scrollbar-premium::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+    .scrollbar-premium::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.5); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
 </style>

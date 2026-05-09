@@ -1,92 +1,108 @@
-<!-- Header -->
-<div class="mb-10 p-8 glass-card border-none bg-gradient-to-br from-white/5 to-white/[0.02]">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="p-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
         <div>
-            <h1 class="text-4xl font-black text-white tracking-tight mb-2">
-                Gestão de <span class="text-gradient">Portfólio</span>
-            </h1>
-            <p class="text-gray-400 font-medium">
-                Exiba seus melhores trabalhos e converta mais leads no ecossistema <span class="text-orange-500">Malha3D</span>.
-            </p>
+            <h1 class="text-3xl font-black text-white tracking-tight">Showcase & <span class="text-orange-500">Portfólio</span></h1>
+            <p class="text-gray-400 text-sm mt-1">Curadoria de imagens e animações de alto impacto para apresentação comercial.</p>
         </div>
-        <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center gap-3">
-            <span class="material-symbols-outlined">add_photo_alternate</span>
-            Adicionar ao Portfólio
+        <button class="px-6 py-3 rounded-2xl bg-orange-500 text-white font-bold shadow-lg shadow-orange-500/30 hover:bg-orange-600 transition-all flex items-center gap-2" data-bs-toggle="modal" data-bs-target="#newPortfolioItemModal">
+            <span class="material-symbols-outlined">upload</span> Upload de Imagens
         </button>
     </div>
-</div>
 
-<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-    <!-- Categories/Filter Sidebar -->
-    <div class="lg:col-span-1 space-y-8">
-        <div class="glass-card p-6 border-white/5 bg-white/[0.01]">
-            <h3 class="text-[10px] font-black text-gray-600 uppercase tracking-[0.3em] mb-6 px-4">Categorias</h3>
-            <div class="space-y-2">
-                <button class="w-full text-left px-5 py-3 rounded-xl bg-orange-500 text-white font-black text-xs uppercase tracking-widest shadow-2xl shadow-orange-500/20 transition-all">Todos os Trabalhos</button>
-                <button class="w-full text-left px-5 py-3 rounded-xl text-gray-500 hover:text-white hover:bg-white/5 font-black text-xs uppercase tracking-widest transition-all">Personagens 3D</button>
-                <button class="w-full text-left px-5 py-3 rounded-xl text-gray-500 hover:text-white hover:bg-white/5 font-black text-xs uppercase tracking-widest transition-all">Arquitetura</button>
-                <button class="w-full text-left px-5 py-3 rounded-xl text-gray-500 hover:text-white hover:bg-white/5 font-black text-xs uppercase tracking-widest transition-all">Animações</button>
-                <button class="w-full text-left px-5 py-3 rounded-xl text-gray-500 hover:text-white hover:bg-white/5 font-black text-xs uppercase tracking-widest transition-all">Modelagem Industrial</button>
-            </div>
-        </div>
-
-        <div class="glass-card p-8 border-none bg-gradient-to-br from-gray-900 to-black relative overflow-hidden group">
-            <div class="absolute inset-0 bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <h3 class="text-lg font-black text-white mb-2 relative z-10">Visibilidade Pública</h3>
-            <p class="text-xs text-gray-400 font-medium mb-6 relative z-10 leading-relaxed">Seu portfólio está visível para potenciais clientes em <span class="text-orange-500">Malha3D.com</span></p>
-            <button class="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-white hover:bg-white/10 transition-all relative z-10">Configurar Link</button>
-        </div>
+    <!-- Quick Filters -->
+    <div class="flex gap-4 mb-8">
+        <button class="px-5 py-2.5 rounded-xl bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-orange-500/20">Todos</button>
+        <button class="px-5 py-2.5 rounded-xl bg-white/5 text-gray-400 text-[10px] font-black uppercase tracking-widest hover:text-white transition-all">Interiores</button>
+        <button class="px-5 py-2.5 rounded-xl bg-white/5 text-gray-400 text-[10px] font-black uppercase tracking-widest hover:text-white transition-all">Exteriores</button>
+        <button class="px-5 py-2.5 rounded-xl bg-white/5 text-gray-400 text-[10px] font-black uppercase tracking-widest hover:text-white transition-all">Animações</button>
+        <button class="px-5 py-2.5 rounded-xl bg-white/5 text-gray-400 text-[10px] font-black uppercase tracking-widest hover:text-white transition-all">Maquetes 3D</button>
     </div>
 
     <!-- Portfolio Grid -->
-    <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Portfolio Item 1 -->
-        <div class="group relative glass-card border-white/5 bg-white/[0.01] rounded-[2.5rem] overflow-hidden transition-all hover:border-orange-500/30">
-            <div class="aspect-video bg-white/5 relative overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1622737133809-d95047b9e673?w=800&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="">
-                <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
-                    <div class="flex gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <button class="bg-white/10 backdrop-blur-xl border border-white/10 p-3 rounded-2xl text-white hover:bg-orange-500 hover:border-orange-500 transition-all shadow-2xl">
-                            <span class="material-symbols-outlined text-xl">edit</span>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        {{#each portfolioItems}}
+        <div class="glass-card aspect-[4/5] border-white/5 bg-white/2 overflow-hidden group relative cursor-pointer hover:border-orange-500/30 transition-all">
+            <img src="{{imageUrl}}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+            
+            <div class="absolute bottom-0 left-0 p-5 w-full">
+                <p class="text-[8px] font-black text-orange-500 uppercase tracking-widest mb-1">{{category}}</p>
+                <h4 class="text-xs font-black text-white leading-tight mb-4">{{title}}</h4>
+                <div class="flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
+                    <span class="text-[9px] font-bold text-gray-400">{{project.title}}</span>
+                    <div class="flex gap-2">
+                        <button class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white hover:bg-orange-500 transition-all">
+                            <span class="material-symbols-outlined text-sm">visibility</span>
                         </button>
-                        <button class="bg-white/10 backdrop-blur-xl border border-white/10 p-3 rounded-2xl text-white hover:bg-blue-500 hover:border-blue-500 transition-all shadow-2xl">
-                            <span class="material-symbols-outlined text-xl">visibility</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="p-8">
-                <div class="flex justify-between items-start mb-4">
-                    <h4 class="text-lg font-black text-white tracking-tight truncate group-hover:text-orange-500 transition-colors">Concept Car - Project Nexus</h4>
-                    <span class="text-[9px] font-black text-orange-500 bg-orange-500/10 px-3 py-1.5 rounded-lg border border-orange-500/20 uppercase tracking-[0.2em]">Featured</span>
-                </div>
-                <p class="text-xs text-gray-500 font-medium leading-relaxed line-clamp-2">Modelagem avançada com texturização PBR e renderização em Octane para campanha global.</p>
-            </div>
-        </div>
-
-        <!-- Portfolio Item 2 -->
-        <div class="group relative glass-card border-white/5 bg-white/[0.01] rounded-[2.5rem] overflow-hidden transition-all hover:border-blue-500/30">
-            <div class="aspect-video bg-white/5 relative overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=800&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="">
-                <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
-                    <div class="flex gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                        <button class="bg-white/10 backdrop-blur-xl border border-white/10 p-3 rounded-2xl text-white hover:bg-orange-500 hover:border-orange-500 transition-all shadow-2xl">
-                            <span class="material-symbols-outlined text-xl">edit</span>
-                        </button>
-                        <button class="bg-white/10 backdrop-blur-xl border border-white/10 p-3 rounded-2xl text-white hover:bg-blue-500 hover:border-blue-500 transition-all shadow-2xl">
-                            <span class="material-symbols-outlined text-xl">visibility</span>
+                        <button class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white hover:bg-red-500 transition-all">
+                            <span class="material-symbols-outlined text-sm">delete</span>
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="p-8">
-                <div class="flex justify-between items-start mb-4">
-                    <h4 class="text-lg font-black text-white tracking-tight truncate group-hover:text-blue-400 transition-colors">Estátua Colecionável - Ares</h4>
-                    <span class="text-[9px] font-black text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20 uppercase tracking-[0.2em]">Modelagem</span>
-                </div>
-                <p class="text-xs text-gray-500 font-medium leading-relaxed line-clamp-2">Escultura digital em alta resolução focada em impressão 3D de alta fidelidade.</p>
-            </div>
         </div>
+        {{else}}
+        <div class="col-span-full py-20 text-center opacity-30">
+            <span class="material-symbols-outlined text-6xl mb-4">image_search</span>
+            <p class="text-xl font-black uppercase tracking-widest">Seu portfólio está em branco</p>
+            <p class="mt-2 text-sm">Faça o upload da sua primeira renderização master.</p>
+        </div>
+        {{/each}}
     </div>
 </div>
 
+<!-- Modal: Novo Item de Portfólio -->
+<div class="modal fade" id="newPortfolioItemModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card p-4 border-white/10 bg-dark-950/95">
+            <div class="flex justify-between items-center mb-8 px-4">
+                <h3 class="text-xl font-black text-white uppercase tracking-tighter">Upload <span class="text-orange-500">Portfólio</span></h3>
+                <button type="button" class="text-gray-500 hover:text-white" data-bs-dismiss="modal"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form id="portfolioForm" class="p-4 space-y-6">
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Vincular a um Projeto</label>
+                    <select name="projectId" class="input-premium">
+                        <option value="">Nenhum (Item Avulso)</option>
+                        {{#each projects}}
+                        <option value="{{id}}">{{title}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Título da Imagem</label>
+                    <input type="text" name="title" class="input-premium" placeholder="Ex: Vista Principal da Suíte">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Categoria</label>
+                        <select name="category" class="input-premium">
+                            <option value="Interior">Interior</option>
+                            <option value="Exterior">Exterior</option>
+                            <option value="Product">Produto</option>
+                            <option value="Animation">Animação</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Ano</label>
+                        <input type="number" name="year" value="2026" class="input-premium">
+                    </div>
+                </div>
+                
+                <div class="p-8 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center gap-4 hover:border-orange-500/50 hover:bg-orange-500/5 transition-all cursor-pointer relative">
+                    <input type="file" name="image" class="absolute inset-0 opacity-0 cursor-pointer">
+                    <span class="material-symbols-outlined text-4xl text-gray-600">cloud_upload</span>
+                    <div class="text-center">
+                        <p class="text-xs font-black text-white uppercase tracking-widest">Solte a imagem aqui</p>
+                        <p class="text-[9px] text-gray-500 font-bold uppercase mt-1">PNG, JPG até 10MB</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-4 rounded-2xl bg-orange-500 text-white font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                    Publicar no Portfólio
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -26,6 +26,10 @@ const Revision = sequelize.define('Revision', {
   status: {
     type: DataTypes.ENUM('solicitada', 'em_analise', 'aprovada', 'rejeitada', 'concluida'),
     defaultValue: 'solicitada'
+  },
+  projectId: {
+    type: DataTypes.UUID,
+    allowNull: true
   }
 }, {
   tableName: 'revisions'

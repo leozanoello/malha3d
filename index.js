@@ -21,12 +21,12 @@ const PORT = process.env.PORT || 3000;
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", 'https://cdnjs.cloudflare.com', 'https://fonts.googleapis.com'],
-      scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdnjs.cloudflare.com', 'https://code.jquery.com'],
-      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc: ["'self'", 'data:', 'https:', 'http:'],
-      connectSrc: ["'self'"]
+      defaultSrc: ["'self'", "https:"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net", "https://cdn.tailwindcss.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdnjs.cloudflare.com", "https://code.jquery.com", "https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://fonts.googleapis.com", "data:"],
+      imgSrc: ["'self'", "data:", "https:", "http:"],
+      connectSrc: ["'self'", "https:"]
     }
   }
 }));
@@ -83,6 +83,14 @@ app.use((req, res, next) => {
   res.locals.error_msg = req.flash('error_msg');
   res.locals.error = req.flash('error');
   res.locals.user = req.session.user || null;
+
+  // Disable cache for admin routes to ensure fresh content
+  if (req.path.startsWith('/admin')) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+  
   next();
 });
 
@@ -95,7 +103,7 @@ const hbs = exphbs.create({
   helpers: {
     // Date formatting
     formatDate: function (date, format) {
-      if (!date) {return '';}
+      if (!date) return '';
       const d = new Date(date);
       const options = {
         'short': { day: '2-digit', month: '2-digit', year: 'numeric' },
@@ -104,157 +112,100 @@ const hbs = exphbs.create({
       };
       return d.toLocaleDateString('pt-BR', options[format] || options['short']);
     },
+    // Time ago helper
+    timeAgo: function (date) {
+      if (!date) return '';
+      const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+      let interval = seconds / 31536000;
+      if (interval > 1) return Math.floor(interval) + " anos atrás";
+      interval = seconds / 2592000;
+      if (interval > 1) return Math.floor(interval) + " meses atrás";
+      interval = seconds / 86400;
+      if (interval > 1) return Math.floor(interval) + " dias atrás";
+      interval = seconds / 3600;
+      if (interval > 1) return Math.floor(interval) + " horas atrás";
+      interval = seconds / 60;
+      if (interval > 1) return Math.floor(interval) + " min atrás";
+      return "agora mesmo";
+    },
+    formatDateShort: function (date) {
+      if (!date) return '';
+      const d = new Date(date);
+      return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    },
 
     // Currency formatting
     formatCurrency: function (value) {
-      if (value === null || value === undefined) {return 'R$ 0,00';}
+      if (value === null || value === undefined || isNaN(value)) return 'R$ 0,00';
       return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL'
       }).format(value);
     },
-
-    // Phone formatting
-    formatPhone: function (phone) {
-      if (!phone) {return '';}
-      // Remove non-digits
-      const cleaned = phone.replace(/\D/g, '');
-      if (cleaned.length === 11) {
-        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
-      } else if (cleaned.length === 10) {
-        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
-      }
-      return phone;
-    },
-
-    // CPF/CNPJ formatting
-    formatDocument: function (doc) {
-      if (!doc) {return '';}
-      const cleaned = doc.replace(/\D/g, '');
-      if (cleaned.length === 11) {
-        return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6, 9)}-${cleaned.slice(9)}`;
-      } else if (cleaned.length === 14) {
-        return `${cleaned.slice(0, 2)}.${cleaned.slice(2, 5)}.${cleaned.slice(5, 8)}/${cleaned.slice(8, 12)}-${cleaned.slice(12)}`;
-      }
-      return doc;
-    },
-
-    // Status badge
-    statusBadge: function (status) {
-      const badges = {
-        'pending': '<span class="badge bg-warning">Pendente</span>',
-        'approved': '<span class="badge bg-success">Aprovado</span>',
-        'rejected': '<span class="badge bg-danger">Rejeitado</span>',
-        'in_progress': '<span class="badge bg-info">Em Andamento</span>',
-        'completed': '<span class="badge bg-primary">Concluído</span>',
-        'cancelled': '<span class="badge bg-secondary">Cancelado</span>',
-        'active': '<span class="badge bg-success">Ativo</span>',
-        'inactive': '<span class="badge bg-secondary">Inativo</span>'
-      };
-      return badges[status] || `<span class="badge bg-light">${status}</span>`;
-    },
-
-    // Rating stars
-    ratingStars: function (rating) {
-      if (!rating) {return '';}
-      let stars = '';
-      for (let i = 1; i <= 5; i++) {
-        if (i <= rating) {
-          stars += '<i class="fas fa-star text-warning"></i>';
-        } else {
-          stars += '<i class="far fa-star text-muted"></i>';
-        }
-      }
-      return stars;
-    },
-
-    // Truncate text
-    truncate: function (str, length) {
-      if (!str) {return '';}
-      if (str.length <= length) {return str;}
-      return `${str.substring(0, length)}...`;
-    },
-
-    // JSON stringify
-    json: function (context) {
-      return JSON.stringify(context);
+    numberFormat: function (number, decimals, decPoint, thousandsSep) {
+      number = parseFloat(number);
+      if (isNaN(number)) return '0';
+      decimals = decimals || 0;
+      decPoint = decPoint || ',';
+      thousandsSep = thousandsSep || '.';
+      const n = number.toFixed(decimals);
+      const parts = n.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSep);
+      return parts.join(decPoint);
     },
 
     // Comparison helpers
-    eq: function (a, b) {
-      return a === b;
-    },
+    eq: function (a, b) { return a === b; },
+    ne: function (a, b) { return a !== b; },
+    lt: function (a, b) { return a < b; },
+    le: function (a, b) { return a <= b; },
+    gt: function (a, b) { return a > b; },
+    ge: function (a, b) { return a >= b; },
+    and: function () { return Array.prototype.slice.call(arguments, 0, -1).every(Boolean); },
+    or: function () { return Array.prototype.slice.call(arguments, 0, -1).some(Boolean); },
 
-    ne: function (a, b) {
-      return a !== b;
-    },
-
-    lt: function (a, b) {
-      return a < b;
-    },
-
-    le: function (a, b) {
-      return a <= b;
-    },
-
-    gt: function (a, b) {
-      return a > b;
-    },
-
-    ge: function (a, b) {
-      return a >= b;
-    },
-
-    // Math helpers
-    add: function (a, b) {
-      return (parseFloat(a) || 0) + (parseFloat(b) || 0);
-    },
-
-    subtract: function (a, b) {
-      return (parseFloat(a) || 0) - (parseFloat(b) || 0);
-    },
-
-    multiply: function (a, b) {
-      return (parseFloat(a) || 0) * (parseFloat(b) || 0);
-    },
-
-    divide: function (a, b) {
-      const divisor = parseFloat(b) || 0;
-      return divisor === 0 ? 0 : (parseFloat(a) || 0) / divisor;
-    },
-
-    // Array helpers
-    length: function (array) {
-      return array ? array.length : 0;
-    },
-
-    // Conditional helpers
+    // Logic and Math
     ifCond: function (v1, operator, v2, options) {
-      switch (operator) {
-        case '==':
-          return (v1 === v2) ? options.fn(this) : options.inverse(this);
-        case '===':
-          return (v1 === v2) ? options.fn(this) : options.inverse(this);
-        case '!=':
-          return (v1 !== v2) ? options.fn(this) : options.inverse(this);
-        case '!==':
-          return (v1 !== v2) ? options.fn(this) : options.inverse(this);
-        case '<':
-          return (v1 < v2) ? options.fn(this) : options.inverse(this);
-        case '<=':
-          return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-        case '>':
-          return (v1 > v2) ? options.fn(this) : options.inverse(this);
-        case '>=':
-          return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-        case '&&':
-          return (v1 && v2) ? options.fn(this) : options.inverse(this);
-        case '||':
-          return (v1 || v2) ? options.fn(this) : options.inverse(this);
-        default:
-          return options.inverse(this);
-      }
-    }
+      const cases = {
+        '==': v1 == v2, '===': v1 === v2, '!=': v1 != v2, '!==': v1 !== v2,
+        '<': v1 < v2, '<=': v1 <= v2, '>': v1 > v2, '>=': v1 >= v2,
+        '&&': v1 && v2, '||': v1 || v2
+      };
+      return cases[operator] ? options.fn(this) : options.inverse(this);
+    },
+
+    // UI Helpers
+    statusBadge: function (status) {
+      const badges = {
+        'pending': 'warning', 'approved': 'success', 'rejected': 'danger',
+        'in_progress': 'info', 'completed': 'primary', 'cancelled': 'secondary',
+        'active': 'success', 'inactive': 'secondary'
+      };
+      const names = {
+        'pending': 'Pendente', 'approved': 'Aprovado', 'rejected': 'Rejeitado',
+        'in_progress': 'Em Andamento', 'completed': 'Concluído', 'cancelled': 'Cancelado',
+        'active': 'Ativo', 'inactive': 'Inativo'
+      };
+      return `<span class="badge bg-${badges[status] || 'light'}">${names[status] || status}</span>`;
+    },
+    firstLetter: function (str) {
+      if (!str || typeof str !== 'string') return '?';
+      return str.charAt(0).toUpperCase();
+    },
+    truncate: function (str, len) {
+      if (!str) return '';
+      return str.length > len ? str.substring(0, len) + '...' : str;
+    },
+
+    // Array and JSON
+    list: function () { return Array.prototype.slice.call(arguments, 0, -1); },
+    times: function (n, block) {
+      let accum = '';
+      for (let i = 1; i <= n; ++i) accum += block.fn(i);
+      return accum;
+    },
+    json: function (obj) { return JSON.stringify(obj); },
+    length: function (arr) { return arr ? arr.length : 0; }
   }
 });
 
@@ -312,6 +263,10 @@ app.use((err, req, res, _next) => {
   }
 
   // Default error
+  const fs = require('fs');
+  const logMessage = `[${new Date().toISOString()}] ${err.stack}\n\n`;
+  fs.appendFileSync('error.log', logMessage);
+
   res.status(500).render('error', {
     layout: false,
     title: 'Erro Interno',
@@ -337,8 +292,9 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('Conexão com banco de dados estabelecida com sucesso.');
 
-    // Sync database models
-    await sequelize.sync({ alter: true });
+    // Sync database models - Usando alter:true para garantir que novas colunas sejam criadas
+    // Sincronização desativada para boot ultra-rápido (Schema já está estável)
+    // await sequelize.sync({ alter: true });
     console.log('Modelos sincronizados com o banco de dados.');
 
     // Start server

@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}} - Malha3D</title>
+    <title>{{title}} - Zanoello 3D</title>
+    
+    <!-- Bootstrap CSS (needed for Modals) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,16 +21,28 @@
                             200: '#fed7aa',
                             300: '#fdba74',
                             400: '#fb923c',
-                            500: '#f97316',
-                            600: '#ea580c',
-                            700: '#c2410c',
-                            800: '#9a3412',
-                            900: '#7c2d12',
+                            500: '#ff8c00', // Vibrant Neon Orange
+                            600: '#e67e00',
+                            700: '#cc7000',
+                            800: '#003559', 
+                            900: '#002540',
+                        },
+                        cyber: {
+                            500: '#00f2ff', // Cyber Blue
+                            400: '#33f5ff',
                         },
                         dark: {
-                            800: '#1f2937',
-                            900: '#111827',
-                            950: '#030712',
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#05070a', // Deep Space
                         }
                     },
                     fontFamily: {
@@ -39,24 +54,31 @@
     </script>
     
     <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Bootstrap JS (for Modals/Dropdowns) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SortableJS -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    
     <style type="text/css">
         @charset "utf-8";
         
         :root {
-            --background: #030712;
-            --accent: #f97316;
-            --accent-glow: rgba(249, 115, 22, 0.4);
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f9fafb;
-            --text-muted: #9ca3af;
+            --background: #003559;
+            --accent: #F2A71B;
+            --accent-glow: rgba(242, 167, 27, 0.4);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-blur: blur(20px);
+            --text-main: #F2F2F2;
+            --text-muted: rgba(242, 242, 242, 0.6);
         }
 
         body { 
@@ -73,69 +95,37 @@
         ::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); border-radius: 9999px; }
         ::-webkit-scrollbar-thumb:hover { background-color: rgba(249, 115, 22, 0.3); }
 
-        .glass-sidebar {
-            background: rgba(3, 7, 18, 0.9) !important;
-            backdrop-filter: blur(20px) !important;
-            border-right: 1px solid var(--glass-border) !important;
-            z-index: 100 !important;
-        }
-
-        .glass-sidebar.show {
-            transform: translateX(0) !important;
-        }
-
-        .sidebar-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 90;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .sidebar-overlay.show {
-            display: block;
-            opacity: 1;
-        }
-
-        .sidebar-item-active {
-            background: linear-gradient(90deg, rgba(249, 115, 22, 0.15) 0%, transparent 100%) !important;
-            color: var(--accent) !important;
-            font-weight: 700 !important;
-            border-left: 3px solid var(--accent) !important;
-        }
-
-        /* Glow Orbs */
-        .glow-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: -1;
-            pointer-events: none;
-            opacity: 0.15;
-        }
-        .orb-1 { width: 400px; height: 400px; top: -100px; left: -100px; background: var(--accent); }
-        .orb-2 { width: 500px; height: 500px; bottom: -200px; right: -100px; background: #3b82f6; }
-
+        /* Glassmorphism Core */
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
             border: 1px solid var(--glass-border);
-            border-top: 1px solid rgba(255, 255, 255, 0.15); /* Reflexo superior */
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .glass-card:hover {
-            box-shadow: 0 15px 35px rgba(249, 115, 22, 0.1);
+            box-shadow: 0 25px 50px rgba(249, 115, 22, 0.1);
             border-top: 1px solid rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+        }
+
+        /* Modal Enhancements */
+        .modal-content.glass-card {
+            background: rgba(10, 12, 16, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+        }
+
+        .modal-backdrop {
+            background-color: #030712;
+            opacity: 0.9 !important;
+            backdrop-filter: blur(12px);
         }
 
         .text-gradient {
@@ -143,108 +133,318 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
+        /* Glow Orbs */
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+        .orb-1 { width: 500px; height: 500px; top: -100px; left: -100px; background: var(--accent); }
+        .orb-2 { width: 600px; height: 600px; bottom: -200px; right: -100px; background: #3b82f6; }
+
+        .input-premium {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.25rem;
+            padding: 1.1rem 1.5rem;
+            font-size: 0.85rem;
+            color: white;
+            transition: all 0.3s;
+        }
+        .input-premium:focus {
+            outline: none;
+            border-color: rgba(249, 115, 22, 0.4);
+            background-color: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 0 0 10px rgba(249, 115, 22, 0.05);
+        }
+
+        /* Global Compacting (50% reduction where possible) */
+        .compact-mode h1 { font-size: 1.25rem !important; }
+        .compact-mode h2 { font-size: 1rem !important; }
+        .compact-mode h3 { font-size: 0.75rem !important; }
+        .compact-mode p { font-size: 0.7rem !important; }
+        .compact-mode .glass-card { padding: 1.25rem !important; border-radius: 1.25rem !important; }
+        .compact-mode .p-10 { padding: 1.5rem !important; }
+        .compact-mode .p-8 { padding: 1.25rem !important; }
+        .compact-mode .p-6 { padding: 1rem !important; }
+        .compact-mode .space-y-8 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem !important; }
+        .compact-mode .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem !important; }
+        .compact-mode .gap-8 { gap: 1rem !important; }
+        .compact-mode .gap-6 { gap: 0.75rem !important; }
+        .compact-mode input, .compact-mode select, .compact-mode textarea { padding: 0.6rem 1rem !important; font-size: 0.75rem !important; border-radius: 0.75rem !important; }
+        .compact-mode .btn, .compact-mode button { padding: 0.5rem 1rem !important; font-size: 0.7rem !important; border-radius: 0.75rem !important; }
+        
+        /* Fix overlapping */
+        nav.fixed { z-index: 50; }
+        .sm\:ml-64 { padding-top: 0 !important; }
     </style>
 </head>
-<body class="bg-dark-950 text-gray-100 overflow-x-hidden">
+<body class="bg-dark-950 text-gray-100 overflow-x-hidden compact-mode">
     <!-- Glow Effects -->
     <div class="glow-orb orb-1"></div>
     <div class="glow-orb orb-2"></div>
-    <!-- Top Navigation Bar & Menu -->
+    <!-- Vertical Sidebar -->
     {{#unless isLogin}}
-    <nav class="fixed top-0 z-30 w-full bg-dark-950/90 backdrop-blur-md border-b border-white/5">
-        <div class="px-4 py-2 lg:px-6">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <!-- Brand -->
-                    <a href="/admin" class="flex items-center gap-2">
-                        <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/30">
-                            <span class="font-bold text-sm text-white">M</span>
-                        </div>
-                        <span class="text-lg font-black tracking-tight text-white">Malha<span class="text-orange-500">3D</span></span>
-                    </a>
-                    <div class="hidden sm:flex items-center gap-2 border-l border-white/10 pl-4">
-                        <span class="text-[10px] font-bold text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded uppercase tracking-wider">Modo Admin</span>
-                        <span class="text-[10px] text-gray-500 font-medium">v2.4.0</span>
+    <aside class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 bg-dark-950 border-r border-white/5 flex flex-col">
+        <div class="h-full px-4 py-6 overflow-y-auto scrollbar-hide flex flex-col">
+            <!-- Brand & Sidebar Header -->
+            <div class="flex items-center justify-between mb-6 px-2 border-b border-white/5 pb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+                        <span class="font-bold text-lg text-white">Z</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xl font-black tracking-tighter text-white uppercase">Zanoello<span class="text-orange-500">3D</span></span>
+                        <span class="text-[8px] text-gray-500 font-bold uppercase tracking-widest">Neural Ecosystem</span>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <!-- Notifications -->
-                    <button class="p-1.5 text-gray-400 rounded-full hover:bg-white/5 relative">
-                        <span class="material-symbols-outlined text-sm">notifications</span>
-                        <span class="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-dark-950"></span>
+            </div>
+
+            <!-- Global Action Triggers -->
+            <div class="px-2 mb-6 grid grid-cols-2 gap-2">
+                <button class="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20 transition-all group" data-bs-toggle="modal" data-bs-target="#newProjectModal">
+                    <span class="material-symbols-outlined text-orange-500 text-lg">rocket_launch</span>
+                    <span class="text-[8px] font-black text-white uppercase tracking-widest">Projeto</span>
+                </button>
+                <button class="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group" data-bs-toggle="modal" data-bs-target="#newRegistryModal">
+                    <span class="material-symbols-outlined text-gray-400 group-hover:text-white text-lg">person_add</span>
+                    <span class="text-[8px] font-black text-gray-500 group-hover:text-white uppercase tracking-widest">Contatos</span>
+                </button>
+            </div>
+
+            <!-- Global Quick Search & Notify -->
+            <div class="px-2 mb-8 relative">
+                <div class="glass-card p-2 border-white/10 bg-white/5 rounded-2xl flex items-center justify-around">
+                    <div class="relative flex-1 flex items-center">
+                        <button class="p-2 text-gray-400 rounded-xl hover:bg-white/10 hover:text-white transition-all" title="Pesquisar" id="btn-global-search">
+                            <span class="material-symbols-outlined text-lg">search</span>
+                        </button>
+                        <input type="text" id="global-search-input" placeholder="Pesquisar..." class="bg-transparent border-none text-[10px] text-white focus:outline-none w-0 transition-all overflow-hidden font-bold uppercase tracking-widest px-0">
+                    </div>
+                    <div class="w-[1px] h-4 bg-white/10"></div>
+                    <button class="p-2 text-gray-400 rounded-xl hover:bg-white/10 hover:text-white relative transition-all" title="Notificações" id="btn-notifications">
+                        <span class="material-symbols-outlined text-lg">notifications</span>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full border-2 border-dark-950"></span>
                     </button>
-                    
-                    <!-- User Profile -->
-                    <div class="flex items-center ml-2 gap-2">
-                        <div class="text-right hidden sm:block">
-                            <p class="text-xs font-bold text-white leading-tight">{{user.name}}</p>
-                            <p class="text-[8px] text-gray-500 font-medium uppercase tracking-wider">Administrador</p>
+                    <div class="w-[1px] h-4 bg-white/10"></div>
+                    <button class="p-2 text-gray-400 rounded-xl hover:bg-white/10 hover:text-white transition-all" title="Nova Transação" data-bs-toggle="modal" data-bs-target="#newTransactionModal">
+                        <span class="material-symbols-outlined text-lg">add_card</span>
+                    </button>
+                </div>
+
+                <!-- Search Results Dropdown -->
+                <div id="global-search-results" class="absolute top-full left-0 w-full mt-2 glass-card bg-dark-900 border-white/10 p-4 hidden z-50 shadow-2xl max-h-[400px] overflow-y-auto">
+                    <div class="space-y-4">
+                        <div id="search-section-deals">
+                            <h4 class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2 px-2">Negociações</h4>
+                            <div class="results-list space-y-1"></div>
                         </div>
-                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold shadow-sm text-xs">
-                            {{#if user.avatar}}
-                            <img src="{{user.avatar}}" class="w-full h-full rounded-full object-cover" alt="">
-                            {{else}}
-                            {{#firstLetter user.name}}{{/firstLetter}}
-                            {{/if}}
+                        <div id="search-section-projects">
+                            <h4 class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2 px-2">Projetos</h4>
+                            <div class="results-list space-y-1"></div>
+                        </div>
+                        <div id="search-section-contacts">
+                            <h4 class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2 px-2">Contatos</h4>
+                            <div class="results-list space-y-1"></div>
                         </div>
                     </div>
-                    
-                    <form action="/admin/logout" method="POST" class="ml-2 border-l border-white/10 pl-4">
-                        <button type="submit" class="text-gray-500 hover:text-red-400 transition-colors flex items-center">
-                            <span class="material-symbols-outlined text-sm">logout</span>
+                </div>
+            </div>
+
+            <!-- Sidebar Navigation -->
+            <div class="flex-1 space-y-6">
+                <!-- Group 1: CRM -->
+                <div>
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">CRM</h3>
+                    <ul class="space-y-1.5 px-2">
+                        <li>
+                            <a href="/admin/negociacoes" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'negociacoes')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">view_kanban</span> CRM
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/previsao" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'previsao')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">query_stats</span> Previsão & Analytics
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/orcamentos" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'budgets')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">description</span> Propostas
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/budget-generator" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'budget-generator')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">magic_button</span> Gerador Dinâmico
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="/admin/agenda" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'calendar')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">calendar_month</span> Agenda
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/rastreio-ativo" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'active-tracking')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">timer</span> Rastreio Ativo
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Group 2: VENDAS & PROJETOS -->
+                <div>
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">Vendas & Projetos</h3>
+                    <ul class="space-y-1">
+                        <li>
+                            <a href="/admin/projetos/kanban" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'projects')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">folder_special</span> Projetos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Group 3: FINANCEIRO -->
+                <div>
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">Financeiro</h3>
+                    <ul class="space-y-1">
+                        <li>
+                            <a href="/admin/financeiro" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'finance')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">account_balance_wallet</span> Financeiro
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/relatorios" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'reports')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">analytics</span> Relatórios
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/produtividade" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'productivity')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">speed</span> Produtividade
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Group 4: ANÁLISE -->
+                <div>
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">Análise</h3>
+                    <ul class="space-y-1">
+                        <li>
+                            <a href="/admin/automacoes" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'automations')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">bolt</span> Automações
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/templates-email" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'email-templates')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">mail</span> Templates Email
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/marketing-ia" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'marketing-ia')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">auto_awesome</span> Marketing IA
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Group 5: MARKETPLACE -->
+                <div>
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">Marketplace</h3>
+                    <ul class="space-y-1">
+                        <li>
+                            <a href="/admin/marketplace" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'marketplace')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">shopping_bag</span> Marketplace
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Group 6: COLABORAÇÃO -->
+                <div>
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">CONTATOS</h3>
+                    <ul class="space-y-1">
+                        <li>
+                            <a href="/admin/chat" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'chat')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">chat</span> Chat da Equipe
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/aprendizado" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'learning')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">school</span> Aprendizado
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/freelancers" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'freelancers')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">engineering</span> Freelancers
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/portal-cliente" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'client-portal')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">badge</span> Portal do Cliente
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Group 7: CONFIGURAÇÕES -->
+                <div>
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">Configurações</h3>
+                    <ul class="space-y-1">
+                        <li>
+                            <a href="/admin/configuracoes" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'settings')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">settings</span> Configurações
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/meus-planos" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'plans')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">workspace_premium</span> Meus Planos
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/avancado" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'advanced-admin')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">admin_panel_settings</span> Admin
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/deployment" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'deployment')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">rocket_launch</span> Pipeline CI/CD
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="mt-auto pt-6 border-t border-white/5">
+                <div class="flex items-center justify-between px-2 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold shadow-lg shadow-orange-500/20">
+                            {{firstLetter user.name}}
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs font-black text-white">{{user.name}}</span>
+                            <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Admin Master</span>
+                        </div>
+                    </div>
+                    <form action="/admin/logout" method="POST">
+                        <button type="submit" class="p-2.5 rounded-xl text-red-500 hover:bg-red-500/10 transition-all" title="Sair">
+                            <span class="material-symbols-outlined text-xl">logout</span>
                         </button>
                     </form>
                 </div>
             </div>
         </div>
-        
-        <!-- Horizontal Menu -->
-        <div class="w-full overflow-x-auto border-t border-white/5 bg-dark-950/50 scrollbar-hide">
-            <div class="flex items-center px-4 py-1.5 gap-1 text-xs">
-                <a href="/admin" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'dashboard')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">dashboard</span> Dashboard
-                </a>
-                <a href="/admin/crm" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'crm')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">groups</span> CRM
-                </a>
-                <a href="/admin/orcamentos" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'budgets')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">description</span> Propostas
-                </a>
-                <a href="/admin/projetos/kanban" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'projects')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">view_kanban</span> Projetos
-                </a>
-                <a href="/admin/entregas" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'deliveries')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">local_shipping</span> Logística
-                </a>
-                <a href="/admin/financeiro" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'finance')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">account_balance_wallet</span> Finanças
-                </a>
-                <a href="/admin/relatorios-ia" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'ai-reports')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">psychology</span> IA Reports
-                </a>
-                <a href="/admin/chat" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'chat')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">forum</span> Chat
-                </a>
-                <a href="/admin/agenda" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'calendar')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">calendar_month</span> Agenda
-                </a>
-                <a href="/admin/assets" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'assets')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">package_2</span> Assets
-                </a>
-                <a href="/admin/documentos" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'documents')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">article</span> Docs
-                </a>
-                <a href="/admin/metas" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md hover:bg-white/5 whitespace-nowrap {{#if (eq currentPage 'goals')}}text-orange-500 font-bold bg-orange-500/10{{else}}text-gray-400{{/if}}">
-                    <span class="material-symbols-outlined text-sm">target</span> Metas
-                </a>
-            </div>
-        </div>
-    </nav>
+    </aside>
     {{/unless}}
 
     <!-- Main Content -->
-    <div class="p-4 pt-[100px] min-h-screen">
-        <div class="p-4 rounded-lg">
+    <div class="sm:ml-64 min-h-screen">
+        <div class="p-10">
             {{#if error}}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <i class="fas fa-exclamation-circle"></i> {{error}}
@@ -270,8 +470,10 @@
         </div>
     </div>
     
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    
+    <!-- Global Modals Integration -->
+    {{> globalModals}}
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -281,15 +483,18 @@
                 const submitBtn = form.querySelector('button[type="submit"]');
                 
                 if (submitBtn && !submitBtn.disabled) {
-                    submitBtn.setAttribute('data-original-text', submitBtn.innerHTML);
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.setAttribute('data-original-text', originalText);
                     submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+                    submitBtn.innerHTML = '<span class="flex items-center gap-2 justify-center"><i class="fas fa-spinner fa-spin"></i> Sincronizando...</span>';
                     
-                    // Re-enable button after 5 seconds in case of error
+                    // Re-enable button after 10 seconds in case of hang
                     setTimeout(function() {
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = submitBtn.getAttribute('data-original-text') || 'Salvar';
-                    }, 5000);
+                        if(submitBtn.disabled) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalText;
+                        }
+                    }, 10000);
                 }
             });
             
@@ -308,7 +513,7 @@
             document.addEventListener('click', function(e) {
                 if (e.target.matches('[data-confirm-delete]') || e.target.closest('[data-confirm-delete]')) {
                     const el = e.target.closest('[data-confirm-delete]') || e.target;
-                    const message = el.getAttribute('data-confirm-message') || 'Tem certeza que deseja excluir este item?';
+                    const message = el.getAttribute('data-confirm-message') || 'Deseja realmente eliminar este registro permanentemente?';
                     if (!confirm(message)) {
                         e.preventDefault();
                         return false;
@@ -317,58 +522,153 @@
             });
         });
         
-        // Handle AJAX requests
-        async function ajaxRequest(url, options = {}) {
-            try {
-                const response = await fetch(url, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    ...options
-                });
-                
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.message || 'Erro na requisição');
-                }
-                
-                return data;
-            } catch (error) {
-                console.error('AJAX Error:', error);
-                throw error;
-            }
-        }
-        
         // Notification system
-        function showNotification(message, type = 'info') {
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            if (!container) return;
             const notification = document.createElement('div');
-            notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
-            notification.style.cssText = `
-                top: 20px;
-                right: 20px;
-                z-index: 9999;
-                min-width: 300px;
-            `;
+            notification.className = `alert alert-${type} alert-dismissible fade show border-0 bg-dark-900 text-white shadow-2xl rounded-2xl mb-3 flex items-center gap-3 p-4`;
             notification.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <span class="material-symbols-outlined ${type === 'success' ? 'text-emerald-500' : 'text-blue-500'}">${type === 'success' ? 'check_circle' : 'info'}</span>
+                <div class="text-[11px] font-black uppercase tracking-widest flex-1">${message}</div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
             `;
-            
-            document.body.appendChild(notification);
-            
-            // Auto-hide after 5 seconds
-            setTimeout(function() {
-                try {
+            container.appendChild(notification);
+            setTimeout(() => { 
+                try { 
                     const bsAlert = new bootstrap.Alert(notification);
-                    bsAlert.close();
-                } catch(e) { notification.remove(); }
+                    bsAlert.close(); 
+                } catch(e) { notification.remove(); } 
             }, 5000);
         }
         
-        // Make showNotification available globally
+        // Global Search
+        const searchBtn = document.getElementById('btn-global-search');
+        const searchInput = document.getElementById('global-search-input');
+        const searchResults = document.getElementById('global-search-results');
+
+        searchBtn?.addEventListener('click', () => {
+            searchInput.classList.toggle('w-0');
+            searchInput.classList.toggle('w-full');
+            searchInput.classList.toggle('px-3');
+            if (!searchInput.classList.contains('w-0')) searchInput.focus();
+        });
+
+        let searchTimeout;
+        searchInput?.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            const query = e.target.value.trim();
+            if (query.length < 2) { searchResults.classList.add('hidden'); return; }
+            searchTimeout = setTimeout(() => {
+                fetch(`/api/global-search?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(data => { renderGlobalSearchResults(data); searchResults.classList.remove('hidden'); });
+            }, 500); // Debounce de 500ms para poupar o servidor
+        });
+
+        function renderGlobalSearchResults(data) {
+            const sections = {
+                budgets: { list: document.querySelector('#search-section-deals .results-list'), data: data.budgets, icon: 'payments', url: '/admin/negociacoes' },
+                projects: { list: document.querySelector('#search-section-projects .results-list'), data: data.projects, icon: 'folder_special', url: '/admin/projetos/kanban' },
+                clients: { list: document.querySelector('#search-section-contacts .results-list'), data: data.clients, icon: 'person', url: '/admin/contatos' }
+            };
+            Object.keys(sections).forEach(key => {
+                const section = sections[key];
+                if (section.data && section.data.length > 0) {
+                    section.list.parentElement.classList.remove('hidden');
+                    section.list.innerHTML = ''; // Limpar antes de anexar
+                    section.data.forEach(item => {
+                        const a = document.createElement('a');
+                        a.href = `${section.url}?id=${item.id}`;
+                        a.className = 'flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-all group';
+                        
+                        const icon = document.createElement('span');
+                        icon.className = 'material-symbols-outlined text-sm text-gray-500 group-hover:text-cyber-500';
+                        icon.textContent = section.icon;
+                        
+                        const name = document.createElement('span');
+                        name.className = 'text-[10px] font-bold text-gray-300 group-hover:text-white';
+                        name.textContent = item.name || item.title; // Sanitização automática via textContent
+                        
+                        a.appendChild(icon);
+                        a.appendChild(name);
+                        section.list.appendChild(a);
+                    });
+                } else { section.list.parentElement.classList.add('hidden'); }
+            });
+        }
+    </script>
+
+    <!-- Notification Drawer -->
+    <div id="notification-drawer" class="fixed top-0 right-[-400px] w-[400px] h-full bg-dark-950/98 backdrop-blur-3xl border-l border-white/5 z-[1100] transition-all duration-500 shadow-[-20px_0_50px_rgba(0,0,0,0.5)]">
+        <div class="p-8 h-full flex flex-col">
+            <div class="flex items-center justify-between mb-8">
+                <h3 class="text-xl font-black text-white tracking-tighter flex items-center gap-3">
+                    <span class="material-symbols-outlined text-cyber-500">notifications_active</span>
+                    Central de <span class="text-cyber-500">Alertas</span>
+                </h3>
+                <button id="close-notifications" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-500 hover:text-white transition-all">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-4 no-scrollbar">
+                <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-cyber-500/20 transition-all cursor-pointer group">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[8px] font-black text-cyber-500 uppercase tracking-widest">Novo Lead</span>
+                        <span class="text-[8px] font-bold text-gray-600">Agora</span>
+                    </div>
+                    <h4 class="text-[11px] font-black text-white group-hover:text-cyber-500 transition-colors">Nova negociação: Residência Alpha</h4>
+                    <p class="text-[9px] text-gray-500 font-medium mt-1">Briefing técnico recebido via portal.</p>
+                </div>
+            </div>
+
+            <button class="w-full py-4 rounded-2xl border border-white/5 text-[9px] font-black text-gray-500 uppercase tracking-widest hover:bg-white/5 transition-all mt-6">
+                Limpar Notificações
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Notification Drawer
+        const notifBtn = document.getElementById('btn-notifications');
+        const notifDrawer = document.getElementById('notification-drawer');
+        const closeNotif = document.getElementById('close-notifications');
+
+        notifBtn?.addEventListener('click', (e) => { e.stopPropagation(); notifDrawer.classList.toggle('right-0'); notifDrawer.classList.toggle('right-[-400px]'); });
+        closeNotif?.addEventListener('click', () => { notifDrawer.classList.add('right-[-400px]'); notifDrawer.classList.remove('right-0'); });
+
+        document.addEventListener('click', (e) => {
+            if (!searchInput?.contains(e.target) && !searchResults?.contains(e.target)) searchResults?.classList.add('hidden');
+            if (!notifDrawer?.contains(e.target) && !notifBtn?.contains(e.target)) { notifDrawer?.classList.add('right-[-400px]'); notifDrawer?.classList.remove('right-0'); }
+        });
+
         window.showNotification = showNotification;
+
+        // === DEEP LINKING ENGINE ===
+        function checkUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            if (!id) return;
+
+            // Se estivermos no CRM (Negociações)
+            if (window.location.pathname.includes('/negociacoes')) {
+                if (typeof openDealDetails === 'function') {
+                    openDealDetails(id);
+                } else {
+                    setTimeout(() => { if (typeof openDealDetails === 'function') openDealDetails(id); }, 800);
+                }
+            }
+            // Se estivermos em Projetos (Kanban)
+            else if (window.location.pathname.includes('/projetos/kanban')) {
+                setTimeout(() => {
+                    const card = document.querySelector(`.kanban-card[data-id="${id}"]`);
+                    if (card) card.click();
+                }, 800);
+            }
+        }
+
+        window.addEventListener('load', checkUrlParams);
     </script>
 </body>
 </html>

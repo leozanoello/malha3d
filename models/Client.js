@@ -31,7 +31,7 @@ const Client = sequelize.define('Client', {
     allowNull: true
   },
   category: {
-    type: DataTypes.ENUM('Lead', 'Cliente', 'Parceiro', 'Colaborador'),
+    type: DataTypes.ENUM('Lead', 'Cliente', 'Parceiro', 'Colaborador', 'Fornecedor', 'Prestador'),
     defaultValue: 'Lead'
   },
   source: {
