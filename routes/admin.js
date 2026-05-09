@@ -998,11 +998,15 @@ router.get('/deployment', requireAuth, checkPermission('devops'), async (req, re
 });
 
 router.post('/api/deploy', requireAuth, checkPermission('devops'), async (req, res) => {
-  const runDeploy = require('../scripts/git-deploy');
+  const isProduction = process.env.NODE_ENV === 'production';
+  const scriptPath = isProduction ? '../scripts/prod-pull' : '../scripts/git-deploy';
+  
   try {
-    const result = await runDeploy(`Deploy via Dashboard por ${req.user.name}`);
+    const runAction = require(scriptPath);
+    const result = await runAction(`Deploy via Dashboard por ${req.user.name}`);
     res.json(result);
   } catch (error) {
+    console.error('Deploy Error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
