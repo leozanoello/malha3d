@@ -4,8 +4,9 @@
 
 echo "--- Iniciando Deploy ZANOELLO (Scripts Corrigidos) ---"
 
-# 1. Localizar a pasta do projeto (onde está o package.json)
-APP_DIR=$(find . -name package.json -not -path "*/node_modules/*" -exec dirname {} \;)
+# 1. Localizar a pasta do projeto (onde está o server.js principal)
+# Filtramos pastas de backup/build e pegamos o diretório real
+APP_DIR=$(find . -maxdepth 4 -name server.js -not -path "*/node_modules/*" -not -path "*/.builds/*" | head -n 1 | xargs dirname)
 
 if [ -z "$APP_DIR" ]; then
     echo "ERRO: Não foi possível encontrar a pasta do projeto."
