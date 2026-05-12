@@ -46,7 +46,7 @@ app.use(compression());
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // limite de 100 requisições por IP
+  max: 1000, // aumentado de 100 para 1000 para evitar bloqueios em desenvolvimento
   message: 'Muitas requisições deste IP, tente novamente mais tarde.'
 });
 app.use(limiter);
@@ -88,115 +88,66 @@ const hbs = exphbs.create({
   layoutsDir: path.join(__dirname, 'views/layouts'),
   partialsDir: path.join(__dirname, 'views/partials'),
   helpers: {
-    // Date formatting
-    formatDate: function (date, format) {
-      if (!date) { return ''; }
-      const d = new Date(date);
-      const options = {
-        'short': { day: '2-digit', month: '2-digit', year: 'numeric' },
-        'long': { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' },
-        'time': { hour: '2-digit', minute: '2-digit' }
-      };
-      return d.toLocaleDateString('pt-BR', options[format] || options['short']);
-    },
-
-    // Time ago helper
-    timeAgo: function (date) {
+    // === DATE & TIME HELPERS ===
+    formatDate: (date, format) => {
       if (!date) return '';
-      const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-      let interval = seconds / 31536000;
-      if (interval > 1) return Math.floor(interval) + " anos atrás";
-      interval = seconds / 2592000;
-      if (interval > 1) return Math.floor(interval) + " meses atrás";
-      interval = seconds / 86400;
-      if (interval > 1) return Math.floor(interval) + " dias atrás";
-      interval = seconds / 3600;
-      if (interval > 1) return Math.floor(interval) + " horas atrás";
-      interval = seconds / 60;
-      if (interval > 1) return Math.floor(interval) + " min atrás";
-      return "agora mesmo";
+      const m = moment(date);
+      if (format === 'short') return m.format('DD/MM/YYYY');
+      if (format === 'long') return m.format('DD/MM/YYYY HH:mm');
+      if (format === 'time') return m.format('HH:mm');
+      if (typeof format === 'string') return m.format(format);
+      return m.format('DD/MM/YYYY');
     },
+    dateFormat: (date, format) => {
+      if (!date) return '';
+      return moment(date).format(typeof format === 'string' ? format : 'DD/MM/YYYY');
+    },
+    formatDateShort: (date) => {
+      if (!date) return '';
+      return moment(date).format('DD/MM');
+    },
+    timeAgo: (date) => {
+      if (!date) return '';
+      return moment(date).fromNow();
+    },
+    isPast: (date) => {
+      if (!date) return false;
+      return new Date(date) < new Date();
+    },
+    date: (d, format) => {
+      if (!d) return new Date();
+      const dateObj = new Date(d);
+      if (typeof format === 'string') return moment(dateObj).format(format);
+      return dateObj;
+    },
+    now: () => new Date(),
 
-    // Currency formatting
-    formatCurrency: function (value) {
-      if (value === null || value === undefined) { return 'R$ 0,00'; }
-      return new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      }).format(value);
+    // === STRING & UI HELPERS ===
+    firstLetter: (str) => {
+      if (!str || typeof str !== 'string') return 'U';
+      return str.charAt(0).toUpperCase();
     },
-    numberFormat: function (number, decimals, decPoint, thousandsSep) {
-      number = parseFloat(number);
-      if (isNaN(number)) return '0';
-      decimals = decimals || 0;
-      decPoint = decPoint || ',';
-      thousandsSep = thousandsSep || '.';
-      const n = number.toFixed(decimals);
-      const parts = n.split('.');
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSep);
-      return parts.join(decPoint);
+    getFirstLetters: (str) => {
+      if (!str) return 'U';
+      return str.split(' ').filter(n => n).map(n => n[0]).join('').substring(0, 2).toUpperCase();
     },
-    formatMoney: function (value) {
-      if (value === null || value === undefined) { return '0,00'; }
-      return new Intl.NumberFormat('pt-BR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }).format(value);
+    truncate: (str, len) => {
+      if (!str) return '';
+      const length = parseInt(len) || 50;
+      return str.length > length ? str.substring(0, length) + '...' : str;
     },
-    formatWhatsappLink: function (phone, name, context = 'default') {
-      if (!phone) return '#';
-      const cleanPhone = phone.replace(/\D/g, '');
-      let message = '';
-      
-      switch(context) {
-        case 'lead':
-          message = `Olá ${name}! Recebemos seu interesse aqui na Zanoello 3D. 🚀 Vamos transformar essa visão em realidade?`;
-          break;
-        case 'review':
-          message = `Oi ${name}! Boas notícias: os renders já estão no forno e prontos para sua revisão. 📸 Confira no seu painel!`;
-          break;
-        case 'financial':
-          message = `Olá ${name}! Notamos uma pendência financeira no sistema. Podemos ajudar com alguma dúvida sobre o pagamento? 💳`;
-          break;
-        default:
-          message = `Olá ${name}! Equipe Zanoello 3D falando. ⚡`;
-      }
-      
-      return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+    substring: (str, start, end) => {
+      if (typeof str !== 'string') return '';
+      return str.substring(start, end);
     },
-    numberFormat: function (number, decimals, decPoint, thousandsSep) {
-      number = parseFloat(number);
-      if (isNaN(number)) return '0';
-      decimals = decimals || 0;
-      decPoint = decPoint || ',';
-      thousandsSep = thousandsSep || '.';
-      const n = number.toFixed(decimals);
-      const parts = n.split('.');
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSep);
-      return parts.join(decPoint);
+    split: (str, separator = ',') => {
+      if (!str) return [];
+      return str.split(separator);
     },
-    gt: (a, b) => a > b,
-    lt: (a, b) => a < b,
-    eq: (a, b) => a === b,
-    multiply: (a, b) => a * b,
-    divide: (a, b) => (b && b !== 0) ? a / b : 0,
-    round: (val) => Math.round(val || 0),
-    json: (obj) => JSON.stringify(obj),
-
-    // Phone formatting
-    formatPhone: function (phone) {
-      if (!phone) { return ''; }
-      const cleaned = phone.replace(/\D/g, '');
-      if (cleaned.length === 11) {
-        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
-      } else if (cleaned.length === 10) {
-        return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
-      }
-      return phone;
+    json: (obj) => {
+      return JSON.stringify(obj);
     },
-
-    // Status badge
-    statusBadge: function (status) {
+    statusBadge: (status) => {
       const badges = {
         'novo': '<span class="badge bg-primary">Novo</span>',
         'em_andamento': '<span class="badge bg-info">Em Andamento</span>',
@@ -211,71 +162,64 @@ const hbs = exphbs.create({
       };
       return badges[status] || `<span class="badge bg-light">${status}</span>`;
     },
-
-    // Rating stars
-    ratingStars: function (rating) {
-      if (!rating) { return ''; }
+    ratingStars: (rating) => {
+      if (!rating) return '';
       let stars = '';
       for (let i = 1; i <= 5; i++) {
-        if (i <= rating) {
-          stars += '<i class="fas fa-star text-warning"></i>';
-        } else {
-          stars += '<i class="far fa-star text-muted"></i>';
-        }
+        stars += `<i class="${i <= rating ? 'fas' : 'far'} fa-star ${i <= rating ? 'text-warning' : 'text-muted'}"></i>`;
       }
       return stars;
     },
 
-    // Truncate text
-    truncate: function (str, length) {
-      if (!str) { return ''; }
-      if (str.length <= length) { return str; }
-      return `${str.substring(0, length)}...`;
+    // === FINANCIAL & NUMBER HELPERS ===
+    formatCurrency: (value) => {
+      if (value === null || value === undefined) return 'R$ 0,00';
+      const num = parseFloat(value);
+      if (isNaN(num)) return 'R$ 0,00';
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(num);
+    },
+    formatMoney: (value) => {
+      if (value === null || value === undefined) return '0,00';
+      const num = parseFloat(value);
+      if (isNaN(num)) return '0,00';
+      return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+    },
+    numberFormat: (number, decimals = 2, decPoint = ',', thousandsSep = '.') => {
+      const num = parseFloat(number);
+      if (isNaN(num)) return '0';
+      const n = num.toFixed(decimals);
+      const parts = n.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSep);
+      return parts.join(decPoint);
+    },
+    percent: (val, total) => {
+      if (!total || total === 0) return 0;
+      return Math.round((val / total) * 100);
+    },
+    calculatePercentage: (val, total) => {
+      if (!total || total === 0) return 0;
+      return Math.round((val / total) * 100);
     },
 
-    // Substring helper
-    substring: function (str, start, end) {
-      if (!str || typeof str !== 'string') return '';
-      return str.substring(start, end);
-    },
-
-    // Limit array helper
-    limit: function (arr, limit) {
-      if (!Array.isArray(arr)) return [];
-      return arr.slice(0, limit);
-    },
-
-    // JSON stringify
-    json: function (context) {
-      return JSON.stringify(context);
-    },
-
-    // Standard substring helper
-    substring: function (str, start, end) {
-      if (typeof str !== 'string') return '';
-      return str.substring(start, end);
-    },
-
-    // List helper (creates an array from arguments)
-    list: function (...args) {
-      return args.slice(0, -1);
-    },
-
-    // Currency formatter
-    formatCurrency: function (value) {
-      if (value === undefined || value === null) return 'R$ 0,00';
-      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-    },
-
-    // Comparison helpers
+    // === LOGIC & COMPARISON HELPERS ===
     eq: (a, b) => a === b,
     ne: (a, b) => a !== b,
     lt: (a, b) => a < b,
     le: (a, b) => a <= b,
     gt: (a, b) => a > b,
     ge: (a, b) => a >= b,
+    and: (...args) => args.slice(0, -1).every(Boolean),
+    or: (...args) => args.slice(0, -1).some(Boolean),
+    ifCond: function (v1, operator, v2, options) {
+      const conditions = {
+        '==': v1 == v2, '===': v1 === v2, '!=': v1 != v2, '!==': v1 !== v2,
+        '<': v1 < v2, '<=': v1 <= v2, '>': v1 > v2, '>=': v1 >= v2,
+        '&&': v1 && v2, '||': v1 || v2
+      };
+      return conditions[operator] ? options.fn(this) : options.inverse(this);
+    },
 
-    // Math helpers
+    // === MATH HELPERS ===
     add: (a, b) => (parseFloat(a) || 0) + (parseFloat(b) || 0),
     subtract: (a, b) => {
       const valA = (a instanceof Date) ? a.getTime() : (parseFloat(a) || 0);
@@ -287,173 +231,56 @@ const hbs = exphbs.create({
       const divisor = parseFloat(b) || 0;
       return divisor === 0 ? 0 : (parseFloat(a) || 0) / divisor;
     },
+    round: (val) => Math.round(parseFloat(val) || 0),
 
-    // Array helpers
-    length: (array) => array ? array.length : 0,
-
-    // Conditional helpers
-    ifCond: function (v1, operator, v2, options) {
-      switch (operator) {
-        case '==': return (v1 == v2) ? options.fn(this) : options.inverse(this);
-        case '===': return (v1 === v2) ? options.fn(this) : options.inverse(this);
-        case '!=': return (v1 != v2) ? options.fn(this) : options.inverse(this);
-        case '!==': return (v1 !== v2) ? options.fn(this) : options.inverse(this);
-        case '<': return (v1 < v2) ? options.fn(this) : options.inverse(this);
-        case '<=': return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-        case '>': return (v1 > v2) ? options.fn(this) : options.inverse(this);
-        case '>=': return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-        case '&&': return (v1 && v2) ? options.fn(this) : options.inverse(this);
-        case '||': return (v1 || v2) ? options.fn(this) : options.inverse(this);
-        default: return options.inverse(this);
-      }
+    // === UTILITY & ARRAY HELPERS ===
+    array: (...args) => args.slice(0, -1),
+    json: (obj) => JSON.stringify(obj),
+    length: (arr) => (arr && arr.length) ? arr.length : 0,
+    list: (...args) => args.slice(0, -1),
+    limit: (arr, limit) => (Array.isArray(arr) ? arr.slice(0, limit) : []),
+    times: (n, block) => {
+      let accum = '';
+      for (let i = 1; i <= n; ++i) accum += block.fn(i);
+      return accum;
     },
-    percent: (val, total) => {
-      if (!total || total === 0) return 0;
-      return Math.round((val / total) * 100);
+    range: (start, end) => {
+      const res = [];
+      for (let i = start; i <= end; i++) res.push(i);
+      return res;
     },
-    dateFormat: function (date, format) {
-      if (!date) return '-';
-      const d = new Date(date);
-      if (format === 'MMMM YYYY') {
-        return d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-      }
-      if (format && format.includes('DD/MM/YYYY')) {
-        return d.toLocaleDateString('pt-BR');
-      }
-      return d.toLocaleDateString('pt-BR');
+    random: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
+    select_random: (...args) => {
+      const items = args.slice(0, -1);
+      return items[Math.floor(Math.random() * items.length)];
     },
-    formatDate: function (date, format) {
-      if (!date) return '-';
-      const d = new Date(date);
-      if (format === 'long') {
-        return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
-      }
-      return d.toLocaleDateString('pt-BR');
-    },
-    formatDateShort: function (date) {
-      if (!date) return '-';
-      const d = new Date(date);
-      return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-    },
-    timeAgo: function (date) {
-      if (!date) return 'n/a';
-      return moment(date).fromNow();
-    },
-    firstLetter: function (str) {
-      if (!str || typeof str !== 'string') return 'U';
-      return str.charAt(0).toUpperCase();
-    },
-
-    // Current date helper
-    now: function (format) {
-      const d = new Date();
-      if (typeof format === 'string') {
-        // Use dateFormat logic for now
-        if (format === 'MMMM YYYY') {
-          return d.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-        }
-        if (format === 'YYYYMMDD') {
-          const y = d.getFullYear();
-          const m = String(d.getMonth() + 1).padStart(2, '0');
-          const day = String(d.getDate()).padStart(2, '0');
-          return `${y}${m}${day}`;
-        }
-        return d.toLocaleDateString('pt-BR');
-      }
-      return d;
-    },
-
-    // Date helper (alias for dateFormat or returns Date object for math)
-    date: function (d, format) {
-      if (!d) return new Date();
-      const dateObj = new Date(d);
-      if (typeof format === 'string') {
-        // If we have a format string, use the dateFormat helper
-        // But since we are inside the helpers object, we can't easily call it directly
-        // unless we reference the helpers object or replicate logic.
-        if (format === 'MMMM YYYY') {
-          return dateObj.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-        }
-        return dateObj.toLocaleDateString('pt-BR');
-      }
-      return dateObj;
-    },
-
-    // WhatsApp Link helper
-    formatWhatsappLink: function (phone, name, context) {
-      if (!phone) return '#';
-      const cleanPhone = String(phone).replace(/\D/g, '');
-      const message = encodeURIComponent(`Olá ${name}, sobre o seu projeto (${context})...`);
-      return `https://wa.me/55${cleanPhone}?text=${message}`;
-    },
-
-    // Or helper
-    or: function (v1, v2) {
-      return v1 || v2;
-    },
-
-    // And helper
-    and: function (...args) {
-      // Remove options
-      args.pop();
-      return args.every(Boolean);
-    },
-
-    // Check if date is in the past
-    isPast: function (date) {
-      if (!date) return false;
-      return new Date(date) < new Date();
-    },
-
-    // Build query string from object (excluding page)
     buildQueryString: function (options) {
       const query = options.data.root.query || {};
       const params = new URLSearchParams();
       for (const [key, value] of Object.entries(query)) {
-        if (key !== 'page' && value) {
-          params.append(key, value);
-        }
+        if (key !== 'page' && value) params.append(key, value);
       }
       return params.toString();
     },
-
-    // String helpers
-    split: function (str, separator = ',') {
-      if (!str) return [];
-      return str.split(separator);
+    formatPhone: (phone) => {
+      if (!phone) return '';
+      const cleaned = phone.replace(/\D/g, '');
+      if (cleaned.length === 11) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
+      if (cleaned.length === 10) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+      return phone;
     },
-    getFirstLetters: function (str) {
-      if (!str) return 'U';
-      return str.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-    },
-    calculatePercentage: function (val, total) {
-      if (!total || total === 0) return 0;
-      return Math.round((val / total) * 100);
-    },
-    formatDateShort: function (date) {
-      if (!date) return '-';
-      const d = new Date(date);
-      return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-    },
-    // Loop helper
-    range: function (start, end) {
-      const result = [];
-      for (let i = start; i <= end; i++) {
-        result.push(i);
-      }
-      return result;
-    },
-    // Random helper
-    random: function (min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    },
-    // Select random from args
-    select_random: function (...args) {
-      // Remove Handlebars options object
-      const items = args.slice(0, -1);
-      return items[Math.floor(Math.random() * items.length)];
-    },
-    now: () => new Date()
+    formatWhatsappLink: (phone, name, context = 'default') => {
+      if (!phone) return '#';
+      const cleanPhone = phone.replace(/\D/g, '');
+      const messages = {
+        'lead': `Olá ${name}! Recebemos seu interesse aqui na Zanoello 3D. 🚀 Vamos transformar essa visão em realidade?`,
+        'review': `Oi ${name}! Boas notícias: os renders já estão no forno e prontos para sua revisão. 📸 Confira no seu painel!`,
+        'financial': `Olá ${name}! Notamos uma pendência financeira no sistema. Podemos ajudar com alguma dúvida sobre o pagamento? 💳`,
+        'default': `Olá ${name}! Equipe Zanoello 3D falando. ⚡`
+      };
+      const message = messages[context] || messages.default;
+      return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+    }
   }
 });
 
@@ -563,7 +390,7 @@ if (require.main === module) {
       const isConnected = true;
       if (isConnected) {
         // Sincronização desativada para boot ultra-rápido (Schema já está estável)
-        // await sequelize.sync({ alter: true });
+        await sequelize.sync({ alter: true });
 
         server.listen(PORT, () => {
           console.log(`🚀 Malha3D Admin rodando em http://localhost:${PORT}`);

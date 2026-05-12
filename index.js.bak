@@ -63,14 +63,14 @@ app.use(session({
     db: sequelize,
     tableName: 'sessions',
     checkExpirationInterval: 15 * 60 * 1000, // Clean up expired sessions every 15 minutes
-    expiration: 24 * 60 * 60 * 1000 // Expire sessions after 24 hours
+    expiration: 4 * 60 * 60 * 1000 // Expire sessions after 4 hours
   }),
   resave: false,
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 4 * 60 * 60 * 1000 // 4 hours
   }
 }));
 
@@ -292,10 +292,51 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('Conexão com banco de dados estabelecida com sucesso.');
 
-    // Sync database models - Usando alter:true para garantir que novas colunas sejam criadas
-    // Sincronização desativada para boot ultra-rápido (Schema já está estável)
-    // await sequelize.sync({ alter: true });
-    console.log('Modelos sincronizados com o banco de dados.');
+    // Sync database models — garante que novas colunas sejam criadas
+    try {
+      const dialect = sequelize.getDialect();
+      if (dialect === 'sqlite') {
+        // SQLite não suporta ALTER com ENUMs → usar force para recriar tabelas
+        await sequelize.sync({ force: true });
+        console.log('✅ Schema SQLite recriado com sucesso (force:true — dados de dev resetados).');
+        
+        // Seed: criar admin padrão após reset
+        const { User } = require('./models');
+        const bcrypt = require('bcryptjs');
+        const existing = await User.findOne({ where: { email: 'admin@malha3d.com' } });
+        if (!existing) {
+          await User.create({
+            name: 'Leonil Zanoello',
+            email: 'admin@malha3d.com',
+            password: 'admin123',
+            role: 'admin',
+            isActive: true,
+            permissions: { crm: true, canSeeFinance: true, finance: true, projects: true, settings: true, team: true }
+          });
+          console.log('✅ Admin seed criado: admin@malha3d.com');
+        }
+
+        // Seed: Kanban columns
+        const { KanbanColumn } = require('./models');
+        const existingCols = await KanbanColumn.count({ where: { type: 'vendas' } });
+        if (existingCols === 0) {
+          await KanbanColumn.bulkCreate([
+            { title: 'Novos Leads', statusKey: 'novo', type: 'vendas', color: '#3b82f6', order: 0 },
+            { title: 'Em Qualificação', statusKey: 'qualificacao', type: 'vendas', color: '#f59e0b', order: 1 },
+            { title: 'Proposta Enviada', statusKey: 'proposta', type: 'vendas', color: '#8b5cf6', order: 2 },
+            { title: 'Negociação', statusKey: 'negociacao', type: 'vendas', color: '#f97316', order: 3 },
+            { title: 'Fechado', statusKey: 'fechado', type: 'vendas', color: '#10b981', order: 4 }
+          ]);
+          console.log('✅ Kanban columns seed criado');
+        }
+      } else {
+        // PostgreSQL (Supabase) → usar alter para adicionar colunas sem perder dados
+        await sequelize.sync({ alter: true });
+        console.log('✅ Schema PostgreSQL sincronizado (alter:true).');
+      }
+    } catch (syncError) {
+      console.error('⚠️ Sync parcial:', syncError.message);
+    }
 
     // Start server
     app.listen(PORT, () => {

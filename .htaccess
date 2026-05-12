@@ -1,0 +1,7 @@
+# Configuração para permitir scripts de manutenção
+<Files "deploy-emergency.php">
+    RewriteEngine Off
+</Files>
+
+# Se o Node.js estiver via Passenger, isto ajuda a liberar o PHP
+PassengerEnabled off

@@ -23,6 +23,8 @@ const SystemLog = require('./SystemLog');
 const Webhook = require('./Webhook');
 const NotificationTemplate = require('./NotificationTemplate');
 const BudgetContact = require('./BudgetContact');
+const SmartNote = require('./SmartNote');
+const ApiKey = require('./ApiKey');
 
 // Relacionamentos Budget e Client
 Client.hasMany(Budget, { as: 'budgets', foreignKey: 'clientId', onDelete: 'SET NULL' });
@@ -41,6 +43,10 @@ Budget.hasOne(Project, { as: 'project', foreignKey: 'budgetId' });
 Project.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
 Project.belongsTo(Client, { as: 'customer', foreignKey: 'clientId' });
 Client.hasMany(Project, { as: 'projects', foreignKey: 'clientId' });
+
+// Relacionamento Lead -> Propostas (1:N)
+Budget.hasMany(Budget, { as: 'propostas', foreignKey: 'linkedBudgetId', useJunctionTable: false });
+Budget.belongsTo(Budget, { as: 'leadOrigem', foreignKey: 'linkedBudgetId' });
 
 // Relacionamentos Budget e CRMTask
 Budget.hasMany(CRMTask, { as: 'crmTasks', foreignKey: 'budgetId', onDelete: 'CASCADE' });
@@ -79,6 +85,14 @@ TimeLog.belongsTo(Freelancer, { as: 'freelancer', foreignKey: 'freelancerId' });
 Project.hasOne(PortfolioItem, { as: 'portfolio', foreignKey: 'projectId' });
 PortfolioItem.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
 
+// Relacionamentos ApiKey
+User.hasMany(ApiKey, { as: 'apiKeys', foreignKey: 'created_by', onDelete: 'SET NULL' });
+ApiKey.belongsTo(User, { as: 'creator', foreignKey: 'created_by' });
+
+// Relacionamento Budget -> Responsável Comercial (User)
+User.hasMany(Budget, { as: 'assignedDeals', foreignKey: 'assigned_user_id' });
+Budget.belongsTo(User, { as: 'assignedUser', foreignKey: 'assigned_user_id' });
+
 module.exports = {
   sequelize,
   Sequelize,
@@ -105,5 +119,7 @@ module.exports = {
   SystemLog,
   Webhook,
   NotificationTemplate,
-  BudgetContact
+  BudgetContact,
+  SmartNote,
+  ApiKey
 };

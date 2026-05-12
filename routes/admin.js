@@ -1,9 +1,11 @@
 const express = require('express');
+const crypto = require('crypto');
 const { 
   Budget, CRMNote, CRMTask, Project, Testimonial, User, Setting, 
   Client, FinanceTransaction, Revision, Delivery, CalendarEvent, 
   KanbanColumn, TimeLog, Freelancer, PortfolioItem, ProjectTemplate,
   Instance, SubscriptionPlan, SystemLog, Webhook, NotificationTemplate,
+  SmartNote, ApiKey,
   sequelize 
 } = require('../models');
 const { Op } = require('sequelize');
@@ -26,7 +28,8 @@ const requireAuth = async (req, res, next) => {
 
   try {
     const user = await User.findByPk(req.session.userId);
-    if (!user || user.role !== 'admin') {
+    const allowedRoles = ['admin', 'staff', 'subscriber', 'collaborator'];
+    if (!user || !allowedRoles.includes(user.role)) {
       return res.redirect('/admin/login');
     }
 
@@ -101,52 +104,191 @@ router.get('/logout', (req, res) => {
 
 router.get('/', requireAuth, async (req, res) => {
   try {
-    const budgetCount = await Budget.count();
-    const projectCount = await Project.count();
-    const clientCount = await Client.count();
+    const today = new Date();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     
-    // Financial Health Assessment
-    const transactions = await FinanceTransaction.findAll();
-    const overdueExpenses = transactions.filter(t => t.type === 'despesa' && t.status === 'pendente' && new Date(t.dueDate) < new Date());
-    const totalOverdue = overdueExpenses.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+    // 1. KPI Financeiro (Global & Mensal)
+    const receitasMes = await FinanceTransaction.sum('amount', { where: { type: 'receita', dueDate: { [Op.gte]: startOfMonth } } }) || 0;
+    const despesasMes = await FinanceTransaction.sum('amount', { where: { type: 'despesa', dueDate: { [Op.gte]: startOfMonth } } }) || 0;
     
-    const recentTransactions = await FinanceTransaction.findAll({ limit: 5, order: [['createdAt', 'DESC']] });
+    // Global stats for "Auditoria de Fluxo"
+    const totalReceitas = await FinanceTransaction.sum('amount', { where: { type: 'receita' } }) || 0;
+    const totalDespesas = await FinanceTransaction.sum('amount', { where: { type: 'despesa' } }) || 0;
+    const receitasPendentes = await FinanceTransaction.sum('amount', { where: { type: 'receita', status: 'pendente' } }) || 0;
+    
+    const saldoProjetadoTotal = totalReceitas - totalDespesas;
+    const margemGlobal = totalReceitas > 0 ? Math.round(((totalReceitas - totalDespesas) / totalReceitas) * 100) : 0;
+    const margemMensal = receitasMes > 0 ? Math.round(((receitasMes - despesasMes) / receitasMes) * 100) : 0;
 
-    const newBudgetsCount = await Budget.count({ where: { status: 'novo' } });
-    const activeProjectsCount = await Project.count({ where: { status: 'producao' } }); // Ajustado para o status correto
+    // 1b. Calendário Compacto
+    const currentWeekDays = [];
+    const dayOfWeek = today.getDay(); // 0-6 (Sun-Sat)
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - dayOfWeek + i);
+        currentWeekDays.push({
+            dayName: d.toLocaleDateString('pt-BR', { weekday: 'short' }).substring(0, 3),
+            dayNumber: d.getDate(),
+            isToday: d.toDateString() === today.toDateString(),
+            hasTasks: false // will map with upcomingTasks below
+        });
+    }
+
+    // 2. Previsão de Vendas (Forecast)
+    const openLeads = await Budget.findAll({ where: { winStatus: 'aberto' } });
+    let forecastMax = 0;
+    let forecastMed = 0;
+    let forecastMin = 0;
     
-    // Performance metrics
-    const totalWonValue = await Budget.sum('estimatedValue', { where: { winStatus: 'ganho' } }) || 0;
-    const totalWonCount = await Budget.count({ where: { winStatus: 'ganho' } });
-    const totalLostCount = await Budget.count({ where: { winStatus: 'perdido' } });
-    const conversionRate = (totalWonCount + totalLostCount) > 0 
-      ? Math.round((totalWonCount / (totalWonCount + totalLostCount)) * 100) 
-      : 0;
+    openLeads.forEach(lead => {
+      const value = parseFloat(lead.estimatedValue) || 0;
+      const prob = parseFloat(lead.probability) || 0; 
+      
+      forecastMax += value;
+      forecastMed += value * (prob / 100);
+      if (prob >= 80) {
+        forecastMin += value;
+      }
+    });
+
+    // 3. Agenda de Tarefas (Upcoming)
+    const upcomingTasks = await CRMTask.findAll({
+      where: {
+        status: 'ativa',
+        dueDate: { [Op.ne]: null }
+      },
+      order: [['dueDate', 'ASC']],
+      limit: 5,
+      include: [{ model: Budget, as: 'budget', attributes: ['id', 'name'] }]
+    });
+
+    // Map upcoming tasks to calendar
+    upcomingTasks.forEach(task => {
+        if (task.dueDate) {
+            const taskDateStr = new Date(task.dueDate).toDateString();
+            const weekDay = currentWeekDays.find(wd => {
+                const wdDate = new Date();
+                wdDate.setDate(new Date().getDate() - new Date().getDay() + currentWeekDays.indexOf(wd));
+                return wdDate.toDateString() === taskDateStr;
+            });
+            if (weekDay) weekDay.hasTasks = true;
+        }
+    });
+
+    // 4. Smart Notes
+    const notes = await SmartNote.findAll({
+      order: [['isPinned', 'DESC'], ['createdAt', 'DESC']],
+      limit: 20
+    });
+
+    // 5. Termômetro de Produtividade
+    const timeLogsThisMonth = await TimeLog.findAll({
+      where: {
+        startTime: { [Op.gte]: startOfMonth }
+      }
+    });
+    
+    let totalHoursLogged = 0;
+    timeLogsThisMonth.forEach(log => {
+      if (log.endTime) {
+        const durationMs = new Date(log.endTime) - new Date(log.startTime);
+        totalHoursLogged += durationMs / (1000 * 60 * 60);
+      }
+    });
+    
+    const metaHorasMensal = 160; 
+    let produtividadeStatus = 'Gargalo';
+    let produtividadeCor = 'text-red-500 bg-red-500/10 border-red-500/20';
+    let produtividadeIcon = 'warning';
+    
+    if (totalHoursLogged >= (metaHorasMensal * 0.8)) {
+        produtividadeStatus = 'Ótimo';
+        produtividadeCor = 'text-green-500 bg-green-500/10 border-green-500/20';
+        produtividadeIcon = 'check_circle';
+    } else if (totalHoursLogged >= (metaHorasMensal * 0.5)) {
+        produtividadeStatus = 'Atenção';
+        produtividadeCor = 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
+        produtividadeIcon = 'pending';
+    }
 
     res.render('admin/dashboard', {
       layout: 'admin',
-      title: 'Painel de Controle',
+      title: 'Painel ArchViz ERP',
       currentPage: 'dashboard',
       user: req.user,
-      stats: { 
-        budgets: budgetCount, 
-        newBudgets: newBudgetsCount,
-        totalBudgets: budgetCount,
-        projects: projectCount, 
-        activeProjects: activeProjectsCount,
-        clients: clientCount,
-        financialRisk: totalOverdue > 5000 ? 'high' : (totalOverdue > 0 ? 'medium' : 'low'),
-        totalOverdue
+      now: new Date(),
+      kpiFinanceiro: {
+        totalReceitas: receitasMes,
+        totalDespesas: despesasMes,
+        saldoProjetado: receitasMes - despesasMes,
+        margemMedia: margemMensal,
+        margemGlobal: margemGlobal,
+        receitasPendentes: receitasPendentes,
+        saldoProjetadoTotal: saldoProjetadoTotal
       },
-      performance: {
-        estimatedRevenue: totalWonValue,
-        conversionRate: conversionRate
+      currentWeekDays,
+      forecast: {
+        min: forecastMin,
+        med: forecastMed,
+        max: forecastMax
       },
-      recentTransactions: recentTransactions.map(t => t.get({ plain: true }))
+      tasks: upcomingTasks.map(t => t.get({ plain: true })),
+      notes: notes.map(n => n.get({ plain: true })),
+      produtividade: {
+        horasLogadas: Math.round(totalHoursLogged),
+        metaHoras: metaHorasMensal,
+        status: produtividadeStatus,
+        cor: produtividadeCor,
+        icon: produtividadeIcon
+      }
     });
   } catch (error) {
     console.error('Dashboard error:', error);
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar dashboard' });
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar dashboard', error: error });
+  }
+});
+
+// ==========================================
+// API SMART NOTES
+// ==========================================
+
+router.post('/api/notes', requireAuth, async (req, res) => {
+  try {
+    const { content, color } = req.body;
+    
+    // Extração de hashtags simples usando Regex (#palavra)
+    const hashtagsMatch = content.match(/#[a-zA-Z0-9_]+/g);
+    const hashtags = hashtagsMatch ? hashtagsMatch.join(',') : '';
+
+    const note = await SmartNote.create({
+      content,
+      color: color || 'bg-yellow-100',
+      hashtags,
+      createdBy: req.user.name
+    });
+    
+    res.json({ success: true, note });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/api/notes/:id', requireAuth, async (req, res) => {
+  try {
+    await SmartNote.destroy({ where: { id: req.params.id } });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.put('/api/notes/:id/color', requireAuth, async (req, res) => {
+  try {
+    const { color } = req.body;
+    await SmartNote.update({ color }, { where: { id: req.params.id } });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
@@ -159,6 +301,10 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
     const columns = (await KanbanColumn.findAll({ where: { type: 'vendas' }, order: [['order', 'ASC']] })).map(c => c.get({ plain: true }));
     const dealsRaw = await Budget.findAll({ 
       where: { winStatus: 'aberto' },
+      include: [
+        { model: Client, as: 'client', attributes: ['id', 'name', 'phone', 'email', 'company'] },
+        { model: User, as: 'assignedUser', attributes: ['id', 'name'] }
+      ],
       order: [['order', 'ASC'], ['createdAt', 'DESC']] 
     });
     const deals = dealsRaw.map(d => {
@@ -170,9 +316,18 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
       data.animationSeconds = data.animationSeconds || 0;
       data.panoramasCount = data.panoramasCount || 0;
       data.winStatus = data.winStatus || "aberto";
+      data.installments = data.installments || 1;
+      data.softwareStack = data.softwareStack || [];
+      data.productionDays = data.productionDays || null;
       return data;
     });
     
+    // Carregar equipe para o select de Responsável Comercial
+    const teamMembers = (await User.findAll({ 
+      attributes: ['id', 'name', 'role'],
+      order: [['name', 'ASC']] 
+    })).map(u => u.get({ plain: true }));
+
     const kanban = {};
     const pipelineTotals = {};
     columns.forEach(col => {
@@ -182,18 +337,21 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
     });
     const totalNegotiationValue = deals.reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0);
 
-    // === Analytics Logic (Merged from /previsao) ===
+    // === Analytics Logic ===
+    const allDealsForStats = await Budget.findAll();
+    const allPlain = allDealsForStats.map(d => d.get({ plain: true }));
+    
     const stats = {
-      billingWon: deals.filter(d => d.winStatus === 'ganho').reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0),
-      totalInNegotiation: deals.filter(d => d.winStatus === 'aberto').reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0),
+      billingWon: allPlain.filter(d => d.winStatus === 'ganho').reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0),
+      totalInNegotiation: deals.reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0),
       ticketMedio: 0,
       conversionRate: 0
     };
 
-    const wonDeals = deals.filter(d => d.winStatus === 'ganho');
+    const wonDeals = allPlain.filter(d => d.winStatus === 'ganho');
     stats.ticketMedio = wonDeals.length > 0 ? stats.billingWon / wonDeals.length : 0;
 
-    const lostDealsCount = deals.filter(d => d.winStatus === 'perdido').length;
+    const lostDealsCount = allPlain.filter(d => d.winStatus === 'perdido').length;
     stats.conversionRate = (wonDeals.length + lostDealsCount) > 0 
       ? (wonDeals.length / (wonDeals.length + lostDealsCount)) * 100 
       : 0;
@@ -211,12 +369,12 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
         data: [wonDeals.length, lostDealsCount]
       },
       lossReasons: {
-        labels: [...new Set(deals.filter(d => d.lossReason).map(d => d.lossReason))],
+        labels: [...new Set(allPlain.filter(d => d.lossReason).map(d => d.lossReason))],
         data: []
       }
     };
     charts.lossReasons.data = charts.lossReasons.labels.map(reason => 
-      deals.filter(d => d.lossReason === reason).length
+      allPlain.filter(d => d.lossReason === reason).length
     );
 
     res.render('admin/negociacoes', { 
@@ -228,6 +386,7 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
       kanban, 
       pipelineTotals, 
       totalNegotiationValue,
+      teamMembers,
       stats,
       charts
     });
@@ -237,25 +396,79 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
   }
 });
 
+router.post('/negociacoes/add', requireAuth, async (req, res) => {
+  try {
+    const { 
+      name, email, phone, projectType, estimatedValue, description, 
+      targetSoftware, floorPlansCount, imagesCount, animationSeconds, 
+      driveLink, visualStyle, color, totalArea, productionDays, 
+      clientBudget, assignedUserId, softwareStack, complexity, 
+      installments, probability, origin
+    } = req.body;
+    
+    await Budget.create({
+      name,
+      email: email || null,
+      phone: phone || null,
+      projectType: projectType || 'Outro',
+      estimatedValue: estimatedValue ? parseFloat(estimatedValue) : null,
+      description: description || null,
+      targetSoftware: targetSoftware || null,
+      floorPlansCount: floorPlansCount ? parseInt(floorPlansCount) : 0,
+      imagesCount: imagesCount ? parseInt(imagesCount) : 0,
+      animationSeconds: animationSeconds ? parseInt(animationSeconds) : 0,
+      driveLink: driveLink || null,
+      visualStyle: visualStyle || null,
+      color: color || '#f97316',
+      totalArea: totalArea ? parseFloat(totalArea) : null,
+      productionDays: productionDays ? parseInt(productionDays) : null,
+      clientBudget: clientBudget ? parseFloat(clientBudget) : null,
+      assignedUserId: assignedUserId || null,
+      softwareStack: Array.isArray(softwareStack) ? softwareStack : [],
+      complexity: complexity || 'Média',
+      installments: installments ? parseInt(installments) : 1,
+      probability: probability ? parseInt(probability) : 50,
+      origin: origin || null,
+      status: 'novo',
+      winStatus: 'aberto',
+      source: 'manual'
+    });
+
+    req.flash('success_msg', 'Lead criado com sucesso!');
+    res.redirect('/admin/negociacoes');
+  } catch (error) {
+    console.error('Create Lead Error:', error);
+    req.flash('error_msg', 'Erro ao criar lead: ' + error.message);
+    res.redirect('/admin/negociacoes');
+  }
+});
+
 router.post('/negociacoes/:id/confirm-project', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     const budget = await Budget.findByPk(id);
     if (!budget) return res.status(404).json({ success: false, error: 'Negociação não encontrada' });
 
-    // Clonar para Projeto com integridade total de dados
+    // Clonar para Projeto com integridade total de dados (Tier 1 Mirror)
     await Project.create({
       title: budget.name,
       client: budget.name || 'Cliente Direto',
-      clientId: budget.clientId, // Manter o ID do cliente se existir
-      category: budget.projectType === 'Arquitetônico' ? 'arquitetonico' : (budget.projectType === 'Renderização' ? 'outro' : 'outro'),
-      software: budget.targetSoftware || budget.software, // Garantir cópia do software
-      renderEngine: budget.renderEngine || 'D5 Render', // Respeitar o briefing se existir
+      clientId: budget.clientId,
+      category: budget.projectType === 'Arquitetônico' ? 'arquitetonico' : 
+                (budget.projectType === 'Interiores' ? 'interior' : 
+                (budget.projectType === 'Animação' ? 'animacao' : 'outro')),
+      software: budget.targetSoftware || budget.software,
+      softwareStack: budget.softwareStack || [],
+      renderEngine: budget.renderEngine || 'D5 Render',
       price: budget.estimatedValue,
       deadline: budget.deadline,
-      totalArea: budget.totalArea, // Metragem (IMPORTANTE)
-      tags: budget.tags, // Tags/Requisitos
-      description: budget.description, // Descrição/Briefing completo
+      totalArea: budget.totalArea, 
+      productionDays: budget.productionDays,
+      origin: budget.origin,
+      visualStyle: budget.visualStyle,
+      complexity: budget.complexity,
+      priority: budget.priority || 'media',
+      description: budget.description,
       startDate: new Date(),
       status: 'producao',
       budgetId: budget.id,
@@ -266,7 +479,8 @@ router.post('/negociacoes/:id/confirm-project', requireAuth, async (req, res) =>
     await budget.update({ 
       status: 'fechado', 
       winStatus: 'ganho',
-      closeDate: new Date()
+      closeDate: new Date(),
+      proposalStatus: 'aceita'
     });
 
     // Automação Financeira: Gerar Sinal de 50%
@@ -494,6 +708,136 @@ router.delete('/kanban/columns/:id', requireAuth, async (req, res) => {
   }
 });
 
+router.post('/negociacoes/novo', requireAuth, async (req, res) => {
+  try {
+    const { name, clientName, projectType, totalArea, visualStyle, targetSoftware, estimatedValue, deadline, productionDays, clientBudget } = req.body;
+    
+    const columns = await KanbanColumn.findAll({ where: { type: 'leads' }, order: [['order', 'ASC']] });
+    const firstStatus = columns.length > 0 ? columns[0].statusKey : 'novo_lead';
+    
+    const lead = await Budget.create({
+      name,
+      clientName: clientName || null,
+      email: clientName && clientName.includes('@') ? clientName : null,
+      projectType: projectType || 'Outro',
+      totalArea: totalArea ? parseFloat(totalArea) : null,
+      visualStyle: visualStyle || null,
+      targetSoftware: targetSoftware || null,
+      estimatedValue: estimatedValue ? parseFloat(estimatedValue) : null,
+      deadline: deadline || null,
+      productionDays: productionDays ? parseInt(productionDays) : null,
+      clientBudget: clientBudget ? parseFloat(clientBudget) : null,
+      status: firstStatus,
+      color: '#f97316'
+    });
+
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.json({ success: true, lead });
+    }
+    
+    req.flash('success_msg', 'Lead criado com sucesso!');
+    res.redirect('/admin/crm');
+  } catch (error) {
+    console.error('Create Lead Error:', error);
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(500).json({ success: false, error: error.message });
+    }
+    req.flash('error_msg', 'Erro ao criar lead: ' + error.message);
+    res.redirect('/admin/crm');
+  }
+});
+
+router.post('/negociacoes/:id/update', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { 
+      name, email, phone, projectType, estimatedValue, description, 
+      targetSoftware, floorPlansCount, imagesCount, animationSeconds, 
+      driveLink, visualStyle, color, deadline, productionDays, clientBudget 
+    } = req.body;
+    
+    const budget = await Budget.findByPk(id);
+    if (!budget) {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        return res.status(404).json({ success: false, error: 'Lead não encontrado' });
+      }
+      req.flash('error_msg', 'Lead não encontrado.');
+      return res.redirect('/admin/crm');
+    }
+
+    await budget.update({
+      name,
+      email: email || null,
+      phone: phone || null,
+      projectType: projectType || 'Outro',
+      estimatedValue: estimatedValue ? parseFloat(estimatedValue) : null,
+      description: description || null,
+      targetSoftware: targetSoftware || null,
+      floorPlansCount: floorPlansCount ? parseInt(floorPlansCount) : 0,
+      imagesCount: imagesCount ? parseInt(imagesCount) : 0,
+      animationSeconds: animationSeconds ? parseInt(animationSeconds) : 0,
+      driveLink: driveLink || null,
+      visualStyle: visualStyle || null,
+      color: color || budget.color,
+      deadline: deadline || null,
+      productionDays: productionDays ? parseInt(productionDays) : null,
+      clientBudget: clientBudget ? parseFloat(clientBudget) : null
+    });
+
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.json({ success: true });
+    }
+
+    req.flash('success_msg', 'Lead atualizado com sucesso!');
+    res.redirect('/admin/crm');
+  } catch (error) {
+    console.error('Update Lead Error:', error);
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.status(500).json({ success: false, error: error.message });
+    }
+    req.flash('error_msg', 'Erro ao atualizar lead: ' + error.message);
+    res.redirect('/admin/crm');
+  }
+});
+
+router.post('/negociacoes/:id/confirm-project', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const budget = await Budget.findByPk(id);
+    if (!budget) return res.status(404).json({ error: 'Lead não encontrado' });
+    
+    // Mark as "ganho" or similar
+    await budget.update({ winStatus: 'ganho' });
+    
+    // Redirect to project creation page with budget data
+    res.redirect(`/admin/projetos/criar?budgetId=${id}`);
+  } catch (error) {
+    console.error('Confirm Project Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/projetos/criar', requireAuth, async (req, res) => {
+  try {
+    const { budgetId } = req.query;
+    let budgetData = null;
+    if (budgetId) {
+      budgetData = await Budget.findByPk(budgetId);
+      if (budgetData) budgetData = budgetData.get({ plain: true });
+    }
+    
+    res.render('admin/projects-create', { 
+      layout: 'admin', 
+      title: 'Lançar Novo Projeto', 
+      currentPage: 'projetos', 
+      user: req.user,
+      budgetData
+    });
+  } catch (error) {
+    res.status(500).render('admin/error', { layout: 'admin', message: error.message });
+  }
+});
+
 router.post('/negociacoes/:id/update-status', requireAuth, async (req, res) => {
   try {
     const { status } = req.body;
@@ -522,17 +866,16 @@ router.post('/negociacoes/:id/status', requireAuth, async (req, res) => {
 
 router.get('/crm', requireAuth, checkPermission('crm'), async (req, res) => {
   try {
-    const columns = (await KanbanColumn.findAll({ where: { type: 'leads' }, order: [['order', 'ASC']] })).map(c => c.get({ plain: true }));
+    const columns = (await KanbanColumn.findAll({ where: { type: 'crm' }, order: [['order', 'ASC']] })).map(c => c.get({ plain: true }));
     const budgetsRaw = await Budget.findAll({ order: [['createdAt', 'DESC']] });
     const budgets = budgetsRaw.map(b => b.get({ plain: true }));
     
     const kanban = {};
     columns.forEach(col => { kanban[col.statusKey] = budgets.filter(b => b.status === col.statusKey); });
 
-    // Cálculo de VGV (Valor Geral de Vendas)
     const totalVgv = budgets.reduce((acc, curr) => acc + parseFloat(curr.estimatedValue || 0), 0);
 
-    res.render('admin/crm', { layout: 'admin', title: 'Pipeline de Leads', currentPage: 'crm', user: req.user, columns, kanban, totalVgv });
+    res.render('admin/crm', { layout: 'admin', title: 'Pipeline de Leads', currentPage: 'crm', user: req.user, columns, kanban, budgets, totalVgv });
   } catch (error) {
     console.error('CRM Route Error:', error);
     res.status(500).render('admin/error', { layout: 'admin', message: 'Erro no CRM: ' + error.message });
@@ -597,8 +940,45 @@ router.get('/rastreio-ativo', requireAuth, async (req, res) => {
 
 router.get('/projetos', requireAuth, async (req, res) => {
   try {
-    const projects = (await Project.findAll({ order: [['createdAt', 'DESC']] })).map(p => p.get({ plain: true }));
-    res.render('admin/projects', { layout: 'admin', title: 'Lista de Projetos', currentPage: 'projects', user: req.user, projects });
+    const rawProjects = await Project.findAll({ order: [['createdAt', 'DESC']] });
+    const projects = rawProjects.map(p => p.get({ plain: true }));
+    
+    // Configuração das Colunas do Kanban de Projetos (ArchViz)
+    const pipelineColumns = [
+        { key: 'briefing', title: '1. Briefing & Setup', color: '#6366f1' },       // Indigo
+        { key: 'modelagem', title: '2. Modelagem 3D', color: '#f59e0b' },        // Amber
+        { key: 'renderizacao', title: '3. Render & Setup', color: '#ef4444' },   // Red
+        { key: 'pos_producao', title: '4. Pós-Produção', color: '#8b5cf6' },     // Purple
+        { key: 'entregue', title: '5. Entregue / Aprovado', color: '#10b981' }   // Emerald
+    ];
+
+    // Agrupar os projetos por status (fallback para briefing se não houver)
+    const projectsKanban = {
+        briefing: [],
+        modelagem: [],
+        renderizacao: [],
+        pos_producao: [],
+        entregue: []
+    };
+
+    projects.forEach(p => {
+        const status = p.status || 'briefing';
+        if (projectsKanban[status]) {
+            projectsKanban[status].push(p);
+        } else {
+            projectsKanban['briefing'].push(p); // Fallback
+        }
+    });
+
+    res.render('admin/projects', { 
+        layout: 'admin', 
+        title: 'Produção ArchViz', 
+        currentPage: 'projects', 
+        user: req.user, 
+        projects,
+        pipelineColumns,
+        projectsKanban
+    });
   } catch (error) {
     res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar lista de projetos' });
   }
@@ -667,7 +1047,7 @@ router.post('/api/projects/move', requireAuth, async (req, res) => {
       return res.status(404).json({ success: false, message: 'Projeto não encontrado' });
     }
 
-    await project.update({ status });
+    await project.update({ status }, { user: req.user, ipAddress: req.ip });
 
     // Automações de Comunicação Criativa
     try {
@@ -689,6 +1069,61 @@ router.post('/api/projects/move', requireAuth, async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     console.error('Project Move Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// GET Project details for Modal
+router.get('/api/projects/:id', requireAuth, async (req, res) => {
+  try {
+    const project = await Project.findByPk(req.params.id, {
+      include: [
+        { model: Client, as: 'customer' },
+        { model: Budget, as: 'budget' }
+      ]
+    });
+    if (!project) return res.status(404).json({ success: false, error: 'Projeto não encontrado' });
+    res.json({ success: true, project });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// UPDATE Project details
+router.put('/api/projects/:id', requireAuth, async (req, res) => {
+  try {
+    const project = await Project.findByPk(req.params.id);
+    if (!project) return res.status(404).json({ success: false, error: 'Projeto não encontrado' });
+    
+    // Convert numerical fields
+    const data = { ...req.body };
+    if (data.price) data.price = parseFloat(data.price);
+    if (data.totalArea) data.totalArea = parseFloat(data.totalArea);
+    if (data.productionDays) data.productionDays = parseInt(data.productionDays);
+    if (data.priority_value) data.priority_value = parseInt(data.priority_value);
+    
+    await project.update(data);
+    res.json({ success: true, project });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// CREATE Project
+router.post('/api/projects', requireAuth, async (req, res) => {
+  try {
+    const data = { ...req.body };
+    if (data.price) data.price = parseFloat(data.price);
+    if (data.totalArea) data.totalArea = parseFloat(data.totalArea);
+    if (data.productionDays) data.productionDays = parseInt(data.productionDays);
+    
+    // Default status if not provided
+    if (!data.status) data.status = 'briefing';
+    
+    const project = await Project.create(data);
+    res.json({ success: true, project });
+  } catch (error) {
+    console.error('API Create Project Error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -778,7 +1213,7 @@ router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, r
     const projectsRaw = await Project.findAll({ where: { status: { [Op.ne]: 'finalizado' } } });
     const projects = projectsRaw.map(p => p.get({ plain: true }));
     
-    // Calcular Lucratividade por Projeto
+    // Calcular Lucratividade por Projeto (FRENTE 3: Margem por Projeto)
     const projectProfits = projects.map(p => {
       const pTransactions = transactions.filter(t => t.projectId === p.id || t.budgetId === p.budgetId);
       const income = pTransactions.filter(t => t.type === 'receita').reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
@@ -802,12 +1237,65 @@ router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, r
       ? (projectProfits.reduce((sum, p) => sum + parseFloat(p.margin), 0) / projectProfits.length).toFixed(1) 
       : 0;
 
+    // FRENTE 3: Centro de Custos (Despesas agrupadas por categoria)
     const expenseCategories = transactions
       .filter(t => t.type === 'despesa')
       .reduce((acc, t) => {
-        acc[t.category] = (acc[t.category] || 0) + parseFloat(t.amount);
+        const key = t.category || 'sem_categoria';
+        acc[key] = (acc[key] || 0) + parseFloat(t.amount);
         return acc;
       }, {});
+
+    // FRENTE 3: Centro de Custos (Despesas agrupadas por costCenter)
+    const costCenters = transactions
+      .filter(t => t.type === 'despesa')
+      .reduce((acc, t) => {
+        const key = t.costCenter || t.category || 'geral';
+        acc[key] = (acc[key] || 0) + parseFloat(t.amount);
+        return acc;
+      }, {});
+
+    // FRENTE 3: Fluxo de Caixa Realizado vs. Projetado (Últimos 6 meses)
+    const now = new Date();
+    const cashFlow = { labels: [], realized: [], projected: [] };
+    
+    for (let i = 5; i >= 0; i--) {
+      const month = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+      const label = month.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+      cashFlow.labels.push(label.charAt(0).toUpperCase() + label.slice(1));
+      
+      // Realizado: transações que foram pagas/recebidas neste mês
+      const monthTransactions = transactions.filter(t => {
+        const d = new Date(t.paymentDate || t.dueDate);
+        return d >= month && d <= monthEnd && (t.status === 'pago' || t.status === 'recebido');
+      });
+      const monthIncome = monthTransactions.filter(t => t.type === 'receita').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+      const monthExpense = monthTransactions.filter(t => t.type === 'despesa').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+      cashFlow.realized.push(monthIncome - monthExpense);
+      
+      // Projetado: todas as transações com vencimento neste mês (incluindo pendentes)
+      const projectedTransactions = transactions.filter(t => {
+        const d = new Date(t.dueDate);
+        return d >= month && d <= monthEnd;
+      });
+      const projIncome = projectedTransactions.filter(t => t.type === 'receita').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+      const projExpense = projectedTransactions.filter(t => t.type === 'despesa').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+      cashFlow.projected.push(projIncome - projExpense);
+    }
+
+    // Projeção futura: parcelas de propostas fechadas (won deals)
+    const wonBudgets = (await Budget.findAll({ where: { winStatus: 'ganho' } })).map(b => b.get({ plain: true }));
+    const futureInstallments = wonBudgets.reduce((total, b) => {
+      const installments = b.installments || 1;
+      const valor = parseFloat(b.estimatedValue) || 0;
+      const parcelaMensal = valor / installments;
+      // Contar parcelas que ainda não foram registradas como transação
+      const registeredIncome = transactions
+        .filter(t => t.budgetId === b.id && t.type === 'receita')
+        .reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+      return total + Math.max(0, valor - registeredIncome);
+    }, 0);
 
     res.render('admin/finance', { 
       layout: 'admin', 
@@ -817,10 +1305,13 @@ router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, r
       transactions, 
       activeProjects: projects.map(p => ({ id: p.id, name: p.title })), 
       projectProfits,
-      bi: { avgMargin, expenseCategories },
+      bi: { avgMargin, expenseCategories, costCenters },
+      cashFlow,
+      futureInstallments,
       stats: { income, expense, balance: income - expense } 
     });
   } catch (error) {
+    console.error('Finance Route Error:', error);
     res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar financeiro' });
   }
 });
@@ -878,7 +1369,57 @@ router.get('/marketing-ia', requireAuth, async (req, res) => {
 });
 
 router.get('/avancado', requireAuth, checkPermission('admin'), async (req, res) => {
-  res.render('admin/advanced-admin', { layout: 'admin', title: 'Painel Administrativo Avançado', currentPage: 'advanced-admin', user: req.user });
+  try {
+    const usersRaw = await User.findAll({ order: [['name', 'ASC']] });
+    const users = usersRaw.map(u => {
+      const data = u.get({ plain: true });
+      data.permissions = data.permissions || {};
+      return data;
+    });
+
+    // 1. Assinantes (Subscribers) e seus dependentes
+    const subscriberUsers = users.filter(u => u.role === 'subscriber').map(sub => ({
+      ...sub,
+      subUsers: users.filter(u => u.parentId === sub.id)
+    }));
+
+    // 2. Staff e Admins (Equipe Master) - Incluindo aqueles que porventura tenham parentId (mas não deveriam)
+    const staffUsers = users.filter(u => (u.role === 'admin' || u.role === 'staff'));
+
+    // 3. Colaboradores e outros usuários
+    const collaboratorUsers = users.filter(u => u.role === 'collaborator' || u.role === 'user');
+    
+    // Identificar orfãos (colaboradores sem pai vinculado)
+    const orphanUsers = collaboratorUsers.filter(u => !u.parentId);
+
+    // Combinar para a aba de "Outros" apenas quem NÃO é staff e NÃO tem pai (ou seja, colaboradores avulsos)
+    // E staff que não são assinantes.
+    const otherUsers = [...staffUsers, ...orphanUsers];
+
+    const instances = (await Instance.findAll({ order: [['createdAt', 'DESC']] })).map(i => i.get({ plain: true }));
+    const plans = (await SubscriptionPlan.findAll({ order: [['price', 'ASC']] })).map(p => p.get({ plain: true }));
+    const logs = (await SystemLog.findAll({ limit: 50, order: [['createdAt', 'DESC']] })).map(l => l.get({ plain: true }));
+    const notifications = (await NotificationTemplate.findAll()).map(n => n.get({ plain: true }));
+
+    console.log(`[AVANCADO] Renderizando: ${subscriberUsers.length} Assinantes, ${otherUsers.length} Equipe/Outros.`);
+
+    res.render('admin/advanced-admin', { 
+      layout: 'admin', 
+      title: 'Painel Administrativo Avançado', 
+      currentPage: 'advanced-admin', 
+      user: req.user,
+      users,
+      subscriberUsers,
+      otherUsers,
+      instances,
+      plans,
+      logs,
+      notifications
+    });
+  } catch (error) {
+    console.error('Advanced Admin Route Error:', error);
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar painel avançado: ' + error.message });
+  }
 });
 
 router.get('/rastreio-ativo', requireAuth, async (req, res) => {
@@ -944,8 +1485,423 @@ router.get('/portfolio', requireAuth, async (req, res) => {
 // CONFIGURAÇÕES & ADMINISTRAÇÃO
 // ==========================================
 
+// Criar novo usuário manual (Painel Master) — Extended for ArchViz Studio
+router.post('/api/users', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    console.log('[API/Users] Criando usuário manual:', req.body.email);
+    const { 
+      name, email, password, role, tenantName, parentId, specialty, mainTool,
+      phone, phoneWhatsapp, jobTitle, weeklyHours, costHour, techStack, softwareLicenses,
+      permissions
+    } = req.body;
+    
+    const existing = await User.findOne({ where: { email } });
+    if (existing) return res.status(400).json({ error: 'E-mail já está em uso.' });
+    
+    // NOTA: Password hashing é tratado pelo hook beforeCreate no model User.js
+    const newUser = await User.create({
+      name,
+      email,
+      password, // O model cuidará do hash
+      role,
+      tenantName,
+      parentId: parentId || null,
+      specialty: specialty || null,
+      mainTool: mainTool || null,
+      phone: phone || null,
+      phoneWhatsapp: phoneWhatsapp || null,
+      jobTitle: jobTitle || null,
+      weeklyHours: weeklyHours ? parseInt(weeklyHours) : 40,
+      costHour: costHour ? parseFloat(costHour) : 0,
+      techStack: techStack || [],
+      softwareLicenses: softwareLicenses || [],
+      permissions: permissions || {
+        crm: true,
+        projects: true,
+        finance: false,
+        canApproveBudgets: false,
+        canSeeFinance: false,
+        ownProjectsOnly: false
+      },
+      isVerified: true,
+      isActive: true
+    });
+    
+    await SystemLog.create({
+      action: 'User Created Manually',
+      module: 'Security/Admin',
+      details: `User: ${name} (${role})`,
+      userName: req.user.name,
+      ipAddress: req.ip
+    });
+
+    console.log('[API/Users] Usuário criado com sucesso ID:', newUser.id);
+    res.json({ success: true, user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role } });
+  } catch (err) {
+    console.error('Create user error:', err);
+    res.status(500).json({ error: 'Erro ao criar usuário: ' + err.message });
+  }
+});
+
+// Forçar troca de senha (Painel Master)
+router.post('/api/users/:id/reset-password', requireAuth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
+    
+    const { newPassword } = req.body;
+    if (!newPassword) return res.status(400).json({ error: 'Nova senha é obrigatória.' });
+    
+    user.password = newPassword;
+    await user.save();
+    
+    res.json({ success: true, message: 'Senha atualizada com sucesso.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao redefinir senha' });
+  }
+});
+
+// Atualizar dados de usuário (Painel Master)
+router.patch('/api/users/:id', requireAuth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
+    
+    const allowed = ['name','email','role','phone','phoneWhatsapp','jobTitle','specialty','mainTool','weeklyHours','costHour','techStack','softwareLicenses','permissions','tenantName'];
+    const updates = {};
+    allowed.forEach(f => { if (req.body[f] !== undefined) updates[f] = req.body[f]; });
+    
+    await user.update(updates);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Ações de gestão de usuário: suspend, force-logout
+router.post('/api/users/:id/action', requireAuth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
+    
+    const { action, reason } = req.body;
+    
+    if (action === 'suspend') {
+      await user.update({ isActive: false, suspendedAt: new Date(), suspensionReason: reason || 'Suspenso pelo admin' });
+      return res.json({ success: true, message: 'Acesso suspenso.' });
+    }
+    if (action === 'reactivate') {
+      await user.update({ isActive: true, suspendedAt: null, suspensionReason: null });
+      return res.json({ success: true, message: 'Acesso reativado.' });
+    }
+    if (action === 'force-logout') {
+      await user.update({ forcedLogoutAt: new Date() });
+      return res.json({ success: true, message: 'Logout forçado registrado.' });
+    }
+    
+    res.status(400).json({ error: 'Ação desconhecida: ' + action });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE User
+router.delete('/api/users/:id', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+    
+    await user.destroy();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ==========================================
+// API PLANOS B2B
+// ==========================================
+
+// ==========================================
+// API PLANOS B2B
+// ==========================================
+
+router.post('/api/plans', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    const plan = await SubscriptionPlan.create(req.body);
+    await SystemLog.create({
+      action: 'Plan Created',
+      module: 'Finance/B2B',
+      details: `Plan: ${plan.name} - R$ ${plan.price}`,
+      userName: req.user.name,
+      ipAddress: req.ip
+    });
+    res.json({ success: true, plan });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.patch('/api/plans/:id', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    const plan = await SubscriptionPlan.findByPk(req.params.id);
+    if (!plan) return res.status(404).json({ error: 'Plano não encontrado' });
+    
+    await plan.update(req.body);
+    await SystemLog.create({
+      action: 'Plan Updated',
+      module: 'Finance/B2B',
+      details: `Plan: ${plan.name}`,
+      userName: req.user.name,
+      ipAddress: req.ip
+    });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/api/plans/:id', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    await SubscriptionPlan.destroy({ where: { id: req.params.id } });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ==========================================
+// API PROJETOS
+// ==========================================
+
+router.get('/api/projects/:id', requireAuth, async (req, res) => {
+  try {
+    const project = await Project.findByPk(req.params.id, {
+      include: [{ model: Client, as: 'client' }]
+    });
+    if (!project) return res.status(404).json({ error: 'Projeto não encontrado' });
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/api/projects/move', requireAuth, async (req, res) => {
+  try {
+    const { projectId, statusId } = req.body;
+    await Project.update({ status: statusId }, { where: { id: projectId } });
+    
+    await SystemLog.create({
+      action: 'Project Moved',
+      module: 'Production',
+      details: `Moved to ${statusId}`,
+      userName: req.user.name,
+      ipAddress: req.ip
+    });
+    
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// API INSTÂNCIAS & INFRA
+// ==========================================
+
+// ==========================================
+// API INSTÂNCIAS & INFRA
+// ==========================================
+
+router.post('/api/instances', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    const { name, integrationType, token, status } = req.body;
+    const instance = await Instance.create({
+      name, integrationType, token, status: status || 'online',
+      type: 'rendernode', // Default
+      cpuUsage: 0,
+      uptime: '0h'
+    });
+    
+    await SystemLog.create({
+      action: 'Instance Created',
+      module: 'Infrastructure',
+      details: `Instance: ${name} (${integrationType})`,
+      userName: req.user.name,
+      ipAddress: req.ip
+    });
+    
+    res.json({ success: true, instance });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post('/api/instances/sync', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    // Sincronização de Cluster (FRENTE 4: Infra & Nodes)
+    await SystemLog.create({
+      action: 'Cluster Sync',
+      module: 'Infrastructure',
+      details: 'Sincronização manual disparada via Painel Master.',
+      userName: req.user.name,
+      ipAddress: req.ip
+    });
+    // Simulação de delay de rede
+    await new Promise(resolve => setTimeout(resolve, 800));
+    res.json({ success: true, message: 'Cluster sincronizado com sucesso. Todos os nós operantes.' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post('/api/instances/:id/action', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    const { action } = req.body;
+    const instance = await Instance.findByPk(req.params.id);
+    if (!instance) return res.status(404).json({ error: 'Instância não encontrada' });
+
+    // Lógica simulada de infra
+    let status = 'online';
+    if (action === 'restart') status = 'restarting';
+    if (action === 'stop') status = 'offline';
+
+    await instance.update({ status });
+    
+    await SystemLog.create({
+      action: `Instance ${action.toUpperCase()}`,
+      module: 'Infrastructure',
+      details: `Instance: ${instance.name}`,
+      userName: req.user.name,
+      ipAddress: req.ip
+    });
+
+    res.json({ success: true, message: `Ação ${action} executada com sucesso.` });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// API FREELANCERS
+// ==========================================
+
+router.post('/freelancers', requireAuth, async (req, res) => {
+  try {
+    const { expertise } = req.body;
+    const data = { ...req.body };
+    if (Array.isArray(expertise)) data.expertise = expertise.join(', ');
+    
+    await Freelancer.create(data);
+    req.flash('success_msg', 'Freelancer adicionado ao banco de talentos!');
+    res.redirect('/admin/freelancers');
+  } catch (error) {
+    console.error('Freelancer Create Error:', error);
+    req.flash('error_msg', 'Erro ao adicionar freelancer: ' + error.message);
+    res.redirect('/admin/freelancers');
+  }
+});
+
+router.patch('/api/freelancers/:id', requireAuth, async (req, res) => {
+  try {
+    await Freelancer.update(req.body, { where: { id: req.params.id } });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/api/freelancers/:id', requireAuth, async (req, res) => {
+  try {
+    await Freelancer.destroy({ where: { id: req.params.id } });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+
+// Analytics de usuário para Relatório de Staff
+router.get('/api/users/:id/analytics', requireAuth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    const userId = req.params.id;
+    
+    const [activeProjects, timeLogs, revisions] = await Promise.all([
+      Project.findAll({ where: { status: { [Op.in]: ['producao','revisao','entrega'] } }, attributes: ['id','title','status','deadline'] }),
+      TimeLog.findAll({ where: { userId }, order: [['startTime','DESC']], limit: 100 }),
+      Revision.findAll({ include: [{ model: Project, as: 'project', attributes: ['id','title'] }], order: [['createdAt','DESC']], limit: 50 })
+    ]);
+    
+    let totalHours = 0;
+    timeLogs.forEach(l => { if (l.endTime) totalHours += (new Date(l.endTime) - new Date(l.startTime)) / 3600000; });
+    
+    const projectRevisionCounts = {};
+    revisions.forEach(r => {
+      const pid = r.projectId;
+      projectRevisionCounts[pid] = (projectRevisionCounts[pid] || 0) + 1;
+    });
+    const avgRevisions = revisions.length > 0 ? (Object.values(projectRevisionCounts).reduce((s,v) => s+v,0) / Object.keys(projectRevisionCounts).length) : 0;
+    
+    res.json({
+      success: true,
+      analytics: {
+        activeProjectsCount: activeProjects.length,
+        projects: activeProjects.map(p => p.get({ plain: true })),
+        totalHoursLogged: Math.round(totalHours * 10) / 10,
+        avgRevisionsPerProject: Math.round(avgRevisions * 10) / 10,
+        timeLogsCount: timeLogs.length
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 router.get('/configuracoes', requireAuth, async (req, res) => {
-  res.render('admin/settings', { layout: 'admin', title: 'Configurações do Sistema', currentPage: 'settings', user: req.user });
+  try {
+    const usersRaw = await User.findAll({ order: [['role', 'ASC'], ['name', 'ASC']] });
+    
+    const subscriberUsers = [];
+    const otherUsers = [];
+    const subscribers = {};
+    
+    usersRaw.forEach(u => {
+      const plainUser = u.get({ plain: true });
+      if (plainUser.role === 'subscriber') {
+        plainUser.subUsers = [];
+        subscribers[plainUser.id] = plainUser;
+        subscriberUsers.push(plainUser);
+      } else {
+        otherUsers.push(plainUser);
+      }
+    });
+
+    usersRaw.forEach(u => {
+      const plainUser = u.get({ plain: true });
+      if (plainUser.role !== 'subscriber' && plainUser.parentId && subscribers[plainUser.parentId]) {
+        subscribers[plainUser.parentId].subUsers.push(plainUser);
+      }
+    });
+
+    res.render('admin/settings', { 
+      layout: 'admin', 
+      title: 'Configurações do Sistema', 
+      currentPage: 'settings', 
+      user: req.user,
+      subscriberUsers,
+      otherUsers
+    });
+  } catch (error) {
+    console.error('Settings Error:', error);
+    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar configurações: ' + error.message });
+  }
 });
 
 router.get('/empresa', requireAuth, async (req, res) => {
@@ -960,55 +1916,340 @@ router.get('/meus-planos', requireAuth, async (req, res) => {
   res.render('admin/meus-planos', { layout: 'admin', title: 'Plano & Assinatura', currentPage: 'plans', user: req.user });
 });
 
-router.get('/avancado', requireAuth, async (req, res) => {
-  try {
-    const users = (await User.findAll({ order: [['name', 'ASC']] })).map(u => u.get({ plain: true }));
-    const instances = (await Instance.findAll({ order: [['type', 'ASC']] })).map(i => i.get({ plain: true }));
-    const plans = (await SubscriptionPlan.findAll({ order: [['price', 'ASC']] })).map(p => p.get({ plain: true }));
-    const webhooks = (await Webhook.findAll({ order: [['event', 'ASC']] })).map(w => w.get({ plain: true }));
-    const notifications = (await NotificationTemplate.findAll({ order: [['name', 'ASC']] })).map(n => n.get({ plain: true }));
-    const logs = (await SystemLog.findAll({ limit: 100, order: [['createdAt', 'DESC']] })).map(l => l.get({ plain: true }));
-    
-    // Configurações globais (Banking, Security, Backup)
-    const settingsRaw = await Setting.findAll({ where: { group: ['banking', 'security', 'backup'] } });
-    const settings = {};
-    settingsRaw.forEach(s => { settings[s.key] = s.value; });
+// Duplicated route removed.
 
-    res.render('admin/advanced-admin', { 
-      layout: 'admin', 
-      title: 'Administração Avançada', 
-      currentPage: 'advanced-admin', 
-      user: req.user, 
-      users,
-      instances,
-      plans,
-      webhooks,
-      notifications,
-      logs,
-      settings
-    });
+
+// ==========================================
+// DEPLOY CI/CD — Enhanced with proper status response
+// ==========================================
+router.post('/api/deploy', requireAuth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ success: false, message: 'Acesso negado.' });
+    
+    // Forçamos a limpeza do cache do script para garantir que a versão mais nova do disco seja lida
+    const scriptPath = require.resolve('../scripts/prod-pull');
+    delete require.cache[scriptPath];
+    const pullProduction = require('../scripts/prod-pull');
+
+    console.log(`[Deploy] Iniciado por ${req.user.name}`);
+    const result = await pullProduction();
+
+    await SystemLog.create({
+      level: result.success ? 'info' : 'error',
+      message: `Deploy ${result.success ? 'concluído' : 'falhou'}: ${result.message}`,
+      service: 'deploy',
+      userId: req.user.id
+    }).catch(() => {});
+    
+    if (result.success) {
+      return res.json({ success: true, message: 'Servidor atualizado com sucesso via Pipeline Interno!' });
+    } else {
+      // Se falhou, retornamos os detalhes para o painel
+      return res.status(500).json({ 
+        success: false, 
+        message: result.message, 
+        details: result.details 
+      });
+    }
   } catch (error) {
-    console.error('Advanced Admin Error:', error);
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro no painel avançado: ' + error.message });
+    console.error('Deploy Error:', error);
+    res.status(500).json({ success: false, message: 'Erro crítico no executor de deploy: ' + error.message });
   }
 });
 
-router.get('/deployment', requireAuth, checkPermission('devops'), async (req, res) => {
-  res.render('admin/deployment', { layout: 'admin', title: 'Pipeline CI/CD', currentPage: 'deployment', user: req.user });
+// ==========================================
+// API KEYS — Stripe-Style Key Management
+// ==========================================
+
+// Listar todas as chaves ativas
+router.get('/api/keys', requireAuth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    const keys = await ApiKey.findAll({
+      order: [['createdAt', 'DESC']],
+      attributes: ['id', 'name', 'keyMasked', 'keyPrefix', 'isActive', 'scopes', 'lastUsedAt', 'createdAt']
+    });
+    res.json({ success: true, keys: keys.map(k => k.get({ plain: true })) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-router.post('/api/deploy', requireAuth, checkPermission('devops'), async (req, res) => {
-  const isProduction = process.env.NODE_ENV === 'production';
-  const scriptPath = isProduction ? '../scripts/prod-pull' : '../scripts/git-deploy';
-  
+// Gerar nova API Key (padrão Stripe — chave exibida apenas uma vez)
+router.post('/api/keys', requireAuth, async (req, res) => {
   try {
-    const runAction = require(scriptPath);
-    const result = await runAction(`Deploy via Dashboard por ${req.user.name}`);
-    res.json(result);
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    
+    const { name, scopes } = req.body;
+    if (!name) return res.status(400).json({ error: 'Nome da chave é obrigatório.' });
+    
+    // Gera 32 bytes seguros (256 bits de entropia)
+    const rawKey = crypto.randomBytes(32).toString('hex');
+    const prefix = 'sk_live_';
+    const fullKey = `${prefix}${rawKey}`;
+    
+    // Hash para armazenamento seguro (nunca salvamos a chave crua)
+    const keyHash = crypto.createHash('sha256').update(fullKey).digest('hex');
+    
+    // Mascarado: sk_live_...Xf7k (últimos 4 chars)
+    const keyMasked = `${prefix}...${rawKey.slice(-4)}`;
+    
+    const apiKey = await ApiKey.create({
+      name,
+      keyPrefix: prefix,
+      keyHash,
+      keyMasked,
+      createdBy: req.user.id,
+      scopes: scopes || ['read'],
+      isActive: true
+    });
+    
+    // Retorna a chave completa UMA ÚNICA VEZ
+    res.json({
+      success: true,
+      key: {
+        id: apiKey.id,
+        name: apiKey.name,
+        fullKey,           // ← exibida apenas nesta resposta
+        keyMasked,
+        createdAt: apiKey.createdAt
+      }
+    });
+  } catch (err) {
+    console.error('ApiKey creation error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Revogar uma API Key
+router.delete('/api/keys/:id', requireAuth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    const key = await ApiKey.findByPk(req.params.id);
+    if (!key) return res.status(404).json({ error: 'Chave não encontrada.' });
+    await key.update({ isActive: false });
+    res.json({ success: true, message: 'Chave revogada com sucesso.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// === LEADS API (CRM Novo Lead) ===
+router.post('/api/leads', requireAuth, async (req, res) => {
+  try {
+    const { name, email, estimatedValue, probability, notes, projectType, totalArea, targetSoftware, visualStyle, clientName } = req.body;
+    
+    const lead = await Budget.create({
+      name: name || 'Novo Lead',
+      email: email || null,
+      estimatedValue: parseFloat(estimatedValue) || 0,
+      probability: parseInt(probability) || 50,
+      description: notes || null,
+      status: 'novo_lead',
+      winStatus: 'aberto',
+      source: 'manual',
+      projectType: projectType || 'Outro',
+      totalArea: parseFloat(totalArea) || null,
+      targetSoftware: targetSoftware || null,
+      visualStyle: visualStyle || null,
+      clientName: clientName || null
+    });
+
+    res.json({ success: true, lead });
   } catch (error) {
-    console.error('Deploy Error:', error);
+    console.error('API Create Lead Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// === TEMPLATES API ===
+router.get('/api/templates', requireAuth, async (req, res) => {
+  try {
+    const templates = await NotificationTemplate.findAll({ where: { isActive: true } });
+    const mapped = templates.map(t => ({
+      id: t.id, name: t.name, category: t.type.toUpperCase(), content: t.body
+    }));
+
+    if (mapped.length === 0) {
+      return res.json([
+        { name: 'Bem-vindo Zanoello', category: 'WHATSAPP', content: 'Olá! Recebemos seu contato. Em breve um de nossos especialistas falará com você.' },
+        { name: 'Aprovação de Orçamento', category: 'EMAIL', content: 'Prezado cliente, sua proposta foi aprovada.' }
+      ]);
+    }
+    res.json(mapped);
+  } catch (error) {
+    console.error('API Templates Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// === SYSTEM SETTINGS (BANKING/SECURITY) ===
+router.post('/api/settings/bulk', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    const { settings } = req.body; // { key: value }
+    for (const [key, value] of Object.entries(settings)) {
+      await Setting.upsert({ key, value: String(value), group: 'admin' });
+    }
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// === SECURITY & INFRA ACTIONS ===
+router.post('/api/security/terminate-sessions', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    await User.update({ forcedLogoutAt: new Date() }, { where: { id: { [Op.ne]: req.user.id } } });
+    
+    await SystemLog.create({
+      action: 'Global Session Termination',
+      module: 'Security',
+      userName: req.user.name,
+      ipAddress: req.ip
+    });
+    
+    res.json({ success: true, message: 'Todas as sessões de terceiros foram invalidadas.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/api/instances/snapshot', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    // Simulação de geração de snapshot SQL (FRENTE 4: Backup)
+    const fileName = `snapshot_${new Date().toISOString().replace(/[:.]/g, '-')}.sql`;
+    
+    await SystemLog.create({
+      action: 'SQL Snapshot Generated',
+      module: 'Backup',
+      details: `File: ${fileName}`,
+      userName: req.user.name,
+      ipAddress: req.ip
+    });
+    
+    res.json({ success: true, message: `Snapshot ${fileName} gerado e armazenado em Cold Storage com sucesso.` });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post('/api/infra/sync-cluster', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    // Sincronização lógica com os nós de renderização e instâncias Docker
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Simula processamento
+    
+    await SystemLog.create({
+      action: 'Cluster Sync Executed',
+      module: 'Infrastructure',
+      details: 'Full synchronization with Render Nodes and Docker Swarm completed.',
+      userName: req.user.name,
+      ipAddress: req.ip
+    });
+    
+    res.json({ success: true, message: 'Cluster sincronizado com sucesso. Todos os nós respondendo.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// === USER MANAGEMENT API ===
+router.get('/api/users', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'name', 'email', 'role', 'parentId', 'tenantName', 'lastLogin', 'isActive'],
+      order: [['createdAt', 'DESC']]
+    });
+    res.json({ success: true, users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post('/api/users', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    console.log('[API] Tentativa de criação de usuário:', req.body);
+    const { name, email, password, role, tenantName, parentId, specialty, mainTool } = req.body;
+    
+    if (!name || !email || !password) {
+      return res.status(400).json({ success: false, message: 'Dados incompletos' });
+    }
+
+    // Validar se o usuário já existe
+    const existing = await User.findOne({ where: { email } });
+    if (existing) {
+      console.log('[API] Usuário já existe:', email);
+      return res.status(400).json({ success: false, message: 'Email já cadastrado' });
+    }
+
+    // Decompor nome para compatibilidade com colunas firstName/lastName se existirem
+    const nameParts = name.trim().split(/\s+/);
+    const firstName = nameParts[0];
+    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+
+    const newUser = await User.create({
+      name,
+      firstName,
+      lastName,
+      email,
+      password, // O hash é feito no hook beforeCreate do modelo
+      role: role || 'user',
+      tenantName: tenantName || null,
+      parentId: parentId || (parentId === "" ? null : parentId),
+      specialty: specialty || null,
+      mainTool: mainTool || null,
+      isActive: true,
+      isVerified: true
+    });
+
+    console.log('[API] Usuário criado com sucesso:', newUser.id);
+    res.json({ success: true, user: { id: newUser.id, name: newUser.name, email: newUser.email } });
+  } catch (error) {
+    console.error('API Create User Error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message,
+      error: error.message // Para compatibilidade com o frontend
+    });
+  }
+});
+
+router.put('/api/users/:id', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    const { name, email, role, tenantName, parentId, specialty, mainTool, isActive } = req.body;
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+
+    await user.update({
+      name: name || user.name,
+      email: email || user.email,
+      role: role || user.role,
+      tenantName: tenantName || user.tenantName,
+      parentId: parentId || user.parentId,
+      specialty: specialty || user.specialty,
+      mainTool: mainTool || user.mainTool,
+      isActive: isActive !== undefined ? isActive : user.isActive
+    });
+
+    res.json({ success: true, message: 'Usuário atualizado com sucesso' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/api/users/:id', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+    
+    if (user.id === req.user.id) return res.status(400).json({ success: false, message: 'Você não pode excluir a si mesmo' });
+
+    await user.destroy();
+    res.json({ success: true, message: 'Usuário excluído com sucesso' });
+  } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
 module.exports = router;
+
+

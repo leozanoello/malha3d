@@ -1,58 +1,59 @@
-const express = require('express');
-const exphbs = require('express-handlebars');
+const hbs = require('express-handlebars').create({
+  helpers: {
+    formatCurrency: (v) => v,
+    firstLetter: (v) => v,
+    length: (v) => 0,
+    lookup: (obj, key) => obj ? obj[key] : undefined,
+    formatDateShort: (v) => v,
+    formatDate: (v) => v,
+    eq: (v1, v2) => v1 === v2,
+    json: (v) => JSON.stringify(v),
+    round: (v) => v,
+    formatWhatsappLink: (v) => v
+  },
+  partialsDir: 'views/partials'
+});
+
+const fs = require('fs');
 const path = require('path');
-const { Budget, KanbanColumn, sequelize } = require('../models');
-const { Op } = require('sequelize');
 
 async function testRender() {
-  const app = express();
-  const hbs = exphbs.create({
-    extname: '.hbs',
-    helpers: {
-      length: (a) => a ? a.length : 0,
-      numberFormat: (n) => n,
-      eq: (a, b) => a === b,
-      json: (a) => JSON.stringify(a),
-      firstLetter: (a) => a ? a[0] : '',
-      timeAgo: (a) => a,
-      // MISSING formatCurrency - let's see if it crashes
-    }
-  });
-
-  app.engine('.hbs', hbs.engine);
-  app.set('view engine', '.hbs');
-  app.set('views', path.join(__dirname, '../views'));
-
-  // Mock req/res
-  const req = { user: { role: 'admin' } };
-  const res = {
-    render: (view, data) => {
-      console.log('Rendering view:', view);
-      // We don't actually render to avoid more issues, just check if we get here
-    },
-    status: (s) => ({ render: (v, d) => console.log('Error status:', s, v, d.message) })
-  };
-
   try {
-    // Simulate CRM route logic
-    const columns = (await KanbanColumn.findAll({ where: { type: 'leads' } })).map(c => c.get({ plain: true }));
-    const budgets = (await Budget.findAll()).map(b => b.get({ plain: true }));
-    const kanban = {};
-    columns.forEach(col => {
-      kanban[col.statusKey] = budgets.filter(b => b.status === col.statusKey);
+    const templatePath = path.join(__dirname, '../views/admin/negociacoes.hbs');
+    const source = fs.readFileSync(templatePath, 'utf8');
+    
+    // Mock data
+    const data = {
+      layout: false,
+      columns: [{ title: 'Teste', statusKey: 'novo', color: '#ff0000' }],
+      kanban: { 'novo': [] },
+      pipelineTotals: { 'novo': 0 },
+      totalNegotiationValue: 0,
+      stats: { billingWon: 0, totalInNegotiation: 0, ticketMedio: 0, conversionRate: 0 },
+      charts: {},
+      user: { name: 'Admin' }
+    };
+
+    // We need to use hbs.renderView or similar
+    // Actually, it's easier to use a simple handlebars instance
+    const Handlebars = require('handlebars');
+    
+    // Register helpers
+    Object.keys(hbs.helpers).forEach(key => Handlebars.registerHelper(key, hbs.helpers[key]));
+    
+    // Register partials
+    const partials = fs.readdirSync(path.join(__dirname, '../views/partials'));
+    partials.forEach(p => {
+      const pSource = fs.readFileSync(path.join(__dirname, '../views/partials', p), 'utf8');
+      Handlebars.registerPartial(p.split('.')[0], pSource);
     });
 
-    console.log('Starting render...');
-    // This will try to find the template and process it
-    // We can use hbs.renderView to test the actual rendering
-    const html = await hbs.getPartials(); // Check partials
-    console.log('Partials found:', Object.keys(html));
+    const template = Handlebars.compile(source);
+    const result = template(data);
+    console.log('Render Successful! Result length:', result.length);
 
-    console.log('Test logic completed. If it reached here without throwing, the logic is fine.');
-    process.exit(0);
   } catch (error) {
-    console.error('CRASH DETECTED:', error);
-    process.exit(1);
+    console.error('Render Failed:', error);
   }
 }
 

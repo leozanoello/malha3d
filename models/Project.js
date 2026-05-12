@@ -100,6 +100,26 @@ const Project = sequelize.define('Project', {
   startDate: {
     type: DataTypes.DATE,
     allowNull: true
+  },
+  totalArea: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: true
+  },
+  softwareStack: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  productionDays: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  origin: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  visualStyle: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
 }, {
   tableName: 'projects',
@@ -116,7 +136,31 @@ const Project = sequelize.define('Project', {
     {
       fields: ['order']
     }
-  ]
+  ],
+  hooks: {
+    afterUpdate: async (project, options) => {
+      if (project.changed('status') || project.changed('price')) {
+        const SystemLog = sequelize.models.SystemLog;
+        if (SystemLog) {
+          const user = options.user || {};
+          const ip = options.ipAddress || 'system';
+          let details = `Projeto '${project.title}' (${project.id}) atualizado. `;
+          if (project.changed('status')) details += `Status alterado de '${project.previous('status')}' para '${project.status}'. `;
+          if (project.changed('price')) details += `Valor alterado de '${project.previous('price')}' para '${project.price}'.`;
+          
+          await SystemLog.create({
+            userId: user.id || null,
+            userName: user.name || 'Sistema',
+            action: 'PROJECT_UPDATE',
+            module: 'projects',
+            ipAddress: ip,
+            details: details.trim(),
+            level: 'info'
+          }, { transaction: options.transaction });
+        }
+      }
+    }
+  }
 });
 
 module.exports = Project;

@@ -38,6 +38,14 @@ const Instance = sequelize.define('Instance', {
   lastSeen: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
+  },
+  integrationType: {
+    type: DataTypes.STRING,
+    defaultValue: 'Render Farm API'
+  },
+  token: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
 }, {
   tableName: 'instances'

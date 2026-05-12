@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Project, Testimonial, Setting, Budget, CRMNote, Client, BudgetContact, sequelize } = require('../models');
+const { Project, Testimonial, Setting, Budget, CRMNote, Client, BudgetContact, CRMTask, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 
@@ -191,10 +191,24 @@ router.post('/budgets', async (req, res, next) => {
     if (data.imagesCount) data.imagesCount = parseInt(data.imagesCount);
     if (data.animationSeconds) data.animationSeconds = parseInt(data.animationSeconds);
     if (data.panoramasCount) data.panoramasCount = parseInt(data.panoramasCount);
+    if (data.totalArea) data.totalArea = parseFloat(data.totalArea);
+    if (data.installments) data.installments = parseInt(data.installments);
+    if (data.productionDays) data.productionDays = parseInt(data.productionDays);
+    if (data.clientBudget) data.clientBudget = parseFloat(data.clientBudget);
+    
+    // Garantir softwareStack como array
+    if (data.softwareStack && !Array.isArray(data.softwareStack)) {
+      data.softwareStack = [data.softwareStack];
+    }
+    
+    // Limpar UUIDs vazios para evitar FK violation
+    if (!data.assignedUserId || data.assignedUserId === '') delete data.assignedUserId;
+    if (!data.clientId || data.clientId === '') delete data.clientId;
 
     const budget = await Budget.create(data);
     res.status(201).json({ budget });
   } catch (error) {
+    console.error('API Create Budget Error:', error.message);
     next(error);
   }
 });
@@ -319,6 +333,51 @@ router.delete('/budgets/:id/contacts/:clientId', async (req, res, next) => {
     });
     res.json({ success: true });
   } catch (error) {
+    next(error);
+  }
+});
+
+// Buscar tarefas de uma negociação
+router.get('/budgets/:id/tasks', async (req, res, next) => {
+  try {
+    const tasks = await CRMTask.findAll({
+      where: { budgetId: req.params.id },
+      order: [['createdAt', 'DESC']]
+    });
+    res.json({ success: true, tasks });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Converter negociação em projeto
+router.post('/budgets/:id/convert', async (req, res, next) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const budget = await Budget.findByPk(req.params.id);
+    if (!budget) {
+      return res.status(404).json({ error: 'Negociação não encontrada' });
+    }
+
+    // Criar projeto
+    const project = await Project.create({
+      title: budget.name,
+      category: 'outro', // Default
+      image: 'https://placehold.co/600x400/003559/ffffff?text=Projeto+Convertido',
+      budgetId: budget.id,
+      price: budget.estimatedValue,
+      totalArea: budget.totalArea,
+      softwareStack: budget.softwareStack,
+      status: 'briefing'
+    }, { transaction });
+
+    // Atualizar status da negociação
+    await budget.update({ status: 'ganho' }, { transaction });
+
+    await transaction.commit();
+    res.json({ success: true, project });
+  } catch (error) {
+    await transaction.rollback();
     next(error);
   }
 });

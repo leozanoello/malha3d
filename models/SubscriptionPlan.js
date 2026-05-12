@@ -34,6 +34,22 @@ const SubscriptionPlan = sequelize.define('SubscriptionPlan', {
   description: {
     type: DataTypes.TEXT,
     allowNull: true
+  },
+  usersLimit: {
+    type: DataTypes.INTEGER,
+    defaultValue: 5
+  },
+  hasProjects: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  hasFinance: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  hasDashboard: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
 }, {
   tableName: 'subscription_plans'

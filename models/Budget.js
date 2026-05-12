@@ -33,6 +33,8 @@ const Budget = sequelize.define('Budget', {
       'Visita Virtual',
       'Visualização de Produtos',
       'Arquitetônico',
+      'Interiores',
+      'Comercial',
       'Outro'
     ),
     allowNull: false
@@ -65,6 +67,10 @@ const Budget = sequelize.define('Budget', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: true
   },
+  installments: {
+    type: DataTypes.INTEGER,
+    defaultValue: 1
+  },
   notes: {
     type: DataTypes.TEXT,
     allowNull: true
@@ -83,7 +89,7 @@ const Budget = sequelize.define('Budget', {
   },
   color: {
     type: DataTypes.STRING,
-    defaultValue: '#f97316' // Laranja padrão
+    defaultValue: '#f97316'
   },
   tags: {
     type: DataTypes.JSONB,
@@ -109,6 +115,11 @@ const Budget = sequelize.define('Budget', {
   targetSoftware: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  // FRENTE 4: Multiselect de Softwares (JSONB array)
+  softwareStack: {
+    type: DataTypes.JSONB,
+    defaultValue: []
   },
   complexity: {
     type: DataTypes.ENUM('Baixa', 'Média', 'Alta', 'Ultra'),
@@ -143,11 +154,27 @@ const Budget = sequelize.define('Budget', {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
-  staticImagesCount: {
+  animationSeconds: {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
-  animationSeconds: {
+  totalArea: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: true
+  },
+  clientName: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  floorPlansCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  driveLink: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  staticImagesCount: {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
@@ -169,11 +196,6 @@ const Budget = sequelize.define('Budget', {
     allowNull: true,
     field: 'close_date'
   },
-  totalArea: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: true,
-    field: 'total_area'
-  },
   origin: {
     type: DataTypes.STRING,
     allowNull: true
@@ -182,10 +204,124 @@ const Budget = sequelize.define('Budget', {
     type: DataTypes.INTEGER,
     allowNull: true
   },
+  // FRENTE 4: Prazo de Produção Desejado (Dias)
+  productionDays: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  // FRENTE 4: Budget Estimado do Cliente
+  clientBudget: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: true
+  },
+  // FRENTE 4: Responsável Comercial (FK para User)
+  assignedUserId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    field: 'assigned_user_id'
+  },
   linkedBudgetId: {
     type: DataTypes.UUID,
     allowNull: true,
     field: 'linked_budget_id'
+  },
+  portfolioImages: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  templateTheme: {
+    type: DataTypes.STRING,
+    defaultValue: 'design_a'
+  },
+  // FRENTE 2: Status da Proposta Comercial
+  proposalStatus: {
+    type: DataTypes.STRING,
+    defaultValue: 'rascunho'
+  },
+  // PHASE 3 Expansion: ArchViz Data
+  profileType: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  projectCategory: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  predominantStyle: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  location: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  receivedFormat: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  fileQuality: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  specificationsUrl: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  imageResolution: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  animationTime: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  extraDeliverables: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  environments: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  lightingMood: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  desiredAtmosphere: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  moodboardUrl: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  humanizationLevel: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  specialElements: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  firstPreviewDate: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  finalDeadline: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  revisionsIncluded: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  hasUrgency: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  urgencyFee: {
+    type: DataTypes.DECIMAL(5, 2),
+    defaultValue: 0
   }
 }, {
   tableName: 'budgets',

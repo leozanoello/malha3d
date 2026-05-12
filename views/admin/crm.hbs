@@ -38,9 +38,9 @@
                     </div>
                 </div>
 
-                <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-10 rounded-2xl shadow-2xl shadow-orange-500/30 transition-all flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95" data-bs-toggle="modal" data-bs-target="#newLeadModal">
+                <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-10 rounded-2xl shadow-2xl shadow-orange-500/30 transition-all flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95" onclick="const m = document.getElementById('newLeadModal'); m.classList.remove('hidden'); m.style.display='flex';">
                     <span class="material-symbols-outlined text-base">person_add</span>
-                    Capturar Novo Lead
+                    Novo Lead
                 </button>
             </div>
         </div>
@@ -160,11 +160,12 @@
     </div>
 </div>
 
+
+
 <!-- Modal: Manage Lead (Ultra Advanced) -->
-<div class="modal fade" id="manageLeadModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[3rem] bg-[#0c0e12]/95 backdrop-blur-3xl overflow-hidden">
-            <div class="modal-body p-0 flex h-[85vh]">
+<div id="manageLeadModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm" style="display: none;">
+    <div class="glass-card w-full max-w-6xl relative rounded-[3rem] bg-[#0c0e12]/95 backdrop-blur-3xl overflow-hidden shadow-2xl">
+        <div class="flex h-[85vh]">
                 <!-- Sidebar Nav -->
                 <div class="w-24 border-r border-white/5 flex flex-col items-center py-10 gap-8 bg-black/20">
                     <button class="modal-tab-btn active w-14 h-14 rounded-2xl flex items-center justify-center transition-all group" data-tab="details">
@@ -203,65 +204,132 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-all" data-bs-dismiss="modal">
-                            <span class="material-symbols-outlined">close</span>
-                        </button>
+                        <div class="flex gap-4 items-center">
+                            <button type="button" id="btn-edit-toggle" class="h-12 px-6 rounded-2xl bg-white/5 text-white font-black text-[10px] uppercase tracking-widest border border-white/10 hover:bg-white/10 transition-all flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">edit</span> Editar Lead
+                            </button>
+                            <form id="confirmProjectForm" action="" method="POST" class="m-0">
+                                <button type="submit" class="h-12 px-6 rounded-2xl bg-emerald-500 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-emerald-500/20 hover:scale-105 transition-all flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">check_circle</span> Confirmar Lead
+                                </button>
+                            </form>
+                            <button type="button" class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-all" onclick="document.getElementById('manageLeadModal').classList.add('hidden'); document.getElementById('manageLeadModal').style.display='none';">
+                                <span class="material-symbols-outlined">close</span>
+                            </button>
+                        </div>
                     </header>
 
                     <div class="flex-1 overflow-y-auto p-12 custom-scrollbar">
-                        <!-- Pane: DETAILS -->
-                        <div id="modal-tab-details" class="modal-pane space-y-10">
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                                <div class="lg:col-span-2 space-y-10">
-                                    <div class="grid grid-cols-2 gap-8">
-                                        <div class="p-6 rounded-[2rem] bg-white/5 border border-white/10">
-                                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-4">Informações de Contato</p>
-                                            <div class="space-y-4">
-                                                <div class="flex items-center gap-3">
-                                                    <span class="material-symbols-outlined text-orange-500 text-sm">mail</span>
-                                                    <span id="detailEmail" class="text-[11px] font-bold text-white">email@exemplo.com</span>
-                                                </div>
-                                                <div class="flex items-center gap-3">
-                                                    <span class="material-symbols-outlined text-emerald-500 text-sm">call</span>
-                                                    <span id="detailPhone" class="text-[11px] font-bold text-white">(11) 99999-9999</span>
-                                                </div>
-                                            </div>
+                        <!-- Pane: DETAILS (Edit Form) -->
+                        <form id="editLeadForm" action="" method="POST" class="modal-pane space-y-8" id="modal-tab-details">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div class="space-y-4">
+                                    <h4 class="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-4 border-b border-white/5 pb-2">Informações de Contato</h4>
+                                    <div>
+                                        <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Nome do Lead/Projeto</label>
+                                        <input type="text" id="editName" name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Email</label>
+                                            <input type="email" id="editEmail" name="email" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all">
                                         </div>
-                                        <div class="p-6 rounded-[2rem] bg-white/5 border border-white/10">
-                                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-4">Interesse Técnico</p>
-                                            <div class="space-y-4">
-                                                <div class="flex items-center justify-between">
-                                                    <span class="text-[10px] font-bold text-gray-500">Software</span>
-                                                    <span id="detailSoftware" class="text-[10px] font-black text-white uppercase">3ds Max</span>
-                                                </div>
-                                                <div class="flex items-center justify-between">
-                                                    <span class="text-[10px] font-bold text-gray-500">Tipo Projeto</span>
-                                                    <span id="detailProjectType" class="text-[10px] font-black text-white uppercase">Residencial</span>
-                                                </div>
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Telefone</label>
+                                            <input type="text" id="editPhone" name="phone" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Tipologia</label>
+                                            <select id="editProjectType" name="projectType" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
+                                                <option value="Interiores" class="bg-gray-900">Interiores</option>
+                                                <option value="Arquitetônico" class="bg-gray-900">Arquitetônico</option>
+                                                <option value="Comercial" class="bg-gray-900">Comercial</option>
+                                                <option value="Outro" class="bg-gray-900">Outro</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Cor de Destaque</label>
+                                            <div class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
+                                                <input type="color" id="editColor" name="color" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0">
+                                                <span class="text-xs text-gray-400">Card Color</span>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="space-y-4">
-                                        <h4 class="text-[11px] font-black text-white uppercase tracking-widest">Breve Descrição</h4>
-                                        <div class="p-8 rounded-[2.5rem] bg-white/5 border border-white/5 min-h-[150px]">
-                                            <p id="detailDescription" class="text-sm text-gray-400 leading-relaxed italic">Nenhuma descrição informada.</p>
-                                        </div>
+                                    <div>
+                                        <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Link Drive/Moodboard</label>
+                                        <input type="url" id="editDriveLink" name="driveLink" placeholder="https://" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all">
+                                    </div>
+                                    <div class="pt-4">
+                                        <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Breve Descrição do Projeto</label>
+                                        <textarea id="editDescription" name="description" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all"></textarea>
                                     </div>
                                 </div>
 
-                                <div class="space-y-8">
-                                    <div class="p-8 rounded-[2.5rem] bg-emerald-500/5 border border-emerald-500/10 text-center">
-                                        <p class="text-[9px] font-black text-emerald-500 uppercase tracking-[0.2em] mb-4">Valor Estimado</p>
-                                        <h3 id="detailValue" class="text-3xl font-black text-white tracking-tighter">R$ 0,00</h3>
+                                <div class="space-y-4">
+                                    <h4 class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-4 border-b border-white/5 pb-2">Escopo Técnico & Valores</h4>
+                                    <div>
+                                        <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Input Fornecido</label>
+                                        <input type="text" id="editVisualStyle" name="visualStyle" placeholder="Ex: SketchUp, DWG, PDF" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all">
                                     </div>
-                                    <div class="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 space-y-6">
-                                        <button class="w-full py-4 rounded-2xl bg-orange-500 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-orange-500/20">Gerar Orçamento</button>
-                                        <button class="w-full py-4 rounded-2xl bg-white/5 text-gray-400 font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">Abrir WhatsApp</button>
+                                    <div>
+                                        <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Software Alvo</label>
+                                        <select id="editTargetSoftware" name="targetSoftware" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
+                                            <option value="D5 Render" class="bg-gray-900">D5 Render</option>
+                                            <option value="Corona" class="bg-gray-900">Corona Renderer</option>
+                                            <option value="V-Ray" class="bg-gray-900">V-Ray</option>
+                                        </select>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Valor Estimado (R$)</label>
+                                            <input type="number" step="0.01" id="editEstimatedValue" name="estimatedValue" class="w-full bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3 text-emerald-400 font-black focus:border-emerald-500 focus:outline-none transition-all">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Metragem (m²)</label>
+                                            <input type="number" step="0.01" id="editTotalArea" name="totalArea" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-4 mt-4">
+                                        <div>
+                                            <label class="block text-[9px] text-gray-400 font-bold uppercase mb-2 text-center">Imagens</label>
+                                            <input type="number" id="editImagesCount" name="imagesCount" min="0" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-center text-white focus:border-orange-500 focus:outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9px] text-gray-400 font-bold uppercase mb-2 text-center">Animação (s)</label>
+                                            <input type="number" id="editAnimationSeconds" name="animationSeconds" min="0" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-center text-white focus:border-orange-500 focus:outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9px] text-gray-400 font-bold uppercase mb-2 text-center">Plantas Hum.</label>
+                                            <input type="number" id="editFloorPlansCount" name="floorPlansCount" min="0" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-center text-white focus:border-orange-500 focus:outline-none">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Prazo (Dias)</label>
+                                            <input type="number" id="editProductionDays" name="productionDays" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Deadline (Data)</label>
+                                            <input type="date" id="editDeadline" name="deadline" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-orange-500 focus:outline-none transition-all">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] text-gray-400 font-bold uppercase mb-2">Budget do Cliente (R$)</label>
+                                        <input type="number" step="0.01" id="editClientBudget" name="clientBudget" class="w-full bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3 text-emerald-400 font-black focus:border-emerald-500 focus:outline-none transition-all">
+                                    </div>
+                                     <div id="edit-actions" class="pt-6 flex gap-4 hidden">
+                                         <button type="button" id="btn-cancel-edit" class="flex-1 py-4 rounded-xl bg-white/5 text-white font-black text-[10px] uppercase tracking-widest border border-white/10 hover:bg-white/10 transition-all">
+                                             Cancelar
+                                         </button>
+                                         <button type="submit" class="flex-[2] py-4 rounded-xl bg-orange-500 text-white font-black text-[10px] uppercase tracking-widest shadow-xl shadow-orange-500/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
+                                             <span class="material-symbols-outlined text-sm">save</span> Salvar Alterações
+                                         </button>
+                                     </div>
+                                 </div>
+                             </div>
+                         </form>
 
                         <!-- Pane: BRIEFING -->
                         <div id="modal-tab-briefing" class="modal-pane hidden animate-in slide-in-from-right-4">
@@ -276,6 +344,77 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- NOVO LEAD MODAL (FRENTE 2) -->
+<div id="newLeadModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm flex" style="display: none;">
+    <div class="glass-card w-full max-w-2xl p-8 relative">
+        <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="document.getElementById('newLeadModal').classList.add('hidden'); document.getElementById('newLeadModal').style.display='none';">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Criar Novo Lead (Archviz)</h3>
+        
+        <form action="/admin/negociacoes/novo" method="POST" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome do Projeto/Lead</label>
+                    <input type="text" name="name" required class="input-premium w-full">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Contato/Cliente</label>
+                    <input type="text" name="clientName" class="input-premium w-full">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Tipologia</label>
+                    <select name="projectType" required class="input-premium w-full bg-dark-900 text-white">
+                        <option value="Interiores">Interiores</option>
+                        <option value="Comercial">Comercial</option>
+                        <option value="Arquitetônico">Arquitetônico</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Metragem (m²)</label>
+                    <input type="number" step="0.01" name="totalArea" class="input-premium w-full">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Formato de Entrada</label>
+                    <input type="text" name="visualStyle" placeholder="Ex: Revit, SketchUp" class="input-premium w-full">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Software Alvo</label>
+                    <select name="targetSoftware" class="input-premium w-full bg-dark-900 text-white">
+                        <option value="D5 Render">D5 Render</option>
+                        <option value="Corona">Corona</option>
+                        <option value="V-Ray">V-Ray</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">VGV Estimado (R$)</label>
+                    <input type="number" step="0.01" name="estimatedValue" class="input-premium w-full text-emerald-400 font-bold" placeholder="0.00">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Budget Cliente (R$)</label>
+                    <input type="number" step="0.01" name="clientBudget" class="input-premium w-full text-blue-400 font-bold" placeholder="0.00">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Prazo (Dias)</label>
+                    <input type="number" name="productionDays" class="input-premium w-full">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Deadline</label>
+                    <input type="date" name="deadline" class="input-premium w-full">
+                </div>
+            </div>
+            
+            <div class="pt-4 flex justify-end gap-3">
+                <button type="button" class="btn bg-white/5 text-white" onclick="document.getElementById('newLeadModal').classList.add('hidden'); document.getElementById('newLeadModal').style.display='none';">Cancelar</button>
+                <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">save</span> Salvar Lead
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -352,6 +491,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // === EDIT MODE LOGIC ===
+    const editLeadForm = document.getElementById('editLeadForm');
+    const btnEditToggle = document.getElementById('btn-edit-toggle');
+    const btnCancelEdit = document.getElementById('btn-cancel-edit');
+    const editActions = document.getElementById('edit-actions');
+
+    function toggleEditMode(enabled) {
+        if (!editLeadForm) return;
+        const inputs = editLeadForm.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            if (input.name !== 'id') {
+                input.disabled = !enabled;
+            }
+        });
+        
+        if (enabled) {
+            editActions?.classList.remove('hidden');
+            btnEditToggle?.classList.add('hidden');
+        } else {
+            editActions?.classList.add('hidden');
+            btnEditToggle?.classList.remove('hidden');
+        }
+    }
+
+    btnEditToggle?.addEventListener('click', () => toggleEditMode(true));
+    btnCancelEdit?.addEventListener('click', () => toggleEditMode(false));
+
     // === LEAD MANAGEMENT ===
     window.manageLead = function(leadData) {
         const data = typeof leadData === 'string' ? JSON.parse(leadData) : leadData;
@@ -360,18 +526,55 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('modalLeadStatus').innerText = (data.status || '').replace('_', ' ');
         document.getElementById('modalLeadImgTag').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`;
         
-        document.getElementById('detailEmail').innerText = data.email;
-        document.getElementById('detailPhone').innerText = data.phone || '(Não informado)';
-        document.getElementById('detailSoftware').innerText = data.software || 'N/A';
-        document.getElementById('detailValue').innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.estimatedValue || 0);
-        document.getElementById('detailDescription').innerText = data.description || 'Nenhuma descrição informada.';
+        toggleEditMode(false); // Start disabled
+
+        // Update form action
+        const editForm = document.getElementById('editLeadForm');
+        if(editForm) editForm.action = `/admin/negociacoes/${data.id}/update`;
+        
+        const confirmForm = document.getElementById('confirmProjectForm');
+        if(confirmForm) confirmForm.action = `/admin/negociacoes/${data.id}/confirm-project`;
+
+        // Populate Form Fields
+        if(document.getElementById('editName')) document.getElementById('editName').value = data.name || '';
+        if(document.getElementById('editEmail')) document.getElementById('editEmail').value = data.email || '';
+        if(document.getElementById('editPhone')) document.getElementById('editPhone').value = data.phone || '';
+        if(document.getElementById('editProjectType')) document.getElementById('editProjectType').value = data.projectType || 'Outro';
+        if(document.getElementById('editColor')) document.getElementById('editColor').value = data.color || '#f97316';
+        if(document.getElementById('editVisualStyle')) document.getElementById('editVisualStyle').value = data.visualStyle || '';
+        if(document.getElementById('editTargetSoftware')) document.getElementById('editTargetSoftware').value = data.targetSoftware || 'D5 Render';
+        if(document.getElementById('editDriveLink')) document.getElementById('editDriveLink').value = data.driveLink || '';
+        if(document.getElementById('editEstimatedValue')) document.getElementById('editEstimatedValue').value = data.estimatedValue || '';
+        if(document.getElementById('editTotalArea')) document.getElementById('editTotalArea').value = data.totalArea || '';
+        if(document.getElementById('editImagesCount')) document.getElementById('editImagesCount').value = data.imagesCount || 0;
+        if(document.getElementById('editAnimationSeconds')) document.getElementById('editAnimationSeconds').value = data.animationSeconds || 0;
+        if(document.getElementById('editFloorPlansCount')) document.getElementById('editFloorPlansCount').value = data.floorPlansCount || 0;
+        if(document.getElementById('editDescription')) document.getElementById('editDescription').value = data.description || '';
+        
+        // New Fields
+        if(document.getElementById('editProductionDays')) document.getElementById('editProductionDays').value = data.productionDays || '';
+        if(document.getElementById('editClientBudget')) document.getElementById('editClientBudget').value = data.clientBudget || '';
+        if(document.getElementById('editDeadline')) {
+            const date = data.deadline ? new Date(data.deadline).toISOString().split('T')[0] : '';
+            document.getElementById('editDeadline').value = date;
+        }
         
         const modalEl = document.getElementById('manageLeadModal');
         if (modalEl) {
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
+            modalEl.classList.remove('hidden');
+            modalEl.style.display = 'flex';
         }
     };
+
+    // Auto-open lead if leadId is in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const leadId = urlParams.get('leadId');
+    if (leadId) {
+        const leadCard = document.querySelector(`.kanban-card-main[data-id="${leadId}"]`);
+        if (leadCard && leadCard.dataset.lead) {
+            window.manageLead(leadCard.dataset.lead);
+        }
+    }
 
     // === FORECAST CHART ===
     let crmChart = null;
@@ -444,6 +647,88 @@ document.addEventListener('DOMContentLoaded', function() {
                 grid.innerHTML = '<p class="text-center text-red-500">Erro ao carregar modelos.</p>';
             });
     }
+    
+    // === AJAX SUBMISSIONS ===
+    window.submitNewLead = async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="animate-spin material-symbols-outlined text-sm">sync</span> Processando...';
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const res = await fetch('/admin/negociacoes/novo', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const json = await res.json();
+            if (json.success) {
+                document.getElementById('newLeadModal').classList.add('hidden');
+                window.location.reload();
+            } else {
+                alert('Erro ao criar lead: ' + (json.error || 'Erro desconhecido'));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        } catch (err) {
+            alert('Erro de rede.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    };
+
+    window.submitEditLead = async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="animate-spin material-symbols-outlined text-sm">sync</span> Salvando...';
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const res = await fetch(form.action, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const json = await res.json();
+            if (json.success) {
+                document.getElementById('manageLeadModal').classList.add('hidden');
+                window.location.reload();
+            } else {
+                alert('Erro ao atualizar: ' + (json.error || 'Erro desconhecido'));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        } catch (err) {
+            alert('Erro de rede.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    };
+
+    // Attach to existing forms
+    const newLeadForm = document.querySelector('#newLeadModal form');
+    if (newLeadForm) newLeadForm.onsubmit = window.submitNewLead;
+    
+    const manageLeadForm = document.getElementById('editLeadForm');
+    if (manageLeadForm) manageLeadForm.onsubmit = window.submitEditLead;
 
     // === EVENT DELEGATION FOR DYNAMIC ELEMENTS ===
     document.addEventListener('click', function(e) {

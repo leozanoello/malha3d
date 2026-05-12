@@ -32,17 +32,37 @@ const User = sequelize.define('User', {
     allowNull: false
   },
   role: {
-    type: DataTypes.ENUM('admin', 'user', 'client'),
+    type: DataTypes.ENUM('admin', 'staff', 'subscriber', 'collaborator', 'user', 'client'),
     defaultValue: 'user',
     validate: {
-      isIn: [['admin', 'user', 'client']]
+      isIn: [['admin', 'staff', 'subscriber', 'collaborator', 'user', 'client']]
     }
+  },
+  parentId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    references: {
+      model: 'users',
+      key: 'id'
+    }
+  },
+  tenantName: {
+    type: DataTypes.STRING,
+    allowNull: true
   },
   phone: {
     type: DataTypes.STRING,
     allowNull: true
   },
   avatar: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  specialty: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  mainTool: {
     type: DataTypes.STRING,
     allowNull: true
   },
@@ -69,12 +89,61 @@ const User = sequelize.define('User', {
       projects: true,
       finance: false,
       freelancers: false,
-      company: false
+      company: false,
+      canApproveBudgets: false,
+      canSeeFinance: false,
+      ownProjectsOnly: false
     }
   },
   hourlyRate: {
     type: DataTypes.DECIMAL(10, 2),
     defaultValue: 0.00
+  },
+  // ArchViz Team Extended Fields
+  phoneWhatsapp: {
+    type: DataTypes.STRING(30),
+    allowNull: true,
+    field: 'phone_whatsapp'
+  },
+  weeklyHours: {
+    type: DataTypes.INTEGER,
+    defaultValue: 40,
+    field: 'weekly_hours'
+  },
+  costHour: {
+    type: DataTypes.DECIMAL(10, 2),
+    defaultValue: 0.00,
+    field: 'cost_hour'
+  },
+  techStack: {
+    type: DataTypes.JSON,
+    defaultValue: [],
+    field: 'tech_stack'
+  },
+  softwareLicenses: {
+    type: DataTypes.JSON,
+    defaultValue: [],
+    field: 'software_licenses'
+  },
+  jobTitle: {
+    type: DataTypes.STRING(100),
+    allowNull: true,
+    field: 'job_title'
+  },
+  suspendedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'suspended_at'
+  },
+  suspensionReason: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    field: 'suspension_reason'
+  },
+  forcedLogoutAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'forced_logout_at'
   }
 }, {
   tableName: 'users',

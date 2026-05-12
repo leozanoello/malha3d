@@ -58,6 +58,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- AOS Animate On Scroll -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    
     <!-- Bootstrap JS (for Modals/Dropdowns) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -163,21 +167,17 @@
             box-shadow: 0 0 0 10px rgba(249, 115, 22, 0.05);
         }
 
-        /* Global Compacting (50% reduction where possible) */
-        .compact-mode h1 { font-size: 1.25rem !important; }
-        .compact-mode h2 { font-size: 1rem !important; }
-        .compact-mode h3 { font-size: 0.75rem !important; }
-        .compact-mode p { font-size: 0.7rem !important; }
+        /* Global Compacting (Padding/Gap only, fonts preserved as per user request) */
         .compact-mode .glass-card { padding: 1.25rem !important; border-radius: 1.25rem !important; }
         .compact-mode .p-10 { padding: 1.5rem !important; }
         .compact-mode .p-8 { padding: 1.25rem !important; }
         .compact-mode .p-6 { padding: 1rem !important; }
         .compact-mode .space-y-8 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem !important; }
         .compact-mode .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem !important; }
-        .compact-mode .gap-8 { gap: 1rem !important; }
-        .compact-mode .gap-6 { gap: 0.75rem !important; }
-        .compact-mode input, .compact-mode select, .compact-mode textarea { padding: 0.6rem 1rem !important; font-size: 0.75rem !important; border-radius: 0.75rem !important; }
-        .compact-mode .btn, .compact-mode button { padding: 0.5rem 1rem !important; font-size: 0.7rem !important; border-radius: 0.75rem !important; }
+        .compact-mode .gap-8 { gap: 1.25rem !important; }
+        .compact-mode .gap-6 { gap: 1rem !important; }
+        .compact-mode input, .compact-mode select, .compact-mode textarea { padding: 0.6rem 1rem !important; border-radius: 0.75rem !important; }
+        .compact-mode .btn, .compact-mode button { padding: 0.5rem 1rem !important; border-radius: 0.75rem !important; }
         
         /* Fix overlapping */
         nav.fixed { z-index: 50; }
@@ -190,7 +190,7 @@
     <div class="glow-orb orb-2"></div>
     <!-- Vertical Sidebar -->
     {{#unless isLogin}}
-    <aside class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 bg-dark-950 border-r border-white/5 flex flex-col">
+    <aside class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 bg-dark-950/80 backdrop-blur-3xl border-r border-white/5 flex flex-col shadow-2xl">
         <div class="h-full px-4 py-6 overflow-y-auto scrollbar-hide flex flex-col">
             <!-- Brand & Sidebar Header -->
             <div class="flex items-center justify-between mb-6 px-2 border-b border-white/5 pb-6">
@@ -205,38 +205,31 @@
                 </div>
             </div>
 
-            <!-- Global Action Triggers -->
+            <!-- Global Action Triggers (4 Buttons Grid) -->
             <div class="px-2 mb-6 grid grid-cols-2 gap-2">
                 <button class="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20 transition-all group" data-bs-toggle="modal" data-bs-target="#newProjectModal">
                     <span class="material-symbols-outlined text-orange-500 text-lg">rocket_launch</span>
-                    <span class="text-[8px] font-black text-white uppercase tracking-widest">Projeto</span>
+                    <span class="text-[8px] font-black text-white uppercase tracking-widest">LEAD</span>
                 </button>
                 <button class="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group" data-bs-toggle="modal" data-bs-target="#newRegistryModal">
                     <span class="material-symbols-outlined text-gray-400 group-hover:text-white text-lg">person_add</span>
                     <span class="text-[8px] font-black text-gray-500 group-hover:text-white uppercase tracking-widest">Contatos</span>
                 </button>
+                <button class="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group" id="btn-global-search">
+                    <span class="material-symbols-outlined text-gray-400 group-hover:text-white text-lg">search</span>
+                    <span class="text-[8px] font-black text-gray-500 group-hover:text-white uppercase tracking-widest">Buscar</span>
+                </button>
+                <button class="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group" id="btn-notifications">
+                    <span class="material-symbols-outlined text-gray-400 group-hover:text-white text-lg">notifications</span>
+                    <span class="text-[8px] font-black text-gray-500 group-hover:text-white uppercase tracking-widest">Notificações</span>
+                </button>
             </div>
-
-            <!-- Global Quick Search & Notify -->
-            <div class="px-2 mb-8 relative">
-                <div class="glass-card p-2 border-white/10 bg-white/5 rounded-2xl flex items-center justify-around">
-                    <div class="relative flex-1 flex items-center">
-                        <button class="p-2 text-gray-400 rounded-xl hover:bg-white/10 hover:text-white transition-all" title="Pesquisar" id="btn-global-search">
-                            <span class="material-symbols-outlined text-lg">search</span>
-                        </button>
-                        <input type="text" id="global-search-input" placeholder="Pesquisar..." class="bg-transparent border-none text-[10px] text-white focus:outline-none w-0 transition-all overflow-hidden font-bold uppercase tracking-widest px-0">
-                    </div>
-                    <div class="w-[1px] h-4 bg-white/10"></div>
-                    <button class="p-2 text-gray-400 rounded-xl hover:bg-white/10 hover:text-white relative transition-all" title="Notificações" id="btn-notifications">
-                        <span class="material-symbols-outlined text-lg">notifications</span>
-                        <span class="absolute top-2 right-2 w-2 h-2 bg-orange-500 rounded-full border-2 border-dark-950"></span>
-                    </button>
-                    <div class="w-[1px] h-4 bg-white/10"></div>
-                    <button class="p-2 text-gray-400 rounded-xl hover:bg-white/10 hover:text-white transition-all" title="Nova Transação" data-bs-toggle="modal" data-bs-target="#newTransactionModal">
-                        <span class="material-symbols-outlined text-lg">add_card</span>
-                    </button>
+            
+            <!-- Hidden Search Input & Results Dropdown for new Buscar button -->
+            <div class="px-2 mb-2 relative hidden" id="global-search-container">
+                <div class="glass-card p-1 border-white/10 bg-white/5 rounded-2xl flex items-center justify-center gap-2 max-w-full overflow-hidden">
+                    <input type="text" id="global-search-input" placeholder="Pesquisar..." class="bg-transparent border-none text-[10px] text-white focus:outline-none w-full transition-all font-bold uppercase tracking-widest px-3 py-1.5">
                 </div>
-
                 <!-- Search Results Dropdown -->
                 <div id="global-search-results" class="absolute top-full left-0 w-full mt-2 glass-card bg-dark-900 border-white/10 p-4 hidden z-50 shadow-2xl max-h-[400px] overflow-y-auto">
                     <div class="space-y-4">
@@ -257,39 +250,51 @@
             </div>
 
             <!-- Sidebar Navigation -->
-            <div class="flex-1 space-y-6">
+            <div class="flex-1 space-y-4">
+                <!-- Group 0: VISÃO GERAL -->
+                <div>
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-2">Visão Geral</h3>
+                    <ul class="space-y-0.5 px-2">
+                        <li>
+                            <a href="/admin" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'dashboard')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">dashboard</span> Dashboard
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
                 <!-- Group 1: CRM -->
                 <div>
-                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">CRM</h3>
-                    <ul class="space-y-1.5 px-2">
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-2">CRM</h3>
+                    <ul class="space-y-0.5 px-2">
                         <li>
-                            <a href="/admin/negociacoes" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'negociacoes')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                            <a href="/admin/negociacoes" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'negociacoes')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">view_kanban</span> CRM
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/previsao" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'previsao')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                            <a href="/admin/previsao" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'previsao')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">query_stats</span> Previsão & Analytics
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/orcamentos" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'budgets')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                            <a href="/admin/orcamentos" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'budgets')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">description</span> Propostas
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/budget-generator" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'budget-generator')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                            <a href="/admin/budget-generator" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'budget-generator')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">magic_button</span> Gerador Dinâmico
                             </a>
                         </li>
 
                         <li>
-                            <a href="/admin/agenda" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'calendar')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                            <a href="/admin/agenda" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'calendar')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">calendar_month</span> Agenda
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/rastreio-ativo" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'active-tracking')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                            <a href="/admin/rastreio-ativo" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'active-tracking')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">timer</span> Rastreio Ativo
                             </a>
                         </li>
@@ -298,10 +303,10 @@
 
                 <!-- Group 2: VENDAS & PROJETOS -->
                 <div>
-                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">Vendas & Projetos</h3>
-                    <ul class="space-y-1">
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-2">Vendas & Projetos</h3>
+                    <ul class="space-y-0.5 px-2">
                         <li>
-                            <a href="/admin/projetos/kanban" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'projects')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                            <a href="/admin/projetos/kanban" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'projects')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">folder_special</span> Projetos
                             </a>
                         </li>
@@ -310,20 +315,20 @@
 
                 <!-- Group 3: FINANCEIRO -->
                 <div>
-                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">Financeiro</h3>
-                    <ul class="space-y-1">
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-2">Financeiro</h3>
+                    <ul class="space-y-0.5 px-2">
                         <li>
-                            <a href="/admin/financeiro" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'finance')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                            <a href="/admin/financeiro" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'finance')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">account_balance_wallet</span> Financeiro
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/relatorios" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'reports')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                            <a href="/admin/relatorios" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'reports')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">analytics</span> Relatórios
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/produtividade" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'productivity')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                            <a href="/admin/produtividade" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'productivity')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">speed</span> Produtividade
                             </a>
                         </li>
@@ -332,10 +337,10 @@
 
                 <!-- Group 4: ANÁLISE -->
                 <div>
-                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">Análise</h3>
-                    <ul class="space-y-1">
+                    <h3 class="px-4 text-[9px] font-black text-gray-600 uppercase tracking-[0.3em] mb-2">Análise</h3>
+                    <ul class="space-y-0.5 px-2">
                         <li>
-                            <a href="/admin/automacoes" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'automations')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                            <a href="/admin/automacoes" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'automations')}}bg-cyber-500/10 text-cyber-500{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">bolt</span> Automações
                             </a>
                         </li>
@@ -410,11 +415,7 @@
                                 <span class="material-symbols-outlined text-lg">admin_panel_settings</span> Admin
                             </a>
                         </li>
-                        <li>
-                            <a href="/admin/deployment" class="flex items-center gap-3 px-6 py-3 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'deployment')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
-                                <span class="material-symbols-outlined text-lg">rocket_launch</span> Pipeline CI/CD
-                            </a>
-                        </li>
+                        <!-- Pipeline CI/CD movido para Configurações -->
                     </ul>
                 </div>
             </div>
@@ -479,6 +480,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Handle form submissions with loading states
             document.addEventListener('submit', function(e) {
+                if (e.defaultPrevented) return; // Ignore if handled by AJAX/fetch
+                
                 const form = e.target;
                 const submitBtn = form.querySelector('button[type="submit"]');
                 
@@ -548,10 +551,9 @@
         const searchResults = document.getElementById('global-search-results');
 
         searchBtn?.addEventListener('click', () => {
-            searchInput.classList.toggle('w-0');
-            searchInput.classList.toggle('w-full');
-            searchInput.classList.toggle('px-3');
-            if (!searchInput.classList.contains('w-0')) searchInput.focus();
+            const container = document.getElementById('global-search-container');
+            container.classList.toggle('hidden');
+            if (!container.classList.contains('hidden')) searchInput.focus();
         });
 
         let searchTimeout;
@@ -670,5 +672,16 @@
 
         window.addEventListener('load', checkUrlParams);
     </script>
+
+    <!-- AOS Initializer -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50
+        });
+    </script>
+
 </body>
 </html>

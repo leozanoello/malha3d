@@ -10,8 +10,8 @@ async function runDeploy(commitMessage = '🚀 Production Deploy') {
   return new Promise((resolve, reject) => {
     console.log('--- Iniciando Pipeline de Deploy ---');
     
-    // Comando sequencial: add -> commit -> push
-    const command = `git add . && git commit -m "${commitMessage}" && git push origin main`;
+    // Comando robusto: verifica se há mudanças antes de tentar commitar
+    const command = `git add . && (git diff-index --quiet HEAD || git commit -m "${commitMessage}") && git push origin main`;
     
     exec(command, { cwd: path.join(__dirname, '..') }, (error, stdout, stderr) => {
       if (error) {
