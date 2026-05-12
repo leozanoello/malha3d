@@ -1,8 +1,8 @@
 #!/bin/bash
-# Script de Deploy Automatizado - Zanoello 3D
-# Este script resolve problemas de PATH e reinicia o servidor Node.js
+# Script de Deploy Único - Zanoello 3D
+# Este script resolve problemas de PATH e evita conflitos com scripts antigos.
 
-echo "--- Iniciando Deploy de Emergência ---"
+echo "--- Iniciando Deploy ZANOELLO (Scripts Corrigidos) ---"
 
 # 1. Localizar a pasta do projeto (onde está o package.json)
 APP_DIR=$(find . -name package.json -not -path "*/node_modules/*" -exec dirname {} \;)
