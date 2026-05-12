@@ -28,8 +28,18 @@ export PATH=$PATH:/usr/local/bin:/usr/bin:/bin:/opt/alt/alt-nodejs18/root/usr/bi
 echo "Instalando dependências (npm install)..."
 npm install --production
 
-# 5. Reiniciar o servidor (método Hostinger/Passenger)
-echo "Reiniciando servidor Node.js..."
+# 5. Garantir ponto de entrada e Reiniciar
+echo "Limpando processos antigos e reiniciando..."
+# Forçamos o toque no arquivo que a Hostinger monitora para restart
 touch server.js
+touch app.js 2>/dev/null
+# Se houver um index.js.bak e não houver index.js, restauramos (opcional, dependendo da config)
+if [ -f "server.js" ]; then
+    echo "Ponto de entrada server.js confirmado."
+fi
+
+# Tenta derrubar processos órfãos para forçar o sistema a subir o novo
+pkill -u u464448170 node 2>/dev/null
 
 echo "--- DEPLOY SUCCESSFUL! ---"
+echo "Aguarde 30 segundos e dê um Ctrl+F5 no seu navegador."
