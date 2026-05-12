@@ -12,7 +12,8 @@ async function pullProduction() {
     // 1. Puxa o código
     // 2. Instala novas dependências (se houver)
     // 3. O Hostinger reinicia o Node automaticamente ao detectar mudança no server.js
-    const command = `git pull origin main && npm install --production`;
+    // Adicionamos os caminhos comuns onde o Node/NPM são instalados em servidores Linux
+    const command = `export PATH=$PATH:/usr/local/bin:/usr/bin:/bin && git pull origin main && npm install --production`;
     
     exec(command, { cwd: path.join(__dirname, '..') }, (error, stdout, stderr) => {
       if (error) {
