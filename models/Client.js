@@ -42,6 +42,22 @@ const Client = sequelize.define('Client', {
     type: DataTypes.TEXT,
     allowNull: true
   },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  state: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  document: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  paymentMethods: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
   status: {
     type: DataTypes.STRING,
     defaultValue: 'active'

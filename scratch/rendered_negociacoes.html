@@ -1,0 +1,2585 @@
+<style>
+    .cards-list:has(.kanban-card) .kanban-empty-state { display: none !important; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+<div class="container-fluid py-4 h-screen flex flex-col overflow-hidden">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8 flex-shrink-0">
+        <div class="flex flex-col gap-1">
+            <h1 class="text-3xl font-black text-white tracking-tight">CRM <span class="text-cyber-500">Inteligência Comercial</span></h1>
+            <div class="flex items-center gap-6 mt-4 border-b border-white/5 pb-2">
+                <button class="crm-page-tab active text-[10px] font-black uppercase tracking-[0.2em] text-cyber-500 relative pb-2 group" data-tab="kanban">
+                    Quadro Kanban
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-cyber-500"></div>
+                </button>
+                <button class="crm-page-tab text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-white transition-all pb-2 group relative" data-tab="analytics">
+                    Análise & Previsão
+                    <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyber-500 group-hover:w-full transition-all"></div>
+                </button>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="glass-card px-4 py-2 border-white/5 flex items-center gap-3">
+                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Pipeline Total:</span>
+                <span id="pipeline-total-display" class="text-lg font-black text-white"></span>
+            </div>
+            <button id="btn-new-deal" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add_circle</span> Novo Lead
+            </button>
+        </div>
+    </div>
+
+    <!-- Control Bar (Busca + Alternador de Visualizações) -->
+    <div id="crm-control-bar" class="mb-6 flex flex-col md:flex-row gap-4 items-center justify-between p-4 glass-card bg-black/20 border-white/5 relative z-10">
+        <!-- Search -->
+        <div class="relative w-full md:w-96">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+                <span class="material-symbols-outlined text-sm">search</span>
+            </span>
+            <input type="text" id="unified-search" class="w-full pl-10 pr-4 py-2.5 bg-black/40 border border-white/5 rounded-xl text-xs font-medium text-white focus:outline-none focus:border-cyber-500/50 transition-all placeholder-gray-500" placeholder="Buscar por lead, cliente ou tipo...">
+        </div>
+        <!-- View Toggle -->
+        <div class="flex items-center gap-1.5 bg-black/40 p-1 rounded-xl border border-white/5">
+            <button onclick="changeView('kanban')" id="btn-view-kanban" class="view-toggle-btn px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest text-cyber-500 bg-cyber-500/10 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">grid_view</span> Quadro
+            </button>
+            <button onclick="changeView('list')" id="btn-view-list" class="view-toggle-btn px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">list</span> Lista
+            </button>
+            <button onclick="changeView('spreadsheet')" id="btn-view-spreadsheet" class="view-toggle-btn px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">table_chart</span> Planilha
+            </button>
+        </div>
+    </div>
+
+    <!-- View Containers -->
+    <div id="kanban-board-container" class="flex-1 flex flex-col min-h-0">
+        <!-- Kanban Board -->
+        <div id="kanban-board" class="flex-1 flex gap-6 overflow-x-auto pb-6 scrollbar-hide select-none">
+            <div class="kanban-column w-80 flex-shrink-0 flex flex-col h-full" data-status="novo" data-id="">
+                <!-- Column Header -->
+                <div class="glass-card mb-4 border-white/10 relative flex-shrink-0 min-h-[100px] flex flex-col justify-center overflow-hidden pt-5" style="border-top: 4px solid #ff0000">
+                    <!-- Column top banner -->
+                    <div class="absolute top-0 left-0 w-full h-[18px] flex items-center justify-between px-3" style="background: linear-gradient(90deg, #ff000018 0%, #ff000003 100%); border-bottom: 1px solid #ff000012;">
+                        <span class="text-[6.5px] font-black uppercase tracking-[0.25em]" style="color: #ff0000">Etapa do Funil</span>
+                        <span class="w-1.5 h-1.5 rounded-full" style="background-color: #ff0000; box-shadow: 0 0 6px #ff0000"></span>
+                    </div>
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="overflow-hidden flex-1">
+                            <h3 class="text-xs font-black text-white uppercase tracking-widest flex items-center justify-between gap-2 pr-2 whitespace-normal line-clamp-2 break-words">
+                                Teste
+                                <span class="bg-white/5 text-gray-500 px-2 py-0.5 rounded-full text-[8px] flex-shrink-0 column-card-count">1</span>
+                            </h3>
+                            <p class="text-[9px] font-bold text-gray-500 mt-1 uppercase tracking-tighter">
+                                Total: <span class="text-cyber-400 column-total-value">15000</span>
+                            </p>
+                        </div>
+                        <div class="dropdown">
+                            <button class="text-gray-600 hover:text-white transition-all" data-bs-toggle="dropdown">
+                                <span class="material-symbols-outlined">more_vert</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark glass-card border-white/10 bg-dark-950 p-2">
+                                <li><a class="dropdown-item rounded-xl text-[10px] font-bold uppercase py-2 btn-edit-column" href="#" data-id="" data-title="Teste" data-color="#ff0000">Editar Coluna</a></li>
+                                <li><hr class="dropdown-divider border-white/5"></li>
+                                <li><a class="dropdown-item rounded-xl text-[10px] font-bold uppercase py-2 text-red-500 btn-delete-column" href="#" data-id="">Excluir Coluna</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cards Container -->
+                <div class="cards-list flex-1 overflow-y-auto space-y-3 px-3 mx-[-0.75rem] scrollbar-hide pb-10" data-status="novo">
+                    <div class="kanban-card glass-card p-3 border-white/5 hover:border-white/20 transition-all cursor-pointer group relative hover:z-[999] overflow-visible" 
+                         data-id="deal-123" 
+                         data-lead='{&quot;id&quot;:&quot;deal-123&quot;,&quot;name&quot;:&quot;Projeto Mock&quot;,&quot;estimatedValue&quot;:15000,&quot;probability&quot;:80,&quot;status&quot;:&quot;novo&quot;,&quot;projectType&quot;:&quot;Imagens 3D&quot;,&quot;priority&quot;:&quot;alta&quot;,&quot;client&quot;:{&quot;name&quot;:&quot;Cliente Teste&quot;,&quot;company&quot;:&quot;Empresa Teste&quot;,&quot;phone&quot;:&quot;11999999999&quot;}}'
+                         style="">
+                        <!-- Progress Bar -->
+                        <div class="absolute top-0 left-0 w-full h-1 bg-white/5">
+                            <div class="h-full probability-bar" style="width: 80%; background-color: #00f2ff; box-shadow: 0 0 8px #00f2ff;"></div>
+                        </div>
+                        
+                        <!-- Discrete Small Card Banner -->
+                        <div class="mb-2 mt-1 px-2 py-0.5 rounded bg-white/5 border border-white/5 flex items-center justify-between text-[7px] font-black uppercase tracking-wider text-gray-400">
+                            <span class="flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full" style="background-color: #00f2ff; box-shadow: 0 0 4px #00f2ff;"></span>
+                                Imagens 3D
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="priority-badge text-[6px] font-black uppercase px-1 py-0.2 rounded border transition-all duration-300
+                                    bg-red-500/10 text-red-400 border-red-500/20
+                                    
+                                    
+                                    "
+                                    data-priority="alta">
+                                    Alta
+                                    
+                                    
+                                    
+                                </span>
+                                <span class="font-black probability-label" style="color: #00f2ff">80%</span>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-start mb-2 mt-0">
+                            <div>
+                                <h4 class="text-xs font-black text-white leading-tight pr-2 card-name">Projeto Mock</h4>
+                                <p class="text-[8px] text-gray-500 font-bold uppercase tracking-wider mt-0.5">
+                                    Empresa Teste • 
+                                    <span class="font-mono opacity-20 hover:opacity-100 transition-opacity duration-300 text-[8px] cursor-help tracking-tighter select-all">#ORC-deal-123</span>
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <a href="11999999999" target="_blank" class="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 transition-all flex items-center justify-center stop-propagation">
+                                    <i class="fab fa-whatsapp text-[9px]"></i>
+                                </a>
+                                <div class="dropdown stop-propagation">
+                                    <button class="text-gray-600 hover:text-white transition-all p-1 flex items-center justify-center" data-bs-toggle="dropdown" data-bs-boundary="viewport" data-bs-popper-config='{"strategy":"fixed"}'>
+                                        <span class="material-symbols-outlined text-[16px]">more_vert</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-dark glass-card border-white/10 bg-dark-950 p-2 shadow-2xl">
+                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2" href="#" onclick="window.openDealDetails('deal-123')"><span class="material-symbols-outlined text-sm">edit</span> Editar Detalhes</a></li>
+                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm">task</span> Nova Tarefa</a></li>
+                                        <li><hr class="dropdown-divider border-white/5"></li>
+                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2 text-red-500" href="#"><span class="material-symbols-outlined text-sm">archive</span> Arquivar Lead</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-1 mb-2">
+                            <div class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-gray-600 text-[12px]">payments</span>
+                                <span class="text-[10px] font-black text-white card-value">15000</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-gray-600 text-[12px]">calendar_today</span>
+                                <span class="text-[9px] font-bold text-gray-500"></span>
+                            </div>
+                        </div>
+
+                        <!-- Briefing Metadata Tags -->
+                        <div class="flex flex-wrap gap-1.5 mb-2 mt-2 tech-tags-container">
+                        </div>
+
+                        <!-- Next Step Glassmorphic Alert Widget -->
+                        <div class="mt-2 mb-2 p-2.5 rounded-xl bg-orange-500/5 border border-orange-500/10 text-[8px] text-orange-200 flex flex-col gap-1 next-step-container hidden">
+                            <div class="flex items-center gap-1 font-black uppercase tracking-wider text-orange-400">
+                                <span class="material-symbols-outlined text-[10px]">notifications_active</span>
+                                PRÓXIMA AÇÃO
+                            </div>
+                            <p class="font-bold leading-normal text-gray-300 break-words card-next-action-note"></p>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2 border-t border-white/5 mt-2">
+                            <button class="bg-cyber-500 hover:bg-cyber-400 text-dark-950 px-2 py-1 rounded-lg font-black text-[7px] uppercase tracking-widest transition-all btn-confirm-project" data-id="deal-123">
+                                Confirmar Proposta
+                            </button>
+                            <div class="flex items-center gap-1">
+                                <div class="flex items-center gap-1 text-orange-500 text-date-bell hidden">
+                                    <span class="material-symbols-outlined text-[10px]">notifications_active</span>
+                                </div>
+                                <span class="text-[8px] font-black text-gray-600 uppercase tracking-widest"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="kanban-empty-state border-2 border-dashed border-white/5 rounded-3xl p-6 flex flex-col items-center justify-center text-center opacity-30 mt-2">
+                        <span class="material-symbols-outlined text-2xl mb-1">move_to_inbox</span>
+                        <p class="text-[9px] font-black uppercase tracking-widest">Sem Negócios</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Column Button -->
+            <div class="w-80 flex-shrink-0">
+                <button id="btn-add-column" class="w-full h-20 border-2 border-dashed border-white/10 rounded-[2rem] flex items-center justify-center gap-3 text-gray-500 hover:text-white hover:border-white/20 transition-all group">
+                    <span class="material-symbols-outlined group-hover:scale-125 transition-all">add_circle</span>
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em]">Adicionar Etapa</span>
+                </button>
+            </div>
+        </div> <!-- Fechar #kanban-board -->
+
+        <!-- List Layout for CRM -->
+        <div id="view-list" class="space-y-4 hidden flex-1 overflow-y-auto pb-20 scrollbar-hide">
+                <div class="glass-card p-4 border-white/5 bg-white/2 hover:border-cyber-500/30 transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 crm-item-row" onclick="window.openDealDetails('deal-123')" data-search="Projeto Mock Cliente Teste Empresa Teste Imagens 3D novo">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-cyber-500/10 flex items-center justify-center text-cyber-500">
+                            <span class="material-symbols-outlined">payments</span>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-black text-white card-name">Projeto Mock</h4>
+                            <p class="text-[8px] text-gray-500 font-bold uppercase tracking-wider mt-0.5">
+                                Empresa Teste • 
+                                <span class="font-mono opacity-20 hover:opacity-100 transition-opacity duration-300 text-[8px] cursor-help tracking-tighter select-all">#ORC-deal-123</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <div class="text-right">
+                            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[8px] font-black text-gray-400 uppercase tracking-wide">
+                                Imagens 3D
+                            </span>
+                        </div>
+                        <div class="text-right">
+                            <span class="px-2.5 py-0.5 rounded-full bg-cyber-500/10 text-cyber-500 border border-cyber-500/20 text-[8px] font-black uppercase tracking-wider">
+                                Teste
+                            </span>
+                        </div>
+                        <div class="text-right w-24">
+                            <p class="text-[9px] font-black text-emerald-500 font-mono">15000</p>
+                        </div>
+                        <div onclick="event.stopPropagation();">
+                            <button onclick="window.openDealDetails('deal-123')" class="w-8 h-8 rounded-xl bg-white/5 text-gray-400 hover:text-white flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[14px]">visibility</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        <!-- Spreadsheet Layout for CRM -->
+        <div id="view-spreadsheet" class="glass-card border-white/5 bg-white/2 overflow-hidden hidden flex-1 flex flex-col min-h-0">
+            <div class="overflow-x-auto overflow-y-auto flex-1 scrollbar-hide">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-white/5 bg-black/40 text-[9px] font-black text-gray-500 uppercase tracking-widest sticky top-0 z-10">
+                            <th class="p-4">Negociação</th>
+                            <th class="p-4">Cliente / Empresa</th>
+                            <th class="p-4">Tipo</th>
+                            <th class="p-4">Etapa</th>
+                            <th class="p-4">Probabilidade</th>
+                            <th class="p-4">Valor Estimado</th>
+                            <th class="p-4">Previsão Fechamento</th>
+                            <th class="p-4 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                            <tr class="hover:bg-white/[0.02] transition-all cursor-pointer crm-item-row" onclick="window.openDealDetails('deal-123')" data-search="Projeto Mock Cliente Teste Empresa Teste Imagens 3D novo">
+                                <td class="p-4">
+                                    <span class="text-xs font-black text-white block card-name">Projeto Mock</span>
+                                    <span class="font-mono opacity-20 hover:opacity-100 transition-opacity duration-300 text-[8px] cursor-help tracking-tighter select-all">#ORC-deal-123</span>
+                                </td>
+                                <td class="p-4 text-xs font-medium text-gray-400">
+                                    Empresa Teste
+                                </td>
+                                <td class="p-4 text-xs font-bold text-gray-400">
+                                    Imagens 3D
+                                </td>
+                                <td class="p-4">
+                                    <span class="px-2 py-0.5 rounded-full bg-cyber-500/10 text-cyber-500 border border-cyber-500/20 text-[8px] font-black uppercase tracking-wider">
+                                        Teste
+                                    </span>
+                                </td>
+                                <td class="p-4 text-xs font-mono font-bold text-cyber-400">
+                                    80%
+                                </td>
+                                <td class="p-4 text-xs font-mono font-black text-emerald-500">
+                                    15000
+                                </td>
+                                <td class="p-4 text-xs font-medium text-gray-400">
+                                    
+                                </td>
+                                <td class="p-4 text-right" onclick="event.stopPropagation();">
+                                    <button onclick="window.openDealDetails('deal-123')" class="inline-flex w-8 h-8 rounded-xl bg-white/5 text-gray-400 hover:text-white items-center justify-center">
+                                        <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                    </button>
+                                </td>
+                            </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics View (Hidden by default) -->
+    <div id="analytics-container" class="flex-1 overflow-y-auto hidden pb-20 scrollbar-hide">
+        <!-- Analytics Header & Month Filter -->
+        <div class="glass-card p-4 border-white/5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex flex-col gap-0.5">
+                <h3 class="text-xs font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-cyber-500 animate-pulse"></span>
+                    Mês de Referência: <span class="text-cyber-400 font-black"></span>
+                </h3>
+                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Métricas baseadas na Previsão de Fechamento dos Cards</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <label for="analytics-month-filter" class="text-[8px] font-black uppercase tracking-widest text-gray-500">Filtrar por Mês:</label>
+                <input type="month" id="analytics-month-filter" class="bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-xs font-bold text-white focus:outline-none focus:border-cyber-500 transition-all select-none" value="">
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div class="glass-card p-6 border-white/10 relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-all"></div>
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center border border-green-500/20">
+                        <span class="material-symbols-outlined text-green-500">payments</span>
+                    </div>
+                    <div>
+                        <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Faturamento Ganhos</h4>
+                        <p class="text-2xl font-black text-white">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 border-white/10 relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 w-24 h-24 bg-cyber-500/10 rounded-full blur-2xl group-hover:bg-cyber-500/20 transition-all"></div>
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-cyber-500/10 flex items-center justify-center border border-cyber-500/20">
+                        <span class="material-symbols-outlined text-cyber-500">account_tree</span>
+                    </div>
+                    <div>
+                        <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Pipeline Aberto</h4>
+                        <p class="text-2xl font-black text-white">15000</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 border-white/10 relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-all"></div>
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
+                        <span class="material-symbols-outlined text-orange-500">avg_time</span>
+                    </div>
+                    <div>
+                        <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Ticket Médio</h4>
+                        <p class="text-2xl font-black text-white">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-card p-6 border-white/10 relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all"></div>
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                        <span class="material-symbols-outlined text-purple-500">ads_click</span>
+                    </div>
+                    <div>
+                        <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Taxa Conversão</h4>
+                        <p class="text-2xl font-black text-white">0%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Previsão Financeira Row -->
+        <div class="mb-4 flex flex-col gap-0.5">
+            <h3 class="text-xs font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyber-500"></span>
+                Previsão Financeira do Mês (Cálculo Ponderado)
+            </h3>
+            <p class="text-[9px] font-bold text-gray-500 uppercase tracking-wider">Cenários projetados com base no valor estimado e na etapa de funil de cada card em aberto no mês selecionado</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <!-- Previsão Mínima -->
+            <div class="glass-card p-6 border-white/5 bg-gradient-to-br from-red-500/[0.02] to-transparent relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-500/10 rounded-full blur-2xl group-hover:bg-red-500/20 transition-all"></div>
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center border border-red-500/20 text-red-500 flex-shrink-0">
+                        <span class="material-symbols-outlined text-xl">trending_down</span>
+                    </div>
+                    <div>
+                        <h4 class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Cenário Pessimista (Mínimo)</h4>
+                        <p class="text-2xl font-black text-white mt-1"></p>
+                        <p class="text-[8px] font-bold text-red-400/80 mt-2 uppercase tracking-wide leading-normal">
+                            Contato (5%) • Negociação (15%) • Orçamento (30%) • Fechamento (60%)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previsão Média -->
+            <div class="glass-card p-6 border-white/5 bg-gradient-to-br from-cyber-500/[0.02] to-transparent relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 w-24 h-24 bg-cyber-500/10 rounded-full blur-2xl group-hover:bg-cyber-500/20 transition-all"></div>
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-cyber-500/10 flex items-center justify-center border border-cyber-500/20 text-cyber-500 flex-shrink-0">
+                        <span class="material-symbols-outlined text-xl">analytics</span>
+                    </div>
+                    <div>
+                        <h4 class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Cenário Realista (Médio)</h4>
+                        <p class="text-2xl font-black text-white mt-1"></p>
+                        <p class="text-[8px] font-bold text-cyber-400/80 mt-2 uppercase tracking-wide leading-normal">
+                            Calculado pela probabilidade individual de cada card cadastrado no CRM
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previsão Máxima -->
+            <div class="glass-card p-6 border-white/5 bg-gradient-to-br from-emerald-500/[0.02] to-transparent relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-500 flex-shrink-0">
+                        <span class="material-symbols-outlined text-xl">trending_up</span>
+                    </div>
+                    <div>
+                        <h4 class="text-[9px] font-black text-gray-500 uppercase tracking-[0.2em]">Cenário Otimista (Máximo)</h4>
+                        <p class="text-2xl font-black text-white mt-1"></p>
+                        <p class="text-[8px] font-bold text-emerald-400/80 mt-2 uppercase tracking-wide leading-normal">
+                            Contato (30%) • Negociação (60%) • Orçamento (85%) • Fechamento (100%)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div class="glass-card p-8 border-white/10">
+                <h3 class="text-lg font-black text-white mb-8 tracking-tight uppercase tracking-widest">Funil Ponderado</h3>
+                <div class="h-[300px]">
+                    <canvas id="weightedFunnelChart"></canvas>
+                </div>
+            </div>
+            <div class="glass-card p-8 border-white/10">
+                <h3 class="text-lg font-black text-white mb-8 tracking-tight uppercase tracking-widest">Motivos de Perda</h3>
+                <div class="h-[300px]">
+                    <canvas id="lossReasonsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     MODAL: DETALHES DA NEGOCIAÇÃO (Centralized Pop-up)
+     ========================================== -->
+<div class="modal fade" id="dealDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content bg-dark-950 border border-white/10 glass-blur rounded-[2.5rem] overflow-hidden shadow-2xl">
+            <div class="modal-header p-8 border-b border-white/5 flex flex-col items-start gap-4">
+                <div class="flex items-center justify-between w-full">
+                    <div class="flex flex-col">
+                        <div class="flex items-center gap-3 mb-1">
+                            <span class="bg-cyber-500/10 text-cyber-500 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest" id="drawer-id-label">#DEAL-0000</span>
+                            <span class="bg-white/5 text-gray-500 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest" id="drawer-status-label">STAGE</span>
+                        </div>
+                        <h2 class="modal-title text-2xl font-black text-white tracking-tight" id="drawer-name">Nome da Negociação</h2>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button type="button" id="btn-edit-toggle" class="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">edit</span> Editar Campos
+                        </button>
+                        
+                        <!-- Botões de Ação em Edição (Phase 1) -->
+                        <div id="header-edit-actions" class="hidden flex items-center gap-4">
+                            <button type="button" id="btn-save-header" class="px-6 py-2.5 bg-cyber-500 text-dark-950 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-cyber-500/20 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">save</span> Salvar Alterações
+                            </button>
+                            <button type="button" id="btn-cancel-header" class="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">close</span> Cancelar
+                            </button>
+                        </div>
+
+                        <button type="button" id="btn-mark-won-header" onclick="markAsWon()" class="px-6 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-green-500/20 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">check_circle</span> Confirmar Proposta
+                        </button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation -->
+                <ul class="nav nav-tabs border-0 flex gap-8 w-full mt-2" id="dealTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="project-tab" data-bs-toggle="tab" data-bs-target="#project-content" type="button" role="tab">
+                            Detalhes da Proposta
+                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyber-500 group-hover:w-full transition-all"></div>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts-content" type="button" role="tab">
+                            Contatos
+                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyber-500 group-hover:w-full transition-all"></div>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasks-content" type="button" role="tab">
+                            Tarefas
+                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyber-500 group-hover:w-full transition-all"></div>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="log-tab" data-bs-toggle="tab" data-bs-target="#log-content" type="button" role="tab">
+                            Chat & Histórico
+                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyber-500 group-hover:w-full transition-all"></div>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-orange-500/50 py-2 px-0 hover:text-orange-500 transition-all relative group" id="ai-tab" data-bs-toggle="tab" data-bs-target="#ai-content" type="button" role="tab">
+                            <span class="flex items-center gap-2"><span class="material-symbols-outlined text-xs">auto_awesome</span> Estratégia AI</span>
+                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 group-hover:w-full transition-all"></div>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="modal-body p-8 scrollbar-hide">
+                <div class="tab-content h-full" id="dealTabsContent">
+                    <!-- TAB 1: DETALHES DO PROJETO -->
+                    <div class="tab-pane fade show active h-full" id="project-content" role="tabpanel">
+                        <form id="dealForm" class="space-y-8 pb-10">
+                            <input type="hidden" name="id" id="deal-id-input">
+                            
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <!-- Dados Comerciais -->
+                                <section class="glass-card p-8 border-white/5 space-y-6">
+                                    <h3 class="text-[10px] font-black text-cyber-500 uppercase tracking-widest flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm">payments</span> Dados da Proposta
+                                    </h3>
+                                    <div class="grid grid-cols-2 gap-6">
+                                        <div class="col-span-2">
+                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Nome da Proposta / Lead</label>
+                                            <input type="text" name="name" class="input-premium" required disabled>
+                                        </div>
+                                        <div>
+                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Valor Total (R$)</label>
+                                            <div class="relative flex items-center">
+                                                <input type="number" step="0.01" name="estimatedValue" id="deal-estimated-value" class="input-premium pr-24" disabled>
+                                                <button type="button" id="btn-calc-orcamento-detail" class="absolute right-2 px-3 py-1.5 bg-cyber-500 hover:bg-cyber-600 text-dark-950 rounded-lg font-black text-[8px] uppercase tracking-wider transition-all flex items-center gap-1 shadow-md hidden">
+                                                    <span class="material-symbols-outlined text-[10px]">auto_awesome</span> Calcular
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Probabilidade (%)</label>
+                                            <input type="number" name="probability" min="0" max="100" class="input-premium" disabled>
+                                        </div>
+                                        <div>
+                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Etapa do Funil</label>
+                                            <select name="status" class="input-premium" disabled>
+                                                <option value="novo">Teste</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Responsável</label>
+                                            <select name="assignedUserId" class="input-premium" disabled>
+                                                <option value="">Não atribuído</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Prioridade</label>
+                                            <select name="priority" class="input-premium" disabled>
+                                                <option value="baixa">Baixa</option>
+                                                <option value="media">Média</option>
+                                                <option value="alta">Alta</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Agendar Próxima Ação</label>
+                                            <input type="datetime-local" name="nextActionDate" class="input-premium" disabled>
+                                        </div>
+                                        <div class="col-span-2">
+                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Diretrizes / Notas de Ação</label>
+                                            <textarea name="nextActionNote" class="input-premium" rows="2" disabled placeholder="Instruções para a próxima ação..."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-6 border-t border-white/5 space-y-4">
+                                        <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Financeiro & Prazos</h4>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Parcelamento</label>
+                                                <input type="number" name="installments" class="input-premium" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Data 1ª Prévia</label>
+                                                <input type="date" name="firstPreviewDate" class="input-premium" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Prazo de Entrega (Dias)</label>
+                                                <input type="number" name="productionDays" class="input-premium" placeholder="Ex: 10" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Revisões Inclusas</label>
+                                                <select name="revisionsIncluded" class="input-premium" disabled>
+                                                    <option value="1">1 Ciclo</option>
+                                                    <option value="2">2 Ciclos</option>
+                                                    <option value="3">3 Ciclos</option>
+                                                    <option value="Ilimitadas">Ilimitadas (Premium)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="glass-card p-4 border-white/5 flex items-center justify-between">
+                                            <div class="flex items-center gap-3">
+                                                <label class="relative inline-flex items-center cursor-pointer">
+                                                    <input type="checkbox" name="hasUrgency" class="sr-only peer" disabled id="check-urgency-edit">
+                                                    <div class="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange-500"></div>
+                                                </label>
+                                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Taxa de Urgência</span>
+                                            </div>
+                                            <div id="urgency-percentage-edit" class="hidden">
+                                                <input type="number" name="urgencyFee" class="bg-transparent text-white font-black text-right w-12 focus:outline-none text-[10px]" disabled>
+                                                <span class="text-[10px] text-gray-500">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- Archviz Technical Specs -->
+                                <section class="glass-card p-8 border-white/5 space-y-6">
+                                    <h3 class="text-[10px] font-black text-orange-500 uppercase tracking-widest flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm">architecture</span> Especificações Archviz
+                                    </h3>
+                                    
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Perfil Cliente</label>
+                                            <select name="profileType" class="input-premium" disabled>
+                                                <option value="Arquiteto">Arquiteto</option>
+                                                <option value="Design de Interiores">Design de Interiores</option>
+                                                <option value="Construtora">Construtora</option>
+                                                <option value="Imobiliária">Imobiliária</option>
+                                                <option value="Cliente Final">Cliente Final</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Categoria</label>
+                                            <select name="projectCategory" class="input-premium" disabled>
+                                                <option value="Residencial">Residencial</option>
+                                                <option value="Comercial">Comercial</option>
+                                                <option value="Corporativo">Corporativo</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Workflow Base</label>
+                                            <select name="receivedFormat" class="input-premium" disabled>
+                                                <option value="BIM/Revit Limpo">BIM/Revit Limpo</option>
+                                                <option value="Sketchup Sujo">Sketchup Sujo</option>
+                                                <option value="AutoCAD 2D">AutoCAD 2D</option>
+                                                <option value="Do Zero">Do Zero</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Qualidade Arquivo</label>
+                                            <select name="fileQuality" class="input-premium" disabled>
+                                                <option value="Limpo/Organizado">Limpo / Organizado</option>
+                                                <option value="Médio">Médio</option>
+                                                <option value="Desorganizado">Desorganizado</option>
+                                                <option value="Precisa Modelar Zero">Precisa Modelar Zero</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Estilo Predominante</label>
+                                            <select name="predominantStyle" class="input-premium" disabled>
+                                                <option value="Minimalista">Minimalista</option>
+                                                <option value="Moderno" selected>Moderno</option>
+                                                <option value="Clássico/Neoclássico">Clássico/Neoclássico</option>
+                                                <option value="Industrial">Industrial</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Metragem Total (m²)</label>
+                                            <input type="number" name="totalArea" class="input-premium" placeholder="Ex: 120" min="0" step="0.01" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest block">Software Stack</label>
+                                        <div class="grid grid-cols-3 gap-2">
+                                            <label class="glass-card p-2 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                                <input type="checkbox" name="softwareStack" value="3ds Max" class="hidden" disabled>
+                                                <span class="text-[8px] font-black text-gray-400 uppercase tracking-tighter">3ds Max</span>
+                                            </label>
+                                            <label class="glass-card p-2 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                                <input type="checkbox" name="softwareStack" value="Corona" class="hidden" disabled>
+                                                <span class="text-[8px] font-black text-gray-400 uppercase tracking-tighter">Corona</span>
+                                            </label>
+                                            <label class="glass-card p-2 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                                <input type="checkbox" name="softwareStack" value="V-Ray" class="hidden" disabled>
+                                                <span class="text-[8px] font-black text-gray-400 uppercase tracking-tighter">V-Ray</span>
+                                            </label>
+                                            <label class="glass-card p-2 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                                <input type="checkbox" name="softwareStack" value="D5 Render" class="hidden" disabled>
+                                                <span class="text-[8px] font-black text-gray-400 uppercase tracking-tighter">D5 Render</span>
+                                            </label>
+                                            <label class="glass-card p-2 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                                <input type="checkbox" name="softwareStack" value="Unreal Engine" class="hidden" disabled>
+                                                <span class="text-[8px] font-black text-gray-400 uppercase tracking-tighter">Unreal Engine</span>
+                                            </label>
+                                            <label class="glass-card p-2 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                                <input type="checkbox" name="softwareStack" value="Photoshop" class="hidden" disabled>
+                                                <span class="text-[8px] font-black text-gray-400 uppercase tracking-tighter">Photoshop</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-3 gap-4 pt-4 border-t border-white/5">
+                                        <div class="text-center">
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Imagens</label>
+                                            <input type="number" name="imagesCount" class="bg-transparent text-white font-black text-center w-full focus:outline-none" disabled>
+                                        </div>
+                                        <div class="text-center">
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Animação (s)</label>
+                                            <input type="number" name="animationSeconds" class="bg-transparent text-white font-black text-center w-full focus:outline-none" disabled>
+                                        </div>
+                                        <div class="text-center">
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">360º</label>
+                                            <input type="number" name="panoramasCount" class="bg-transparent text-white font-black text-center w-full focus:outline-none" disabled>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Engine de Render</label>
+                                            <select name="renderEngine" class="input-premium" disabled>
+                                                <option value="D5 Render">D5 Render</option>
+                                                <option value="3ds Max/Corona">3ds Max/Corona</option>
+                                                <option value="Unreal">Unreal</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Atmosfera Desejada</label>
+                                            <input type="text" name="desiredAtmosphere" class="input-premium" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-4 border-t border-white/5 space-y-4">
+                                        <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Direção de Arte & Mood</h4>
+                                        <div>
+                                            <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Ambientes / Cenas</label>
+                                            <textarea name="environments" class="input-premium" rows="2" disabled></textarea>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Humanização</label>
+                                                <select name="humanizationLevel" class="input-premium" disabled>
+                                                    <option value="Baixo">Baixo</option>
+                                                    <option value="Médio">Médio</option>
+                                                    <option value="Alto">Alto</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Moodboard URL</label>
+                                                <input type="url" name="moodboardUrl" class="input-premium" disabled>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-2">Mood de Iluminação</label>
+                                            <div class="grid grid-cols-3 gap-2">
+                                                <label class="glass-card p-2 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                                    <input type="checkbox" name="lightingMood" value="Golden Hour" class="hidden" disabled>
+                                                    <span class="text-[8px] font-black text-gray-400 uppercase tracking-tighter">Golden Hour</span>
+                                                </label>
+                                                
+                                                <label class="glass-card p-2 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                                    <input type="checkbox" name="lightingMood" value="Nocturnal" class="hidden" disabled>
+                                                    <span class="text-[8px] font-black text-gray-400 uppercase tracking-tighter">Nocturnal</span>
+                                                </label>
+                                                
+                                                <label class="glass-card p-2 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                                    <input type="checkbox" name="lightingMood" value="Overcast" class="hidden" disabled>
+                                                    <span class="text-[8px] font-black text-gray-400 uppercase tracking-tighter">Overcast</span>
+                                                </label>
+                                                <br>
+                                                <label class="glass-card p-2 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                                    <input type="checkbox" name="lightingMood" value="High Noon" class="hidden" disabled>
+                                                    <span class="text-[8px] font-black text-gray-400 uppercase tracking-tighter">High Noon</span>
+                                                </label>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+
+                            <!-- Breakdown Container -->
+                            <div id="deal-breakdown-container" class="mt-6 hidden"></div>
+
+                            <div id="edit-actions" class="hidden flex gap-4 pt-6 border-t border-white/5">
+                                <button type="submit" class="flex-1 bg-cyber-500 text-dark-950 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all shadow-lg shadow-cyber-500/20">Salvar Alterações</button>
+                                <button type="button" id="btn-cancel-edit" class="px-10 bg-white/5 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/10 transition-all">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- TAB 2: CONTATOS -->
+                    <div class="tab-pane fade h-full" id="contacts-content" role="tabpanel">
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xs font-black text-white uppercase tracking-widest">Contatos Vinculados</h3>
+                                <button class="bg-white/5 hover:bg-white/10 text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2" id="btn-add-contact-deal">
+                                    <span class="material-symbols-outlined text-xs">person_add</span> Vincular Contato
+                                </button>
+                            </div>
+
+                            <div id="deal-contacts-list" class="space-y-3">
+                                <!-- Listagem Dinâmica de Contatos -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: TAREFAS -->
+                    <div class="tab-pane fade h-full" id="tasks-content" role="tabpanel">
+                        <div class="flex flex-col h-full">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xs font-black text-white uppercase tracking-widest">To-Do List Archviz</h3>
+                                <button class="bg-cyber-500/10 text-cyber-500 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all" id="btn-add-task-deal">Nova Tarefa</button>
+                            </div>
+                            <div id="deal-tasks-list" class="flex-1 space-y-3 overflow-y-auto pr-2 scrollbar-hide">
+                                <!-- Tarefas Dinâmicas -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: LOG & CHAT -->
+                    <div class="tab-pane fade h-full" id="log-content" role="tabpanel">
+                        <div class="flex flex-col h-full">
+                            <div id="deal-notes-timeline" class="flex-1 space-y-6 overflow-y-auto pr-2 scrollbar-hide mb-6">
+                                <!-- Notas Dinâmicas -->
+                            </div>
+                            <div class="glass-card p-4 border-white/10 bg-white/5">
+                                <textarea id="deal-note-input" class="bg-transparent border-0 w-full text-xs text-white focus:outline-none resize-none" rows="3" placeholder="Escreva um comentário ou log de interação..."></textarea>
+                                <div class="flex items-center justify-between mt-2 pt-2 border-t border-white/5">
+                                    <div class="flex gap-2">
+                                        <button class="p-2 text-gray-500 hover:text-white"><span class="material-symbols-outlined text-sm">attach_file</span></button>
+                                        <button class="p-2 text-gray-500 hover:text-white"><span class="material-symbols-outlined text-sm">alternate_email</span></button>
+                                    </div>
+                                    <button id="btn-save-note" class="bg-cyber-500 text-dark-950 px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest">Enviar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: AI STRATEGY -->
+                    <div class="tab-pane fade h-full" id="ai-content" role="tabpanel">
+                        <div class="glass-card p-8 border-orange-500/20 bg-orange-500/5 h-full flex flex-col items-center justify-center text-center">
+                            <div class="w-20 h-20 rounded-full bg-orange-500/10 flex items-center justify-center mb-6 animate-pulse">
+                                <span class="material-symbols-outlined text-4xl text-orange-500">auto_awesome</span>
+                            </div>
+                            <h3 class="text-xl font-black text-white mb-2 tracking-tight">Consultoria <span class="text-orange-500">AI Ativa</span></h3>
+                            <p class="text-xs text-gray-500 max-w-xs mb-8">Estratégias avançadas para fechamento e análise de leads.</p>
+                            
+                            <div class="w-full space-y-4">
+                                <button class="w-full glass-card p-4 border-white/10 text-left hover:bg-white/5 transition-all">
+                                    <p class="text-[9px] font-black text-orange-500 uppercase tracking-widest mb-1">Análise de Risco</p>
+                                    <p class="text-[11px] text-white">Verificar saúde financeira e probabilidade real de fechamento.</p>
+                                </button>
+                                <button class="w-full glass-card p-4 border-white/10 text-left hover:bg-white/5 transition-all">
+                                    <p class="text-[9px] font-black text-orange-500 uppercase tracking-widest mb-1">Pitch Personalizado</p>
+                                    <p class="text-[11px] text-white">Gerar argumentos técnicos baseados no software alvo do cliente.</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Users View (Audit Mode) -->
+                    <div id="users-audit-view" class="hidden">
+                        <div class="users-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     MODAL: NOVO LEAD (Expandido - Enterprise)
+     ========================================== -->
+<!-- ==========================================
+     MODAL: NOVO LEAD (Expandido - Enterprise)
+     ========================================== -->
+<div class="modal fade" id="newDealModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content glass-card border-white/10 bg-dark-950 p-0 overflow-hidden rounded-[2.5rem]">
+            <div class="p-8 border-b border-white/5 bg-gradient-to-r from-cyber-500/10 to-transparent flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-black text-white tracking-tight">Novo <span class="text-cyber-500">Lead Archviz</span></h3>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Sincronize especificações técnicas e comerciais</p>
+                </div>
+            </div>
+            
+            <form id="newDealForm" class="flex flex-col h-full max-h-[85vh]">
+                <!-- Tab Navigation -->
+                <div class="px-8 pt-4 bg-dark-900/50 border-b border-white/5">
+                    <ul class="nav nav-pills gap-4 pb-4" id="newDealTabs" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border border-white/5 transition-all" id="tab-comercial-link" data-bs-toggle="pill" data-bs-target="#tab-comercial" type="button">1. Projeto e Escala</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border border-white/5 transition-all" id="tab-tecnico-link" data-bs-toggle="pill" data-bs-target="#tab-tecnico" type="button">2. Workflow Técnico</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border border-white/5 transition-all" id="tab-midia-link" data-bs-toggle="pill" data-bs-target="#tab-midia" type="button">3. Entregáveis</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border border-white/5 transition-all" id="tab-arte-link" data-bs-toggle="pill" data-bs-target="#tab-arte" type="button">4. Direção de Arte</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border border-white/5 transition-all" id="tab-prazos-link" data-bs-toggle="pill" data-bs-target="#tab-prazos" type="button">5. Financeiro</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-content p-8 overflow-y-auto scrollbar-hide flex-1" id="newDealTabsContent">
+                    <!-- TAB 1: PROJETO E ESCALA -->
+                    <div class="tab-pane fade show active" id="tab-comercial">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Identificação do Projeto *</label>
+                                    <input type="text" name="name" class="input-premium" required placeholder="Ex: Residência Morada do Sol - Living">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Perfil do Cliente</label>
+                                        <select name="profileType" class="input-premium">
+                                            <option value="Arquiteto">Arquiteto</option>
+                                            <option value="Design de Interiores">Design de Interiores</option>
+                                            <option value="Construtora">Construtora</option>
+                                            <option value="Imobiliária">Imobiliária</option>
+                                            <option value="Cliente Final">Cliente Final</option>
+                                            <option value="Agência">Agência</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Categoria</label>
+                                        <select name="projectCategory" class="input-premium">
+                                            <option value="Residencial">Residencial</option>
+                                            <option value="Comercial">Comercial</option>
+                                            <option value="Corporativo">Corporativo</option>
+                                            <option value="Hospitalar">Hospitalar</option>
+                                            <option value="Industrial">Industrial</option>
+                                            <option value="Loteamento">Loteamento</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Vincular Contato Existente</label>
+                                    <div class="flex gap-2">
+                                        <div class="relative flex-1">
+                                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm">search</span>
+                                            <input type="text" id="client-search-new-lead" class="input-premium pl-12" placeholder="Buscar por nome ou empresa...">
+                                            <div id="search-results-new-lead" class="absolute top-full left-0 w-full bg-dark-900 border border-white/10 rounded-2xl mt-2 hidden z-50 p-2 shadow-2xl"></div>
+                                        </div>
+                                        <button type="button" class="px-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10" onclick="openQuickContact()">
+                                            <span class="material-symbols-outlined text-sm">person_add</span>
+                                        </button>
+                                    </div>
+                                    <div id="selected-client-display" class="mt-3 hidden">
+                                        <div class="glass-card p-3 border-cyber-500/30 flex items-center justify-between">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-cyber-500/10 flex items-center justify-center text-cyber-500 font-black text-[10px]" id="client-initial">?</div>
+                                                <div>
+                                                    <p class="text-[10px] font-black text-white" id="client-name-display">Nome do Cliente</p>
+                                                    <input type="hidden" name="clientId" id="new-lead-client-id">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="text-red-500" onclick="clearSelectedClient()"><span class="material-symbols-outlined text-sm">close</span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-6">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Estilo Predominante</label>
+                                        <select name="predominantStyle" class="input-premium">
+                                            <option value="Minimalista">Minimalista</option>
+                                            <option value="Moderno" selected>Moderno</option>
+                                            <option value="Clássico/Neoclássico">Clássico/Neoclássico</option>
+                                            <option value="Industrial">Industrial</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Localização</label>
+                                        <input type="text" name="location" class="input-premium" placeholder="Cidade / Estado">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Metragem Total (m²)</label>
+                                        <input type="number" name="totalArea" class="input-premium" placeholder="Ex: 120" min="0" step="0.01" required>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Etapa do Funil</label>
+                                        <select name="status" class="input-premium">
+                                            <option value="novo">Teste</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: WORKFLOW TÉCNICO -->
+                    <div class="tab-pane fade" id="tab-tecnico">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Workflow Base (Formato)</label>
+                                        <select name="receivedFormat" class="input-premium">
+                                            <option value="BIM/Revit Limpo">BIM/Revit Limpo</option>
+                                            <option value="Sketchup Sujo">Sketchup Sujo</option>
+                                            <option value="AutoCAD 2D">AutoCAD 2D</option>
+                                            <option value="Do Zero">Do Zero</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Qualidade do Arquivo</label>
+                                        <select name="fileQuality" class="input-premium">
+                                            <option value="Limpo/Organizado">Limpo / Organizado</option>
+                                            <option value="Médio">Médio</option>
+                                            <option value="Desorganizado">Desorganizado</option>
+                                            <option value="Precisa Modelar Zero">Precisa Modelar Zero</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Engine de Render</label>
+                                        <select name="renderEngine" class="input-premium">
+                                            <option value="D5 Render">D5 Render</option>
+                                            <option value="3ds Max/Corona">3ds Max/Corona</option>
+                                            <option value="Unreal">Unreal</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Link Memorial Descritivo</label>
+                                        <input type="url" name="specificationsUrl" class="input-premium" placeholder="https://drive.google.com/...">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-6">
+                                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Softwares de Produção (Stack)</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <label class="glass-card p-3 border-white/5 text-center cursor-pointer hover:bg-white/5 has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                        <input type="checkbox" name="softwareStack" value="3ds Max" class="hidden">
+                                        <span class="text-[9px] font-black text-gray-400 uppercase">3ds Max</span>
+                                    </label>
+                                    <label class="glass-card p-3 border-white/5 text-center cursor-pointer hover:bg-white/5 has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                        <input type="checkbox" name="softwareStack" value="Corona" class="hidden">
+                                        <span class="text-[9px] font-black text-gray-400 uppercase">Corona</span>
+                                    </label>
+                                    <label class="glass-card p-3 border-white/5 text-center cursor-pointer hover:bg-white/5 has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                        <input type="checkbox" name="softwareStack" value="V-Ray" class="hidden">
+                                        <span class="text-[9px] font-black text-gray-400 uppercase">V-Ray</span>
+                                    </label>
+                                    <label class="glass-card p-3 border-white/5 text-center cursor-pointer hover:bg-white/5 has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                        <input type="checkbox" name="softwareStack" value="D5 Render" class="hidden">
+                                        <span class="text-[9px] font-black text-gray-400 uppercase">D5 Render</span>
+                                    </label>
+                                    <label class="glass-card p-3 border-white/5 text-center cursor-pointer hover:bg-white/5 has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                        <input type="checkbox" name="softwareStack" value="Unreal Engine" class="hidden">
+                                        <span class="text-[9px] font-black text-gray-400 uppercase">Unreal</span>
+                                    </label>
+                                    <label class="glass-card p-3 border-white/5 text-center cursor-pointer hover:bg-white/5 has-[:checked]:bg-cyber-500/10 has-[:checked]:border-cyber-500/30">
+                                        <input type="checkbox" name="softwareStack" value="Photoshop" class="hidden">
+                                        <span class="text-[9px] font-black text-gray-400 uppercase">Pós-Prod</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: ENTREGÁVEIS (MÍDIA) -->
+                    <div class="tab-pane fade" id="tab-midia">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="space-y-6">
+                                <h5 class="text-[9px] font-black text-cyber-500 uppercase tracking-widest border-l-2 border-cyber-500 pl-3">Static Renders</h5>
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Quantidade de Imagens</label>
+                                    <input type="number" name="imagesCount" class="input-premium" value="0">
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Resolução Desejada</label>
+                                    <div class="flex flex-wrap gap-2">
+                                        <label class="glass-card px-3 py-2 border-white/5 text-[9px] font-black text-gray-400 cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:text-white">
+                                            <input type="checkbox" name="imageResolution" value="4K" class="hidden"> 4K Ultra
+                                        </label>
+                                        <label class="glass-card px-3 py-2 border-white/5 text-[9px] font-black text-gray-400 cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:text-white">
+                                            <input type="checkbox" name="imageResolution" value="5K+" class="hidden"> 5K+ (Print)
+                                        </label>
+                                        <label class="glass-card px-3 py-2 border-white/5 text-[9px] font-black text-gray-400 cursor-pointer has-[:checked]:bg-cyber-500/10 has-[:checked]:text-white">
+                                            <input type="checkbox" name="imageResolution" value="Vertical" class="hidden"> Vertical (Social)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-6">
+                                <h5 class="text-[9px] font-black text-orange-500 uppercase tracking-widest border-l-2 border-orange-500 pl-3">Motion & Interactive</h5>
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Tempo Animação (Segundos)</label>
+                                    <input type="number" name="animationSeconds" class="input-premium" value="0">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Panoramas 360 (Qtd)</label>
+                                    <input type="number" name="panoramasCount" class="input-premium" value="0">
+                                </div>
+                            </div>
+                            <div class="space-y-6">
+                                <h5 class="text-[9px] font-black text-purple-500 uppercase tracking-widest border-l-2 border-purple-500 pl-3">Extras</h5>
+                                <div class="space-y-3">
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <input type="checkbox" name="extraDeliverables" value="Tour Virtual" class="w-4 h-4 rounded border-white/10 bg-white/5 checked:bg-cyber-500">
+                                        <span class="text-[10px] font-black text-gray-400 group-hover:text-white uppercase transition-all">Tour Virtual (Web)</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <input type="checkbox" name="extraDeliverables" value="Planta Humanizada" class="w-4 h-4 rounded border-white/10 bg-white/5 checked:bg-cyber-500">
+                                        <span class="text-[10px] font-black text-gray-400 group-hover:text-white uppercase transition-all">Planta Humanizada 3D</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer group">
+                                        <input type="checkbox" name="extraDeliverables" value="Realidade Aumentada" class="w-4 h-4 rounded border-white/10 bg-white/5 checked:bg-cyber-500">
+                                        <span class="text-[10px] font-black text-gray-400 group-hover:text-white uppercase transition-all">Realidade Aumentada (AR)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: DIREÇÃO DE ARTE -->
+                    <div class="tab-pane fade" id="tab-arte">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Ambientes / Cenas</label>
+                                    <textarea name="environments" class="input-premium" rows="3" placeholder="Ex: Living, Cozinha, Suíte Master, Varanda Gourmet... (Separe por vírgula)"></textarea>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Mood de Iluminação</label>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <label class="glass-card p-3 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10">
+                                            <input type="checkbox" name="lightingMood" value="Golden Hour" class="hidden">
+                                            <span class="text-[9px] font-black text-gray-400 uppercase">Golden Hour</span>
+                                        </label>
+                                        <label class="glass-card p-3 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10">
+                                            <input type="checkbox" name="lightingMood" value="Nocturnal" class="hidden">
+                                            <span class="text-[9px] font-black text-gray-400 uppercase">Noturno</span>
+                                        </label>
+                                        <label class="glass-card p-3 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10">
+                                            <input type="checkbox" name="lightingMood" value="Overcast" class="hidden">
+                                            <span class="text-[9px] font-black text-gray-400 uppercase">Nublado</span>
+                                        </label>
+                                        <label class="glass-card p-3 border-white/5 text-center cursor-pointer has-[:checked]:bg-cyber-500/10">
+                                            <input type="checkbox" name="lightingMood" value="High Noon" class="hidden">
+                                            <span class="text-[9px] font-black text-gray-400 uppercase">Meio-dia (Clear)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Atmosfera Desejada</label>
+                                    <input type="text" name="desiredAtmosphere" class="input-premium" placeholder="Ex: Acolhedor, High-Tech, Minimalista Luxo...">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Link Moodboard / Referências</label>
+                                    <input type="url" name="moodboardUrl" class="input-premium" placeholder="Pinterest, Behance, Pureref...">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Nível de Humanização</label>
+                                        <select name="humanizationLevel" class="input-premium">
+                                            <option value="Baixo">Baixo (Limpo)</option>
+                                            <option value="Médio" selected>Médio (Casual)</option>
+                                            <option value="Alto">Alto (Storytelling)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Elementos Especiais</label>
+                                        <input type="text" name="specialElements" class="input-premium" placeholder="Ex: Carro específico, pet, vegetação densa">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: FINANCEIRO E PRAZOS -->
+                    <div class="tab-pane fade" id="tab-prazos">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <h5 class="text-[9px] font-black text-green-500 uppercase tracking-widest border-l-2 border-green-500 pl-3">Timeline do Projeto</h5>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Data 1ª Prévia</label>
+                                        <input type="date" name="firstPreviewDate" class="input-premium">
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Prazo de Entrega (Dias)</label>
+                                        <input type="number" name="productionDays" class="input-premium" placeholder="Ex: 10" required>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Revisões Inclusas</label>
+                                        <select name="revisionsIncluded" class="input-premium">
+                                            <option value="1">1 Ciclo</option>
+                                            <option value="2" selected>2 Ciclos</option>
+                                            <option value="3">3 Ciclos</option>
+                                            <option value="Ilimitadas">Ilimitadas (Premium)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Deadline Final (Opcional)</label>
+                                        <input type="date" name="finalDeadline" class="input-premium">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Responsável Comercial</label>
+                                    <select name="assignedUserId" class="input-premium">
+                                        <option value="">Não atribuído</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="space-y-6">
+                                <h5 class="text-[9px] font-black text-cyber-500 uppercase tracking-widest border-l-2 border-cyber-500 pl-3">Proposta Financeira</h5>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Valor da Proposta (R$)</label>
+                                        <div class="relative flex items-center">
+                                            <input type="number" step="0.01" name="estimatedValue" id="new-lead-estimated-value" class="input-premium pr-24" placeholder="0,00">
+                                            <button type="button" id="btn-calc-orcamento-new" class="absolute right-2 px-3 py-1.5 bg-cyber-500 hover:bg-cyber-600 text-dark-950 rounded-lg font-black text-[8px] uppercase tracking-wider transition-all flex items-center gap-1 shadow-md" onclick="handleCalcularOrcamento(true)">
+                                                <span class="material-symbols-outlined text-[10px]">auto_awesome</span> Calcular
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Parcelamento (Qtd)</label>
+                                        <input type="number" name="installments" min="1" max="60" class="input-premium" value="1">
+                                    </div>
+                                </div>
+                                <div class="glass-card p-4 border-white/5 space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Taxa de Urgência?</label>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" name="hasUrgency" class="sr-only peer" id="check-urgency">
+                                            <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
+                                        </label>
+                                    </div>
+                                    <div id="urgency-percentage" class="hidden">
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Porcentagem Adicional (%)</label>
+                                        <input type="number" name="urgencyFee" class="input-premium" value="20">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Origem do Lead</label>
+                                    <select name="origin" class="input-premium">
+                                        <option value="Instagram">Instagram</option>
+                                        <option value="Indicação">Indicação</option>
+                                        <option value="Site/Google">Site / Google</option>
+                                        <option value="Prospecção Ativa">Prospecção Ativa</option>
+                                        <option value="LinkedIn">LinkedIn</option>
+                                        <option value="Evento">Evento / Feira</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seção Próximas Etapas e Ações -->
+                        <div class="pt-6 border-t border-white/5 mt-6 space-y-4">
+                            <h5 class="text-[9px] font-black text-orange-500 uppercase tracking-widest border-l-2 border-orange-500 pl-3">Automação & Próximas Etapas</h5>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Prioridade Inicial</label>
+                                    <select name="priority" class="input-premium">
+                                        <option value="baixa">Baixa</option>
+                                        <option value="media" selected>Média</option>
+                                        <option value="alta">Alta</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Agendar Próxima Ação (Opcional - Substitui Automação)</label>
+                                    <input type="datetime-local" name="nextActionDate" class="input-premium">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Diretrizes / Notas de Ação (Opcional - Substitui Automação)</label>
+                                    <textarea name="nextActionNote" class="input-premium" rows="2" placeholder="Digite instruções personalizadas de follow-up, se desejar..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Breakdown Container -->
+                        <div id="new-lead-breakdown-container" class="mt-6 hidden"></div>
+                    </div>
+                </div>
+
+                <!-- Footer: Actions -->
+                <div class="p-8 border-t border-white/5 bg-dark-900/50 flex justify-end gap-4">
+                    <button type="button" class="px-8 py-3 bg-white/5 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/10 hover:bg-white/10 transition-all" data-bs-dismiss="modal">Descartar</button>
+                    <button type="submit" class="px-10 py-3 bg-cyber-500 text-dark-950 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all shadow-lg shadow-cyber-500/20 hover:scale-105 active:scale-95">Criar Lead</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     MODAL: QUICK CONTACT (Sub-modal)
+     ========================================== -->
+<div class="modal fade" id="quickContactModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-white/10 bg-dark-950 p-8 rounded-[2.5rem]">
+            <h3 class="text-xl font-black text-white mb-6 tracking-tight">Cadastro <span class="text-cyber-500">Rápido</span></h3>
+            <form id="quickContactForm" class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Nome Completo</label>
+                    <input type="text" name="name" class="input-premium" required>
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Empresa / Studio</label>
+                    <input type="text" name="company" class="input-premium">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">WhatsApp</label>
+                        <input type="text" name="phone" class="input-premium">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">E-mail</label>
+                        <input type="email" name="email" class="input-premium">
+                    </div>
+                </div>
+                <div class="pt-6 flex gap-4">
+                    <button type="submit" class="flex-1 bg-cyber-500 text-dark-950 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest">Criar Contato</button>
+                    <button type="button" class="flex-1 bg-white/5 text-white py-3 rounded-xl font-black text-[10px] uppercase tracking-widest border border-white/10" data-bs-dismiss="modal">Voltar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Dropdown UI Fix for Dark Mode */
+    .dropdown-menu, .dropdown-menu-dark {
+        background: rgba(10, 12, 16, 0.95) !important;
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 1.5rem !important;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5) !important;
+        padding: 0.75rem !important;
+        z-index: 9999 !important;
+    }
+    .dropdown-item {
+        color: rgba(255, 255, 255, 0.6) !important;
+        font-size: 10px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 1rem !important;
+        transition: all 0.2s !important;
+    }
+    .dropdown-item:hover {
+        background: rgba(255, 255, 255, 0.05) !important;
+        color: #00f2ff !important;
+        transform: translateX(4px);
+    }
+    .dropdown-item.text-red-500:hover {
+        color: #ef4444 !important;
+    }
+
+    /* Premium Select Option Overrides */
+    select option, .form-select option, .input-premium option {
+        background-color: #0a0c10 !important;
+        color: #ffffff !important;
+    }
+
+    /* Tab Custom Styling */
+    .nav-tabs .nav-link.active {
+        color: white !important;
+    }
+    .nav-tabs .nav-link.active div {
+        width: 100% !important;
+    }
+
+    .offcanvas {
+        z-index: 1050 !important;
+    }
+    .modal {
+        z-index: 1060 !important;
+    }
+    .modal-backdrop {
+        z-index: 1055 !important;
+    }
+
+    /* Kanban Scroll Fix */
+    #kanban-board {
+        overflow-x: auto !important;
+        padding-bottom: 2rem;
+    }
+</style>
+
+<!-- MODAL: GESTÃO DE COLUNAS -->
+<div class="modal fade" id="columnSettingsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content glass-card border-white/10 bg-dark-950 p-8">
+            <h3 class="text-2xl font-black text-white mb-8 tracking-tight">Gestão de <span class="text-cyber-500">Etapas do Funil</span></h3>
+            
+            <form id="columnForm" class="space-y-6">
+                <input type="hidden" name="id" id="col-id-input">
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="col-span-2">
+                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Título da Etapa</label>
+                        <input type="text" name="title" id="col-title-input" class="input-premium" placeholder="Ex: Negociação Final" required>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Cor de Destaque</label>
+                        <div class="flex items-center gap-3">
+                            <input type="color" name="color" id="col-color-input" class="w-12 h-12 rounded-xl bg-transparent border-none cursor-pointer p-0" value="#00f2ff">
+                            <span class="text-[10px] font-bold text-gray-500" id="color-code">#00f2ff</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-6 border-t border-white/5 flex gap-4">
+                    <button type="submit" class="flex-1 bg-cyber-500 text-dark-950 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all">Salvar Etapa</button>
+                    <button type="button" class="flex-1 bg-white/5 text-white py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/10 transition-all" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-outline-cyber {
+        border: 1px solid rgba(0, 242, 255, 0.2);
+        color: rgba(255, 255, 255, 0.5);
+    }
+    .btn-check:checked + .btn-outline-cyber {
+        background: rgba(0, 242, 255, 0.1);
+        border-color: #00f2ff;
+        color: #00f2ff;
+        box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+    }
+    .kanban-card:hover {
+        transform: scale(1.03) translateY(-4px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 25px rgba(0,242,255,0.1);
+        z-index: 10;
+    }
+    .cards-list {
+        padding: 0.5rem;
+        margin: -0.5rem;
+        overflow: visible;
+    }
+    .kanban-column {
+        overflow: visible;
+    }
+    .sortable-ghost {
+        opacity: 0.2;
+        transform: scale(0.9);
+    }
+    /* Dynamic Empty State Logic */
+    .kanban-empty-state {
+        display: none;
+    }
+    .cards-list:not(:has(.kanban-card)) .kanban-empty-state {
+        display: flex !important;
+    }
+
+    /* Dropdown clipping fix */
+    .kanban-card .dropdown-menu.show {
+        z-index: 9999 !important;
+        position: fixed !important;
+    }
+</style>
+<script>
+// Persistent View Toggles & Dynamic Realtime Search
+function changeView(mode) {
+    localStorage.setItem('crm_view_mode', mode);
+    
+    // Hide all views
+    document.getElementById('kanban-board').classList.add('hidden');
+    document.getElementById('view-list').classList.add('hidden');
+    document.getElementById('view-spreadsheet').classList.add('hidden');
+    
+    // Remove active styles on all buttons
+    document.querySelectorAll('.view-toggle-btn').forEach(btn => {
+        btn.classList.remove('text-cyber-500', 'bg-cyber-500/10');
+        btn.classList.add('text-gray-400');
+    });
+    
+    // Show current view and set active button style
+    if (mode === 'kanban') {
+        document.getElementById('kanban-board').classList.remove('hidden');
+    } else {
+        const targetView = document.getElementById('view-' + mode);
+        if (targetView) targetView.classList.remove('hidden');
+    }
+    
+    const targetBtn = document.getElementById('btn-view-' + mode);
+    if (targetBtn) {
+        targetBtn.classList.remove('text-gray-400');
+        targetBtn.classList.add('text-cyber-500', 'bg-cyber-500/10');
+    }
+}
+window.changeView = changeView;
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('CRM Negociacoes Initialized');
+    
+    const savedMode = localStorage.getItem('crm_view_mode') || 'kanban';
+    changeView(savedMode);
+    
+    // Live Search filtering
+    const searchInput = document.getElementById('unified-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            // Filter Kanban cards
+            document.querySelectorAll('#kanban-board .kanban-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            // Filter list rows
+            document.querySelectorAll('#view-list .crm-item-row').forEach(row => {
+                const text = row.getAttribute('data-search').toLowerCase();
+                if (text.includes(query)) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+            
+            // Filter spreadsheet rows
+            document.querySelectorAll('#view-spreadsheet tbody tr').forEach(row => {
+                const text = row.getAttribute('data-search').toLowerCase();
+                if (text.includes(query)) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        });
+    }
+    
+    // === INITIALIZE MODALS ===
+    const dealModalElement = document.getElementById('dealDetailModal');
+    const newDealModalElement = document.getElementById('newDealModal');
+    const columnModalElement = document.getElementById('columnSettingsModal');
+    const lossModalElement = document.getElementById('lossReasonModal');
+    const quickContactModalElement = document.getElementById('quickContactModal');
+
+    window.dealDetailModal = dealModalElement ? new bootstrap.Modal(dealModalElement) : null;
+    window.newDealModal = newDealModalElement ? new bootstrap.Modal(newDealModalElement) : null;
+    window.columnModal = columnModalElement ? new bootstrap.Modal(columnModalElement) : null;
+    window.lossModal = lossModalElement ? new bootstrap.Modal(lossModalElement) : null;
+    window.quickContactModal = quickContactModalElement ? new bootstrap.Modal(quickContactModalElement) : null;
+
+    // === URL PARAMETER PERSISTENCE & AUTO-OPEN ===
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('activeTab');
+    const monthParam = urlParams.get('month');
+    const leadId = urlParams.get('leadId');
+
+    if (activeTab === 'analytics' || monthParam) {
+        const analyticsTabBtn = document.querySelector('.crm-page-tab[data-tab="analytics"]');
+        if (analyticsTabBtn) {
+            analyticsTabBtn.click();
+        }
+    }
+
+    if (leadId) {
+        setTimeout(() => {
+            if (typeof window.openDealDetails === 'function') {
+                window.openDealDetails(leadId);
+            }
+        }, 300);
+    }
+
+    // Month filter change listener
+    const monthFilter = document.getElementById('analytics-month-filter');
+    if (monthFilter) {
+        monthFilter.addEventListener('change', function() {
+            const selectedVal = this.value;
+            window.location.href = `/admin/negociacoes?month=${selectedVal}&activeTab=analytics`;
+        });
+    }
+
+    // === GLOBAL SCOPE DEFINITIONS ===
+    window.showNotification = function(msg, type) {
+        const toast = document.createElement('div');
+        toast.className = `fixed bottom-8 right-8 px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest z-[9999] animate-bounce shadow-2xl ${type === 'success' ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`;
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    };
+
+    window.toggleEditMode = function(enabled) {
+        const form = document.getElementById('dealForm');
+        if (!form) return;
+        form.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(i => {
+            i.disabled = !enabled;
+        });
+        document.getElementById('edit-actions')?.classList.toggle('hidden', !enabled);
+        document.getElementById('header-edit-actions')?.classList.toggle('hidden', !enabled);
+        document.getElementById('btn-edit-toggle')?.classList.toggle('hidden', enabled);
+        document.getElementById('btn-mark-won-header')?.classList.toggle('hidden', enabled);
+        document.getElementById('btn-calc-orcamento-detail')?.classList.toggle('hidden', !enabled);
+    };
+
+    window.openDealDetails = function(id) {
+        console.log('Opening deal details for:', id);
+        if (!id || id === 'undefined') return;
+        
+        const card = document.querySelector(`.kanban-card[data-id="${id}"]`);
+        if (card) card.classList.add('opacity-50', 'pointer-events-none');
+
+        fetch(`/api/budgets/${id}`)
+            .then(res => res.json())
+            .then(({ budget }) => {
+                const form = document.getElementById('dealForm');
+                window.toggleEditMode(false);
+                
+                const setVal = (name, val) => {
+                    const el = form.querySelector(`[name="${name}"]`);
+                    if (el) el.value = val || '';
+                };
+
+                setVal('id', budget.id);
+                setVal('name', budget.name);
+                setVal('estimatedValue', budget.estimatedValue);
+                setVal('probability', budget.probability);
+                setVal('status', budget.status);
+                setVal('assignedUserId', budget.assignedUserId);
+                setVal('installments', budget.installments);
+                setVal('firstPreviewDate', budget.firstPreviewDate ? budget.firstPreviewDate.split('T')[0] : '');
+                setVal('profileType', budget.profileType);
+                setVal('projectCategory', budget.projectCategory);
+                setVal('receivedFormat', budget.receivedFormat);
+                setVal('fileQuality', budget.fileQuality);
+                setVal('imagesCount', budget.imagesCount);
+                setVal('animationSeconds', budget.animationSeconds);
+                setVal('panoramasCount', budget.panoramasCount);
+                setVal('desiredAtmosphere', budget.desiredAtmosphere);
+                setVal('environments', budget.environments);
+                setVal('humanizationLevel', budget.humanizationLevel);
+                setVal('moodboardUrl', budget.moodboardUrl);
+                setVal('urgencyFee', budget.urgencyFee);
+                setVal('totalArea', budget.totalArea);
+                setVal('renderEngine', budget.renderEngine);
+                setVal('predominantStyle', budget.predominantStyle);
+                setVal('revisionsIncluded', budget.revisionsIncluded);
+                setVal('productionDays', budget.productionDays);
+
+                // Populate new automation scheduling fields
+                setVal('priority', budget.priority || 'media');
+                
+                const formatDateLocal = (dStr) => {
+                    if (!dStr) return '';
+                    const d = new Date(dStr);
+                    if (isNaN(d.getTime())) return '';
+                    return new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().substring(0, 16);
+                };
+                setVal('nextActionDate', formatDateLocal(budget.nextActionDate));
+                setVal('nextActionNote', budget.nextActionNote || '');
+
+                ['softwareStack', 'imageResolution', 'extraDeliverables', 'lightingMood'].forEach(key => {
+                    const values = budget[key] || [];
+                    form.querySelectorAll(`[name="${key}"]`).forEach(cb => {
+                        cb.checked = values.includes(cb.value);
+                    });
+                });
+
+                const urgCheck = form.querySelector('[name="hasUrgency"]');
+                if (urgCheck) {
+                    urgCheck.checked = budget.hasUrgency || false;
+                    document.getElementById('urgency-percentage-edit')?.classList.toggle('hidden', !budget.hasUrgency);
+                }
+
+                document.getElementById('drawer-id-label').innerText = `#DEAL-${String(budget.id).substring(0,4)}`;
+                document.getElementById('drawer-status-label').innerText = (budget.status || '').toUpperCase();
+                document.getElementById('drawer-name').innerText = budget.name || '';
+
+                loadLinkedContacts(id);
+                loadTasks(id);
+                loadNotes(id);
+                
+                window.dealDetailModal?.show();
+            })
+            .catch(err => {
+                console.error('Error loading deal details:', err);
+                window.showNotification('Erro ao carregar detalhes', 'error');
+            })
+            .finally(() => {
+                if (card) card.classList.remove('opacity-50', 'pointer-events-none');
+            });
+    };
+
+    // === CHART LOGIC ===
+    const chartsData = {};
+    let funnelChart, lossChart;
+
+    function initCharts() {
+        if (funnelChart) funnelChart.destroy();
+        if (lossChart) lossChart.destroy();
+
+        const ctxFunnel = document.getElementById('weightedFunnelChart')?.getContext('2d');
+        const ctxLoss = document.getElementById('lossReasonsChart')?.getContext('2d');
+
+        if (ctxFunnel) {
+            funnelChart = new Chart(ctxFunnel, {
+                type: 'bar',
+                data: {
+                    labels: chartsData.funnel.labels,
+                    datasets: [{
+                        label: 'Valor Ponderado',
+                        data: chartsData.funnel.data,
+                        backgroundColor: 'rgba(0, 242, 255, 0.1)',
+                        borderColor: '#00f2ff',
+                        borderWidth: 2,
+                        borderRadius: 12
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        if (ctxLoss) {
+            lossChart = new Chart(ctxLoss, {
+                type: 'doughnut',
+                data: {
+                    labels: chartsData.lossReasons.labels,
+                    datasets: [{
+                        data: chartsData.lossReasons.data,
+                        backgroundColor: ['#ef4444', '#f97316', '#3b82f6', '#8b5cf6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+    }
+
+    // === GLOBAL EVENT DELEGATION ===
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.stop-propagation') || e.target.closest('[data-bs-toggle="dropdown"]')) {
+            return;
+        }
+
+        const card = e.target.closest('.kanban-card');
+        if (card) {
+            const dealId = card.getAttribute('data-id');
+            if (dealId) window.openDealDetails(dealId);
+            return;
+        }
+
+        const btnEditCol = e.target.closest('.btn-edit-column');
+        if (btnEditCol) {
+            e.preventDefault();
+            const { id, title, color } = btnEditCol.dataset;
+            document.getElementById('col-id-input').value = id;
+            document.getElementById('col-title-input').value = title;
+            document.getElementById('col-color-input').value = color;
+            document.getElementById('color-code').innerText = color.toUpperCase();
+            window.columnModal?.show();
+            return;
+        }
+
+        const btnDeleteCol = e.target.closest('.btn-delete-column');
+        if (btnDeleteCol) {
+            e.preventDefault();
+            const { id } = btnDeleteCol.dataset;
+            if (confirm('Deseja realmente excluir esta etapa?')) {
+                fetch(`/admin/kanban/columns/${id}`, { method: 'DELETE' })
+                    .then(() => window.location.reload());
+            }
+            return;
+        }
+
+        const btnRemContact = e.target.closest('.btn-remove-contact');
+        if (btnRemContact) {
+            const { dealId, clientId } = btnRemContact.dataset;
+            if (confirm('Remover este contato desta negociação?')) {
+                fetch(`/api/budgets/${dealId}/contacts/${clientId}`, { method: 'DELETE' })
+                    .then(() => loadLinkedContacts(dealId));
+            }
+            return;
+        }
+
+        const btnConfirm = e.target.closest('.btn-confirm-project');
+        if (btnConfirm) {
+            const id = btnConfirm.dataset.id;
+            if (confirm('Deseja converter esta negociação em um PROJETO ativo?')) {
+                fetch(`/admin/negociacoes/${id}/confirm-project`, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success) {
+                            window.showNotification('Projeto confirmado!', 'success');
+                            setTimeout(() => window.location.reload(), 1000);
+                        } else {
+                            window.showNotification(result.error || 'Erro ao converter', 'error');
+                        }
+                    });
+            }
+            return;
+        }
+    });
+
+    // === VIEW SWITCHING LOGIC ===
+    const crmTabs = document.querySelectorAll('.crm-page-tab');
+    crmTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            crmTabs.forEach(t => {
+                t.classList.remove('active', 'text-cyber-500');
+                t.classList.add('text-gray-500');
+                const line = t.querySelector('div');
+                if (line) {
+                    line.classList.remove('w-full');
+                    line.classList.add('w-0');
+                }
+            });
+            tab.classList.add('active', 'text-cyber-500');
+            tab.classList.remove('text-gray-500');
+            const line = tab.querySelector('div');
+            if (line) {
+                line.classList.remove('w-0');
+                line.classList.add('w-full');
+            }
+
+            const target = tab.dataset.tab;
+            if (target === 'kanban') {
+                document.getElementById('kanban-board-container')?.classList.remove('hidden');
+                document.getElementById('crm-control-bar')?.classList.remove('hidden');
+                document.getElementById('analytics-container')?.classList.add('hidden');
+            } else {
+                document.getElementById('kanban-board-container')?.classList.add('hidden');
+                document.getElementById('crm-control-bar')?.classList.add('hidden');
+                document.getElementById('analytics-container')?.classList.remove('hidden');
+                if (typeof initCharts === 'function') initCharts();
+            }
+        });
+    });
+
+    // Helper para recalcular os totais no frontend sem recarregar a página
+    function recalculateColumnTotals() {
+        let pipelineTotal = 0;
+        document.querySelectorAll('.kanban-column').forEach(column => {
+            const cards = column.querySelectorAll('.kanban-card');
+            const countBadge = column.querySelector('.column-card-count');
+            if (countBadge) countBadge.innerText = cards.length;
+            
+            let colTotal = 0;
+            cards.forEach(card => {
+                let val = 0;
+                try {
+                    const leadData = JSON.parse(card.getAttribute('data-lead') || '{}');
+                    val = parseFloat(leadData.estimatedValue) || 0;
+                } catch(e) {
+                    const valText = card.querySelector('.card-value')?.innerText || '';
+                    val = parseFloat(valText.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
+                }
+                colTotal += val;
+            });
+            pipelineTotal += colTotal;
+            
+            const totalValEl = column.querySelector('.column-total-value');
+            if (totalValEl) {
+                totalValEl.innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(colTotal).replace(/\s/, ' ');
+            }
+        });
+        
+        const pipelineTotalEl = document.getElementById('pipeline-total-display');
+        if (pipelineTotalEl) {
+            pipelineTotalEl.innerText = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(pipelineTotal).replace(/\s/, ' ');
+        }
+    }
+
+    // === KANBAN DRAG & DROP ===
+    const kanbanLists = document.querySelectorAll('.cards-list');
+    kanbanLists.forEach(list => {
+        if (typeof Sortable !== 'undefined') {
+            new Sortable(list, {
+                group: 'kanban',
+                animation: 250,
+                ghostClass: 'sortable-ghost',
+                dragClass: 'sortable-drag',
+                onEnd: function(evt) {
+                    const dealId = evt.item.getAttribute('data-id');
+                    const newStatus = evt.to.getAttribute('data-status');
+                    
+                    fetch(`/admin/negociacoes/${dealId}/update-status`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: newStatus })
+                    })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Erro na requisição');
+                        return res.json();
+                    })
+                    .then(res => {
+                        if (res.success && res.budget) {
+                            window.showNotification('Etapa atualizada com automação!', 'success');
+                            
+                            const card = evt.item;
+                            const budget = res.budget;
+                            
+                            // Mesclar dados novos no data-lead do card
+                            let leadData = {};
+                            try {
+                                leadData = JSON.parse(card.getAttribute('data-lead') || '{}');
+                            } catch(e) {}
+                            Object.assign(leadData, budget);
+                            card.setAttribute('data-lead', JSON.stringify(leadData));
+                            
+                            // 1. Atualizar Barra de Probabilidade
+                            const probBar = card.querySelector('.probability-bar');
+                            if (probBar) {
+                                probBar.style.width = `${budget.probability}%`;
+                            }
+                            
+                            // 2. Atualizar Badge de Probabilidade no Topo
+                            const probLabel = card.querySelector('.probability-label');
+                            if (probLabel) {
+                                probLabel.innerText = `${budget.probability}%`;
+                            }
+                            
+                            // 3. Atualizar Badge de Prioridade
+                            const prioBadge = card.querySelector('.priority-badge');
+                            if (prioBadge) {
+                                prioBadge.setAttribute('data-priority', budget.priority);
+                                prioBadge.className = "priority-badge text-[6px] font-black uppercase px-1 py-0.2 rounded border transition-all duration-300";
+                                if (budget.priority === 'alta') {
+                                    prioBadge.classList.add('bg-red-500/10', 'text-red-400', 'border-red-500/20');
+                                    prioBadge.innerText = 'Alta';
+                                } else if (budget.priority === 'media') {
+                                    prioBadge.classList.add('bg-orange-500/10', 'text-orange-400', 'border-orange-500/20');
+                                    prioBadge.innerText = 'Média';
+                                } else {
+                                    prioBadge.classList.add('bg-blue-500/10', 'text-blue-400', 'border-blue-500/20');
+                                    prioBadge.innerText = 'Baixa';
+                                }
+                            }
+                            
+                            // 4. Atualizar o widget Glassmorphic de Próxima Ação
+                            let nextStepContainer = card.querySelector('.next-step-container');
+                            if (nextStepContainer) {
+                                if (budget.nextActionNote) {
+                                    nextStepContainer.classList.remove('hidden');
+                                    
+                                    const noteEl = nextStepContainer.querySelector('.card-next-action-note');
+                                    if (noteEl) noteEl.innerText = budget.nextActionNote;
+                                    
+                                    const dateEl = nextStepContainer.querySelector('.card-next-action-date');
+                                    if (dateEl) {
+                                        if (budget.nextActionDate) {
+                                            const d = new Date(budget.nextActionDate);
+                                            const formattedDate = String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0');
+                                            const formattedTime = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+                                            dateEl.innerText = `Prazo: ${formattedDate} ${formattedTime}`;
+                                            dateEl.style.display = 'block';
+                                        } else {
+                                            dateEl.style.display = 'none';
+                                        }
+                                    }
+                                } else {
+                                    nextStepContainer.classList.add('hidden');
+                                }
+                            }
+                            
+                            // 5. Atualizar o sino indicador
+                            const dateBell = card.querySelector('.text-date-bell');
+                            if (dateBell) {
+                                if (budget.nextActionDate) dateBell.classList.remove('hidden');
+                                else dateBell.classList.add('hidden');
+                            }
+                            
+                            // Recalcular os totais das colunas e pipeline total geral
+                            recalculateColumnTotals();
+                            
+                        } else {
+                            window.showNotification(res.error || 'Erro ao atualizar status', 'error');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Drag & Drop Update Error:', err);
+                        window.showNotification('Erro ao sincronizar status do card', 'error');
+                    });
+                },
+                
+                // Helper para recalcular os totais no frontend sem recarregar a página
+                onStart: function() {
+                    // Opcional: pode adicionar feedback visual ao iniciar o drag
+                }
+            });
+        }
+    });
+
+    if (document.getElementById('kanban-board') && typeof Sortable !== 'undefined') {
+        new Sortable(document.getElementById('kanban-board'), {
+            draggable: '.kanban-column',
+            handle: '.glass-card',
+            animation: 250,
+            onEnd: function() {
+                const columns = [...document.querySelectorAll('.kanban-column')].map((col, index) => ({
+                    id: col.dataset.id,
+                    order: index
+                }));
+                fetch('/admin/kanban/columns/reorder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ columns })
+                });
+            }
+        });
+    }
+
+    document.getElementById('btn-edit-toggle')?.addEventListener('click', () => window.toggleEditMode(true));
+    document.getElementById('btn-cancel-header')?.addEventListener('click', () => window.toggleEditMode(false));
+    document.getElementById('btn-cancel-edit')?.addEventListener('click', () => window.toggleEditMode(false));
+    document.getElementById('btn-save-header')?.addEventListener('click', () => {
+        document.getElementById('dealForm')?.requestSubmit();
+    });
+
+    document.getElementById('btn-new-deal')?.addEventListener('click', () => {
+        document.getElementById('newDealForm')?.reset();
+        document.getElementById('selected-client-display')?.classList.add('hidden');
+        window.newDealModal?.show();
+    });
+
+    document.getElementById('check-urgency')?.addEventListener('change', (e) => {
+        document.getElementById('urgency-percentage').classList.toggle('hidden', !e.target.checked);
+    });
+
+    document.getElementById('btn-add-column')?.addEventListener('click', () => {
+        document.getElementById('col-id-input').value = '';
+        document.getElementById('col-title-input').value = '';
+        document.getElementById('col-color-input').value = '#f97316';
+        document.getElementById('color-code').innerText = '#F97316';
+        window.columnModal?.show();
+    });
+
+    document.getElementById('btn-save-note')?.addEventListener('click', saveNote);
+    document.getElementById('btn-mark-won')?.addEventListener('click', markAsWon);
+    document.getElementById('btn-mark-lost')?.addEventListener('click', markAsLost);
+    document.getElementById('btn-mark-won-header')?.addEventListener('click', markAsWon);
+    document.getElementById('btn-mark-lost-header')?.addEventListener('click', markAsLost);
+    document.getElementById('btn-cancel-edit')?.addEventListener('click', () => window.toggleEditMode(false));
+    document.getElementById('btn-cancel-header')?.addEventListener('click', () => window.toggleEditMode(false));
+    document.getElementById('btn-edit-toggle')?.addEventListener('click', () => window.toggleEditMode(true));
+    
+    document.getElementById('btn-save-header')?.addEventListener('click', () => {
+        document.getElementById('dealForm')?.requestSubmit();
+    });
+
+    document.getElementById('btn-close-contact-search')?.addEventListener('click', () => {
+        document.getElementById('contact-search-container').classList.add('hidden');
+    });
+
+    document.getElementById('contact-search-input')?.addEventListener('input', debounce(function(e) {
+        const query = e.target.value;
+        if (query.length < 2) return;
+        fetch(`/api/clients/search?q=${query}`)
+            .then(res => res.json())
+            .then(renderSearchResults);
+    }, 300));
+
+    document.getElementById('col-color-input')?.addEventListener('input', e => {
+        document.getElementById('color-code').innerText = e.target.value.toUpperCase();
+    });
+
+    document.getElementById('columnForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const id = document.getElementById('col-id-input').value;
+        const data = Object.fromEntries(new FormData(this).entries());
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `/admin/kanban/columns/${id}` : '/admin/kanban/columns';
+        
+        fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...data, type: 'vendas' })
+        }).then(() => window.location.reload());
+    });
+
+    document.getElementById('newDealForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = this.querySelector('button[type="submit"]');
+        const originalText = btn.innerText;
+        btn.innerText = 'CRIANDO...';
+        btn.disabled = true;
+
+        try {
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            ['softwareStack', 'imageResolution', 'extraDeliverables', 'lightingMood'].forEach(key => {
+                data[key] = Array.from(this.querySelectorAll(`[name="${key}"]:checked`)).map(cb => cb.value);
+            });
+
+            const response = await fetch('/api/budgets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            if (response.ok) {
+                window.showNotification('Lead criado com sucesso!', 'success');
+                setTimeout(() => window.location.reload(), 800);
+            } else {
+                const res = await response.json();
+                throw new Error(res.error || 'Erro ao criar lead');
+            }
+        } catch (error) {
+            window.showNotification(error.message, 'error');
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    });
+
+    document.getElementById('dealForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-save-header') || this.querySelector('button[type="submit"]');
+        const originalText = btn?.innerText || 'Salvar';
+        if (btn) {
+            btn.innerText = 'SALVANDO...';
+            btn.disabled = true;
+        }
+
+        try {
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            ['softwareStack', 'imageResolution', 'extraDeliverables', 'lightingMood'].forEach(key => {
+                data[key] = Array.from(this.querySelectorAll(`[name="${key}"]:checked`)).map(cb => cb.value);
+            });
+
+            const response = await fetch(`/api/budgets/${data.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                window.showNotification('Negociação salva!', 'success');
+                setTimeout(() => window.location.reload(), 500);
+            } else {
+                const res = await response.json();
+                throw new Error(res.error || 'Erro ao salvar');
+            }
+        } catch (error) {
+            window.showNotification(error.message, 'error');
+            if (btn) {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+    });
+
+    // === NEW LEAD CLIENT SEARCH ===
+    const clientSearchInput = document.getElementById('client-search-new-lead');
+    const searchResults = document.getElementById('search-results-new-lead');
+
+    clientSearchInput?.addEventListener('input', debounce(async (e) => {
+        const query = e.target.value;
+        if (query.length < 2) {
+            searchResults.classList.add('hidden');
+            return;
+        }
+
+        const res = await fetch(`/api/clients/search?q=${query}`);
+        const clients = await res.json();
+
+        if (clients.length > 0) {
+            searchResults.innerHTML = clients.map(c => `
+                <div class="p-3 hover:bg-white/5 cursor-pointer flex items-center justify-between group transition-all" onclick="selectClientForNewLead('${c.id}', '${c.name}')">
+                    <div>
+                        <p class="text-[10px] font-black text-white group-hover:text-cyber-500">${c.name}</p>
+                        <p class="text-[8px] text-gray-500 font-bold uppercase">${c.company || 'Sem Empresa'}</p>
+                    </div>
+                    <span class="material-symbols-outlined text-xs text-cyber-500 opacity-0 group-hover:opacity-100">check_circle</span>
+                </div>
+            `).join('');
+            searchResults.classList.remove('hidden');
+        } else {
+            searchResults.innerHTML = `<p class="p-3 text-[9px] text-gray-500 font-black uppercase text-center">Nenhum cliente encontrado</p>`;
+            searchResults.classList.remove('hidden');
+        }
+    }, 300));
+
+    window.selectClientForNewLead = function(id, name) {
+        document.getElementById('new-lead-client-id').value = id;
+        document.getElementById('client-name-display').innerText = name;
+        document.getElementById('client-initial').innerText = name[0];
+        document.getElementById('selected-client-display').classList.remove('hidden');
+        searchResults.classList.add('hidden');
+        clientSearchInput.value = '';
+    };
+
+    window.clearSelectedClient = function() {
+        document.getElementById('new-lead-client-id').value = '';
+        document.getElementById('selected-client-display').classList.add('hidden');
+    };
+
+    window.openQuickContact = function() {
+        window.quickContactModal?.show();
+    };
+
+    document.getElementById('quickContactForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type="submit"]');
+        const originalText = btn.innerText;
+        btn.innerText = 'CRIANDO...';
+        btn.disabled = true;
+        
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        
+        try {
+            const res = await fetch('/api/clients', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.id) {
+                selectClientForNewLead(result.id, result.name);
+                window.quickContactModal?.hide();
+                window.showNotification('Contato criado!', 'success');
+            } else {
+                throw new Error(result.error || 'Erro ao criar');
+            }
+        } catch (err) {
+            window.showNotification(err.message, 'error');
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    });
+
+    // Helper functions
+    function loadLinkedContacts(dealId) {
+        fetch(`/api/budgets/${dealId}/contacts`)
+            .then(res => res.json())
+            .then(contacts => {
+                const list = document.getElementById('deal-contacts-list');
+                if (!list) return;
+                if (contacts.length === 0) {
+                    list.innerHTML = `<div class="py-10 text-center opacity-20"><p class="text-[9px] font-black uppercase tracking-widest">Nenhum contato</p></div>`;
+                    return;
+                }
+                list.innerHTML = contacts.map(c => `
+                    <div class="glass-card p-4 border-white/5 flex items-center justify-between group">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-cyber-500/10 flex items-center justify-center text-cyber-500 font-black text-xs">${c.name[0]}</div>
+                            <div>
+                                <p class="text-[11px] font-black text-white">${c.name}</p>
+                                <p class="text-[9px] text-gray-500 uppercase font-bold">${c.company || 'Pessoa Física'}</p>
+                            </div>
+                        </div>
+                        <button class="p-2 text-red-500 opacity-0 group-hover:opacity-100 transition-all btn-remove-contact" data-deal-id="${dealId}" data-client-id="${c.id}"><span class="material-symbols-outlined text-sm">link_off</span></button>
+                    </div>
+                `).join('');
+            });
+    }
+
+    function renderSearchResults(results) {
+        const container = document.getElementById('contact-search-results');
+        if (!container) return;
+        container.innerHTML = results.map(c => `
+            <button type="button" class="w-full text-left p-3 rounded-xl hover:bg-white/5 border border-transparent hover:border-white/10 transition-all flex items-center justify-between group" onclick="linkContact('${c.id}')">
+                <div>
+                    <p class="text-[11px] font-black text-white group-hover:text-cyber-500">${c.name}</p>
+                    <p class="text-[9px] text-gray-500 font-bold uppercase">${c.email}</p>
+                </div>
+                <span class="material-symbols-outlined text-xs text-cyber-500 opacity-0 group-hover:opacity-100">add_circle</span>
+            </button>
+        `).join('') || '<p class="text-center py-4 text-[9px] text-gray-500 font-black uppercase">Nenhum resultado</p>';
+    }
+
+    window.linkContact = function(clientId) {
+        const dealId = document.getElementById('deal-id-input').value;
+        fetch(`/api/budgets/${dealId}/contacts`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ clientId, responsibilityLevel: 'Decisor', isPrimary: true })
+        }).then(() => {
+            loadLinkedContacts(dealId);
+            document.getElementById('contact-search-container').classList.add('hidden');
+        });
+    }
+
+    function loadTasks(dealId) {
+        const list = document.getElementById('deal-tasks-list');
+        if (list) list.innerHTML = `<div class="py-10 text-center opacity-10"><p class="text-[9px] font-black uppercase tracking-widest">Em breve...</p></div>`;
+    }
+
+    function loadNotes(dealId) {
+        fetch(`/api/budgets/${dealId}`)
+            .then(res => res.json())
+            .then(({ budget }) => {
+                const list = document.getElementById('deal-notes-timeline');
+                if (!list) return;
+                const notes = budget.crmNotes || [];
+                if (notes.length === 0) {
+                    list.innerHTML = `<div class="py-10 text-center opacity-10"><p class="text-[9px] font-black uppercase tracking-widest">Sem histórico</p></div>`;
+                    return;
+                }
+                list.innerHTML = notes.map(n => `
+                    <div class="glass-card p-4 border-white/5 mb-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[8px] font-black text-cyber-500 uppercase tracking-widest">${n.type || 'LOG'}</span>
+                            <span class="text-[8px] text-gray-500 font-bold">${new Date(n.createdAt).toLocaleString()}</span>
+                        </div>
+                        <p class="text-[11px] text-gray-300 leading-relaxed">${n.content}</p>
+                    </div>
+                `).join('');
+            });
+    }
+
+    function saveNote() {
+        const dealId = document.getElementById('deal-id-input').value;
+        const content = document.getElementById('deal-note-input').value;
+        if (!content) return;
+        fetch(`/api/budgets/${dealId}/notes`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content, type: 'note' })
+        }).then(() => {
+            document.getElementById('deal-note-input').value = '';
+            loadNotes(dealId);
+        });
+    }
+
+    function markAsWon() {
+        const id = document.querySelector('#dealForm [name="id"]').value;
+        if(confirm('Confirmar proposta e converter em PROJETO ativo?')) {
+            fetch(`/admin/negociacoes/${id}/confirm-project`, { method: 'POST' })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        window.showNotification('Projeto confirmado!', 'success');
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        window.showNotification(result.error || 'Erro ao confirmar', 'error');
+                    }
+                });
+        }
+    }
+
+    function markAsLost() { window.lossModal?.show(); }
+
+    window.confirmLoss = function(reason) {
+        const id = document.querySelector('#dealForm [name="id"]').value;
+        fetch(`/admin/negociacoes/${id}/loss`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reason })
+        }).then(() => window.location.reload());
+    };
+
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+    // === ORÇAMENTO INTELIGENTE AVANÇADO ===
+    function generateBreakdownHtml(data) {
+        const b = data.breakdown;
+        const total = data.valorTotalSugerido;
+        
+        return `
+            <div class="glass-card p-6 border-orange-500/20 bg-dark-950/80 backdrop-blur-xl rounded-3xl mt-6 space-y-4 shadow-2xl relative overflow-hidden">
+                <!-- Glow effect background -->
+                <div class="absolute -top-10 -right-10 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl"></div>
+                
+                <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                    <h4 class="text-[10px] font-black text-orange-500 uppercase tracking-widest flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">analytics</span> Breakdown de Precificação Inteligente
+                    </h4>
+                    <span class="text-[8px] font-bold text-gray-500 uppercase bg-white/5 px-2.5 py-1 rounded-md tracking-widest">Algoritmo V2.0</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10px]">
+                    <div class="space-y-2">
+                        <h5 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Custo Base</h5>
+                        <div class="space-y-1.5 font-mono">
+                            <div class="flex justify-between text-gray-400">
+                                <span>Modelagem Base:</span>
+                                <span class="text-white">R$ ${b.modelagemBase.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Imagens Estáticas:</span>
+                                <span class="text-white">R$ ${b.imagensBase.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Animação Base:</span>
+                                <span class="text-white">R$ ${b.animacaoBase.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                            </div>
+                            <div class="flex justify-between border-t border-white/5 pt-1.5 text-gray-300 font-bold">
+                                <span>Subtotal Base:</span>
+                                <span class="text-cyber-500">R$ ${b.subtotalBase.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <h5 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Complexidade & Risco</h5>
+                        <div class="space-y-1.5 font-mono">
+                            <div class="flex justify-between text-gray-400">
+                                <span>Estilo Predominante:</span>
+                                <span class="text-white">${b.estiloExtra > 0 ? `+ R$ ${b.estiloExtra.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : 'R$ 0,00'}</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Base Recebida (Workflow):</span>
+                                <span class="text-white">${b.workflowExtra > 0 ? `+ R$ ${b.workflowExtra.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : 'R$ 0,00'}</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Render Farm (3ds/Corona):</span>
+                                <span class="text-white">${b.renderFarmExtra > 0 ? `+ R$ ${b.renderFarmExtra.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : 'R$ 0,00'}</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Refações (Alterações):</span>
+                                <span class="text-white">${b.refacoesExtra > 0 ? `+ R$ ${b.refacoesExtra.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : 'R$ 0,00'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-[10px] border-t border-white/5 pt-3">
+                    <div class="space-y-2">
+                        <h5 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Adicionais Comerciais</h5>
+                        <div class="space-y-1.5 font-mono">
+                            <div class="flex justify-between text-gray-400">
+                                <span>Taxa Construtora:</span>
+                                <span class="text-white">${b.construtoraExtra > 0 ? `+ R$ ${b.construtoraExtra.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : 'R$ 0,00'}</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Taxa de Urgência:</span>
+                                <span class="text-white">${b.urgenciaExtra > 0 ? `+ R$ ${b.urgenciaExtra.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : 'R$ 0,00'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card p-4 border-cyber-500/10 bg-cyber-500/5 rounded-2xl flex flex-col justify-center items-center text-center">
+                        <span class="text-[8px] font-black text-cyber-500 uppercase tracking-widest mb-1">VALOR TOTAL SUGERIDO</span>
+                        <span class="text-lg font-mono font-black text-white">R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    window.handleCalcularOrcamento = async function(isNew) {
+        const formId = isNew ? 'newDealForm' : 'dealForm';
+        const form = document.getElementById(formId);
+        if (!form) return;
+        
+        // Get fields
+        const totalAreaVal = form.querySelector('[name="totalArea"]')?.value;
+        const profileTypeVal = form.querySelector('[name="profileType"]')?.value;
+        const predominantStyleVal = form.querySelector('[name="predominantStyle"]')?.value;
+        const receivedFormatVal = form.querySelector('[name="receivedFormat"]')?.value;
+        const imagesCountVal = form.querySelector('[name="imagesCount"]')?.value;
+        const animationSecondsVal = form.querySelector('[name="animationSeconds"]')?.value;
+        const renderEngineVal = form.querySelector('[name="renderEngine"]')?.value;
+        const revisionsIncludedVal = form.querySelector('[name="revisionsIncluded"]')?.value;
+        const productionDaysVal = form.querySelector('[name="productionDays"]')?.value;
+        
+        // Validation
+        const metragem = parseFloat(totalAreaVal);
+        if (isNaN(metragem) || metragem <= 0) {
+            window.showNotification('Erro: Metragem total (m²) inválida ou não preenchida!', 'error');
+            return;
+        }
+        
+        // Spinner loading state
+        const btnId = isNew ? 'btn-calc-orcamento-new' : 'btn-calc-orcamento-detail';
+        const btn = document.getElementById(btnId);
+        if (!btn) return;
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+        btn.disabled = true;
+        
+        // Parse values
+        const payload = {
+            metragemTotal: metragem,
+            tipoCliente: profileTypeVal || 'Arquiteto',
+            estiloPredominante: predominantStyleVal || 'Moderno',
+            formatoBase: receivedFormatVal || 'BIM/Revit Limpo',
+            qtdImagens: parseInt(imagesCountVal) || 0,
+            segundosAnimacao: parseInt(animationSecondsVal) || 0,
+            softwareRender: renderEngineVal || 'D5 Render',
+            rodadasAlteracao: parseInt(revisionsIncludedVal) || 1,
+            prazoDias: parseInt(productionDaysVal) || 30
+        };
+        
+        try {
+            const response = await fetch('/api/calcularOrcamentoAvancado', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            const result = await response.json();
+            if (result.success) {
+                // Update estimatedValue input
+                const inputVal = form.querySelector('[name="estimatedValue"]');
+                if (inputVal) {
+                    inputVal.value = result.valorTotalSugerido;
+                }
+                
+                // Render breakdown
+                const containerId = isNew ? 'new-lead-breakdown-container' : 'deal-breakdown-container';
+                const container = document.getElementById(containerId);
+                if (container) {
+                    container.innerHTML = generateBreakdownHtml(result);
+                    container.classList.remove('hidden');
+                }
+                
+                window.showNotification('Orçamento calculado com sucesso!', 'success');
+            } else {
+                window.showNotification(result.error || 'Erro ao calcular orçamento', 'error');
+            }
+        } catch (err) {
+            console.error('Calculation Error:', err);
+            window.showNotification('Erro de rede ou servidor ao calcular orçamento', 'error');
+        } finally {
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
+        }
+    };
+
+    // Bind event listeners for calculate button in details modal
+    document.getElementById('btn-calc-orcamento-detail')?.addEventListener('click', function() {
+        window.handleCalcularOrcamento(false);
+    });
+
+    // Reset breakdown containers and forms on modal hide
+    dealModalElement?.addEventListener('hidden.bs.modal', function () {
+        const container = document.getElementById('deal-breakdown-container');
+        if (container) {
+            container.innerHTML = '';
+            container.classList.add('hidden');
+        }
+    });
+
+    newDealModalElement?.addEventListener('hidden.bs.modal', function () {
+        const container = document.getElementById('new-lead-breakdown-container');
+        if (container) {
+            container.innerHTML = '';
+            container.classList.add('hidden');
+        }
+        document.getElementById('newDealForm')?.reset();
+    });
+
+    // Fix for Empty State
+    const observer = new MutationObserver(() => {
+        document.querySelectorAll('.cards-list').forEach(list => {
+            const hasCards = list.querySelector('.kanban-card');
+            const emptyState = list.querySelector('.kanban-empty-state');
+            if (emptyState) emptyState.style.display = hasCards ? 'none' : 'flex';
+        });
+    });
+
+    document.querySelectorAll('.cards-list').forEach(list => {
+        observer.observe(list, { childList: true });
+    });
+});
+</script>

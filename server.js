@@ -31,8 +31,9 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://cdnjs.cloudflare.com', 'https://unpkg.com', 'https://cdn.jsdelivr.net'],
       fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdnjs.cloudflare.com', 'https://unpkg.com'],
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://cdnjs.cloudflare.com', 'https://unpkg.com', 'https://prod.spline.design', 'https://*.spline.design', 'https://cdn.jsdelivr.net', 'https://cdn.tailwindcss.com', 'blob:'],
-      imgSrc: ["'self'", 'data:', 'https:', 'http:', 'https://picsum.photos', 'https://fastly.picsum.photos'],
-      connectSrc: ["'self'", 'https://prod.spline.design', 'https://*.spline.design', 'https://*.google-analytics.com'],
+      scriptSrcAttr: ["'unsafe-inline'"],
+      imgSrc: ["'self'", 'data:', 'https:', 'http:', 'https://picsum.photos', 'https://fastly.picsum.photos', 'https://*.googleusercontent.com', 'https://*.supabase.co'],
+      connectSrc: ["'self'", 'https://prod.spline.design', 'https://*.spline.design', 'https://*.google-analytics.com', 'https://*.supabase.co', 'wss://*.supabase.co'],
       frameSrc: ['https://www.youtube.com', 'https://www.instagram.com', 'https://*.spline.design'],
       workerSrc: ["'self'", 'blob:'],
       childSrc: ["'self'", 'blob:']
@@ -273,10 +274,10 @@ const hbs = exphbs.create({
       if (!phone) return '#';
       const cleanPhone = phone.replace(/\D/g, '');
       const messages = {
-        'lead': `Olá ${name}! Recebemos seu interesse aqui na Zanoello 3D. 🚀 Vamos transformar essa visão em realidade?`,
+        'lead': `Olá ${name}! Recebemos seu interesse aqui na Malha 3D. 🚀 Vamos transformar essa visão em realidade?`,
         'review': `Oi ${name}! Boas notícias: os renders já estão no forno e prontos para sua revisão. 📸 Confira no seu painel!`,
         'financial': `Olá ${name}! Notamos uma pendência financeira no sistema. Podemos ajudar com alguma dúvida sobre o pagamento? 💳`,
-        'default': `Olá ${name}! Equipe Zanoello 3D falando. ⚡`
+        'default': `Olá ${name}! Equipe Malha 3D falando. ⚡`
       };
       const message = messages[context] || messages.default;
       return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
@@ -290,6 +291,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Servir arquivos estáticos
 app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Global variables middleware
@@ -389,8 +391,8 @@ if (require.main === module) {
       await sequelize.authenticate();
       const isConnected = true;
       if (isConnected) {
-        // Sincronização desativada para boot ultra-rápido (Schema já está estável)
-        await sequelize.sync({ alter: true });
+        // Sync schema to apply ProjectLog and new columns
+        // await sequelize.sync({ alter: true });
 
         server.listen(PORT, () => {
           console.log(`🚀 Malha3D Admin rodando em http://localhost:${PORT}`);

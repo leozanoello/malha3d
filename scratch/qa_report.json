@@ -1,0 +1,49 @@
+{
+  "timestamp": "2026-05-22T14:23:31.905Z",
+  "success": true,
+  "pagesAudited": 8,
+  "errorsFound": [],
+  "warnings": [],
+  "details": {
+    "Dashboard": {
+      "url": "http://localhost:3000/admin",
+      "httpStatus": 304,
+      "success": true
+    },
+    "CRM (Pipeline)": {
+      "url": "http://localhost:3000/admin/negociacoes",
+      "httpStatus": 200,
+      "success": true
+    },
+    "Projetos (Kanban)": {
+      "url": "http://localhost:3000/admin/projetos/kanban",
+      "httpStatus": 200,
+      "success": true
+    },
+    "Orçamentos": {
+      "url": "http://localhost:3000/admin/orcamentos",
+      "httpStatus": 200,
+      "success": true
+    },
+    "Financeiro": {
+      "url": "http://localhost:3000/admin/financeiro",
+      "httpStatus": 200,
+      "success": true
+    },
+    "Contatos": {
+      "url": "http://localhost:3000/admin/contatos",
+      "httpStatus": 200,
+      "success": true
+    },
+    "Portal do Cliente": {
+      "url": "http://localhost:3000/admin/portal-cliente",
+      "httpStatus": 200,
+      "success": true
+    },
+    "Configurações Avançadas": {
+      "url": "http://localhost:3000/admin/avancado",
+      "httpStatus": 200,
+      "success": true
+    }
+  }
+}

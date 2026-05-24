@@ -34,8 +34,8 @@
                         <span class="text-[10px] font-black text-white uppercase tracking-widest">Dark Modern</span>
                     </div>
                     <div class="grid grid-cols-1 gap-3">
-                        <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all active-template btn-set-template" data-template-id="dark-modern" data-image="/images/templates/residencial.png">
-                            <img src="/images/templates/residencial.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-hover:scale-110">
+                        <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all active-template btn-set-template" data-template-id="dark-modern" data-image="/public/images/templates/residencial.png">
+                            <img src="/public/images/templates/residencial.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                             <span class="absolute bottom-3 left-4 text-[8px] font-black text-white uppercase tracking-widest">Theme: Dark Modern</span>
                         </button>
@@ -49,8 +49,8 @@
                         <span class="text-[10px] font-black text-white uppercase tracking-widest">Light Minimal</span>
                     </div>
                     <div class="grid grid-cols-1 gap-3">
-                        <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all btn-set-template" data-template-id="light-minimal" data-image="/images/templates/interiores.png">
-                            <img src="/images/templates/interiores.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-hover:scale-110">
+                        <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all btn-set-template" data-template-id="light-minimal" data-image="/public/images/templates/interiores.png">
+                            <img src="/public/images/templates/interiores.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                             <span class="absolute bottom-3 left-4 text-[8px] font-black text-white uppercase tracking-widest">Theme: Light Minimal</span>
                         </button>
@@ -64,8 +64,8 @@
                         <span class="text-[10px] font-black text-white uppercase tracking-widest">Neon Archviz</span>
                     </div>
                     <div class="grid grid-cols-1 gap-3">
-                        <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all btn-set-template" data-template-id="neon-archviz" data-image="/images/templates/commercial.png">
-                            <img src="/images/templates/commercial.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-hover:scale-110">
+                        <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all btn-set-template" data-template-id="neon-archviz" data-image="/public/images/templates/commercial.png">
+                            <img src="/public/images/templates/commercial.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
                             <span class="absolute bottom-3 left-4 text-[8px] font-black text-white uppercase tracking-widest">Theme: Neon Archviz</span>
                         </button>
@@ -112,19 +112,170 @@
                         <span class="text-orange-500 font-black text-sm">02.</span>
                         <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Definição de Escopo</h2>
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Formato de Entrada</label>
-                        <select id="inputFormat" class="input-premium h-14 preview-trigger">
-                            <option value="Modelo 3D enviado pelo cliente">Modelo 3D enviado pelo cliente</option>
-                            <option value="Necessita Modelagem do Zero">Necessita Modelagem do Zero</option>
-                            <option value="Arquivo BIM (Revit/Archicad)">Arquivo BIM (Revit/Archicad)</option>
-                            <option value="DWG / Sketch 2D">DWG / Sketch 2D</option>
-                        </select>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Formato de Entrada</label>
+                            <select id="inputFormat" class="input-premium h-14 preview-trigger">
+                                <option value="Modelo 3D enviado pelo cliente">Modelo 3D enviado pelo cliente</option>
+                                <option value="Necessita Modelagem do Zero">Necessita Modelagem do Zero</option>
+                                <option value="Arquivo BIM (Revit/Archicad)">Arquivo BIM (Revit/Archicad)</option>
+                                <option value="DWG / Sketch 2D">DWG / Sketch 2D</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">LOD (Nível de Detalhe)</label>
+                            <select id="techLOD" class="input-premium h-14 preview-trigger">
+                                <option value="LOD 200 - Esquemático">LOD 200 - Esquemático</option>
+                                <option value="LOD 300 - Preciso">LOD 300 - Preciso</option>
+                                <option value="LOD 350 - Detalhado (Recomendado)">LOD 350 - Detalhado</option>
+                                <option value="LOD 400 - Fabricação/Ultra">LOD 400 - Fabricação</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="space-y-2">
                         <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Descrição Detalhada</label>
                         <div id="projectDescEditor" class="bg-white/[0.03] border border-white/10 rounded-xl text-white text-xs min-h-[150px]"></div>
                         <input type="hidden" id="projectDesc">
+                    </div>
+                </div>
+
+                <!-- Section 2.5: Especificações Técnicas ArchViz (15 Specialized Fields) -->
+                <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500 delay-150">
+                    <div class="flex items-center gap-3">
+                        <span class="text-orange-500 font-black text-sm">2.5</span>
+                        <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Especificações ArchViz</h2>
+                    </div>
+                    <div class="grid grid-cols-2 gap-x-6 gap-y-8">
+                        <!-- Tech Row 1 -->
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Modelagem 3D</label>
+                            <select id="techModeling" class="input-premium h-12 preview-trigger">
+                                <option value="Somente Mobiliário">Somente Mobiliário</option>
+                                <option value="Alvenaria e Estrutura">Alvenaria e Estrutura</option>
+                                <option value="Full Model (Int + Ext)">Full Model (Int + Ext)</option>
+                                <option value="Otimização de Malha">Otimização de Malha</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Estilo de Iluminação</label>
+                            <select id="techLighting" class="input-premium h-12 preview-trigger">
+                                <option value="Daylight (Diurno)">Daylight (Diurno)</option>
+                                <option value="Golden Hour (Pôr do Sol)">Golden Hour (Pôr do Sol)</option>
+                                <option value="Night (Noturno)">Night (Noturno)</option>
+                                <option value="Studio (Controlada)">Studio (Controlada)</option>
+                            </select>
+                        </div>
+
+                        <!-- Tech Row 2 -->
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Formato de Entrega</label>
+                            <select id="techFormat" class="input-premium h-12 preview-trigger">
+                                <option value="Still (Imagem Estática)">Still (Imagem Estática)</option>
+                                <option value="Animation (Vídeo)">Animation (Vídeo)</option>
+                                <option value="360 Panorama / VR">360 Panorama / VR</option>
+                                <option value="Interactive (UE5/Realtime)">Interactive (UE5/Realtime)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Resolução de Render</label>
+                            <select id="techResolution" class="input-premium h-12 preview-trigger">
+                                <option value="Full HD (1920x1080)">Full HD (1080p)</option>
+                                <option value="2K (2560x1440)">2K QHD</option>
+                                <option value="4K Ultra HD (3840x2160)">4K UHD</option>
+                                <option value="8K Print Ready">8K Print Ready</option>
+                            </select>
+                        </div>
+
+                        <!-- Tech Row 3 -->
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Nível de Humanização</label>
+                            <select id="techHumanization" class="input-premium h-12 preview-trigger">
+                                <option value="Nenhuma (Empty Space)">Nenhuma (Empty Space)</option>
+                                <option value="Pessoas 2D (Cutouts)">Pessoas 2D (Cutouts)</option>
+                                <option value="Pessoas 3D Scanned (High Detail)">Pessoas 3D Scanned</option>
+                                <option value="Atores Reais (Green Screen)">Atores Reais</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Vegetação / Paisagismo</label>
+                            <select id="techLandscape" class="input-premium h-12 preview-trigger">
+                                <option value="Básica (Asset Library)">Básica (Asset Library)</option>
+                                <option value="Fiel ao Projeto Botânico">Fiel ao Botânico</option>
+                                <option value="Densa (Forest/Jungle)">Densa (Forest/Jungle)</option>
+                                <option value="Scattered Custom Assets">Scattered Custom Assets</option>
+                            </select>
+                        </div>
+
+                        <!-- Tech Row 4 -->
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Pós-Produção</label>
+                            <select id="techPostProd" class="input-premium h-12 preview-trigger">
+                                <option value="Standard (Balanço de Cores)">Standard</option>
+                                <option value="Cinematic (Color Grading)">Cinematic</option>
+                                <option value="Matte Painting (Photoshop)">Matte Painting</option>
+                                <option value="VFX & Compositing">VFX & Compositing</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Mobiliário</label>
+                            <select id="techFurniture" class="input-premium h-12 preview-trigger">
+                                <option value="Standard Library">Standard Library</option>
+                                <option value="High-End Design Brands">High-End Brands</option>
+                                <option value="Custom / Marcenaria Sob Medida">Marcenaria Sob Medida</option>
+                            </select>
+                        </div>
+
+                        <!-- Tech Row 5 -->
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Contexto / Entorno</label>
+                            <select id="techContext" class="input-premium h-12 preview-trigger">
+                                <option value="3D Genérico">3D Genérico</option>
+                                <option value="Photomontage (Drone/Foto)">Photomontage (Drone)</option>
+                                <option value="Full 3D Real Environment">Full 3D Real Environment</option>
+                                <option value="Site Location Match">Site Location Match</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Realismo de Materiais</label>
+                            <select id="techMaterials" class="input-premium h-12 preview-trigger">
+                                <option value="PBR Standard">PBR Standard</option>
+                                <option value="Advanced Shaders (Complex)">Advanced Shaders</option>
+                                <option value="Scanned Textures (Megascans)">Scanned Textures</option>
+                            </select>
+                        </div>
+
+                        <!-- Tech Row 6 -->
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Suporte Técnico</label>
+                            <select id="techSupport" class="input-premium h-12 preview-trigger">
+                                <option value="Apenas Imagens">Apenas Imagens</option>
+                                <option value="Extração de Plantas 2D">Extração de Plantas 2D</option>
+                                <option value="Consultoria de Layout">Consultoria de Layout</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Refinamento por IA</label>
+                            <select id="techAI" class="input-premium h-12 preview-trigger">
+                                <option value="Não Utilizado">Não Utilizado</option>
+                                <option value="Refinamento de Textura (Upscale)">Refinamento de Textura</option>
+                                <option value="Generative Details (Inpainting)">Generative Details</option>
+                            </select>
+                        </div>
+
+                        <!-- Tech Row 7 (Animation Specifics) -->
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Áudio / Trilha (Vídeos)</label>
+                            <select id="techAudio" class="input-premium h-12 preview-trigger">
+                                <option value="Nenhum">Nenhum</option>
+                                <option value="Stock Music (Standard)">Stock Music</option>
+                                <option value="Sound Design Custom">Sound Design Custom</option>
+                                <option value="Voiceover (Locução)">Voiceover (Locução)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Duração da Animação</label>
+                            <input type="text" id="techDuration" class="input-premium h-12 preview-trigger" placeholder="Ex: 30 segundos">
+                        </div>
                     </div>
                 </div>
 
@@ -192,10 +343,11 @@
                     <div class="flex justify-between items-start mb-20 relative z-10 border-b-2 border-black pb-12">
                         <div id="studioBranding">
                             <div class="h-12 flex items-center mb-4">
-                                <img src="/images/logo.png" id="previewLogo" class="h-full object-contain filter grayscale" onerror="this.src='https://placehold.co/200x50?text=ZANOELLO+3D'">
+                                <img src="/public/images/logo.png" id="previewLogo" class="h-full object-contain filter grayscale" onerror="this.src='https://placehold.co/200x50?text=MALHA+3D'">
                             </div>
-                            <p class="text-[10px] font-black uppercase tracking-[0.2em] mb-1">Zanoello 3D Artist</p>
-                            <p class="text-[9px] text-gray-500 font-medium">www.zanoello3d.com • (11) 99999-9999</p>
+                            <p class="text-[10px] font-black uppercase tracking-[0.2em] mb-0">Malha 3D</p>
+                            <p class="text-[8px] text-gray-500 font-bold uppercase tracking-[0.4em] mb-1">archviz</p>
+                            <p class="text-[9px] text-gray-500 font-medium">www.malha3d.com • (11) 99999-9999</p>
                         </div>
                         <div class="text-right">
                             <h3 class="text-2xl font-black uppercase tracking-tighter mb-2">PROPOSTA <span class="text-orange-500">COMERCIAL</span></h3>
@@ -205,7 +357,7 @@
 
                     <!-- Hero Template Image -->
                     <div class="mb-16 relative aspect-[21/9] rounded-sm overflow-hidden bg-gray-100 shadow-lg">
-                        <img id="templateCover" src="/images/templates/residencial.png" class="w-full h-full object-cover">
+                        <img id="templateCover" src="/public/images/templates/residencial.png" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                     </div>
 
@@ -216,8 +368,25 @@
                             <!-- Scope -->
                             <div>
                                 <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 border-b border-black pb-2">OBJETIVO & ESCOPO</p>
-                                <h5 id="prevInputFormat" class="text-sm font-black uppercase mb-4">Modelo 3D enviado pelo cliente</h5>
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <p class="text-[7px] text-gray-400 font-bold uppercase mb-1">Entrada:</p>
+                                        <h5 id="prevInputFormat" class="text-[10px] font-black uppercase">Modelo 3D enviado pelo cliente</h5>
+                                    </div>
+                                    <div>
+                                        <p class="text-[7px] text-gray-400 font-bold uppercase mb-1">LOD:</p>
+                                        <h5 id="prevTechLOD" class="text-[10px] font-black uppercase">LOD 350</h5>
+                                    </div>
+                                </div>
                                 <div id="prevProjectDesc" class="text-[11px] text-gray-700 leading-relaxed border-l-4 border-orange-500 pl-4 bg-gray-50 py-3 pr-3">Descreva aqui os detalhes do projeto que serão refletidos no orçamento final.</div>
+                            </div>
+
+                            <!-- Tech Specs (ArchViz Specialized) -->
+                            <div class="bg-gray-50 p-6 rounded-sm border-l-4 border-black">
+                                <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 border-b border-gray-200 pb-2">ESPECIFICAÇÕES TÉCNICAS ARCHVIZ</p>
+                                <div class="grid grid-cols-3 gap-y-4 gap-x-6" id="prevTechSpecsGrid">
+                                    <!-- Dynamic Tech Specs -->
+                                </div>
                             </div>
 
                             <!-- Deliverables -->
@@ -303,7 +472,7 @@
 
                     <!-- Footer -->
                     <div class="absolute bottom-16 left-16 right-16 flex justify-between items-center text-[8px] font-black text-gray-300 uppercase tracking-[0.4em]">
-                        <span>Zanoello 3D Artist © 2026</span>
+                        <span>Malha 3D © 2026</span>
                         <span>ArchViz Proposal Systems</span>
                     </div>
                 </div>
@@ -365,10 +534,43 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('prevClientEmail').innerText = document.getElementById('clientEmail').value || 'email@cliente.com';
         document.getElementById('prevValidity').innerText = document.getElementById('validity').value || '---';
         document.getElementById('prevInputFormat').innerText = document.getElementById('inputFormat').value;
+        document.getElementById('prevTechLOD').innerText = document.getElementById('techLOD').value;
         document.getElementById('prevProjectDesc').innerHTML = document.getElementById('projectDesc').value || 'Descreva aqui os detalhes do projeto...';
         document.getElementById('prevDays').innerText = document.getElementById('deliveryDays').value;
         document.getElementById('prevRevisions').innerText = document.getElementById('revisionCycles').value;
         document.getElementById('prevTerms').innerText = document.getElementById('paymentTerms').value;
+
+        // Tech Specs Grid
+        const techFields = [
+            { label: 'Modelagem', id: 'techModeling' },
+            { label: 'Iluminação', id: 'techLighting' },
+            { label: 'Formato', id: 'techFormat' },
+            { label: 'Resolução', id: 'techResolution' },
+            { label: 'Humanização', id: 'techHumanization' },
+            { label: 'Vegetação', id: 'techLandscape' },
+            { label: 'Pós-Prod', id: 'techPostProd' },
+            { label: 'Mobiliário', id: 'techFurniture' },
+            { label: 'Contexto', id: 'techContext' },
+            { label: 'Materiais', id: 'techMaterials' },
+            { label: 'Suporte', id: 'techSupport' },
+            { label: 'IA Tools', id: 'techAI' },
+            { label: 'Áudio', id: 'techAudio' },
+            { label: 'Duração', id: 'techDuration' }
+        ];
+
+        let techGridHtml = '';
+        techFields.forEach(field => {
+            const val = document.getElementById(field.id).value;
+            if (val && val !== 'Nenhum' && val !== 'Não Utilizado') {
+                techGridHtml += `
+                    <div>
+                        <p class="text-[6px] text-gray-400 font-bold uppercase mb-0.5">${field.label}</p>
+                        <p class="text-[8px] font-black uppercase text-black truncate">${val}</p>
+                    </div>
+                `;
+            }
+        });
+        document.getElementById('prevTechSpecsGrid').innerHTML = techGridHtml;
 
         let tableBody = '';
         let grandTotal = 0;
@@ -481,7 +683,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         // Copy link
         if (e.target.closest('#btn-copy-link')) {
-            alert('Link público gerado: https://zanoello3d.com/p/proposal-882193');
+            alert('Link público gerado: https://malha3d.com/p/proposal-882193');
         }
 
         // Export PDF

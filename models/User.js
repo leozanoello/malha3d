@@ -9,7 +9,10 @@ const User = sequelize.define('User', {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
   },
   firstName: {
     type: DataTypes.STRING,
@@ -69,6 +72,17 @@ const User = sequelize.define('User', {
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
+  },
+  status: {
+    type: DataTypes.ENUM('active', 'inactive', 'suspended'),
+    defaultValue: 'active',
+    validate: {
+      isIn: [['active', 'inactive', 'suspended']]
+    }
+  },
+  lastAccess: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
   },
   isVerified: {
     type: DataTypes.BOOLEAN,

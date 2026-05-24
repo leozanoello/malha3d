@@ -1,177 +1,371 @@
 <!-- 
-    ZANOELLO 3D - PIPELINE DE PRODUÇÃO ARCHVIZ 
+    MALHA 3D - PIPELINE DE PRODUÇÃO ARCHVIZ 
     Refatoração de Alta Performance e Densidade de Dados (Clonagem CRM Parity)
 -->
 
-<div class="flex flex-col h-[calc(100vh-100px)] overflow-hidden">
-    <!-- Header de Produção -->
-    <div class="flex items-center justify-between p-6 bg-dark-950/40 backdrop-blur-md border-b border-white/5">
-        <div class="flex items-center gap-4">
-            <div class="p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20">
-                <span class="material-symbols-outlined text-indigo-400 text-2xl">precision_manufacturing</span>
-            </div>
+<div class="crm-wrapper animate-in fade-in duration-700">
+    <!-- Header: Production Intelligence & Control -->
+    <div class="mb-10 p-10 glass-card border-none bg-gradient-to-br from-white/10 to-white/[0.02] relative overflow-hidden rounded-[3rem]">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[120px] -mr-48 -mt-48 animate-pulse"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/5 blur-[100px] -ml-32 -mb-32"></div>
+        
+        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-8 relative z-10">
             <div>
-                <h1 class="text-xl font-black text-white tracking-tighter">Workflow de <span class="text-indigo-400">Produção</span></h1>
-                <div class="flex items-center gap-3 mt-1">
-                    <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Controle de Ativos Malha3D</span>
-                    <div class="w-1 h-1 rounded-full bg-gray-700"></div>
-                    <span class="text-[9px] font-black text-indigo-400 uppercase tracking-widest">{{columns.length}} Etapas</span>
+                <div class="flex items-center gap-4 mb-3">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500 flex items-center justify-center shadow-2xl shadow-indigo-500/40">
+                        <span class="material-symbols-outlined text-white text-2xl">precision_manufacturing</span>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-black text-white tracking-tighter leading-none">
+                            Fluxo de <span class="text-gradient-indigo">Produção</span>
+                        </h1>
+                        <p class="text-gray-400 font-bold text-[10px] uppercase tracking-[0.3em] mt-1">Control & Delivery Engine</p>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="flex items-center gap-4">
-            <!-- Tabs Internas (Visual Only for Parity) -->
-            <div class="flex bg-black/40 p-1 rounded-xl border border-white/5 mr-4">
-                <button class="crm-page-tab active px-5 py-2 text-[9px] font-black text-indigo-400 bg-indigo-400/10 rounded-lg flex items-center gap-2 transition-all uppercase tracking-widest" data-tab="kanban">
-                    <span class="material-symbols-outlined text-sm">view_kanban</span> Kanban
-                </button>
-                <button class="crm-page-tab px-5 py-2 text-[9px] font-black text-gray-500 hover:text-white rounded-lg flex items-center gap-2 transition-all uppercase tracking-widest" data-tab="analytics">
-                    <span class="material-symbols-outlined text-sm">analytics</span> Performance
-                </button>
-            </div>
-
-            <button class="bg-white/5 hover:bg-white/10 text-white font-black py-3 px-6 rounded-xl border border-white/10 transition-all flex items-center gap-2 text-[9px] uppercase tracking-widest" id="btn-add-column">
-                <span class="material-symbols-outlined text-sm">view_column</span> Nova Etapa
-            </button>
-            <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-black py-3 px-6 rounded-xl shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 text-[9px] uppercase tracking-widest" id="btn-new-project">
-                <span class="material-symbols-outlined text-sm">add_circle</span> Novo Projeto
-            </button>
-        </div>
-    </div>
-
-    <!-- Analytics Section (Hidden by Default) -->
-    <div id="analytics-container" class="hidden flex-1 overflow-y-auto p-8 scrollbar-hide bg-dark-900/50">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="glass-card p-6 border-white/5">
-                <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Projetos em Produção</p>
-                <h3 class="text-3xl font-black text-white tracking-tighter" id="stat-active-projects">--</h3>
-            </div>
-            <div class="glass-card p-6 border-white/5">
-                <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Ticket Médio Archviz</p>
-                <h3 class="text-3xl font-black text-white tracking-tighter" id="stat-avg-ticket">R$ --</h3>
-            </div>
-            <div class="glass-card p-6 border-white/5">
-                <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-2">Eficiência de Entrega</p>
-                <h3 class="text-3xl font-black text-white tracking-tighter">94%</h3>
-            </div>
-        </div>
-        <!-- Placeholder for Charts -->
-        <div class="grid grid-cols-2 gap-6 h-96">
-            <div class="glass-card p-6 border-white/5 flex flex-col">
-                <h4 class="text-[10px] font-black text-white uppercase tracking-widest mb-6">Volume de Produção (6 Meses)</h4>
-                <div class="flex-1 bg-black/20 rounded-2xl flex items-center justify-center border border-white/5">
-                    <p class="text-[10px] text-gray-600 font-black uppercase">Gráfico em Sincronização...</p>
-                </div>
-            </div>
-            <div class="glass-card p-6 border-white/5 flex flex-col">
-                <h4 class="text-[10px] font-black text-white uppercase tracking-widest mb-6">Distribuição por Categoria</h4>
-                <div class="flex-1 bg-black/20 rounded-2xl flex items-center justify-center border border-white/5">
-                    <p class="text-[10px] text-gray-600 font-black uppercase">Gráfico em Sincronização...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Kanban Board Container -->
-    <div id="kanban-board-container" class="flex-1 flex overflow-hidden">
-        <div id="kanban-board" class="flex-1 flex gap-6 overflow-x-auto p-6 scrollbar-hide select-none">
-            {{#each columns}}
-            <div class="kanban-column w-[320px] flex-shrink-0 flex flex-col h-full group/col" data-id="{{this.id}}" data-status="{{this.statusKey}}">
-                <!-- Column Header -->
-                <div class="glass-card mb-4 border-white/10 relative overflow-hidden flex-shrink-0 group hover:border-indigo-500/30 transition-all cursor-move" style="border-top: 3px solid {{this.color}}">
-                    <div class="p-4 flex items-center justify-between">
-                        <div>
-                            <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] flex items-center gap-2">
-                                {{this.name}}
-                                <span class="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-full text-[8px]">{{this.projects.length}}</span>
-                            </h3>
-                        </div>
-                        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                            <button class="p-1.5 text-gray-500 hover:text-white btn-edit-column" 
-                                    data-id="{{this.id}}" 
-                                    data-title="{{this.name}}" 
-                                    data-color="{{this.color}}">
-                                <span class="material-symbols-outlined text-sm">settings</span>
-                            </button>
-                            <button class="p-1.5 text-gray-500 hover:text-red-500 btn-delete-column" data-id="{{this.id}}">
-                                <span class="material-symbols-outlined text-sm">delete</span>
-                            </button>
-                        </div>
+            
+            <div class="flex flex-wrap items-center gap-4">
+                <!-- Stats Summary -->
+                <div class="flex gap-6 px-8 py-4 bg-black/40 rounded-3xl border border-white/5 backdrop-blur-md">
+                    <div class="text-center">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Ativos</p>
+                        <p class="text-xl font-black text-white" id="stat-active-projects-header">{{columns.0.projects.length}}</p>
+                    </div>
+                    <div class="w-px h-8 bg-white/10 self-center"></div>
+                    <div class="text-center">
+                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Eficiência</p>
+                        <p class="text-xl font-black text-indigo-400">94%</p>
                     </div>
                 </div>
 
-                <!-- Cards Container -->
-                <div class="cards-list flex-1 overflow-y-auto space-y-3 pr-2 scrollbar-hide min-h-[100px]" data-status="{{this.statusKey}}">
+                <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-black py-4 px-10 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-all flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95" id="btn-new-project">
+                    <span class="material-symbols-outlined text-base">add_circle</span>
+                    Novo Projeto
+                </button>
+            </div>
+        </div>
+
+        <!-- Sub-Navigation -->
+        <div class="flex items-center gap-3 mt-12 p-2 bg-black/30 rounded-[1.5rem] w-fit border border-white/5">
+            <button class="px-10 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all flex items-center gap-2 bg-indigo-500 text-white shadow-xl shadow-indigo-500/20 tab-btn-nav active" data-tab="kanban">
+                <span class="material-symbols-outlined text-sm">view_kanban</span> Pipeline
+            </button>
+            <button class="px-10 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl text-gray-500 hover:text-white transition-all flex items-center gap-2 tab-btn-nav" data-tab="analytics">
+                <span class="material-symbols-outlined text-sm">analytics</span> Performance
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div id="projects-main-content">
+        <!-- View 1: KANBAN -->
+        <div id="tab-kanban" class="tab-pane active flex flex-col min-h-0">
+            <!-- Control Bar (Busca + Alternador de Visualizações) -->
+            <div class="mb-6 flex flex-col md:flex-row gap-4 items-center justify-between p-4 glass-card bg-black/20 border-white/5 relative z-10" id="projects-control-bar">
+                <!-- Search -->
+                <div class="relative w-full md:w-96">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+                        <span class="material-symbols-outlined text-sm">search</span>
+                    </span>
+                    <input type="text" id="unified-search-projects" class="w-full pl-10 pr-4 py-2.5 bg-black/40 border border-white/5 rounded-xl text-xs font-medium text-white focus:outline-none focus:border-indigo-500/50 transition-all placeholder-gray-500" placeholder="Buscar por projeto, cliente ou tipo...">
+                </div>
+                <!-- View Toggle -->
+                <div class="flex items-center gap-1.5 bg-black/40 p-1 rounded-xl border border-white/5">
+                    <button onclick="changeProjectsView('kanban')" id="btn-view-projects-kanban" class="view-toggle-btn-proj px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest text-indigo-400 bg-indigo-500/10 transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">view_kanban</span> Quadro
+                    </button>
+                    <button onclick="changeProjectsView('list')" id="btn-view-projects-list" class="view-toggle-btn-proj px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">list</span> Lista
+                    </button>
+                    <button onclick="changeProjectsView('spreadsheet')" id="btn-view-projects-spreadsheet" class="view-toggle-btn-proj px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-white transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">table_chart</span> Planilha
+                    </button>
+                </div>
+            </div>
+
+            <!-- Kanban Board -->
+            <div class="flex gap-6 overflow-x-auto pb-12 min-h-[800px] scrollbar-premium px-2" id="projects-kanban-board">
+                {{#each columns}}
+                <div class="kanban-column w-80 flex-shrink-0 flex flex-col h-full" data-id="{{this.id}}" data-status="{{this.statusKey}}">
+                    <!-- Column Header -->
+                    <div class="glass-card mb-4 border-white/10 relative flex-shrink-0 min-h-[100px] flex flex-col justify-center overflow-hidden pt-5" style="border-top: 4px solid {{this.color}}">
+                        <!-- Column top banner -->
+                        <div class="absolute top-0 left-0 w-full h-[18px] flex items-center justify-between px-3" style="background: linear-gradient(90deg, {{this.color}}18 0%, {{this.color}}03 100%); border-bottom: 1px solid {{this.color}}12;">
+                            <span class="text-[6.5px] font-black uppercase tracking-[0.25em]" style="color: {{this.color}}">Etapa do Projeto</span>
+                            <span class="w-1.5 h-1.5 rounded-full" style="background-color: {{this.color}}; box-shadow: 0 0 6px {{this.color}}"></span>
+                        </div>
+                        <div class="p-4 flex items-center justify-between">
+                            <div class="overflow-hidden flex-1">
+                                <h3 class="text-xs font-black text-white uppercase tracking-widest flex items-center justify-between gap-2 pr-2 whitespace-normal line-clamp-2 break-words">
+                                    {{this.name}}
+                                    <span class="bg-white/5 text-gray-500 px-2 py-0.5 rounded-full text-[8px] flex-shrink-0 column-card-count">{{this.projects.length}}</span>
+                                </h3>
+                                <p class="text-[9px] font-bold text-gray-500 mt-1 uppercase tracking-tighter">
+                                    Total: <span class="text-indigo-400 font-black">{{formatCurrency this.totalValue}}</span>
+                                </p>
+                            </div>
+                            <div class="dropdown">
+                                <button class="text-gray-600 hover:text-white transition-all" data-bs-toggle="dropdown">
+                                    <span class="material-symbols-outlined">more_vert</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark glass-card border-white/10 bg-dark-950 p-2 shadow-2xl">
+                                    <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2 btn-edit-column" href="#" data-id="{{this.id}}" data-title="{{this.name}}" data-color="{{this.color}}"><span class="material-symbols-outlined text-sm">edit</span> Editar Etapa</a></li>
+                                    <li><hr class="dropdown-divider border-white/5"></li>
+                                    <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2 text-red-500 btn-delete-column" href="#" data-id="{{this.id}}"><span class="material-symbols-outlined text-sm">delete</span> Excluir Etapa</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Kanban Drop Zone -->
+                    <div class="kanban-drop-zone cards-list flex-1 overflow-y-auto space-y-3 px-3 mx-[-0.75rem] scrollbar-hide pb-10 min-h-[600px]" 
+                         id="col-{{this.statusKey}}" 
+                         data-status="{{this.statusKey}}">
+                        
+                        {{#each this.projects}}
+                        <div class="kanban-card glass-card p-3 border-white/5 hover:border-white/20 transition-all cursor-pointer group relative hover:z-[999] overflow-visible mb-3 kanban-card-main" 
+                             draggable="true" 
+                             data-id="{{this.id}}"
+                             style="border-left: 3px solid {{../color}}">
+                            
+                            <!-- Progress Bar -->
+                            <div class="absolute top-0 left-0 w-full h-1 bg-white/5">
+                                <div class="h-full probability-bar bg-gradient-to-r from-indigo-500 to-indigo-300" style="width: {{#if (eq this.complexity 'Alta')}}85%{{else}}{{#if (eq this.complexity 'Ultra')}}100%{{else}}{{#if (eq this.complexity 'Média')}}60%{{else}}35%{{/if}}{{/if}}{{/if}}; box-shadow: 0 0 8px #6366f1;"></div>
+                            </div>
+                            
+                            <!-- Discrete Small Card Banner -->
+                            <div class="mb-2 mt-1 px-2 py-0.5 rounded bg-white/5 border border-white/5 flex items-center justify-between text-[7px] font-black uppercase tracking-wider text-gray-400">
+                                <span class="flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full" style="background-color: {{../color}}; box-shadow: 0 0 4px {{../color}};"></span>
+                                    {{#if this.category}}{{this.category}}{{else}}Imagens 3D{{/if}}
+                                </span>
+                                <span class="font-black text-indigo-400">{{#if this.complexity}}{{this.complexity}}{{else}}Média{{/if}} Complexidade</span>
+                            </div>
+
+                            <div class="flex justify-between items-start mb-2 mt-0">
+                                <div class="flex-1 overflow-hidden pr-2">
+                                    <h4 class="text-xs font-black text-white leading-tight line-clamp-2 min-h-[28px] uppercase tracking-tight group-hover:text-indigo-400 transition-colors card-name">{{this.title}}</h4>
+                                    <p class="text-[8px] text-gray-500 font-bold uppercase tracking-wider mt-0.5">
+                                        {{this.client}} • 
+                                        <span class="font-mono opacity-0 group-hover:opacity-10 transition-opacity duration-300 text-[8px] cursor-help tracking-tighter select-all">#PROJ-{{this.id}}</span>
+                                    </p>
+                                </div>
+                                <div class="dropdown stop-propagation flex-shrink-0">
+                                    <button class="text-gray-600 hover:text-white transition-all p-1 flex items-center justify-center" data-bs-toggle="dropdown" data-bs-boundary="viewport" data-bs-popper-config='{"strategy":"fixed"}'>
+                                        <span class="material-symbols-outlined text-[16px]">more_vert</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-dark glass-card border-white/10 bg-dark-950 p-2 shadow-2xl">
+                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2" href="#" onclick="window.openProjectDetails('{{this.id}}', false)"><span class="material-symbols-outlined text-sm">visibility</span> Ver Detalhes</a></li>
+                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2" href="#" onclick="window.openProjectDetails('{{this.id}}', true)"><span class="material-symbols-outlined text-sm">edit</span> Editar Detalhes</a></li>
+                                        <li><hr class="dropdown-divider border-white/5"></li>
+                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2 text-red-500" href="#" onclick="window.deleteProject('{{this.id}}')"><span class="material-symbols-outlined text-sm">delete</span> Excluir Projeto</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-1 mb-2">
+                                <div class="flex items-center justify-between pr-1">
+                                    <div class="flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-emerald-500 text-[12px]">payments</span>
+                                        <span class="text-[9px] font-black text-white" title="Valor Faturado/Contrato">R$ {{formatCurrency this.totalRevenue}} / {{formatCurrency this.price}}</span>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-red-500 text-[12px]">payments</span>
+                                        <span class="text-[9px] font-black text-white" title="Despesas/Custos Reais">R$ {{formatCurrency this.totalExpenses}}</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center pr-1">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-gray-600 text-[12px]">person</span>
+                                        <span class="text-[9px] font-bold text-gray-500 uppercase tracking-wide truncate max-w-[120px]">{{this.client}}</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="material-symbols-outlined text-gray-600 text-[12px]">calendar_today</span>
+                                        <span class="text-[9px] font-bold text-gray-500">{{formatDateShort this.deadline}}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Technical Specs Sync & Team LZ -->
+                            <div class="flex items-center justify-between pt-2 border-t border-white/5 mt-2">
+                                <div class="flex flex-wrap gap-1 max-w-[200px]">
+                                    {{#each this.softwareStack}}
+                                    <span class="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[6.5px] font-black text-gray-400 uppercase tracking-widest">{{this}}</span>
+                                    {{/each}}
+                                    {{#if this.renderEngine}}
+                                    <span class="px-1.5 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-[6.5px] font-black text-indigo-400 uppercase tracking-widest">{{this.renderEngine}}</span>
+                                    {{/if}}
+                                </div>
+                                <div class="flex -space-x-2 flex-shrink-0">
+                                    {{#if this.isTrackingNow}}
+                                    <div class="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center text-[8px] font-black text-white shadow-lg shadow-emerald-500/20 animate-pulse" title="Produção Ativa Agora!">⏱️</div>
+                                    {{else}}
+                                    <div class="w-5 h-5 rounded-full border border-dark-950 bg-indigo-500 flex items-center justify-center text-[7px] font-black text-white shadow-lg shadow-indigo-500/20">LZ</div>
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+
+                        {{#unless this.projects.length}}
+                        <div class="kanban-empty-state border-2 border-dashed border-white/5 rounded-3xl p-6 flex flex-col items-center justify-center text-center opacity-30 mt-2">
+                            <span class="material-symbols-outlined text-2xl mb-1">move_to_inbox</span>
+                            <p class="text-[9px] font-black uppercase tracking-widest text-gray-500">Sem Projetos</p>
+                        </div>
+                        {{/unless}}
+                    </div>
+                </div>
+                {{/each}}
+
+                <!-- Add Column Button -->
+                <div class="w-80 flex-shrink-0 text-center">
+                    <button id="btn-add-column" class="w-full h-20 border-2 border-dashed border-white/10 rounded-[2rem] flex items-center justify-center gap-3 text-gray-500 hover:text-white hover:border-white/20 transition-all group">
+                        <span class="material-symbols-outlined group-hover:scale-125 transition-all">add_circle</span>
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em]">Adicionar Etapa</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- List Layout for Projects -->
+            <div id="view-projects-list" class="space-y-4 hidden flex-1 overflow-y-auto pb-20 scrollbar-hide">
+                {{#each columns}}
                     {{#each this.projects}}
-                    <div class="kanban-card group p-3.5 bg-white/[0.03] border border-white/10 rounded-[1.5rem] hover:border-indigo-500/40 transition-all cursor-pointer mb-3 relative overflow-hidden backdrop-blur-xl shadow-2xl" 
-                         draggable="true" 
-                         data-id="{{this.id}}">
-                        
-                        <!-- Side Bar -->
-                        <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 rounded-r-full" style="background-color: {{../color}}"></div>
-                        
-                        <!-- Header -->
-                        <div class="flex items-center justify-between mb-3 relative z-10">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
-                                    <span class="material-symbols-outlined text-indigo-400 text-lg">architecture</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <h5 class="text-[11px] font-black text-white leading-tight uppercase tracking-tight group-hover:text-indigo-400 transition-colors">{{this.title}}</h5>
-                                    <span class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-0.5">{{this.category}}</span>
-                                </div>
+                    <div class="glass-card p-4 border-white/5 bg-white/2 hover:border-indigo-500/30 transition-all cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 project-item-row" onclick="window.openProjectDetails('{{this.id}}', false)" data-search="{{this.title}} {{this.client}} {{this.category}} {{this.complexity}}">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                                <span class="material-symbols-outlined">precision_manufacturing</span>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-black text-white card-name">{{this.title}}</h4>
+                                <p class="text-[8px] text-gray-500 font-bold uppercase tracking-wider mt-0.5">
+                                    {{this.client}} • 
+                                    <span class="font-mono opacity-20 hover:opacity-100 transition-opacity duration-300 text-[8px] cursor-help tracking-tighter select-all">#PROJ-{{this.id}}</span>
+                                </p>
                             </div>
                         </div>
-
-                        <!-- Info Grid -->
-                        <div class="grid grid-cols-2 gap-3 mb-4 relative z-10">
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[10px] text-gray-600">person</span>
-                                <span class="text-[9px] font-bold text-gray-400 truncate">{{this.client}}</span>
+                        <div class="flex items-center gap-6">
+                            <div class="text-right">
+                                <span class="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[8px] font-black text-gray-400 uppercase tracking-wide">
+                                    {{#if this.category}}{{this.category}}{{else}}Imagens 3D{{/if}}
+                                </span>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[10px] text-gray-600">payments</span>
-                                <span class="text-[9px] font-black text-emerald-400">R$ {{formatCurrency this.price}}</span>
+                            <div class="text-right">
+                                <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[8px] font-black uppercase tracking-wider">
+                                    {{../name}}
+                                </span>
                             </div>
-                        </div>
-
-                        <!-- Progress Bar (Based on Complexity or Static for now) -->
-                        <div class="space-y-2 relative z-10">
-                            <div class="flex justify-between items-center text-[8px] font-black uppercase tracking-widest">
-                                <span class="text-gray-500">Status de Produção</span>
-                                <span class="text-indigo-400">{{this.complexity}}</span>
+                            <div class="text-right w-24">
+                                <p class="text-[9px] font-black text-indigo-400 font-mono">{{formatCurrency this.price}}</p>
                             </div>
-                            <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-indigo-600 to-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.4)]" style="width: 65%"></div>
-                            </div>
-                        </div>
-
-                        <!-- Footer -->
-                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-white/5 relative z-10">
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[12px] text-gray-600">event</span>
-                                <span class="text-[8px] font-black text-gray-500 uppercase">{{formatDateShort this.deadline}}</span>
-                            </div>
-                            <div class="flex -space-x-2">
-                                <div class="w-6 h-6 rounded-full border-2 border-dark-950 bg-indigo-500 flex items-center justify-center text-[8px] font-black text-white">LZ</div>
-                                <div class="w-6 h-6 rounded-full border-2 border-dark-950 bg-gray-800 flex items-center justify-center text-[8px] font-black text-gray-400">+1</div>
+                            <div onclick="event.stopPropagation();" class="flex gap-2">
+                                <button onclick="window.openProjectDetails('{{this.id}}', false)" class="w-8 h-8 rounded-xl bg-white/5 text-gray-400 hover:text-white flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                </button>
+                                <button onclick="window.deleteProject('{{this.id}}')" class="w-8 h-8 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[14px]">delete</span>
+                                </button>
                             </div>
                         </div>
                     </div>
                     {{/each}}
-                    
-                    {{#unless this.projects.length}}
-                    <div class="border-2 border-dashed border-white/5 rounded-3xl p-10 flex flex-col items-center justify-center text-center opacity-10">
-                        <span class="material-symbols-outlined text-3xl mb-2">inbox</span>
-                        <p class="text-[10px] font-black uppercase tracking-widest">Etapa Vazia</p>
-                    </div>
-                    {{/unless}}
+                {{/each}}
+            </div>
+
+            <!-- Spreadsheet Layout for Projects -->
+            <div id="view-projects-spreadsheet" class="glass-card border-white/5 bg-white/2 overflow-hidden hidden flex-1">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-white/5 bg-black/40 text-[9px] font-black text-gray-500 uppercase tracking-widest">
+                                <th class="p-4">Projeto</th>
+                                <th class="p-4">Cliente</th>
+                                <th class="p-4">Tipo/Categoria</th>
+                                <th class="p-4">Etapa</th>
+                                <th class="p-4">Preço</th>
+                                <th class="p-4">Prazo</th>
+                                <th class="p-4 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            {{#each columns}}
+                                {{#each this.projects}}
+                                <tr class="hover:bg-white/[0.02] transition-all cursor-pointer project-item-row" onclick="window.openProjectDetails('{{this.id}}', false)" data-search="{{this.title}} {{this.client}} {{this.category}} {{this.complexity}}">
+                                    <td class="p-4">
+                                        <span class="text-xs font-black text-white block card-name">{{this.title}}</span>
+                                        <span class="font-mono opacity-20 hover:opacity-100 transition-opacity duration-300 text-[8px] cursor-help tracking-tighter select-all">#PROJ-{{this.id}}</span>
+                                    </td>
+                                    <td class="p-4 text-xs font-medium text-gray-400">
+                                        {{this.client}}
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[8px] font-black text-gray-400 uppercase tracking-wide">
+                                            {{#if this.category}}{{this.category}}{{else}}Imagens 3D{{/if}}
+                                        </span>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[8px] font-black uppercase tracking-wide">
+                                            {{../name}}
+                                        </span>
+                                    </td>
+                                    <td class="p-4 text-xs font-bold text-white font-mono">
+                                        {{formatCurrency this.price}}
+                                    </td>
+                                    <td class="p-4 text-xs font-medium text-gray-400">
+                                        {{formatDateShort this.deadline}}
+                                    </td>
+                                    <td class="p-4 text-right" onclick="event.stopPropagation();">
+                                        <div class="flex justify-end gap-2">
+                                            <button onclick="window.openProjectDetails('{{this.id}}', false)" class="w-7 h-7 rounded-xl bg-white/5 text-gray-400 hover:text-white flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                            </button>
+                                            <button onclick="window.deleteProject('{{this.id}}')" class="w-7 h-7 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-[14px]">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            {{/each}}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            {{/each}}
+        </div>
+
+        <!-- View 2: PERFORMANCE (Analytics) -->
+        <div id="tab-analytics" class="tab-pane hidden animate-in slide-in-from-bottom-4 duration-500 p-8">
+            <!-- Analytics Content (Moved from top to tab pane) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="glass-card p-8 border-white/5 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-[2.5rem]">
+                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Projetos Ativos</p>
+                    <h3 class="text-3xl font-black text-white tracking-tighter" id="stat-active-projects">--</h3>
+                </div>
+                <div class="glass-card p-8 border-white/5 bg-white/5 rounded-[2.5rem]">
+                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2">Ticket Médio Archviz</p>
+                    <h3 class="text-3xl font-black text-white tracking-tighter" id="stat-avg-ticket">R$ --</h3>
+                </div>
+                <div class="glass-card p-8 border-white/5 bg-white/5 rounded-[2.5rem]">
+                    <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-2">Eficiência de Entrega</p>
+                    <h3 class="text-3xl font-black text-white tracking-tighter">94%</h3>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-8 h-[400px]">
+                <div class="glass-card p-8 border-white/5 flex flex-col rounded-[2.5rem]">
+                    <h4 class="text-[10px] font-black text-white uppercase tracking-widest mb-6">Volume de Produção (6 Meses)</h4>
+                    <div class="flex-1 bg-black/20 rounded-3xl flex items-center justify-center border border-white/5">
+                        <p class="text-[10px] text-gray-600 font-black uppercase tracking-[0.2em]">Sincronizando Ativos...</p>
+                    </div>
+                </div>
+                <div class="glass-card p-8 border-white/5 flex flex-col rounded-[2.5rem]">
+                    <h4 class="text-[10px] font-black text-white uppercase tracking-widest mb-6">Distribuição por Categoria</h4>
+                    <div class="flex-1 bg-black/20 rounded-3xl flex items-center justify-center border border-white/5">
+                        <p class="text-[10px] text-gray-600 font-black uppercase tracking-[0.2em]">Sincronizando Ativos...</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 </div>
 
 <!-- ==========================================
@@ -179,51 +373,58 @@
      ========================================== -->
 <div class="modal fade" id="projectDetailModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content bg-dark-950 border border-white/10 glass-blur rounded-[2.5rem] overflow-hidden shadow-2xl">
+        <div class="modal-content bg-[#0c0e12]/95 border border-white/10 backdrop-blur-3xl rounded-[3rem] overflow-hidden shadow-2xl">
+            <!-- Modal Header (Estilo CRM) -->
             <div class="modal-header p-8 border-b border-white/5 flex flex-col items-start gap-4">
                 <div class="flex items-center justify-between w-full">
                     <div class="flex flex-col">
                         <div class="flex items-center gap-3 mb-1">
-                            <span class="bg-indigo-500/10 text-indigo-400 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest" id="drawer-id-label">#PROJ-0000</span>
-                            <span class="bg-white/5 text-gray-500 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest" id="drawer-status-label">PRODUÇÃO</span>
+                            <span id="drawer-id-label" class="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[9px] font-black text-indigo-400 uppercase tracking-widest">#PROJ-0000</span>
+                            <span id="drawer-status-label" class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[9px] font-black text-gray-500 uppercase tracking-widest font-mono">STATUS</span>
                         </div>
-                        <h2 class="modal-title text-2xl font-black text-white tracking-tight" id="drawer-name">Nome do Projeto</h2>
+                        <h2 id="drawer-name" class="modal-title text-2xl font-black text-white tracking-tight">Nome do Projeto</h2>
                     </div>
                     <div class="flex items-center gap-4">
                         <button type="button" id="btn-edit-toggle" class="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">edit</span> Editar Projeto
+                            <span class="material-symbols-outlined text-sm">edit</span> Editar Campos
                         </button>
-                        <button type="button" id="btn-mark-finished" class="px-6 py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">verified</span> Finalizar & Entregar
+                        <button type="button" id="btn-mark-finished" class="px-6 py-2.5 bg-emerald-500 text-white font-black text-[9px] uppercase tracking-widest shadow-xl shadow-emerald-500/20 hover:scale-105 transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">verified</span> Finalizar Projeto
                         </button>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                 </div>
 
-                <!-- Tab Navigation -->
+                <!-- Tab Navigation (Horizontal) -->
                 <ul class="nav nav-tabs border-0 flex gap-8 w-full mt-2" id="projectTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="details-tab" data-bs-toggle="tab" data-bs-target="#details-content" type="button" role="tab">
-                            Especificações Técnicas
-                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all"></div>
+                        <button class="nav-link active border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="proposal-tab" data-bs-toggle="tab" data-bs-target="#proposal-details-content" type="button" role="tab">
+                            Detalhes da Proposta
+                            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 scale-x-0 group-hover:scale-x-100 transition-all"></div>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="revisions-tab" data-bs-toggle="tab" data-bs-target="#revisions-content" type="button" role="tab">
-                            Controle de Revisões
-                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all"></div>
+                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts-tab-content" type="button" role="tab">
+                            Contatos
+                            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 scale-x-0 group-hover:scale-x-100 transition-all"></div>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="deliveries-tab" data-bs-toggle="tab" data-bs-target="#deliveries-content" type="button" role="tab">
-                            Entregas & Arquivos
-                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all"></div>
+                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasks-tab-content" type="button" role="tab">
+                            Tarefas
+                            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 scale-x-0 group-hover:scale-x-100 transition-all"></div>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="timeline-tab" data-bs-toggle="tab" data-bs-target="#timeline-content" type="button" role="tab">
-                            Logs de Produção
-                            <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all"></div>
+                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="chat-history-tab" data-bs-toggle="tab" data-bs-target="#chat-history-tab-content" type="button" role="tab">
+                            Chat & Histórico
+                            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 scale-x-0 group-hover:scale-x-100 transition-all"></div>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-orange-500/50 py-2 px-0 hover:text-orange-500 transition-all relative group" id="ai-strategy-tab" data-bs-toggle="tab" data-bs-target="#ai-strategy-tab-content" type="button" role="tab">
+                            <span class="flex items-center gap-2"><span class="material-symbols-outlined text-xs">auto_awesome</span> Estratégia IA</span>
+                            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 scale-x-0 group-hover:scale-x-100 transition-all"></div>
                         </button>
                     </li>
                 </ul>
@@ -231,84 +432,189 @@
             
             <div class="modal-body p-8 scrollbar-hide">
                 <div class="tab-content h-full" id="projectTabsContent">
-                    <!-- TAB 1: ESPECIFICAÇÕES -->
-                    <div class="tab-pane fade show active h-full" id="details-content" role="tabpanel">
+                    <!-- TAB 1: DETALHES DA PROPOSTA -->
+                    <div class="tab-pane fade show active h-full" id="proposal-details-content" role="tabpanel">
                         <form id="projectForm" class="space-y-8">
                             <input type="hidden" name="id" id="project-id-input">
                             
-                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                <!-- Dados Gerais -->
-                                <section class="glass-card p-8 border-white/5 space-y-6">
-                                    <h3 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-sm">inventory_2</span> Gestão de Produção
-                                    </h3>
-                                    <div class="grid grid-cols-2 gap-6">
-                                        <div class="col-span-2">
-                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Título do Projeto</label>
-                                            <input type="text" name="title" class="input-premium" required disabled>
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                <!-- Coluna 1 & 2: Detalhes do Projeto -->
+                                <div class="lg:col-span-2 space-y-8">
+                                    <section class="glass-card p-8 border-white/5 space-y-6">
+                                        <h3 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">precision_manufacturing</span> Detalhes da Produção
+                                        </h3>
+                                        <div class="grid grid-cols-2 gap-6">
+                                            <div class="col-span-2">
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Título do Projeto</label>
+                                                <input type="text" name="title" class="input-premium" required disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Preço de Venda (R$)</label>
+                                                <input type="number" step="0.01" name="price" class="input-premium" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Prazo de Entrega</label>
+                                                <input type="date" name="deadline" class="input-premium" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Complexidade</label>
+                                                <select name="complexity" class="input-premium" disabled>
+                                                    <option value="Baixa">Baixa</option>
+                                                    <option value="Média">Média</option>
+                                                    <option value="Alta">Alta</option>
+                                                    <option value="Ultra">Ultra</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Prioridade</label>
+                                                <select name="priority" class="input-premium" disabled>
+                                                    <option value="baixa">Baixa</option>
+                                                    <option value="media">Média</option>
+                                                    <option value="alta">Alta</option>
+                                                    <option value="urgente">Urgente</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Preço de Venda (R$)</label>
-                                            <input type="number" step="0.01" name="price" class="input-premium" disabled>
-                                        </div>
-                                        <div>
-                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Prazo de Entrega</label>
-                                            <input type="date" name="deadline" class="input-premium" disabled>
-                                        </div>
-                                        <div>
-                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Complexidade</label>
-                                            <select name="complexity" class="input-premium" disabled>
-                                                <option value="Baixa">Baixa</option>
-                                                <option value="Média">Média</option>
-                                                <option value="Alta">Alta</option>
-                                                <option value="Ultra">Ultra</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Prioridade</label>
-                                            <select name="priority" class="input-premium" disabled>
-                                                <option value="baixa">Baixa</option>
-                                                <option value="media">Média</option>
-                                                <option value="alta">Alta</option>
-                                                <option value="urgente">Urgente</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </section>
+                                    </section>
 
-                                <!-- Archviz Specs -->
-                                <section class="glass-card p-8 border-white/5 space-y-6">
-                                    <h3 class="text-[10px] font-black text-orange-500 uppercase tracking-widest flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-sm">view_in_ar</span> Specs Técnicas
-                                    </h3>
-                                    <div class="grid grid-cols-2 gap-6">
-                                        <div>
-                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Categoria</label>
-                                            <select name="category" class="input-premium" disabled>
-                                                <option value="interior">Interior</option>
-                                                <option value="arquitetonico">Arquitetônico</option>
-                                                <option value="animacao">Animação</option>
-                                                <option value="outro">Outro</option>
-                                            </select>
+                                    <section class="glass-card p-8 border-white/5 space-y-6">
+                                        <h3 class="text-[10px] font-black text-orange-500 uppercase tracking-widest flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">view_in_ar</span> Specs Técnicas & Escopo Estendido
+                                        </h3>
+                                        <div class="grid grid-cols-2 gap-6">
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Categoria de Projeto</label>
+                                                <select name="category" class="input-premium" disabled>
+                                                    <option value="interior">Interior</option>
+                                                    <option value="exterior">Exterior</option>
+                                                    <option value="produto">Produto</option>
+                                                    <option value="arquitetonico">Arquitetônico</option>
+                                                    <option value="animacao">Animação</option>
+                                                    <option value="outro">Outro</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Metragem Total (m²)</label>
+                                                <input type="number" name="totalArea" class="input-premium" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Software de Modelagem</label>
+                                                <input type="text" name="software" class="input-premium" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Motor de Render</label>
+                                                <input type="text" name="renderEngine" class="input-premium" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Dias de Produção</label>
+                                                <input type="number" name="productionDays" class="input-premium" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Revisões Incluídas</label>
+                                                <input type="text" name="revisionsIncluded" class="input-premium" placeholder="Ex: 3 revisões" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Formatos Recebidos</label>
+                                                <input type="text" name="receivedFormat" class="input-premium" placeholder="Ex: .DWG, .RVT, .SKP" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Qualidade dos Arquivos</label>
+                                                <select name="fileQuality" class="input-premium" disabled>
+                                                    <option value="excelente">Excelente (Organizado/Limpo)</option>
+                                                    <option value="bom">Bom (Poucos ajustes)</option>
+                                                    <option value="regular">Regular (Precisa limpar/arrumar)</option>
+                                                    <option value="ruim">Ruim (Desorganizado/Incompleto)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-span-2">
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Link de Drive/Arquivos</label>
+                                                <input type="url" name="driveLink" class="input-premium" placeholder="https://drive.google.com/..." disabled>
+                                            </div>
+                                            <div class="col-span-2 flex items-center gap-6 p-4 bg-white/5 border border-white/5 rounded-2xl">
+                                                <div class="flex items-center gap-2">
+                                                    <input type="checkbox" name="hasUrgency" id="project-has-urgency" class="w-5 h-5 rounded-lg border-white/10 bg-black/40 text-indigo-500 focus:ring-indigo-500/20" disabled>
+                                                    <label for="project-has-urgency" class="text-[9px] font-black text-gray-400 uppercase tracking-widest cursor-pointer select-none">Este projeto possui Urgência?</label>
+                                                </div>
+                                                <div id="urgency-fee-container" class="hidden flex-1">
+                                                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Taxa de Urgência (R$)</label>
+                                                    <input type="number" step="0.01" name="urgencyFee" class="input-premium" placeholder="Ex: 500.00" disabled>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Metragem (m²)</label>
-                                            <input type="number" name="totalArea" class="input-premium" disabled>
+                                    </section>
+                                </div>
+
+                                <!-- Coluna 3: Rastreamento de Tempo & Financeiro Compact -->
+                                <div class="space-y-8">
+                                    <!-- Widget: Rastreamento de Tempo -->
+                                    <section class="glass-card p-8 border-white/5 space-y-6">
+                                        <h3 class="text-[10px] font-black text-pink-500 uppercase tracking-widest flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">schedule</span> Tempo de Execução
+                                        </h3>
+                                        <div class="space-y-4">
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Horas Planejadas</label>
+                                                    <input type="number" name="plannedHours" class="input-premium" placeholder="Ex: 40" disabled>
+                                                </div>
+                                                <div class="text-right flex flex-col justify-end">
+                                                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Horas Totais</p>
+                                                    <h4 class="text-lg font-black text-indigo-400 font-mono"><span id="tracker-widget-executed">0</span>h / <span id="tracker-widget-planned">0</span>h</h4>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Visual Progress Bar -->
+                                            <div class="w-full h-3 bg-white/5 border border-white/5 rounded-full overflow-hidden relative mt-2">
+                                                <div id="tracker-widget-progressbar" class="h-full bg-gradient-to-r from-indigo-500 via-indigo-400 to-emerald-500 rounded-full transition-all duration-500" style="width: 0%;"></div>
+                                            </div>
+                                            
+                                            <!-- Multi-counters (Planned, Logged, Remaining) -->
+                                            <div class="grid grid-cols-3 gap-3 pt-2">
+                                                <div class="p-3 bg-white/5 border border-white/5 rounded-2xl text-center">
+                                                    <p class="text-[7px] font-black text-gray-500 uppercase tracking-widest mb-1">Planejado</p>
+                                                    <p class="text-xs font-black text-white font-mono" id="tracker-widget-planned-details">0h</p>
+                                                </div>
+                                                <div class="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl text-center">
+                                                    <p class="text-[7px] font-black text-indigo-400 uppercase tracking-widest mb-1">Executado</p>
+                                                    <p class="text-xs font-black text-indigo-300 font-mono" id="tracker-widget-executed-details">0h</p>
+                                                </div>
+                                                <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-center">
+                                                    <p class="text-[7px] font-black text-emerald-400 uppercase tracking-widest mb-1">Restante</p>
+                                                    <p class="text-xs font-black text-emerald-300 font-mono" id="tracker-widget-remaining-details">0h</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Active Timer & Control Button -->
+                                            <div class="pt-4 flex items-center justify-between border-t border-white/5 mt-4">
+                                                <div class="flex items-center gap-2.5">
+                                                    <span class="w-2.5 h-2.5 rounded-full bg-gray-600 inline-block animate-none" id="tracker-widget-pulse"></span>
+                                                    <span class="text-xs font-black text-white font-mono" id="tracker-widget-timer">00:00:00</span>
+                                                </div>
+                                                <button type="button" id="btn-modal-tracker-action" class="h-10 px-6 rounded-xl text-[9px] font-black uppercase tracking-widest text-white shadow-lg transition-all flex items-center gap-2 bg-indigo-500 shadow-indigo-500/20">
+                                                    <span class="material-symbols-outlined text-sm">play_arrow</span> Iniciar Rastreio
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div class="col-span-2">
-                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Software de Modelagem</label>
-                                            <input type="text" name="software" class="input-premium" disabled>
+                                    </section>
+                                    
+                                    <!-- Widget Financeiro Compacto (Informações) -->
+                                    <section class="glass-card p-8 border-white/5 space-y-6">
+                                        <h3 class="text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">payments</span> Financeiro da Proposta
+                                        </h3>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Forma de Pagamento</label>
+                                                <input type="text" name="notes" class="input-premium" placeholder="Ex: PIX / Boleto" disabled>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Parcelas</label>
+                                                <input type="number" name="installments" class="input-premium" placeholder="Ex: 3" disabled>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Motor de Render</label>
-                                            <input type="text" name="renderEngine" class="input-premium" disabled>
-                                        </div>
-                                        <div>
-                                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Dias de Produção</label>
-                                            <input type="number" name="productionDays" class="input-premium" disabled>
-                                        </div>
-                                    </div>
-                                </section>
+                                    </section>
+                                </div>
                             </div>
 
                             <div id="edit-actions" class="hidden pt-6 flex gap-4">
@@ -316,38 +622,351 @@
                                 <button type="button" id="btn-cancel-edit" class="px-8 bg-white/5 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/10 transition-all">Descartar</button>
                             </div>
                         </form>
-                    </div>
 
-                    <!-- TAB 2: REVISÕES -->
-                    <div class="tab-pane fade h-full" id="revisions-content" role="tabpanel">
-                        <div class="space-y-6">
+                        <!-- Painel Financeiro Integrado Completo (Lançamentos e histórico) -->
+                        <div class="border-t border-white/5 pt-8 mt-8 space-y-6">
                             <div class="flex items-center justify-between">
-                                <h3 class="text-xs font-black text-white uppercase tracking-widest">Histórico de Revisões</h3>
-                                <button class="bg-indigo-500/10 text-indigo-400 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all" id="btn-new-revision">Registrar Revisão</button>
+                                <h4 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">monetization_on</span> Fluxo Financeiro & Lançamentos
+                                </h4>
+                                <div class="flex gap-4">
+                                    <button type="button" class="bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-emerald-500/5" id="btn-project-new-receita">Lançar Receita</button>
+                                    <button type="button" class="bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-red-500/5" id="btn-project-new-despesa">Lançar Despesa</button>
+                                </div>
                             </div>
-                            <div id="project-revisions-list" class="space-y-4">
-                                <!-- Dynamic List -->
+
+                            <!-- Form Lançamento Inline (Oculto por padrão) -->
+                            <div id="project-inline-finance-form-container" class="hidden glass-card p-8 border-white/5 bg-white/2 rounded-[2rem] space-y-6">
+                                <h3 class="text-lg font-black text-white tracking-tight flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-xl" id="inline-finance-title-icon">add_circle</span>
+                                    Lançar <span id="inline-finance-title-type" class="text-emerald-400">Receita</span>
+                                </h3>
+                                <form id="projectInlineFinanceForm" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <input type="hidden" name="projectId" id="inline-finance-project-id">
+                                    <input type="hidden" name="type" id="inline-finance-type">
+                                    
+                                    <div class="col-span-1 md:col-span-2">
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Descrição / Item</label>
+                                        <input type="text" name="description" class="input-premium" placeholder="Ex: Sinal de Entrada de 50%" required>
+                                    </div>
+                                    <div>
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Valor (R$)</label>
+                                        <input type="number" step="0.01" name="amount" class="input-premium" placeholder="Ex: 5000.00" required>
+                                    </div>
+                                    <div>
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Status</label>
+                                        <select name="status" id="inline-finance-status" class="input-premium">
+                                            <option value="pendente">Pendente</option>
+                                            <option value="recebido">Recebido</option>
+                                            <option value="pago">Pago</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Data de Vencimento</label>
+                                        <input type="date" name="dueDate" id="inline-finance-due-date" class="input-premium" required>
+                                    </div>
+                                    <div>
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Data de Competência</label>
+                                        <input type="date" name="competenceDate" id="inline-finance-competence-date" class="input-premium">
+                                    </div>
+                                    <div>
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Categoria</label>
+                                        <select name="category" id="inline-finance-category" class="input-premium">
+                                            <option value="Contrato">Contrato</option>
+                                            <option value="Comissão">Comissão</option>
+                                            <option value="Material">Material</option>
+                                            <option value="Freelancer">Freelancer</option>
+                                            <option value="Infraestrutura">Infraestrutura</option>
+                                            <option value="Outro">Outro</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Método de Pagamento</label>
+                                        <select name="paymentMethod" class="input-premium">
+                                            <option value="PIX">PIX</option>
+                                            <option value="Boleto">Boleto</option>
+                                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                            <option value="Transferência">Transferência Bancária</option>
+                                            <option value="Dinheiro">Dinheiro</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Conta de Origem/Banco</label>
+                                        <input type="text" name="bankAccount" class="input-premium" placeholder="Ex: Banco Itaú">
+                                    </div>
+                                    <div class="col-span-1 md:col-span-3">
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Observações Adicionais</label>
+                                        <textarea name="notes" class="input-premium h-20 text-xs py-3.5" placeholder="Observações adicionais sobre este lançamento financeiro..."></textarea>
+                                    </div>
+                                    <div class="col-span-1 md:col-span-3 flex gap-4 pt-4 border-t border-white/5">
+                                        <button type="submit" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all">Salvar Lançamento</button>
+                                        <button type="button" id="btn-project-inline-finance-cancel" class="px-6 bg-white/5 hover:bg-white/10 text-white py-3 rounded-xl font-black text-[9px] uppercase tracking-widest border border-white/10 transition-all">Cancelar</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- KPIs Cards -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="glass-card p-6 border-white/5 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-[1.5rem]">
+                                    <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2">Total Recebido (Faturado)</p>
+                                    <h4 class="text-xl font-black text-emerald-400 tracking-tighter" id="project-finance-revenue">R$ 0,00</h4>
+                                </div>
+                                <div class="glass-card p-6 border-white/5 bg-gradient-to-br from-red-500/10 to-transparent rounded-[1.5rem]">
+                                    <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2">Custos do Projeto (Despesas)</p>
+                                    <h4 class="text-xl font-black text-red-400 tracking-tighter" id="project-finance-expenses">R$ 0,00</h4>
+                                </div>
+                                <div class="glass-card p-6 border-white/5 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-[1.5rem]">
+                                    <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2">Margem Líquida</p>
+                                    <h4 class="text-xl font-black text-white tracking-tighter" id="project-finance-margin">R$ 0,00 (0%)</h4>
+                                </div>
+                            </div>
+
+                            <!-- Transactions Table -->
+                            <div class="glass-card border-white/5 bg-white/2 rounded-3xl overflow-hidden">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="border-b border-white/5 bg-black/40 text-[8px] font-black text-gray-500 uppercase tracking-widest">
+                                                <th class="p-4">Descrição</th>
+                                                <th class="p-4">Tipo</th>
+                                                <th class="p-4">Valor</th>
+                                                <th class="p-4">Competência</th>
+                                                <th class="p-4">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-white/5 text-xs text-gray-300" id="project-finance-list">
+                                            <!-- Dynamic List of Transactions -->
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- TAB 3: ENTREGAS -->
-                    <div class="tab-pane fade h-full" id="deliveries-content" role="tabpanel">
-                        <div class="space-y-6">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-xs font-black text-white uppercase tracking-widest">Arquivos de Entrega</h3>
-                                <button class="bg-indigo-500/10 text-indigo-400 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all" id="btn-new-delivery">Nova Entrega</button>
+                    <!-- TAB 2: CONTATOS -->
+                    <div class="tab-pane fade h-full" id="contacts-tab-content" role="tabpanel">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10">
+                            <section class="glass-card p-8 border-white/5 space-y-6">
+                                <h3 class="text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">contacts</span> Contato do Cliente
+                                </h3>
+                                <div class="space-y-4">
+                                    <div class="p-6 bg-black/40 border border-white/5 rounded-2xl space-y-4">
+                                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Cliente Vinculado</p>
+                                        <h4 class="text-lg font-black text-white" id="client-widget-name">Nenhum cliente associado</h4>
+                                        <div class="flex flex-col gap-3 text-xs text-gray-400 pt-4 border-t border-white/5">
+                                            <span class="flex items-center gap-3"><span class="material-symbols-outlined text-lg text-indigo-400">mail</span> <span id="client-widget-email">---</span></span>
+                                            <span class="flex items-center gap-3"><span class="material-symbols-outlined text-lg text-indigo-400">phone</span> <span id="client-widget-phone">---</span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="glass-card p-8 border-white/5 space-y-6">
+                                <h3 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">groups</span> Co-responsáveis do Projeto
+                                </h3>
+                                <div class="space-y-4">
+                                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Outros Responsáveis Extras (Nomes)</label>
+                                    <textarea name="extraResponsibles" form="projectForm" class="input-premium h-32 text-xs py-3.5" placeholder="Ex: Pedro Alvares, Maria Silva (separados por vírgula)..." disabled></textarea>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: TAREFAS ( Checklist + Revisões + Entregas ) -->
+                    <div class="tab-pane fade h-full" id="tasks-tab-content" role="tabpanel">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
+                            <!-- Checklist Operacional (Colspan 2) -->
+                            <div class="lg:col-span-2 space-y-6">
+                                <section class="glass-card p-8 border-white/5 space-y-6">
+                                    <h3 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm">assignment_turned_in</span> Checklist Operacional do Trabalho
+                                    </h3>
+                                    
+                                    <!-- Adicionar nova tarefa -->
+                                    <div class="flex gap-4">
+                                        <input type="text" id="project-new-task-input" class="input-premium" placeholder="Adicionar nova sub-tarefa...">
+                                        <button type="button" id="btn-project-add-task" class="px-6 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-black text-[9px] uppercase tracking-widest transition-all">Adicionar</button>
+                                    </div>
+
+                                    <!-- Lista de tarefas -->
+                                    <div id="project-checklist-list" class="space-y-3 pt-4">
+                                        <!-- Dynamic Checklist Items -->
+                                    </div>
+                                </section>
                             </div>
-                            <div id="project-deliveries-list" class="grid grid-cols-2 gap-4">
-                                <!-- Dynamic List -->
+
+                            <!-- Revisões e Entregas (Pastas Sanfonadas) -->
+                            <div class="space-y-6">
+                                <!-- Bloco de Revisões -->
+                                <section class="glass-card p-6 border-white/5 space-y-4">
+                                    <div class="flex items-center justify-between cursor-pointer" data-bs-toggle="collapse" data-bs-target="#revisions-collapse">
+                                        <h3 class="text-[10px] font-black text-purple-400 uppercase tracking-widest flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">history</span> Histórico de Revisões
+                                        </h3>
+                                        <span class="material-symbols-outlined text-gray-500">expand_more</span>
+                                    </div>
+                                    <div id="revisions-collapse" class="collapse show space-y-4 pt-2">
+                                        <button type="button" class="w-full bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest border border-purple-500/20 transition-all cursor-pointer" id="btn-new-revision">Registrar Revisão</button>
+                                        <div id="project-revisions-list" class="space-y-3 max-h-60 overflow-y-auto pr-1 scrollbar-hide">
+                                            <!-- Dynamic Revisions -->
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- Bloco de Entregas -->
+                                <section class="glass-card p-6 border-white/5 space-y-4">
+                                    <div class="flex items-center justify-between cursor-pointer" data-bs-toggle="collapse" data-bs-target="#deliveries-collapse">
+                                        <h3 class="text-[10px] font-black text-emerald-400 uppercase tracking-widest flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">package_2</span> Arquivos de Entrega
+                                        </h3>
+                                        <span class="material-symbols-outlined text-gray-500">expand_more</span>
+                                    </div>
+                                    <div id="deliveries-collapse" class="collapse show space-y-4 pt-2">
+                                        <button type="button" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest border border-emerald-500/20 transition-all cursor-pointer" id="btn-new-delivery">Nova Entrega</button>
+                                        <div id="project-deliveries-list" class="space-y-3 max-h-60 overflow-y-auto pr-1 scrollbar-hide text-left">
+                                            <!-- Dynamic Deliveries -->
+                                        </div>
+                                    </div>
+                                </section>
                             </div>
                         </div>
                     </div>
 
-                    <!-- TAB 4: LOGS -->
-                    <div class="tab-pane fade h-full" id="timeline-content" role="tabpanel">
-                        <div id="project-logs-timeline" class="space-y-6 overflow-y-auto pr-2 scrollbar-hide">
-                            <!-- Dynamic Logs -->
+                    <!-- TAB 4: CHAT & HISTÓRICO -->
+                    <div class="tab-pane fade h-full" id="chat-history-tab-content" role="tabpanel">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
+                            <!-- Timeline Audit Log (Colspan 2) -->
+                            <div class="lg:col-span-2 space-y-6">
+                                <section class="glass-card p-8 border-white/5 space-y-6">
+                                    <h3 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm">analytics</span> Histórico de Auditoria do Projeto (Logs)
+                                    </h3>
+                                    <div id="project-logs-timeline" class="space-y-6 max-h-[50vh] overflow-y-auto pr-2 scrollbar-hide">
+                                        <!-- Dynamic Logs -->
+                                    </div>
+                                </section>
+                            </div>
+
+                            <!-- Smart Notes / Notas Internas -->
+                            <div class="space-y-6">
+                                <section class="glass-card p-6 border-white/5 space-y-4">
+                                    <h3 class="text-[10px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm">edit_note</span> Anotações Internas
+                                    </h3>
+                                    <div class="space-y-4">
+                                        <textarea id="project-note-input" class="input-premium h-24 text-xs py-3.5" placeholder="Digite uma anotação importante..."></textarea>
+                                        <button type="button" onclick="saveProjectNote()" class="w-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest border border-amber-500/20 transition-all cursor-pointer">Salvar Nota</button>
+                                        <div id="project-notes-timeline" class="space-y-3 max-h-60 overflow-y-auto pr-1 scrollbar-hide text-left">
+                                            <!-- Dynamic Notes -->
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 5: ESTRATÉGIA IA -->
+                    <div class="tab-pane fade h-full" id="ai-strategy-tab-content" role="tabpanel">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10">
+                            <!-- Configurações de IA -->
+                            <section class="glass-card p-8 border-orange-500/20 bg-orange-500/[0.02] space-y-6">
+                                <h3 class="text-[10px] font-black text-orange-500 uppercase tracking-widest flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">auto_awesome</span> Parâmetros de Consultoria AI
+                                </h3>
+                                <div class="grid grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Atmosfera Desejada</label>
+                                        <select name="desiredAtmosphere" form="projectForm" class="input-premium" disabled>
+                                            <option value="Fotorrealista Premium">Fotorrealista Premium</option>
+                                            <option value="Cinematográfico">Cinematográfico</option>
+                                            <option value="Drama & Contraste">Drama & Contraste</option>
+                                            <option value="Iluminação Minimalista">Iluminação Minimalista</option>
+                                            <option value="Vibe Escandinava">Vibe Escandinava</option>
+                                            <option value="Tarde Aconchegante">Tarde Aconchegante</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Nível de Humanização</label>
+                                        <select name="humanizationLevel" form="projectForm" class="input-premium" disabled>
+                                            <option value="Nenhum">Nenhum</option>
+                                            <option value="Baixo">Baixo (Apenas vegetação)</option>
+                                            <option value="Médio">Médio (Pessoas e vegetação)</option>
+                                            <option value="Alto">Alto (Pets, pessoas e carros)</option>
+                                            <option value="Ultra">Ultra (Cena viva com micro-detalhes)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Link do Moodboard / Referências</label>
+                                        <input type="url" name="moodboardUrl" form="projectForm" class="input-premium" placeholder="Ex: https://pinterest.com/..." disabled>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Humor da Iluminação</label>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <label class="flex items-center gap-2 cursor-pointer p-2 bg-black/20 rounded-xl border border-white/5 hover:border-white/10 transition-all select-none">
+                                                <input type="checkbox" name="lightingMood" value="Golden Hour" form="projectForm" class="w-4 h-4 rounded text-indigo-500 bg-black/40 border-white/10 focus:ring-indigo-500/20" disabled>
+                                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Golden Hour</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 cursor-pointer p-2 bg-black/20 rounded-xl border border-white/5 hover:border-white/10 transition-all select-none">
+                                                <input type="checkbox" name="lightingMood" value="Nocturnal" form="projectForm" class="w-4 h-4 rounded text-indigo-500 bg-black/40 border-white/10 focus:ring-indigo-500/20" disabled>
+                                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Nocturnal</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 cursor-pointer p-2 bg-black/20 rounded-xl border border-white/5 hover:border-white/10 transition-all select-none">
+                                                <input type="checkbox" name="lightingMood" value="Overcast" form="projectForm" class="w-4 h-4 rounded text-indigo-500 bg-black/40 border-white/10 focus:ring-indigo-500/20" disabled>
+                                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Overcast</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 cursor-pointer p-2 bg-black/20 rounded-xl border border-white/5 hover:border-white/10 transition-all select-none">
+                                                <input type="checkbox" name="lightingMood" value="High Noon" form="projectForm" class="w-4 h-4 rounded text-indigo-500 bg-black/40 border-white/10 focus:ring-indigo-500/20" disabled>
+                                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">High Noon</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Elementos Especiais (Ex: mobiliário assinado, esculturas...)</label>
+                                        <textarea name="specialElements" form="projectForm" class="input-premium h-20 text-xs py-3.5" placeholder="Descreva móveis ou elements específicos de destaque no render..." disabled></textarea>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Painel de Execução AI -->
+                            <section class="glass-card p-8 border-orange-500/20 bg-orange-500/[0.04] space-y-6 flex flex-col justify-between">
+                                <div class="space-y-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-full bg-orange-500/10 flex items-center justify-center animate-pulse">
+                                            <span class="material-symbols-outlined text-2xl text-orange-500">auto_awesome</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-base font-black text-white tracking-tight">Assistente Virtual de <span class="text-orange-500">Estratégia IA</span></h3>
+                                            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider">Módulos Inteligentes de Produção</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <button type="button" onclick="generateAIRenderPrompt()" class="bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/20 text-orange-400 p-4 rounded-2xl text-left transition-all cursor-pointer group shadow-lg shadow-orange-500/5">
+                                            <span class="material-symbols-outlined text-xl mb-2 group-hover:scale-110 transition-all block">image_search</span>
+                                            <p class="text-[9px] font-black uppercase tracking-widest mb-1">Prompt de Render</p>
+                                            <p class="text-[9px] text-gray-500 leading-snug">Gerar prompt avançado Midjourney/Stable Diffusion.</p>
+                                        </button>
+                                        <button type="button" onclick="generateAIRiskAnalysis()" class="bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/20 text-orange-400 p-4 rounded-2xl text-left transition-all cursor-pointer group shadow-lg shadow-orange-500/5">
+                                            <span class="material-symbols-outlined text-xl mb-2 group-hover:scale-110 transition-all block">analytics</span>
+                                            <p class="text-[9px] font-black uppercase tracking-widest mb-1">Análise de Risco</p>
+                                            <p class="text-[9px] text-gray-500 leading-snug">Prever gargalos operacionais e estimativas de prazos.</p>
+                                        </button>
+                                    </div>
+
+                                    <!-- Resultado AI -->
+                                    <div id="ai-output-container" class="hidden space-y-2.5">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-[8px] font-black text-orange-500 uppercase tracking-widest flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-ping"></span> Resposta do Assistente</span>
+                                            <button type="button" onclick="copyAIPrompt()" class="text-[9px] font-bold text-gray-400 hover:text-white transition-all flex items-center gap-1 cursor-pointer">
+                                                <span class="material-symbols-outlined text-xs">content_copy</span> Copiar
+                                            </button>
+                                        </div>
+                                        <div class="p-4 bg-black/40 border border-white/5 rounded-2xl text-[10px] text-gray-300 leading-relaxed font-medium text-left custom-scrollbar overflow-y-auto max-h-48 border-orange-500/10" id="ai-output-box"></div>
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                     </div>
                 </div>
@@ -388,10 +1007,116 @@
     </div>
 </div>
 
+<!-- ==========================================
+     MODAL: REGISTRAR REVISÃO (Project)
+     ========================================== -->
+<div class="modal fade" id="newRevisionModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-white/10 bg-dark-950 p-8 rounded-[2.5rem]">
+            <h3 class="text-xl font-black text-white mb-6 tracking-tight flex items-center gap-2">
+                <span class="material-symbols-outlined text-purple-400">history</span> Registrar <span class="text-purple-400">Revisão</span>
+            </h3>
+            <form id="newRevisionForm" class="space-y-4">
+                <div>
+                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Descrição da Revisão</label>
+                    <textarea name="description" class="input-premium h-24 text-xs py-3.5" placeholder="Descreva os ajustes solicitados pelo cliente..." required></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Versão</label>
+                        <input type="number" name="version" class="input-premium" value="1" required>
+                    </div>
+                    <div>
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Status Inicial</label>
+                        <select name="status" class="input-premium">
+                            <option value="solicitada">Solicitada</option>
+                            <option value="em_analise">Em Análise</option>
+                            <option value="aprovada">Aprovada</option>
+                            <option value="rejeitada">Rejeitada</option>
+                            <option value="concluida">Concluída</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Custo Adicional (R$)</label>
+                        <input type="number" step="0.01" name="financialImpact" class="input-premium" value="0.00">
+                    </div>
+                    <div>
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Impacto no Prazo (Dias)</label>
+                        <input type="number" name="deadlineImpact" class="input-premium" value="0">
+                    </div>
+                </div>
+                <div class="pt-6 border-t border-white/5 flex gap-4">
+                    <button type="submit" class="flex-1 bg-purple-500 text-white py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all">Salvar Revisão</button>
+                    <button type="button" class="flex-1 bg-white/5 text-white py-3 rounded-xl font-black text-[9px] uppercase tracking-widest border border-white/10 transition-all" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     MODAL: NOVA ENTREGA (Project)
+     ========================================== -->
+<div class="modal fade" id="newDeliveryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-white/10 bg-dark-950 p-8 rounded-[2.5rem]">
+            <h3 class="text-xl font-black text-white mb-6 tracking-tight flex items-center gap-2">
+                <span class="material-symbols-outlined text-emerald-400">package_2</span> Nova <span class="text-emerald-400">Entrega</span>
+            </h3>
+            <form id="newDeliveryForm" class="space-y-4">
+                <div>
+                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Título da Entrega</label>
+                    <input type="text" name="title" class="input-premium" placeholder="Ex: Renders Finais - Primeira Prévia" required>
+                </div>
+                <div>
+                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">URL de Download (Opcional)</label>
+                    <input type="url" name="downloadUrl" class="input-premium" placeholder="https://wetransfer.com/...">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Data de Entrega</label>
+                        <input type="date" name="scheduledDate" class="input-premium" required>
+                    </div>
+                    <div>
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Status Inicial</label>
+                        <select name="status" class="input-premium">
+                            <option value="pendente">Pendente</option>
+                            <option value="entregue">Entregue</option>
+                            <option value="aprovado">Aprovado</option>
+                            <option value="atrasado">Atrasado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="pt-6 border-t border-white/5 flex gap-4">
+                    <button type="submit" class="flex-1 bg-emerald-500 text-white py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all">Salvar Entrega</button>
+                    <button type="button" class="flex-1 bg-white/5 text-white py-3 rounded-xl font-black text-[9px] uppercase tracking-widest border border-white/10 transition-all" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <style>
+    .cards-list:has(.kanban-card) .kanban-empty-state { display: none !important; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .text-gradient-indigo {
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+    .scrollbar-premium::-webkit-scrollbar { height: 6px; }
+    .scrollbar-premium::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
+    .scrollbar-premium::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+    .scrollbar-premium::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.3); }
+
     .kanban-card:hover {
-        transform: scale(1.03) translateY(-4px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 25px rgba(99,102,241,0.1);
+        transform: scale(1.02) translateY(-4px);
         z-index: 10;
     }
     .sortable-ghost {
@@ -415,6 +1140,14 @@
         outline: none;
         box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
     }
+    .modal-tab-btn {
+        color: rgba(255,255,255,0.3);
+    }
+    .modal-tab-btn.active {
+        color: #6366f1;
+        background: rgba(99,102,241,0.1);
+        box-shadow: inset 0 0 10px rgba(99,102,241,0.2);
+    }
     .input-premium:disabled {
         opacity: 0.5;
         cursor: not-allowed;
@@ -427,12 +1160,187 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // === INITIALIZATION ===
+    let currentProjectId = null;
     const kanbanLists = document.querySelectorAll('.cards-list');
     const columnModalElement = document.getElementById('columnSettingsModal');
     const projectModalElement = document.getElementById('projectDetailModal');
     
     const columnModal = columnModalElement ? new bootstrap.Modal(columnModalElement) : null;
     const projectDetailModal = projectModalElement ? new bootstrap.Modal(projectModalElement) : null;
+
+    // === NEW TRANSACTION VIA INLINE AJAX FORM ===
+    const financeFormContainer = document.getElementById('project-inline-finance-form-container');
+    const inlineProjectId = document.getElementById('inline-finance-project-id');
+    const inlineType = document.getElementById('inline-finance-type');
+    const inlineTitleType = document.getElementById('inline-finance-title-type');
+    const inlineTitleIcon = document.getElementById('inline-finance-title-icon');
+    const inlineStatus = document.getElementById('inline-finance-status');
+    const inlineCategory = document.getElementById('inline-finance-category');
+
+    document.getElementById('btn-project-new-receita')?.addEventListener('click', () => {
+        if (!currentProjectId) return;
+        inlineProjectId.value = currentProjectId;
+        inlineType.value = 'receita';
+        inlineTitleType.innerText = 'Receita';
+        inlineTitleType.className = 'text-emerald-400';
+        inlineTitleIcon.innerText = 'add_circle';
+        inlineTitleIcon.className = 'material-symbols-outlined text-xl text-emerald-400';
+        
+        // Setup status and category options
+        inlineStatus.innerHTML = `
+            <option value="pendente">Pendente</option>
+            <option value="recebido" selected>Recebido</option>
+        `;
+        
+        inlineCategory.innerHTML = `
+            <option value="Contrato" selected>Contrato (CRM)</option>
+            <option value="Comissão">Comissão</option>
+            <option value="Outro">Outro</option>
+        `;
+
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('inline-finance-due-date').value = today;
+        document.getElementById('inline-finance-competence-date').value = today;
+
+        financeFormContainer.classList.remove('hidden');
+        financeFormContainer.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('btn-project-new-despesa')?.addEventListener('click', () => {
+        if (!currentProjectId) return;
+        inlineProjectId.value = currentProjectId;
+        inlineType.value = 'despesa';
+        inlineTitleType.innerText = 'Despesa';
+        inlineTitleType.className = 'text-red-400';
+        inlineTitleIcon.innerText = 'remove_circle';
+        inlineTitleIcon.className = 'material-symbols-outlined text-xl text-red-400';
+        
+        // Setup status and category options
+        inlineStatus.innerHTML = `
+            <option value="pendente">Pendente</option>
+            <option value="pago" selected>Pago</option>
+        `;
+
+        inlineCategory.innerHTML = `
+            <option value="Freelancer" selected>Freelancer</option>
+            <option value="Material">Material/Textura/Assets</option>
+            <option value="Infraestrutura">Licença Software/Hardware</option>
+            <option value="Comissão">Comissão de Venda</option>
+            <option value="Outro">Outro</option>
+        `;
+
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('inline-finance-due-date').value = today;
+        document.getElementById('inline-finance-competence-date').value = today;
+
+        financeFormContainer.classList.remove('hidden');
+        financeFormContainer.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('btn-project-inline-finance-cancel')?.addEventListener('click', () => {
+        financeFormContainer.classList.add('hidden');
+    });
+
+    // Handle AJAX submit for the inline finance form
+    document.getElementById('projectInlineFinanceForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(this).entries());
+        if (data.amount) data.amount = parseFloat(data.amount);
+        
+        try {
+            const res = await fetch('/admin/api/financeiro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.success) {
+                window.showNotification('Lançamento financeiro adicionado com sucesso!', 'success');
+                financeFormContainer.classList.add('hidden');
+                this.reset();
+                openProjectDetails(currentProjectId);
+            } else {
+                window.showNotification('Erro: ' + (result.message || 'Erro desconhecido'), 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            window.showNotification('Erro de rede ao salvar lançamento', 'error');
+        }
+    });
+
+    // === TIME TRACKER CLICK ACTION ===
+    document.getElementById('btn-modal-tracker-action')?.addEventListener('click', async function() {
+        if (!currentProjectId) return;
+        const isRunning = this.classList.contains('bg-red-500');
+        const url = isRunning ? '/admin/api/tracker/stop' : '/admin/api/tracker/start';
+        const body = isRunning ? {} : { 
+            projectId: currentProjectId, 
+            taskType: 'production', 
+            description: `Produção 3D no projeto ID #${currentProjectId}` 
+        };
+
+        try {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.showNotification(
+                    isRunning ? 'Tempo de produção pausado e registrado!' : 'Tempo de produção iniciado!', 
+                    'success'
+                );
+                openProjectDetails(currentProjectId);
+            } else {
+                window.showNotification('Erro: ' + (data.error || 'Erro desconhecido'), 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            window.showNotification('Erro de rede ao processar timer', 'error');
+        }
+    });
+
+    // === TAB SWITCHING (CRM PARITY) ===
+    function switchTab(tabId, el) {
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+        const targetTab = document.getElementById(`tab-${tabId}`);
+        if (targetTab) targetTab.classList.remove('hidden');
+        
+        document.querySelectorAll('.tab-btn-nav').forEach(btn => {
+            btn.classList.remove('bg-indigo-500', 'text-white', 'shadow-xl', 'shadow-indigo-500/20');
+            btn.classList.add('text-gray-500');
+        });
+        
+        el.classList.add('bg-indigo-500', 'text-white', 'shadow-xl', 'shadow-indigo-500/20');
+        el.classList.remove('text-gray-500');
+
+        // Hide/Show projects control bar based on current tab
+        const ctrlBar = document.getElementById('projects-control-bar');
+        if (ctrlBar) {
+            if (tabId === 'kanban') {
+                ctrlBar.classList.remove('hidden');
+                const savedMode = localStorage.getItem('projects_view_mode') || 'kanban';
+                window.changeProjectsView(savedMode);
+            } else {
+                ctrlBar.classList.add('hidden');
+            }
+        }
+    }
+
+    document.querySelectorAll('.tab-btn-nav').forEach(btn => {
+        btn.addEventListener('click', function() {
+            switchTab(this.dataset.tab, this);
+        });
+    });
+
+    // === MODAL TAB SWITCHING ===
+    document.querySelectorAll('.modal-tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.modal-tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
 
     // === KANBAN DRAG & DROP ===
     kanbanLists.forEach(list => {
@@ -458,6 +1366,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === GLOBAL EVENT DELEGATION ===
     document.addEventListener('click', function(e) {
+        if (e.target.closest('.stop-propagation') || e.target.closest('[data-bs-toggle="dropdown"]')) {
+            return;
+        }
+
         const card = e.target.closest('.kanban-card');
         if (card) {
             openProjectDetails(card.dataset.id);
@@ -509,12 +1421,13 @@ document.addEventListener('DOMContentLoaded', () => {
     btnCancelEdit?.addEventListener('click', () => toggleEditMode(false));
 
     // === PROJECT DETAILS LOADER ===
-    function openProjectDetails(id) {
+    function openProjectDetails(id, startInEditMode = false) {
+        currentProjectId = id;
         fetch(`/admin/api/projects/${id}`)
             .then(res => res.json())
-            .then(({ project }) => {
+            .then(({ project, activeTimeLog, currentUserId }) => {
                 const form = document.getElementById('projectForm');
-                toggleEditMode(false);
+                toggleEditMode(startInEditMode);
 
                 form.querySelector('[name="id"]').value = project.id;
                 form.querySelector('[name="title"]').value = project.title || '';
@@ -527,14 +1440,886 @@ document.addEventListener('DOMContentLoaded', () => {
                 form.querySelector('[name="software"]').value = project.software || '';
                 form.querySelector('[name="renderEngine"]').value = project.renderEngine || '';
                 form.querySelector('[name="productionDays"]').value = project.productionDays || 0;
+                
+                // Planned hours and Co-responsibles mapping
+                form.querySelector('[name="plannedHours"]').value = project.plannedHours || 0;
+                form.querySelector('[name="extraResponsibles"]').value = project.extraResponsibles || '';
+
+                // Novos campos sincronizados CRM
+                form.querySelector('[name="notes"]').value = project.notes || '';
+                form.querySelector('[name="installments"]').value = project.installments || 1;
+                form.querySelector('[name="revisionsIncluded"]').value = project.revisionsIncluded || '';
+                form.querySelector('[name="receivedFormat"]').value = project.receivedFormat || '';
+                form.querySelector('[name="fileQuality"]').value = project.fileQuality || 'excelente';
+                form.querySelector('[name="driveLink"]').value = project.driveLink || '';
+                
+                const hasUrg = project.hasUrgency || false;
+                form.querySelector('[name="hasUrgency"]').checked = hasUrg;
+                document.getElementById('urgency-fee-container').classList.toggle('hidden', !hasUrg);
+                form.querySelector('[name="urgencyFee"]').value = project.urgencyFee || 0;
+
+                // Campos de IA (Aba 5)
+                form.querySelector('[name="desiredAtmosphere"]').value = project.desiredAtmosphere || 'Fotorrealista Premium';
+                form.querySelector('[name="moodboardUrl"]').value = project.moodboardUrl || '';
+                form.querySelector('[name="humanizationLevel"]').value = project.humanizationLevel || 'Médio';
+                form.querySelector('[name="specialElements"]').value = project.specialElements || '';
+
+                // Mapeamento de checkboxes de Iluminação (lightingMood)
+                const moods = project.lightingMood || [];
+                form.querySelectorAll('[name="lightingMood"]').forEach(cb => {
+                    cb.checked = moods.includes(cb.value);
+                });
+
+                // Chamar carregadores dinâmicos de sub-itens e seções
+                loadProjectRevisions(id);
+                loadProjectDeliveries(id);
+                loadProjectChecklist(id);
+                loadProjectNotes(id);
+
+                // Ocultar container de output de IA ao abrir
+                document.getElementById('ai-output-container')?.classList.add('hidden');
+                document.getElementById('ai-output-box').innerHTML = '';
+
+                // Contact & Co-responsibles Client details
+                const cName = document.getElementById('client-widget-name');
+                const cEmail = document.getElementById('client-widget-email');
+                const cPhone = document.getElementById('client-widget-phone');
+                if (project.customer) {
+                    cName.innerText = project.customer.name || '---';
+                    cEmail.innerText = project.customer.email || '---';
+                    cPhone.innerText = project.customer.phone || '---';
+                } else if (project.client) {
+                    cName.innerText = project.client || '---';
+                    cEmail.innerText = '---';
+                    cPhone.innerText = '---';
+                } else {
+                    cName.innerText = 'Nenhum cliente associado';
+                    cEmail.innerText = '---';
+                    cPhone.innerText = '---';
+                }
+
+                // Time execution widget computation
+                let totalMinutes = 0;
+                if (project.timeLogs && project.timeLogs.length > 0) {
+                    project.timeLogs.forEach(log => {
+                        if (log.status === 'completed') {
+                            totalMinutes += parseInt(log.durationMinutes) || 0;
+                        }
+                    });
+                }
+                const totalHours = parseFloat((totalMinutes / 60).toFixed(1));
+                const planned = parseInt(project.plannedHours) || 0;
+                const remaining = Math.max(0, planned - totalHours);
+                
+                document.getElementById('tracker-widget-executed').innerText = totalHours;
+                document.getElementById('tracker-widget-planned').innerText = planned;
+                document.getElementById('tracker-widget-planned-details').innerText = planned + 'h';
+                document.getElementById('tracker-widget-executed-details').innerText = totalHours + 'h';
+                document.getElementById('tracker-widget-remaining-details').innerText = remaining + 'h';
+                
+                const percent = planned > 0 ? Math.min(100, Math.round((totalHours / planned) * 100)) : 0;
+                document.getElementById('tracker-widget-progressbar').style.width = percent + '%';
+
+                // Timer engine active tracker check
+                if (window.activeTrackerTickInterval) {
+                    clearInterval(window.activeTrackerTickInterval);
+                    window.activeTrackerTickInterval = null;
+                }
+
+                const trackerBtn = document.getElementById('btn-modal-tracker-action');
+                const trackerTimer = document.getElementById('tracker-widget-timer');
+                const trackerPulse = document.getElementById('tracker-widget-pulse');
+
+                if (activeTimeLog) {
+                    if (activeTimeLog.projectId === project.id) {
+                        trackerBtn.className = "h-10 px-6 rounded-xl text-[9px] font-black uppercase tracking-widest text-white shadow-lg transition-all flex items-center gap-2 bg-red-500 shadow-red-500/20";
+                        trackerBtn.innerHTML = `<span class="material-symbols-outlined text-sm animate-spin">sync</span> Parar Rastreio`;
+                        trackerPulse.className = "w-2.5 h-2.5 rounded-full bg-red-500 inline-block animate-pulse";
+                        
+                        const startTime = new Date(activeTimeLog.startTime).getTime();
+                        function tick() {
+                            const now = new Date().getTime();
+                            const diff = now - startTime;
+                            const secs = Math.floor((diff / 1000) % 60);
+                            const mins = Math.floor((diff / (1000 * 60)) % 60);
+                            const hrs = Math.floor((diff / (1000 * 60 * 60)));
+                            trackerTimer.innerText = 
+                                String(hrs).padStart(2, '0') + ':' + 
+                                String(mins).padStart(2, '0') + ':' + 
+                                String(secs).padStart(2, '0');
+                        }
+                        tick();
+                        window.activeTrackerTickInterval = setInterval(tick, 1000);
+                    } else {
+                        trackerBtn.className = "h-10 px-6 rounded-xl text-[9px] font-black uppercase tracking-widest text-white shadow-lg transition-all flex items-center gap-2 bg-gray-600 cursor-not-allowed";
+                        trackerBtn.innerHTML = `<span class="material-symbols-outlined text-sm">lock</span> Rastreando outro`;
+                        trackerBtn.disabled = true;
+                        trackerPulse.className = "w-2.5 h-2.5 rounded-full bg-gray-500 inline-block";
+                        trackerTimer.innerText = "Rastreando outro...";
+                    }
+                } else {
+                    trackerBtn.className = "h-10 px-6 rounded-xl text-[9px] font-black uppercase tracking-widest text-white shadow-lg transition-all flex items-center gap-2 bg-indigo-500 shadow-indigo-500/20";
+                    trackerBtn.innerHTML = `<span class="material-symbols-outlined text-sm">play_arrow</span> Iniciar Rastreio`;
+                    trackerBtn.disabled = false;
+                    trackerPulse.className = "w-2.5 h-2.5 rounded-full bg-gray-600 inline-block";
+                    trackerTimer.innerText = "00:00:00";
+                }
+
+                // Render Logs history tab timeline
+                const logsEl = document.getElementById('project-logs-timeline');
+                if (logsEl) {
+                    let logsHtml = '';
+                    if (project.logs && project.logs.length > 0) {
+                        project.logs.forEach(log => {
+                            const dateStr = new Date(log.createdAt).toLocaleString('pt-BR');
+                            let icon = 'info';
+                            let iconClass = 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20';
+                            
+                            if (log.action === 'STATUS_CHANGE') {
+                                icon = 'manufacturing';
+                                iconClass = 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+                            } else if (log.action === 'REVISION_ADD') {
+                                icon = 'history';
+                                iconClass = 'bg-purple-500/10 text-purple-400 border border-purple-500/20';
+                            } else if (log.action === 'DELIVERY_ADD') {
+                                icon = 'package_2';
+                                iconClass = 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+                            } else if (log.action === 'FINANCE_ADD') {
+                                icon = 'payments';
+                                iconClass = 'bg-teal-500/10 text-teal-400 border border-teal-500/20';
+                            } else if (log.action === 'TIME_TRACKING') {
+                                icon = 'schedule';
+                                iconClass = 'bg-pink-500/10 text-pink-400 border border-pink-500/20';
+                            }
+
+                            logsHtml += `
+                                <div class="flex gap-4 items-start relative group">
+                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${iconClass}">
+                                        <span class="material-symbols-outlined text-base">${icon}</span>
+                                    </div>
+                                    <div class="flex-1 bg-white/2 border border-white/5 p-4 rounded-2xl group-hover:border-white/10 transition-all">
+                                        <div class="flex justify-between items-center mb-1.5">
+                                            <h5 class="text-xs font-bold text-white">${log.userName}</h5>
+                                            <span class="text-[9px] font-mono text-gray-500 font-bold">${dateStr}</span>
+                                        </div>
+                                        <p class="text-[10px] text-gray-400 font-medium leading-relaxed">${log.details}</p>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        logsHtml = `
+                            <div class="p-8 text-center text-gray-500">
+                                <span class="material-symbols-outlined text-2xl mb-1 block">analytics</span>
+                                Nenhum log registrado para este projeto ainda.
+                            </div>
+                        `;
+                    }
+                    logsEl.innerHTML = logsHtml;
+                }
 
                 // Labels
                 document.getElementById('drawer-id-label').innerText = `#PROJ-${String(project.id).padStart(4, '0')}`;
                 document.getElementById('drawer-status-label').innerText = project.status.toUpperCase();
                 document.getElementById('drawer-name').innerText = project.title;
 
+                // Reset to proposal tab when opening modal
+                const firstTabBtn = document.getElementById('proposal-tab');
+                if (firstTabBtn) {
+                    const tabTrigger = new bootstrap.Tab(firstTabBtn);
+                    tabTrigger.show();
+                }
+
+                // Render Finance tab content
+                const financeList = document.getElementById('project-finance-list');
+                const revenueEl = document.getElementById('project-finance-revenue');
+                const expensesEl = document.getElementById('project-finance-expenses');
+                const marginEl = document.getElementById('project-finance-margin');
+
+                let totalRevenue = 0;
+                let totalExpenses = 0;
+                let listHtml = '';
+
+                if (project.transactions && project.transactions.length > 0) {
+                    project.transactions.forEach(t => {
+                        const amt = parseFloat(t.amount) || 0;
+                        if (t.type === 'receita') {
+                            totalRevenue += amt;
+                        } else if (t.type === 'despesa') {
+                            totalExpenses += amt;
+                        }
+
+                        const typeIcon = t.type === 'receita' 
+                            ? '<span class="material-symbols-outlined text-emerald-500 text-sm">add_circle</span>' 
+                            : '<span class="material-symbols-outlined text-red-500 text-sm">remove_circle</span>';
+                        
+                        const typeText = t.type === 'receita' ? 'Receita' : 'Despesa';
+                        
+                        const statusClass = t.status === 'pago' || t.status === 'recebido'
+                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                            : 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+                        
+                        const statusText = t.status === 'pago' || t.status === 'recebido' ? 'Pago' : 'Pendente';
+
+                        const formattedAmount = 'R$ ' + amt.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                        const compDate = t.competenceDate ? new Date(t.competenceDate).toLocaleDateString('pt-BR') : (t.dueDate ? new Date(t.dueDate).toLocaleDateString('pt-BR') : '---');
+
+                        listHtml += `
+                            <tr class="hover:bg-white/[0.01]">
+                                <td class="p-4 font-bold text-white">${t.description}</td>
+                                <td class="p-4"><span class="flex items-center gap-1">${typeIcon} ${typeText}</span></td>
+                                <td class="p-4 font-mono font-bold ${t.type === 'receita' ? 'text-emerald-400' : 'text-red-400'}">${formattedAmount}</td>
+                                <td class="p-4 text-gray-500 font-medium">${compDate}</td>
+                                <td class="p-4">
+                                    <span class="px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-wider ${statusClass}">
+                                        ${statusText}
+                                    </span>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    listHtml = `
+                        <tr>
+                            <td colspan="5" class="p-8 text-center text-gray-500">
+                                <span class="material-symbols-outlined text-2xl mb-1 block">payments</span>
+                                Nenhuma transação vinculada a este projeto.
+                            </td>
+                        </tr>
+                    `;
+                }
+
+                if (financeList) financeList.innerHTML = listHtml;
+                if (revenueEl) revenueEl.innerText = 'R$ ' + totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                if (expensesEl) expensesEl.innerText = 'R$ ' + totalExpenses.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                
+                const margin = totalRevenue - totalExpenses;
+                const marginPercent = totalRevenue > 0 ? Math.round((margin / totalRevenue) * 100) : 0;
+                if (marginEl) {
+                    marginEl.innerText = 'R$ ' + margin.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ` (${marginPercent}%)`;
+                    if (margin >= 0) {
+                        marginEl.className = "text-xl font-black text-emerald-400 tracking-tighter";
+                    } else {
+                        marginEl.className = "text-xl font-black text-red-400 tracking-tighter";
+                    }
+                }
+
                 projectDetailModal.show();
             });
+    }
+
+    // Expose to window scope for onclick actions
+    window.openProjectDetails = openProjectDetails;
+
+    // ==========================================
+    // SEÇÃO OPERACIONAL E IA: HISTÓRICO DE REVISÕES
+    // ==========================================
+    window.loadProjectRevisions = function(projectId) {
+        fetch(`/admin/api/projects/${projectId}/revisions`)
+            .then(res => res.json())
+            .then(data => {
+                const revList = document.getElementById('project-revisions-list');
+                if (revList && data.success) {
+                    let revHtml = '';
+                    if (data.revisions && data.revisions.length > 0) {
+                        data.revisions.forEach(r => {
+                            let statusClass = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+                            if (r.status === 'aprovada' || r.status === 'concluida') {
+                                statusClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+                            } else if (r.status === 'rejeitada') {
+                                statusClass = 'bg-red-500/10 text-red-400 border-red-500/20';
+                            }
+                            
+                            revHtml += `
+                                <div class="p-4 bg-white/2 border border-white/5 rounded-2xl flex flex-col gap-2 relative group hover:border-white/10 transition-all text-left">
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-[8px] font-black text-indigo-400 uppercase tracking-widest">Versão ${r.version}</span>
+                                        <span class="px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-wider ${statusClass}">${r.status.toUpperCase()}</span>
+                                    </div>
+                                    <p class="text-[10px] text-gray-300 leading-relaxed font-medium">${r.description}</p>
+                                    <div class="flex items-center gap-4 text-[8px] text-gray-500 pt-2 border-t border-white/5 font-bold">
+                                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-red-400">payments</span> Impacto: R$ ${parseFloat(r.financialImpact).toFixed(2)}</span>
+                                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-orange-400">schedule</span> Prazo: +${r.deadlineImpact} dias</span>
+                                    </div>
+                                    <button type="button" onclick="deleteRevision('${r.id}')" class="absolute right-4 top-4 text-gray-500 hover:text-red-400 transition-all opacity-0 group-hover:opacity-100 cursor-pointer">
+                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    </button>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        revHtml = `
+                            <div class="p-6 text-center text-gray-500 text-[10px] font-bold">
+                                Nenhuma revisão registrada ainda.
+                            </div>
+                        `;
+                    }
+                    revList.innerHTML = revHtml;
+                }
+            });
+    };
+
+    window.deleteRevision = function(id) {
+        if (!confirm('Deseja realmente excluir esta revisão?')) return;
+        fetch(`/admin/api/revisions/${id}`, {
+            method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.showNotification('Revisão excluída!', 'success');
+                window.loadProjectRevisions(currentProjectId);
+            } else {
+                window.showNotification('Erro ao excluir revisão', 'error');
+            }
+        });
+    };
+
+    // ==========================================
+    // SEÇÃO OPERACIONAL E IA: ARQUIVOS DE ENTREGA
+    // ==========================================
+    window.loadProjectDeliveries = function(projectId) {
+        fetch(`/admin/api/projects/${projectId}/deliveries`)
+            .then(res => res.json())
+            .then(deliveries => {
+                const delList = document.getElementById('project-deliveries-list');
+                if (delList) {
+                    let delHtml = '';
+                    if (deliveries && deliveries.length > 0) {
+                        deliveries.forEach(d => {
+                            const dateStr = d.scheduledDate ? new Date(d.scheduledDate).toLocaleDateString('pt-BR') : '---';
+                            let statusClass = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+                            if (d.status === 'entregue' || d.status === 'aprovado') {
+                                statusClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+                            } else if (d.status === 'atrasado') {
+                                statusClass = 'bg-red-500/10 text-red-400 border-red-500/20';
+                            }
+                            
+                            const linkButton = d.downloadUrl 
+                                ? `<a href="${d.downloadUrl}" target="_blank" class="px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-400 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all flex items-center gap-1 cursor-pointer">
+                                    <span class="material-symbols-outlined text-[10px]">download</span> Baixar
+                                   </a>`
+                                : '';
+
+                            delHtml += `
+                                <div class="p-4 bg-white/2 border border-white/5 rounded-2xl flex flex-col justify-between gap-3 relative group hover:border-white/10 transition-all text-left">
+                                    <div class="flex justify-between items-start gap-4">
+                                        <div>
+                                            <h5 class="text-xs font-bold text-white mb-1.5">${d.title}</h5>
+                                            <span class="text-[8px] font-mono text-gray-500 font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">calendar_today</span> Agendado: ${dateStr}</span>
+                                        </div>
+                                        <span class="px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-wider ${statusClass}">${d.status.toUpperCase()}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center pt-2 border-t border-white/5">
+                                        <div class="flex items-center gap-2">
+                                            <input type="checkbox" ${d.confirmation ? 'checked' : ''} onchange="toggleDeliveryConfirmation('${d.id}', this.checked)" class="w-4 h-4 rounded border-white/10 bg-black/40 text-indigo-500 cursor-pointer">
+                                            <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Confirmado</span>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            ${linkButton}
+                                            <button type="button" onclick="deleteDelivery('${d.id}')" class="w-7 h-7 bg-white/5 hover:bg-red-500/10 border border-white/5 text-gray-400 hover:text-red-400 rounded-lg flex items-center justify-center transition-all cursor-pointer">
+                                                <span class="material-symbols-outlined text-xs">delete</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        delHtml = `
+                            <div class="p-6 text-center text-gray-500 text-[10px] font-bold col-span-2">
+                                Nenhuma entrega registrada ainda.
+                            </div>
+                        `;
+                    }
+                    delList.innerHTML = delHtml;
+                }
+            });
+    };
+
+    window.toggleDeliveryConfirmation = function(id, checked) {
+        fetch(`/admin/api/deliveries/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ confirmation: checked })
+        })
+        .then(res => res.json())
+        .then(data => {
+            window.showNotification('Status de confirmação atualizado!', 'success');
+            window.loadProjectDeliveries(currentProjectId);
+        });
+    };
+
+    window.deleteDelivery = function(id) {
+        if (!confirm('Deseja realmente excluir esta entrega?')) return;
+        fetch(`/admin/api/deliveries/${id}`, {
+            method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.showNotification('Entrega excluída!', 'success');
+                window.loadProjectDeliveries(currentProjectId);
+            } else {
+                window.showNotification('Erro ao excluir entrega', 'error');
+            }
+        });
+    };
+
+    // ==========================================
+    // SEÇÃO OPERACIONAL E IA: CHECKLIST OPERACIONAL
+    // ==========================================
+    window.loadProjectChecklist = function(projectId) {
+        const listContainer = document.getElementById('project-checklist-list');
+        if (!listContainer) return;
+        
+        let checklist = [];
+        try {
+            checklist = JSON.parse(localStorage.getItem(`project_checklist_${projectId}`)) || [
+                { id: 1, title: 'Modelagem 3D Base', completed: false },
+                { id: 2, title: 'Texturização & Materiais', completed: false },
+                { id: 3, title: 'Iluminação & Câmeras', completed: false },
+                { id: 4, title: 'Pós-produção Finais', completed: false }
+            ];
+        } catch (e) {
+            checklist = [];
+        }
+        
+        if (checklist.length === 0) {
+            listContainer.innerHTML = `
+                <div class="py-6 text-center text-gray-500 text-[10px] font-bold">
+                    Nenhum item no checklist. Adicione acima!
+                </div>
+            `;
+            return;
+        }
+        
+        listContainer.innerHTML = checklist.map(item => `
+            <div class="p-3 bg-white/2 border border-white/5 rounded-2xl flex items-center justify-between gap-4 group hover:border-white/10 transition-all">
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" ${item.completed ? 'checked' : ''} onchange="toggleChecklistItem(${item.id}, this.checked)" class="w-4 h-4 rounded border-white/10 bg-black/40 text-indigo-500 cursor-pointer">
+                    <span class="text-[11px] font-medium transition-all ${item.completed ? 'text-gray-500 line-through' : 'text-white'}">${item.title}</span>
+                </div>
+                <button type="button" onclick="deleteChecklistItem(${item.id})" class="text-gray-600 hover:text-red-400 transition-all opacity-0 group-hover:opacity-100 cursor-pointer">
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                </button>
+            </div>
+        `).join('');
+    };
+
+    // Adicionar item ao checklist
+    document.getElementById('btn-project-add-task')?.addEventListener('click', () => {
+        const input = document.getElementById('project-new-task-input');
+        if (!input || !input.value.trim()) return;
+        
+        const title = input.value.trim();
+        let checklist = [];
+        try {
+            checklist = JSON.parse(localStorage.getItem(`project_checklist_${currentProjectId}`)) || [];
+        } catch (e) {
+            checklist = [];
+        }
+        
+        const newItem = {
+            id: Date.now(),
+            title,
+            completed: false
+        };
+        
+        checklist.push(newItem);
+        localStorage.setItem(`project_checklist_${currentProjectId}`, JSON.stringify(checklist));
+        input.value = '';
+        window.loadProjectChecklist(currentProjectId);
+        window.showNotification('Sub-tarefa adicionada!', 'success');
+    });
+
+    window.toggleChecklistItem = function(id, completed) {
+        let checklist = [];
+        try {
+            checklist = JSON.parse(localStorage.getItem(`project_checklist_${currentProjectId}`)) || [];
+        } catch (e) {
+            checklist = [];
+        }
+        
+        checklist = checklist.map(item => item.id === id ? { ...item, completed } : item);
+        localStorage.setItem(`project_checklist_${currentProjectId}`, JSON.stringify(checklist));
+        window.loadProjectChecklist(currentProjectId);
+    };
+
+    window.deleteChecklistItem = function(id) {
+        let checklist = [];
+        try {
+            checklist = JSON.parse(localStorage.getItem(`project_checklist_${currentProjectId}`)) || [];
+        } catch (e) {
+            checklist = [];
+        }
+        
+        checklist = checklist.filter(item => item.id !== id);
+        localStorage.setItem(`project_checklist_${currentProjectId}`, JSON.stringify(checklist));
+        window.loadProjectChecklist(currentProjectId);
+        window.showNotification('Tarefa excluída!', 'success');
+    };
+
+    // ==========================================
+    // SEÇÃO OPERACIONAL E IA: ANOTAÇÕES INTERNAS
+    // ==========================================
+    window.loadProjectNotes = function(projectId) {
+        const notesTimeline = document.getElementById('project-notes-timeline');
+        if (!notesTimeline) return;
+        
+        let notes = [];
+        try {
+            notes = JSON.parse(localStorage.getItem(`project_notes_${projectId}`)) || [];
+        } catch (e) {
+            notes = [];
+        }
+        
+        if (notes.length === 0) {
+            notesTimeline.innerHTML = `
+                <div class="py-6 text-center text-gray-500 text-[10px] font-bold">
+                    Nenhuma nota interna anotada.
+                </div>
+            `;
+            return;
+        }
+        
+        notesTimeline.innerHTML = notes.map((n, idx) => `
+            <div class="p-3 bg-white/2 border border-white/5 rounded-xl space-y-1.5 relative group hover:border-white/10 transition-all text-left">
+                <div class="flex justify-between items-center text-[8px] font-bold">
+                    <span class="text-amber-400">NOTA #${idx + 1}</span>
+                    <span class="text-gray-500">${n.date}</span>
+                </div>
+                <p class="text-[10px] text-gray-300 leading-relaxed font-medium">${n.content}</p>
+                <button type="button" onclick="deleteProjectNote(${idx})" class="absolute right-3 top-3 text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
+                    <span class="material-symbols-outlined text-xs">delete</span>
+                </button>
+            </div>
+        `).join('');
+    };
+
+    window.saveProjectNote = function() {
+        const input = document.getElementById('project-note-input');
+        if (!input || !input.value.trim()) return;
+        
+        const content = input.value.trim();
+        let notes = [];
+        try {
+            notes = JSON.parse(localStorage.getItem(`project_notes_${currentProjectId}`)) || [];
+        } catch (e) {
+            notes = [];
+        }
+        
+        const newNote = {
+            content,
+            date: new Date().toLocaleString('pt-BR')
+        };
+        
+        notes.unshift(newNote); // Adiciona no início
+        localStorage.setItem(`project_notes_${currentProjectId}`, JSON.stringify(notes));
+        input.value = '';
+        window.loadProjectNotes(currentProjectId);
+        window.showNotification('Nota salva internamente!', 'success');
+    };
+
+    window.deleteProjectNote = function(idx) {
+        if (!confirm('Deseja realmente excluir esta nota?')) return;
+        
+        let notes = [];
+        try {
+            notes = JSON.parse(localStorage.getItem(`project_notes_${currentProjectId}`)) || [];
+        } catch (e) {
+            notes = [];
+        }
+        
+        notes.splice(idx, 1);
+        localStorage.setItem(`project_notes_${currentProjectId}`, JSON.stringify(notes));
+        window.loadProjectNotes(currentProjectId);
+        window.showNotification('Nota removida!', 'success');
+    };
+
+    // ==========================================
+    // SEÇÃO OPERACIONAL E IA: ASSISTENTE DE ESTRATÉGIA IA
+    // ==========================================
+    window.generateAIRenderPrompt = function() {
+        const title = document.querySelector('#projectForm [name="title"]').value;
+        const category = document.querySelector('#projectForm [name="category"]').value;
+        const style = document.querySelector('#projectForm [name="desiredAtmosphere"]').value || 'Fotorrealista Premium';
+        const elements = document.querySelector('#projectForm [name="specialElements"]').value || '';
+        const lighting = Array.from(document.querySelectorAll('#projectForm [name="lightingMood"]:checked')).map(cb => cb.value).join(', ') || 'Iluminação Natural';
+        const humanization = document.querySelector('#projectForm [name="humanizationLevel"]').value || 'Médio';
+
+        const outputBox = document.getElementById('ai-output-box');
+        const outputContainer = document.getElementById('ai-output-container');
+        if (!outputBox || !outputContainer) return;
+
+        outputContainer.classList.remove('hidden');
+        outputBox.innerHTML = '';
+        
+        const prompt = `**PROMPT DE RENDER DE IA GERADO:**\n\n` + 
+            `*"Hyper-realistic 3D architectural visualization of ${title || 'Luxury Space'}, ${category} design, designed in an exquisite ${style} aesthetic. ` +
+            `The atmosphere is defined by ${lighting} lighting mood. The scene features ${elements || 'premium architectural design and minimal luxury styling'}. ` +
+            `Humanized with ${humanization} details, high-end materials, wood, marble, concrete, glass, foliage, cinematic composition, shot on 35mm lens, f/1.8, photorealistic, Unreal Engine 5 render, highly detailed, 8k resolution, octane render, moodboard matched. --ar 16:9 --v 6.0"*`;
+
+        typeWriterEffect(outputBox, prompt);
+    };
+
+    window.generateAIRiskAnalysis = function() {
+        const title = document.querySelector('#projectForm [name="title"]').value;
+        const complexity = document.querySelector('#projectForm [name="complexity"]').value || 'Média';
+        const urgency = document.querySelector('#projectForm [name="hasUrgency"]').checked;
+        const plannedHours = parseInt(document.querySelector('#projectForm [name="plannedHours"]').value) || 0;
+        const executedHours = parseFloat(document.getElementById('tracker-widget-executed').innerText) || 0;
+        const deadline = document.querySelector('#projectForm [name="deadline"]').value;
+
+        const outputBox = document.getElementById('ai-output-box');
+        const outputContainer = document.getElementById('ai-output-container');
+        if (!outputBox || !outputContainer) return;
+
+        outputContainer.classList.remove('hidden');
+        outputBox.innerHTML = '';
+
+        let riskLevel = 'BAIXO';
+        let riskColor = 'text-emerald-400';
+        let recommendations = '';
+
+        if (urgency) {
+            riskLevel = 'MUITO ALTO (Urgente)';
+            riskColor = 'text-red-500';
+            recommendations = '- Recomenda-se alocação imediata de equipe de modelagem extra.\n- Congelar novas revisões com o cliente até a primeira entrega.\n- Utilizar motor de render D5 para otimização de tempo.';
+        } else if (executedHours > plannedHours * 0.8) {
+            riskLevel = 'ALTO (Estouro de Horas)';
+            riskColor = 'text-rose-400';
+            recommendations = '- Estouro iminente do orçamento de horas de produção.\n- Limitar reuniões de alinhamento desnecessárias.\n- Otimizar etapas finais de renderização e pós-produção.';
+        } else {
+            riskLevel = 'BAIXO (Dentro do planejado)';
+            riskColor = 'text-emerald-400';
+            recommendations = '- Manter o ritmo de produção atual.\n- Registrar feedbacks e logs de progresso diariamente.';
+        }
+
+        let deadlineStr = 'Não definido';
+        if (deadline) {
+            const daysLeft = Math.ceil((new Date(deadline) - new Date()) / (1000 * 60 * 60 * 24));
+            deadlineStr = `${new Date(deadline).toLocaleDateString('pt-BR')} (${daysLeft} dias restantes)`;
+        }
+
+        const analysis = `**ANÁLISE DE RISO OPERACIONAL INTELIGENTE (AI):**\n\n` +
+            `• **Projeto:** ${title || 'Projeto Atual'}\n` +
+            `• **Complexidade:** ${complexity}\n` +
+            `• **Nível de Risco:** <span class="font-black ${riskColor}">${riskLevel}</span>\n` +
+            `• **Cronograma de Horas:** ${executedHours}h executadas de ${plannedHours}h estimadas.\n` +
+            `• **Prazo Final:** ${deadlineStr}\n\n` +
+            `**RECOMENDAÇÕES ESTRATÉGICAS:**\n${recommendations}`;
+
+        outputBox.innerHTML = analysis; 
+    };
+
+    window.copyAIPrompt = function() {
+        const text = document.getElementById('ai-output-box').innerText;
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            window.showNotification('Copiado para a área de transferência!', 'success');
+        });
+    };
+
+    function typeWriterEffect(element, text, speed = 8) {
+        let i = 0;
+        element.innerHTML = '';
+        function type() {
+            if (i < text.length) {
+                if (text.charAt(i) === '\n') {
+                    element.innerHTML += '<br>';
+                } else {
+                    element.innerHTML += text.charAt(i);
+                }
+                i++;
+                setTimeout(type, speed);
+            }
+        }
+        type();
+    }
+
+    // === SUBMIT REVISÃO FORM ===
+    const revisionModal = new bootstrap.Modal(document.getElementById('newRevisionModal'));
+    const btnNewRev = document.getElementById('btn-new-revision');
+    if (btnNewRev) {
+        btnNewRev.addEventListener('click', () => {
+            document.getElementById('newRevisionForm').reset();
+            revisionModal.show();
+        });
+    }
+
+    document.getElementById('newRevisionForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(this).entries());
+        if (data.financialImpact) data.financialImpact = parseFloat(data.financialImpact);
+        if (data.deadlineImpact) data.deadlineImpact = parseInt(data.deadlineImpact);
+        if (data.version) data.version = parseInt(data.version);
+
+        const res = await fetch(`/admin/api/projects/${currentProjectId}/revisions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.success) {
+            window.showNotification('Revisão registrada com sucesso!', 'success');
+            revisionModal.hide();
+            window.loadProjectRevisions(currentProjectId);
+        } else {
+            window.showNotification('Erro ao registrar revisão', 'error');
+        }
+    });
+
+    // === SUBMIT ENTREGA FORM ===
+    const deliveryModal = new bootstrap.Modal(document.getElementById('newDeliveryModal'));
+    const btnNewDel = document.getElementById('btn-new-delivery');
+    if (btnNewDel) {
+        btnNewDel.addEventListener('click', () => {
+            document.getElementById('newDeliveryForm').reset();
+            deliveryModal.show();
+        });
+    }
+
+    document.getElementById('newDeliveryForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(this).entries());
+
+        const res = await fetch(`/admin/api/projects/${currentProjectId}/deliveries`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.success) {
+            window.showNotification('Entrega adicionada com sucesso!', 'success');
+            deliveryModal.hide();
+            window.loadProjectDeliveries(currentProjectId);
+        } else {
+            window.showNotification('Erro ao adicionar entrega', 'error');
+        }
+    });
+
+    // === DELETE PROJECT LOGIC ===
+    window.deleteProject = function(id) {
+        if (!confirm('Deseja realmente excluir este projeto?')) return;
+        
+        fetch(`/admin/api/projects/${id}`, {
+            method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.showNotification('Projeto excluído com sucesso!', 'success');
+                // Remove elements dynamically
+                document.querySelectorAll(`[data-id="${id}"]`).forEach(el => {
+                    el.style.transition = 'all 0.5s ease';
+                    el.style.opacity = '0';
+                    el.style.transform = 'scale(0.8)';
+                    setTimeout(() => el.remove(), 500);
+                });
+                
+                document.querySelectorAll(`[onclick*="${id}"]`).forEach(el => {
+                    el.style.transition = 'all 0.5s ease';
+                    el.style.opacity = '0';
+                    el.style.transform = 'scale(0.8)';
+                    setTimeout(() => el.remove(), 500);
+                });
+
+                // Update column headers counters
+                document.querySelectorAll('.kanban-column').forEach(col => {
+                    const countEl = col.querySelector('.column-card-count');
+                    if (countEl) {
+                        const cards = col.querySelectorAll('.kanban-card');
+                        countEl.innerText = cards.length;
+                    }
+                });
+
+                // Update active stats header
+                const statHeader = document.getElementById('stat-active-projects-header');
+                if (statHeader) {
+                    const current = parseInt(statHeader.innerText) || 0;
+                    if (current > 0) statHeader.innerText = current - 1;
+                }
+            } else {
+                window.showNotification('Erro ao excluir projeto: ' + data.error, 'error');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            window.showNotification('Erro de rede ao excluir', 'error');
+        });
+    };
+
+    // === PERSISTENT LAYOUT TOGGLE ===
+    window.changeProjectsView = function(mode) {
+        localStorage.setItem('projects_view_mode', mode);
+        
+        const board = document.getElementById('projects-kanban-board');
+        const list = document.getElementById('view-projects-list');
+        const spreadsheet = document.getElementById('view-projects-spreadsheet');
+        
+        if (board) board.classList.add('hidden');
+        if (list) list.classList.add('hidden');
+        if (spreadsheet) spreadsheet.classList.add('hidden');
+        
+        document.querySelectorAll('.view-toggle-btn-proj').forEach(btn => {
+            btn.classList.remove('text-indigo-400', 'bg-indigo-500/10');
+            btn.classList.add('text-gray-400');
+        });
+        
+        if (mode === 'kanban' && board) board.classList.remove('hidden');
+        if (mode === 'list' && list) list.classList.remove('hidden');
+        if (mode === 'spreadsheet' && spreadsheet) spreadsheet.classList.remove('hidden');
+        
+        const targetBtn = document.getElementById('btn-view-projects-' + mode);
+        if (targetBtn) {
+            targetBtn.classList.remove('text-gray-400');
+            targetBtn.classList.add('text-indigo-400', 'bg-indigo-500/10');
+        }
+    };
+
+    // Initialize layout mode
+    const savedMode = localStorage.getItem('projects_view_mode') || 'kanban';
+    window.changeProjectsView(savedMode);
+
+    // === LIVE SEARCH LOGIC ===
+    const searchInput = document.getElementById('unified-search-projects');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            // Filter Kanban cards
+            document.querySelectorAll('#projects-kanban-board .kanban-card').forEach(card => {
+                const nameEl = card.querySelector('.card-name');
+                if (!nameEl) return;
+                const text = card.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            // Filter list rows
+            document.querySelectorAll('#view-projects-list .project-item-row').forEach(row => {
+                const text = row.getAttribute('data-search').toLowerCase();
+                if (text.includes(query)) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+            
+            // Filter spreadsheet rows
+            document.querySelectorAll('#view-projects-spreadsheet tbody tr').forEach(row => {
+                const text = row.getAttribute('data-search').toLowerCase();
+                if (text.includes(query)) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        });
     }
 
     // === FORM SUBMISSION ===
@@ -542,6 +2327,11 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(this).entries());
         
+        // Coleta de arrays de checkboxes (como lightingMood)
+        data.lightingMood = Array.from(this.querySelectorAll('[name="lightingMood"]:checked')).map(cb => cb.value);
+        // Garantir valor booleano para urgência
+        data.hasUrgency = this.querySelector('[name="hasUrgency"]').checked;
+
         const response = await fetch(`/admin/api/projects/${data.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -551,6 +2341,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (response.ok) {
             window.showNotification('Projeto atualizado!', 'success');
             setTimeout(() => window.location.reload(), 800);
+        } else {
+            const res = await response.json();
+            window.showNotification('Erro ao atualizar: ' + (res.error || 'Erro desconhecido'), 'error');
         }
     });
 

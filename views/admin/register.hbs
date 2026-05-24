@@ -94,6 +94,14 @@
             </div>
 
             <div class="glass-card p-1 lg:p-0 border-transparent bg-transparent lg:shadow-none backdrop-blur-none relative">
+                {{#if error}}
+                <div class="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-4 animate-shake">
+                    <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0 text-red-500">
+                        <span class="material-symbols-outlined">security</span>
+                    </div>
+                    <p class="text-xs font-bold text-red-400">{{error}}</p>
+                </div>
+                {{/if}}
                 <form class="space-y-6" action="/admin/register" method="POST" id="registerForm">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div class="space-y-3">
@@ -109,7 +117,7 @@
                             <div class="relative group">
                                 <input id="lastName" name="lastName" type="text" required 
                                     class="input-premium block w-full px-5 py-3 bg-white/[0.03] border border-white/5 text-white text-sm font-bold rounded-xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500/50 focus:bg-white/[0.05] transition-all outline-none"
-                                    placeholder="Ex: Zanoello">
+                                    placeholder="Ex: Silva">
                             </div>
                         </div>
                     </div>

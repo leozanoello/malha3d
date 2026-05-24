@@ -3,6 +3,7 @@ const router = express.Router();
 const { Project, Testimonial, Setting, Budget, CRMNote, Client, BudgetContact, CRMTask, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
+const { getAutomatedFieldsForStatus } = require('../services/crmAutomation');
 
 // Rota para pesquisa global
 router.get('/global-search', async (req, res, next) => {
@@ -185,6 +186,13 @@ router.post('/budgets', async (req, res, next) => {
       status: req.body.status || 'leads'
     };
 
+    if (!data.name && data.clientName) data.name = data.clientName;
+    if (!data.email && data.clientEmail) data.email = data.clientEmail;
+    if (!data.phone && data.clientPhone) data.phone = data.clientPhone;
+    
+    // Default values to prevent not-null constraints
+    data.projectType = data.projectType || 'Outro';
+
     // Garantir que campos numéricos sejam números
     if (data.estimatedValue) data.estimatedValue = parseFloat(data.estimatedValue);
     if (data.probability) data.probability = parseInt(data.probability);
@@ -205,6 +213,15 @@ router.post('/budgets', async (req, res, next) => {
     if (!data.assignedUserId || data.assignedUserId === '') delete data.assignedUserId;
     if (!data.clientId || data.clientId === '') delete data.clientId;
 
+    // Parse installmentsData if string
+    if (typeof data.installmentsData === 'string') {
+        try {
+            data.installmentsData = JSON.parse(data.installmentsData);
+        } catch (e) {
+            data.installmentsData = null;
+        }
+    }
+
     const budget = await Budget.create(data);
     res.status(201).json({ budget });
   } catch (error) {
@@ -220,7 +237,25 @@ router.put('/budgets/:id', async (req, res, next) => {
     if (!budget) {
       return res.status(404).json({ error: 'Orçamento não encontrado' });
     }
-    await budget.update(req.body);
+    
+    let updateData = { ...req.body };
+    if (req.body.status && req.body.status !== budget.status) {
+      const hasManualScheduling = req.body.nextActionDate || req.body.nextActionNote || req.body.priority;
+      if (!hasManualScheduling) {
+        const automatedFields = getAutomatedFieldsForStatus(req.body.status, budget);
+        updateData = { ...automatedFields, ...updateData };
+      }
+    }
+    // Parse installmentsData if string
+    if (typeof updateData.installmentsData === 'string') {
+        try {
+            updateData.installmentsData = JSON.parse(updateData.installmentsData);
+        } catch (e) {
+            updateData.installmentsData = null;
+        }
+    }
+
+    await budget.update(updateData);
     res.json({ budget });
   } catch (error) {
     next(error);
@@ -280,6 +315,53 @@ router.get('/clients/search', async (req, res, next) => {
     res.json(clients);
   } catch (error) {
     next(error);
+  }
+});
+
+// Criar novo cliente/contato (Cadastro Rápido)
+router.post('/clients', async (req, res, next) => {
+  try {
+    const { name, type, document, email, phone, company, city, state, paymentMethods, notes, category, status } = req.body;
+    
+    // Validar tipo (PF ou PJ)
+    const clientType = type || 'PF';
+    
+    // Validar CPF/CNPJ se fornecido
+    const { validateCPF, validateCNPJ } = require('../utils/validators');
+    if (document) {
+      const cleanDoc = document.replace(/\D/g, '');
+      if (cleanDoc.length > 0) {
+        if (clientType === 'PF') {
+          if (!validateCPF(cleanDoc)) {
+            return res.status(400).json({ error: 'CPF inválido.' });
+          }
+        } else {
+          if (!validateCNPJ(cleanDoc)) {
+            return res.status(400).json({ error: 'CNPJ inválido.' });
+          }
+        }
+      }
+    }
+
+    const newClient = await Client.create({
+      name,
+      type: clientType,
+      document: document || null,
+      email: email || null,
+      phone: phone || null,
+      company: company || null,
+      city: city || null,
+      state: state || null,
+      paymentMethods: paymentMethods || [],
+      notes: notes || null,
+      category: category || 'Lead',
+      status: status || 'active'
+    });
+
+    res.status(201).json(newClient);
+  } catch (error) {
+    console.error('Error creating client in API:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -359,12 +441,25 @@ router.post('/budgets/:id/convert', async (req, res, next) => {
       return res.status(404).json({ error: 'Negociação não encontrada' });
     }
 
+    let clientCity = null;
+    let clientState = null;
+    if (budget.clientId) {
+      const client = await Client.findByPk(budget.clientId);
+      if (client) {
+        clientCity = client.city;
+        clientState = client.state;
+      }
+    }
+
     // Criar projeto
     const project = await Project.create({
       title: budget.name,
       category: 'outro', // Default
       image: 'https://placehold.co/600x400/003559/ffffff?text=Projeto+Convertido',
       budgetId: budget.id,
+      clientId: budget.clientId,
+      city: clientCity,
+      state: clientState,
       price: budget.estimatedValue,
       totalArea: budget.totalArea,
       softwareStack: budget.softwareStack,
@@ -379,6 +474,94 @@ router.post('/budgets/:id/convert', async (req, res, next) => {
   } catch (error) {
     await transaction.rollback();
     next(error);
+  }
+});
+
+// Rota de Precificação Inteligente Avançada
+router.post('/calcularOrcamentoAvancado', async (req, res, next) => {
+  try {
+    const {
+      metragemTotal,
+      tipoCliente,
+      estiloPredominante,
+      formatoBase,
+      qtdImagens,
+      segundosAnimacao,
+      softwareRender,
+      rodadasAlteracao,
+      prazoDias
+    } = req.body;
+
+    // Validação de campos obrigatórios
+    if (metragemTotal === undefined || metragemTotal === null || metragemTotal === '') {
+      return res.status(400).json({ success: false, error: 'A metragem total é obrigatória para calcular o orçamento.' });
+    }
+
+    const metragem = parseFloat(metragemTotal) || 0;
+    const imagens = parseInt(qtdImagens) || 0;
+    const segundos = parseInt(segundosAnimacao) || 0;
+    const rodadas = parseInt(rodadasAlteracao) || 1;
+    const prazo = parseInt(prazoDias) || 30; // prazo padrão de 30 dias se não informado
+
+    // A. Cálculo Base
+    const valorBaseModelagem = metragem * 25.00;
+    const valorBaseImagens = imagens * 350.00;
+    const valorBaseAnimacao = segundos * 120.00;
+    const subtotalBase = valorBaseModelagem + valorBaseImagens + valorBaseAnimacao;
+
+    // B. Multiplicadores de Complexidade
+    // Estilo: Clássico/Neoclássico +30%. Outros estilos +0%
+    const estiloMultiplicador = (estiloPredominante === 'Clássico/Neoclássico' || estiloPredominante === 'Clássico') ? 0.30 : 0.00;
+    const valorEstilo = subtotalBase * estiloMultiplicador;
+
+    // Base Recebida: AutoCAD 2D ou Do Zero +40%. Sketchup Sujo +20%. BIM/Revit Limpo +0%
+    const baseMultiplicador = (formatoBase === 'AutoCAD 2D' || formatoBase === 'Do Zero' || formatoBase === 'AutoCAD' || formatoBase === 'PDF/Imagens' || formatoBase === 'Precisa Modelar Zero') ? 0.40 : ((formatoBase === 'Sketchup Sujo' || formatoBase === 'SketchUp' || formatoBase === 'Desorganizado') ? 0.20 : 0.00);
+    const valorBaseRecebida = subtotalBase * baseMultiplicador;
+
+    // Software: 3ds Max/Corona +R$ 150 por imagem. D5 Render +R$ 0
+    const renderFarmCusto = (softwareRender === '3ds Max/Corona' || softwareRender === '3ds Max' || softwareRender === 'Corona') ? (imagens * 150.00) : 0.00;
+
+    const subtotalComplexidade = subtotalBase + valorEstilo + valorBaseRecebida + renderFarmCusto;
+
+    // C. Acréscimos de Escopo e Risco
+    // Refações: R$ 250 adicionais por rodada acima de 1
+    const adicionalRefacoes = Math.max(0, rodadas - 1) * 250.00;
+    const subtotalComRefacoes = subtotalComplexidade + adicionalRefacoes;
+
+    // Taxa Construtora: tipoCliente === 'Construtora' +15%
+    const construtoraMultiplicador = (tipoCliente === 'Construtora') ? 0.15 : 0.00;
+    const valorConstrutora = subtotalComRefacoes * construtoraMultiplicador;
+    const subtotalComCliente = subtotalComRefacoes + valorConstrutora;
+
+    // Taxa de Urgência: prazoDias <= 5 +35%
+    const urgenciaMultiplicador = (prazo <= 5) ? 0.35 : 0.00;
+    const valorUrgencia = subtotalComCliente * urgenciaMultiplicador;
+
+    const valorTotalSugerido = subtotalComCliente + valorUrgencia;
+
+    res.json({
+      success: true,
+      valorTotalSugerido: parseFloat(valorTotalSugerido.toFixed(2)),
+      breakdown: {
+        modelagemBase: parseFloat(valorBaseModelagem.toFixed(2)),
+        imagensBase: parseFloat(valorBaseImagens.toFixed(2)),
+        animacaoBase: parseFloat(valorBaseAnimacao.toFixed(2)),
+        estiloExtra: parseFloat(valorEstilo.toFixed(2)),
+        workflowExtra: parseFloat(valorBaseRecebida.toFixed(2)),
+        renderFarmExtra: parseFloat(renderFarmCusto.toFixed(2)),
+        refacoesExtra: parseFloat(adicionalRefacoes.toFixed(2)),
+        construtoraExtra: parseFloat(valorConstrutora.toFixed(2)),
+        urgenciaExtra: parseFloat(valorUrgencia.toFixed(2)),
+        subtotalBase: parseFloat(subtotalBase.toFixed(2)),
+        subtotalComplexidade: parseFloat(subtotalComplexidade.toFixed(2)),
+        subtotalComRefacoes: parseFloat(subtotalComRefacoes.toFixed(2)),
+        subtotalComCliente: parseFloat(subtotalComCliente.toFixed(2))
+      }
+    });
+
+  } catch (error) {
+    console.error('calcularOrcamentoAvancado error:', error);
+    res.status(500).json({ success: false, error: 'Erro interno ao calcular orçamento: ' + error.message });
   }
 });
 

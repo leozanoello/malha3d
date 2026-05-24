@@ -1,5 +1,5 @@
 <!-- 
-    ZANOELLO 3D - ADVANCED ADMIN PANEL
+    MALHA 3D - ADVANCED ADMIN PANEL
     Design: Senior ArchViz SaaS / Liquid Glass / High Density
 -->
 
@@ -9,7 +9,7 @@
         <div class="xl:w-72 flex-shrink-0">
             <div class="glass-card p-4 border-white/5 sticky top-10">
                 <div class="flex flex-col gap-2">
-                    <button class="advanced-tab-btn active" data-tab="usuarios">
+                    <button class="advanced-tab-btn" data-tab="usuarios">
                         <span class="material-symbols-outlined text-lg">group</span>
                         <span>Gestão Multi-Tenant</span>
                     </button>
@@ -69,64 +69,71 @@
                         </div>
                         <div class="divide-y divide-white/[0.03]">
                             {{#if subscriberUsers.length}}
-                                {{#each subscriberUsers}}
-                                <div class="group">
-                                    <div class="px-8 py-5 flex items-center justify-between hover:bg-white/[0.02] transition-colors cursor-pointer" onclick="toggleAccordion('subusers-{{this.id}}')">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 font-black">
-                                                {{firstLetter this.name}}
-                                            </div>
-                                            <div>
-                                                <p class="text-[13px] font-black text-white uppercase">{{this.name}}</p>
-                                                <p class="text-[10px] text-gray-400 font-bold tracking-widest">{{this.email}}</p>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center gap-6">
-                                            <span class="px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 border-emerald-500/20 text-emerald-500">
-                                                {{this.role}}
-                                            </span>
-                                            {{#if this.tenantName}}
-                                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[12px] align-middle mr-1">domain</span>{{this.tenantName}}</span>
-                                            {{/if}}
-                                            <div class="flex items-center gap-2">
-                                                <button class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" onclick="event.stopPropagation(); openResetPasswordModal('{{this.id}}', '{{this.name}}')" title="Redefinir Senha"><span class="material-symbols-outlined text-sm">lock_reset</span></button>
-                                                {{#if this.subUsers.length}}
-                                                <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-subusers-{{this.id}}">expand_more</span>
-                                                {{/if}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {{#if this.subUsers.length}}
-                                    <div id="subusers-{{this.id}}" class="hidden bg-black/20 border-t border-white/5 pl-16">
-                                        <div class="divide-y divide-white/[0.03]">
-                                            {{#each this.subUsers}}
-                                            <div class="px-8 py-4 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
-                                                <div class="flex items-center gap-4">
-                                                    <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-black text-xs">
-                                                        {{firstLetter this.name}}
-                                                    </div>
-                                                    <div>
-                                                        <p class="text-[11px] font-black text-gray-300 uppercase">{{this.name}}</p>
-                                                        <p class="text-[9px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
-                                                    </div>
-                                                </div>
-                                                <div class="flex items-center gap-6">
-                                                    {{#if this.specialty}}
-                                                    <span class="text-[9px] font-bold text-orange-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[10px] align-middle mr-1">palette</span>{{this.specialty}}</span>
-                                                    {{/if}}
-                                                    {{#if this.mainTool}}
-                                                    <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[10px] align-middle mr-1">computer</span>{{this.mainTool}}</span>
-                                                    {{/if}}
-                                                    <span class="px-2 py-1 rounded bg-white/5 text-[8px] font-black text-gray-500 uppercase tracking-widest">{{this.role}}</span>
-                                                    <button class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" onclick="openResetPasswordModal('{{this.id}}', '{{this.name}}')" title="Redefinir Senha"><span class="material-symbols-outlined text-sm">lock_reset</span></button>
-                                                </div>
-                                            </div>
-                                            {{/each}}
-                                        </div>
-                                    </div>
-                                    {{/if}}
-                                </div>
+                                 {{#each subscriberUsers}}
+                                 <div class="group subscriber-item" data-id="{{this.id}}">
+                                     <div class="px-4 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors cursor-pointer border-b border-white/[0.01] accordion-header">
+                                         <div class="flex items-center gap-3">
+                                             <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 font-black text-xs">
+                                                 {{firstLetter this.name}}
+                                             </div>
+                                             <div>
+                                                 <p class="text-[12px] font-black text-white uppercase">{{this.name}}</p>
+                                                 <p class="text-[9px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
+                                             </div>
+                                         </div>
+                                         <div class="flex items-center gap-4">
+                                             <span class="px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-widest bg-emerald-500/10 border-emerald-500/20 text-emerald-500">
+                                                 {{this.role}}
+                                             </span>
+                                             {{#if this.tenantName}}
+                                             <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest hidden md:inline-block"><span class="material-symbols-outlined text-[10px] align-middle mr-1">domain</span>{{this.tenantName}}</span>
+                                             {{/if}}
+                                             <div class="flex items-center gap-1">
+                                                 <button class="btn-edit-user p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
+                                                         data-id="{{this.id}}" data-name="{{this.name}}" data-email="{{this.email}}" 
+                                                         data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}"
+                                                         title="Editar Usuário"><span class="material-symbols-outlined text-xs">edit</span></button>
+                                                 <button class="btn-reset-pass p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
+                                                         data-id="{{this.id}}" data-name="{{this.name}}"
+                                                         title="Redefinir Senha"><span class="material-symbols-outlined text-xs">lock_reset</span></button>
+                                                 {{#if this.subUsers.length}}
+                                                 <span class="material-symbols-outlined text-gray-500 transition-transform duration-300 text-sm accordion-icon">expand_more</span>
+                                                 {{/if}}
+                                             </div>
+                                         </div>
+                                     </div>
+                                     
+                                     {{#if this.subUsers.length}}
+                                     <div class="accordion-content hidden bg-black/20 border-t border-white/5 pl-16">
+                                         <div class="divide-y divide-white/[0.03]">
+                                             {{#each this.subUsers}}
+                                             <div class="px-8 py-4 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
+                                                 <div class="flex items-center gap-4">
+                                                     <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-black text-xs">
+                                                         {{firstLetter this.name}}
+                                                     </div>
+                                                     <div>
+                                                         <p class="text-[11px] font-black text-gray-300 uppercase">{{this.name}}</p>
+                                                         <p class="text-[9px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
+                                                     </div>
+                                                 </div>
+                                                 <div class="flex items-center gap-6">
+                                                     {{#if this.specialty}}
+                                                     <span class="text-[9px] font-bold text-orange-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[10px] align-middle mr-1">palette</span>{{this.specialty}}</span>
+                                                     {{/if}}
+                                                     {{#if this.mainTool}}
+                                                     <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[10px] align-middle mr-1">computer</span>{{this.mainTool}}</span>
+                                                     {{/if}}
+                                                     <span class="px-2 py-1 rounded bg-white/5 text-[8px] font-black text-gray-500 uppercase tracking-widest">{{this.role}}</span>
+                                                     <button class="btn-reset-pass p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
+                                                             data-id="{{this.id}}" data-name="{{this.name}}" title="Redefinir Senha"><span class="material-symbols-outlined text-sm">lock_reset</span></button>
+                                                 </div>
+                                             </div>
+                                             {{/each}}
+                                         </div>
+                                     </div>
+                                     {{/if}}
+                                 </div>
                                 {{/each}}
                             {{else}}
                                 <div class="p-8 text-center text-gray-500 text-[10px] font-bold uppercase tracking-widest">Nenhum assinante encontrado.</div>
@@ -137,37 +144,42 @@
                     <!-- Bloco de Outros Usuários (Staff/Admins/Avulsos) -->
                     <div class="glass-card border-white/5 overflow-hidden">
                         <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center">
-                            <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Zanoello e Colaboradores Avulsos</h4>
+                            <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Malha 3D e Colaboradores Avulsos</h4>
                         </div>
                         <div class="divide-y divide-white/[0.03]">
                             {{#if otherUsers.length}}
                                 {{#each otherUsers}}
-                                <div class="px-8 py-5 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 font-black">
-                                            {{firstLetter this.name}}
-                                        </div>
-                                        <div>
-                                            <p class="text-[13px] font-black text-white uppercase">{{this.name}}</p>
-                                            <p class="text-[10px] text-gray-400 font-bold tracking-widest">{{this.email}}</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center gap-6">
-                                        {{#if this.specialty}}
-                                        <span class="text-[9px] font-bold text-orange-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[10px] align-middle mr-1">palette</span>{{this.specialty}}</span>
-                                        {{/if}}
-                                        {{#if this.mainTool}}
-                                        <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[10px] align-middle mr-1">computer</span>{{this.mainTool}}</span>
-                                        {{/if}}
-                                        <span class="px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest
-                                            {{#if (eq this.role 'admin')}}bg-red-500/10 border-red-500/20 text-red-500
-                                            {{else if (eq this.role 'staff')}}bg-orange-500/10 border-orange-500/20 text-orange-500
-                                            {{else}}bg-blue-500/10 border-blue-500/20 text-blue-500{{/if}}">
-                                            {{this.role}}
-                                        </span>
-                                        <button class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" onclick="openResetPasswordModal('{{this.id}}', '{{this.name}}')" title="Redefinir Senha"><span class="material-symbols-outlined text-sm">lock_reset</span></button>
-                                    </div>
-                                </div>
+                                <div class="px-4 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors border-b border-white/[0.01]">
+                                     <div class="flex items-center gap-3">
+                                         <div class="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 font-black text-xs">
+                                             {{firstLetter this.name}}
+                                         </div>
+                                         <div>
+                                             <p class="text-[12px] font-black text-white uppercase">{{this.name}}</p>
+                                             <p class="text-[9px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
+                                         </div>
+                                     </div>
+                                     <div class="flex items-center gap-4">
+                                         {{#if this.specialty}}
+                                         <span class="text-[8px] font-bold text-orange-500 uppercase tracking-widest hidden sm:inline-block"><span class="material-symbols-outlined text-[10px] align-middle mr-1">palette</span>{{this.specialty}}</span>
+                                         {{/if}}
+                                         <span class="px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-widest
+                                             {{#if (eq this.role 'admin')}}bg-red-500/10 border-red-500/20 text-red-500
+                                             {{else if (eq this.role 'staff')}}bg-orange-500/10 border-orange-500/20 text-orange-500
+                                             {{else}}bg-blue-500/10 border-blue-500/20 text-blue-500{{/if}}">
+                                             {{this.role}}
+                                         </span>
+                                         <div class="flex items-center gap-1">
+                                             <button class="btn-edit-user p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
+                                                     data-id="{{this.id}}" data-name="{{this.name}}" data-email="{{this.email}}" 
+                                                     data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}"
+                                                     title="Editar Usuário"><span class="material-symbols-outlined text-xs">edit</span></button>
+                                             <button class="btn-reset-pass p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
+                                                     data-id="{{this.id}}" data-name="{{this.name}}"
+                                                     title="Redefinir Senha"><span class="material-symbols-outlined text-xs">lock_reset</span></button>
+                                         </div>
+                                     </div>
+                                 </div>
                                 {{/each}}
                             {{else}}
                                 <div class="p-8 text-center text-gray-500 text-[10px] font-bold uppercase tracking-widest">Nenhum colaborador encontrado.</div>
@@ -652,14 +664,13 @@
         color: white;
     }
     .advanced-tab-btn.active {
-        background: rgba(249, 115, 22, 0.08);
-        color: #f97316;
-        border-color: rgba(249, 115, 22, 0.2);
+        background: rgba(249, 115, 22, 0.1) !important;
+        color: #f97316 !important;
+        border-color: rgba(249, 115, 22, 0.2) !important;
         box-shadow: inset 0 0 20px rgba(249, 115, 22, 0.05);
     }
     .advanced-tab-btn.active span.material-symbols-outlined {
-        color: #f97316;
-        transform: scale(1.1);
+        color: #f97316 !important;
     }
 
     .adv-pane.hidden {
@@ -704,7 +715,7 @@
 
 <script>
 /**
- * ZANOELLO 3D - ADVANCED ADMIN STABILIZATION
+ * MALHA 3D - ADVANCED ADMIN STABILIZATION
  * Specialized Toast System & Persistent Navigation
  */
 
@@ -744,44 +755,58 @@ document.addEventListener('DOMContentLoaded', function() {
         switchAdvTab('usuarios', document.querySelector('.advanced-tab-btn[data-tab="usuarios"]'));
     }
 
-    const tabButtons = document.querySelectorAll('.advanced-tab-btn');
-    tabButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const tabId = this.getAttribute('data-tab');
-            switchAdvTab(tabId, this);
-            window.location.hash = tabId;
-        });
-    });
-
-    const btnOpenNewUser = document.getElementById('btnOpenNewUser');
-    if (btnOpenNewUser) {
-        btnOpenNewUser.addEventListener('click', openNewUserModal);
-    }
-
-    // Bind New User Form
-    const newUserForm = document.getElementById('newUserForm');
-    if (newUserForm) {
-        newUserForm.addEventListener('submit', submitNewUser);
-    }
-
-    // Bind New User Cancel Button
-    const btnCancelNewUser = document.getElementById('btnCancelNewUser');
-    if (btnCancelNewUser) {
-        btnCancelNewUser.addEventListener('click', closeNewUserModal);
-    }
-
-    // Bind Edit User Form
-    const editUserForm = document.getElementById('editUserForm');
-    if (editUserForm) {
-        editUserForm.addEventListener('submit', submitEditUser);
-    }
-
-    // Bind Edit User Cancel Button
-    const btnCancelEditUser = document.getElementById('btnCancelEditUser');
-    if (btnCancelEditUser) {
-        btnCancelEditUser.addEventListener('click', closeEditUserModal);
-    }
-});
+     const tabButtons = document.querySelectorAll('.advanced-tab-btn');
+     tabButtons.forEach(btn => {
+         btn.addEventListener('click', function() {
+             const tabId = this.getAttribute('data-tab');
+             switchAdvTab(tabId, this);
+             window.location.hash = tabId;
+         });
+     });
+ 
+     // Event Delegation for User Management Pane (moved out of switchAdvTab)
+     const paneUsuarios = document.getElementById('pane-usuarios');
+     if (paneUsuarios) {
+         paneUsuarios.addEventListener('click', function(e) {
+             // Handle Accordion Toggle
+             const header = e.target.closest('.accordion-header');
+             if (header) {
+                 const item = header.closest('.subscriber-item');
+                 const content = item.querySelector('.accordion-content');
+                 const icon = header.querySelector('.accordion-icon');
+                 
+                 if (content) {
+                     content.classList.toggle('hidden');
+                     if (icon) icon.classList.toggle('rotate-180');
+                 }
+                 return;
+             }
+ 
+             // Handle Edit User
+             const editBtn = e.target.closest('.btn-edit-user');
+             if (editBtn) {
+                 e.stopPropagation();
+                 const d = editBtn.dataset;
+                 openEditUserModal(d.id, d.name, d.email, d.role, d.parent, d.tenant);
+                 return;
+             }
+ 
+             // Handle Reset Password
+             const resetBtn = e.target.closest('.btn-reset-pass');
+             if (resetBtn) {
+                 e.stopPropagation();
+                 const d = resetBtn.dataset;
+                 openResetPasswordModal(d.id, d.name);
+                 return;
+             }
+         });
+     }
+ 
+     const btnOpenNewUser = document.getElementById('btnOpenNewUser');
+     if (btnOpenNewUser) {
+         btnOpenNewUser.addEventListener('click', openNewUserModal);
+     }
+ });
 
 function switchAdvTab(tabId, btn) {
     // Esconder todos os painéis e remover classe active
@@ -789,24 +814,16 @@ function switchAdvTab(tabId, btn) {
         p.classList.add('hidden');
         p.classList.remove('active');
     });
-    
-    // Mostrar o alvo e adicionar classe active
+
     const target = document.getElementById(`pane-${tabId}`);
     if (target) {
         target.classList.remove('hidden');
         target.classList.add('active');
     }
 
-    // Atualizar botões
-    document.querySelectorAll('.advanced-tab-btn').forEach(b => {
-        b.classList.remove('bg-white/10', 'text-white', 'border-orange-500');
-        b.classList.add('text-gray-500', 'border-transparent');
-    });
-    
-    if (btn) {
-        btn.classList.add('bg-white/10', 'text-white', 'border-orange-500');
-        btn.classList.remove('text-gray-500', 'border-transparent');
-    }
+    // Atualizar botões de navegação
+    document.querySelectorAll('.advanced-tab-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
 
     // Carregar dados específicos se necessário
     if (tabId === 'usuarios') {
@@ -929,11 +946,15 @@ async function loadUsers() {
 
                 <div class="flex gap-2">
                     <button onclick="openEditUserModal('${u.id}', '${u.name}', '${u.email}', '${u.role}', '${u.parentId || ''}', '${u.tenantName || ''}')" 
-                            class="flex-1 btn-premium text-[9px] py-2 bg-white/5 hover:bg-orange-500 hover:text-white transition-all">
+                            class="flex-1 btn-premium text-[9px] py-2 bg-white/5 hover:bg-orange-500 hover:text-white transition-all text-center">
                         Editar Perfil
                     </button>
+                    <button onclick="openResetPasswordModal('${u.id}', '${u.name}')" 
+                            class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 transition-all border border-white/5" title="Redefinir Senha">
+                        <span class="material-symbols-outlined text-sm">key</span>
+                    </button>
                     <button onclick="deleteUser('${u.id}')" 
-                            class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-white/5">
+                            class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-white/5" title="Excluir Usuário">
                         <span class="material-symbols-outlined text-sm">delete</span>
                     </button>
                 </div>
@@ -1037,74 +1058,8 @@ async function generateSnapshot() {
     }
 }
 
-async function openEditUserModal(id, name, email, role, parentId) {
-    const modal = document.getElementById('editUserModal');
-    const form = document.getElementById('editUserForm');
-    
-    form.userId.value = id;
-    form.name.value = name;
-    form.email.value = email;
-    form.role.value = role;
-    form.parentId.value = parentId || '';
-    
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-}
-
-function closeEditUserModal() {
-    const modal = document.getElementById('editUserModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-}
-
-async function submitEditUser(e) {
-    e.preventDefault();
-    const form = e.target;
-    const id = form.userId.value;
-    const btn = form.querySelector('button[type="submit"]');
-    
-    btn.disabled = true;
-    
-    const data = {
-        name: form.name.value,
-        email: form.email.value,
-        role: form.role.value,
-        parentId: form.parentId.value || null
-    };
-
-    try {
-        const res = await fetch(`/admin/api/users/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-
-        if (res.ok) {
-            showToast('Usuário atualizado!');
-            setTimeout(() => window.location.reload(), 1000);
-        } else {
-            const err = await res.json();
-            showToast(err.error, 'error');
-        }
-    } catch (error) {
-        showToast('Erro ao atualizar usuário.', 'error');
-    } finally {
-        btn.disabled = false;
-    }
-}
-
-async function deleteUser(id) {
-    if (!confirm('Excluir este usuário permanentemente?')) return;
-    try {
-        const res = await fetch(`/admin/api/users/${id}`, { method: 'DELETE' });
-        if (res.ok) {
-            showToast('Usuário removido');
-            setTimeout(() => window.location.reload(), 1000);
-        } else {
-            showToast('Erro ao excluir usuário.', 'error');
-        }
-    } catch (error) { showToast('Erro de conexão.', 'error'); }
-}
+// Removed duplicate openEditUserModal and closeEditUserModal
+// Removed duplicate submitEditUser and deleteUser
 
 function openResetPasswordModal(id, name) {
     document.getElementById('resetPasswordUserId').value = id;

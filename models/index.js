@@ -25,6 +25,7 @@ const NotificationTemplate = require('./NotificationTemplate');
 const BudgetContact = require('./BudgetContact');
 const SmartNote = require('./SmartNote');
 const ApiKey = require('./ApiKey');
+const ProjectLog = require('./ProjectLog');
 
 // Relacionamentos Budget e Client
 Client.hasMany(Budget, { as: 'budgets', foreignKey: 'clientId', onDelete: 'SET NULL' });
@@ -85,6 +86,10 @@ TimeLog.belongsTo(Freelancer, { as: 'freelancer', foreignKey: 'freelancerId' });
 Project.hasOne(PortfolioItem, { as: 'portfolio', foreignKey: 'projectId' });
 PortfolioItem.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
 
+// Relacionamento ProjectLog
+Project.hasMany(ProjectLog, { as: 'logs', foreignKey: 'projectId', onDelete: 'CASCADE' });
+ProjectLog.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
+
 // Relacionamentos ApiKey
 User.hasMany(ApiKey, { as: 'apiKeys', foreignKey: 'created_by', onDelete: 'SET NULL' });
 ApiKey.belongsTo(User, { as: 'creator', foreignKey: 'created_by' });
@@ -92,6 +97,39 @@ ApiKey.belongsTo(User, { as: 'creator', foreignKey: 'created_by' });
 // Relacionamento Budget -> Responsável Comercial (User)
 User.hasMany(Budget, { as: 'assignedDeals', foreignKey: 'assigned_user_id' });
 Budget.belongsTo(User, { as: 'assignedUser', foreignKey: 'assigned_user_id' });
+
+// Dynamic Tenant Isolation Attribute and Hook Registration
+const { registerTenantHooks } = require('../utils/tenantContext');
+const modelsToIsolate = [
+  Project,
+  FinanceTransaction,
+  Client,
+  Budget,
+  CalendarEvent,
+  CRMNote,
+  CRMTask,
+  TimeLog,
+  Freelancer,
+  ProjectLog
+];
+
+modelsToIsolate.forEach(model => {
+  if (model) {
+    model.$isIsolated = true;
+    model.rawAttributes.userId = {
+      type: Sequelize.UUID,
+      allowNull: true,
+      field: 'user_id',
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    };
+    model.refreshAttributes();
+  }
+});
+
+registerTenantHooks(sequelize);
 
 module.exports = {
   sequelize,
@@ -121,5 +159,6 @@ module.exports = {
   NotificationTemplate,
   BudgetContact,
   SmartNote,
-  ApiKey
+  ApiKey,
+  ProjectLog
 };

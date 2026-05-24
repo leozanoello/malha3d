@@ -48,8 +48,8 @@ class EmailService {
     }
 
     try {
-      const fromName = process.env.EMAIL_FROM_NAME || 'Zanoello 3D';
-      const fromEmail = process.env.EMAIL_FROM || process.env.EMAIL_USER || 'noreply@zanoello3d.com.br';
+      const fromName = process.env.EMAIL_FROM_NAME || 'Malha 3D';
+      const fromEmail = process.env.EMAIL_FROM || process.env.EMAIL_USER || 'noreply@malha3d.com.br';
 
       const info = await this.transporter.sendMail({
         from: process.env.EMAIL_FROM || `"${fromName}" <${fromEmail}>`,
@@ -78,7 +78,7 @@ class EmailService {
     
     return this.sendEmail({
       to: email,
-      subject: 'Confirmação de Orçamento - Zanoello 3D',
+      subject: 'Confirmação de Orçamento - Malha 3D',
       html: `<p>Olá ${name}!</p><p>Seu código: ${budget.trackingCode}</p>`,
       text: `Olá ${name}! Seu código: ${budget.trackingCode}`
     });
@@ -91,7 +91,7 @@ class EmailService {
     
     return this.sendEmail({
       to: email,
-      subject: 'Atualização do seu Orçamento - Zanoello 3D',
+      subject: 'Atualização do seu Orçamento - Malha 3D',
       html: `<p>Olá ${name}!</p><p>Status: ${statusTraduzido}</p>${budget.rejectionReason || ''}`,
       text: `Olá ${name}! Status: ${statusTraduzido}`
     });
@@ -100,8 +100,8 @@ class EmailService {
   async sendWelcomeEmail(user) {
     return this.sendEmail({
       to: user.email,
-      subject: 'Bem-vindo à Zanoello 3D!',
-      html: `<p>Bem-vindo ${user.name}!</p><p>Zanoello 3D - impressão 3D</p>`,
+      subject: 'Bem-vindo à Malha 3D!',
+      html: `<p>Bem-vindo ${user.name}!</p><p>Malha 3D - archviz</p>`,
       text: `Bem-vindo ${user.name}!`
     });
   }
@@ -110,7 +110,7 @@ class EmailService {
     const token = user.resetToken || 'TOKEN_MISSING';
     return this.sendEmail({
       to: user.email,
-      subject: 'Redefinição de Senha - Zanoello 3D',
+      subject: 'Redefinição de Senha - Malha 3D',
       html: `<p>Token: ${token}</p><p><a href="/reset-password">Link</a></p>`,
       text: `Token: ${token}`
     });

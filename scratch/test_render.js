@@ -9,7 +9,8 @@ const hbs = require('express-handlebars').create({
     eq: (v1, v2) => v1 === v2,
     json: (v) => JSON.stringify(v),
     round: (v) => v,
-    formatWhatsappLink: (v) => v
+    formatWhatsappLink: (v) => v,
+    array: (...args) => args.slice(0, -1)
   },
   partialsDir: 'views/partials'
 });

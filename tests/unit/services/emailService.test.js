@@ -140,7 +140,7 @@ describe('EmailService', () => {
       expect(mockTransporter.sendMail).toHaveBeenCalledWith({
         from: 'noreply@teste.com',
         to: budgetData.clientEmail,
-        subject: 'Confirmação de Orçamento - Zanoello 3D',
+        subject: 'Confirmação de Orçamento - Malha 3D',
         html: expect.stringContaining(budgetData.clientName),
         text: expect.stringContaining(budgetData.clientName)
       });
@@ -196,7 +196,7 @@ describe('EmailService', () => {
       expect(mockTransporter.sendMail).toHaveBeenCalledWith({
         from: 'noreply@teste.com',
         to: budgetData.clientEmail,
-        subject: 'Atualização do seu Orçamento - Zanoello 3D',
+        subject: 'Atualização do seu Orçamento - Malha 3D',
         html: expect.stringContaining('aprovado'),
         text: expect.stringContaining('aprovado')
       });
@@ -248,7 +248,7 @@ describe('EmailService', () => {
       expect(mockTransporter.sendMail).toHaveBeenCalledWith({
         from: 'noreply@teste.com',
         to: userData.email,
-        subject: 'Bem-vindo à Zanoello 3D!',
+        subject: 'Bem-vindo à Malha 3D!',
         html: expect.stringContaining(userData.name),
         text: expect.stringContaining(userData.name)
       });
@@ -270,8 +270,8 @@ describe('EmailService', () => {
       await emailService.sendWelcomeEmail(userData);
 
       const sendMailCall = mockTransporter.sendMail.mock.calls[0][0];
-      expect(sendMailCall.html).toContain('Zanoello 3D');
-      expect(sendMailCall.html).toContain('impressão 3D');
+      expect(sendMailCall.html).toContain('Malha 3D');
+      expect(sendMailCall.html).toContain('archviz');
     });
 
   });
@@ -295,7 +295,7 @@ describe('EmailService', () => {
       expect(mockTransporter.sendMail).toHaveBeenCalledWith({
         from: 'noreply@teste.com',
         to: userData.email,
-        subject: 'Redefinição de Senha - Zanoello 3D',
+        subject: 'Redefinição de Senha - Malha 3D',
         html: expect.stringContaining(userData.resetToken),
         text: expect.stringContaining(userData.resetToken)
       });
@@ -388,7 +388,7 @@ describe('EmailService', () => {
       ];
 
       const emailData = {
-        subject: 'Promoção Especial - Zanoello 3D',
+        subject: 'Promoção Especial - Malha 3D',
         html: '<h1>Promoção Especial!</h1><p>Aproveite nossos descontos...</p>',
         text: 'Promoção Especial! Aproveite nossos descontos...'
       };

@@ -12,8 +12,8 @@
                 <p class="text-muted small mb-0">Selecione o plano ideal para suas necessidades e potencialize seu escritório.</p>
             </div>
             <div class="btn-group btn-group-sm p-1 bg-black bg-opacity-20 rounded-pill border border-white border-opacity-5">
-                <button class="btn btn-dark rounded-pill px-3 active">Mensal</button>
-                <button class="btn btn-transparent text-muted rounded-pill px-3">Anual <span class="badge bg-success bg-opacity-20 text-success ms-1" style="font-size: 8px;">-35%</span></button>
+                <button id="btn-mensal" class="btn btn-dark rounded-pill px-3 active">Mensal</button>
+                <button id="btn-anual" class="btn btn-transparent text-muted rounded-pill px-3">Anual <span class="badge bg-success bg-opacity-20 text-success ms-1" style="font-size: 8px;">-30%</span></button>
             </div>
         </div>
     </div>
@@ -50,8 +50,8 @@
                     <p class="text-gray-400" style="font-size: 11px;">Tudo liberado para o artista solo</p>
                 </div>
                 <div class="mb-3">
-                    <h3 class="text-white fw-black mb-0" data-monthly="R$ 49,90" data-yearly="R$ 34,90">R$ 49,90</h3>
-                    <span class="text-gray-500 small">/mês</span>
+                    <h3 class="text-white fw-black mb-0" data-monthly="R$ 49,90" data-yearly="R$ 34,93">R$ 49,90</h3>
+                    <span class="text-gray-500 small price-period">/mês</span>
                 </div>
                 <ul class="list-unstyled flex-grow-1 mb-4 space-y-2">
                     <li class="small text-gray-300"><i class="bi bi-check2 text-orange-500 me-2"></i>Tudo do Free</li>
@@ -72,8 +72,8 @@
                     <p class="text-gray-400" style="font-size: 11px;">Ideal para pequenos times 3D</p>
                 </div>
                 <div class="mb-3">
-                    <h3 class="text-white fw-black mb-0" data-monthly="R$ 69,90" data-yearly="R$ 44,90">R$ 69,90</h3>
-                    <span class="text-gray-500 small">/mês</span>
+                    <h3 class="text-white fw-black mb-0" data-monthly="R$ 69,90" data-yearly="R$ 48,93">R$ 69,90</h3>
+                    <span class="text-gray-500 small price-period">/mês</span>
                 </div>
                 <ul class="list-unstyled flex-grow-1 mb-4 space-y-2">
                     <li class="small text-white"><i class="bi bi-check2-circle text-orange-500 me-2"></i>Tudo do Individual</li>
@@ -93,8 +93,8 @@
                     <p class="text-gray-400" style="font-size: 11px;">Para estúdios em plena escala</p>
                 </div>
                 <div class="mb-3">
-                    <h3 class="text-white fw-black mb-0" data-monthly="R$ 139,90" data-yearly="R$ 99,90">R$ 139,90</h3>
-                    <span class="text-gray-500 small">/mês</span>
+                    <h3 class="text-white fw-black mb-0" data-monthly="R$ 139,90" data-yearly="R$ 97,93">R$ 139,90</h3>
+                    <span class="text-gray-500 small price-period">/mês</span>
                 </div>
                 <ul class="list-unstyled flex-grow-1 mb-4 space-y-2">
                     <li class="small text-gray-300"><i class="bi bi-check2 text-orange-500 me-2"></i>Tudo do Escritório</li>
@@ -134,3 +134,46 @@
 }
 .fw-black { font-weight: 900; }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const btnMensal = document.getElementById('btn-mensal');
+    const btnAnual = document.getElementById('btn-anual');
+    
+    if (btnMensal && btnAnual) {
+        const priceElements = document.querySelectorAll('[data-monthly]');
+        
+        btnMensal.addEventListener('click', () => {
+            btnMensal.classList.add('active', 'btn-dark');
+            btnMensal.classList.remove('btn-transparent', 'text-muted');
+            
+            btnAnual.classList.remove('active', 'btn-dark');
+            btnAnual.classList.add('btn-transparent', 'text-muted');
+            
+            priceElements.forEach(el => {
+                el.textContent = el.getAttribute('data-monthly');
+                const subtext = el.nextElementSibling;
+                if (subtext && subtext.classList.contains('price-period')) {
+                    subtext.textContent = '/mês';
+                }
+            });
+        });
+        
+        btnAnual.addEventListener('click', () => {
+            btnAnual.classList.add('active', 'btn-dark');
+            btnAnual.classList.remove('btn-transparent', 'text-muted');
+            
+            btnMensal.classList.remove('active', 'btn-dark');
+            btnMensal.classList.add('btn-transparent', 'text-muted');
+            
+            priceElements.forEach(el => {
+                el.textContent = el.getAttribute('data-yearly');
+                const subtext = el.nextElementSibling;
+                if (subtext && subtext.classList.contains('price-period')) {
+                    subtext.textContent = '/mês (faturado anualmente)';
+                }
+            });
+        });
+    }
+});
+</script>

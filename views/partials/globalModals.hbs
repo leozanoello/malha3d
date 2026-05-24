@@ -1,4 +1,4 @@
-<!-- Global Modals for Zanoello Dashboard -->
+<!-- Global Modals for Malha 3D Dashboard -->
 
 <!-- <!-- 1. Modal: Criar Novo Projeto (Archviz High-Density Compact) -->
 <div class="modal fade" id="newProjectModal" tabindex="-1" aria-hidden="true">
@@ -33,6 +33,22 @@
                                             <span class="material-symbols-outlined text-sm">person_add</span>
                                         </button>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Project Location (IBGE) -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Estado (Localidade)</label>
+                                    <select name="state" id="global-project-state" class="input-premium-compact h-10" required style="background-color: rgb(15 23 42 / 0.5)">
+                                        <option value="">Carregando...</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Cidade (Localidade)</label>
+                                    <select name="city" id="global-project-city" class="input-premium-compact h-10" required disabled style="background-color: rgb(15 23 42 / 0.5)">
+                                        <option value="">Selecione o Estado...</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -131,19 +147,50 @@
             </div>
             <form id="globalRegistryForm" class="p-0">
                 <div class="modal-body p-6 space-y-5">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Tipo de Stakeholder</label>
+                            <select name="category" class="input-premium-compact h-10" required>
+                                <option value="Cliente">Cliente Final</option>
+                                <option value="Lead">Lead / Prospect</option>
+                                <option value="Parceiro">Parceiro / Freelancer</option>
+                                <option value="Fornecedor">Fornecedor / Hardware</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Status Contato</label>
+                            <select name="status" class="input-premium-compact h-10">
+                                <option value="active">Ativo</option>
+                                <option value="prospect">Em Negociação</option>
+                                <option value="inactive">Inativo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- PF/PJ Toggle -->
                     <div class="space-y-1.5">
-                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Tipo de Stakeholder</label>
-                        <select name="category" class="input-premium-compact h-10" required>
-                            <option value="Cliente">Cliente Final</option>
-                            <option value="Lead">Lead / Prospect</option>
-                            <option value="Parceiro">Parceiro / Freelancer</option>
-                            <option value="Fornecedor">Fornecedor / Hardware</option>
-                        </select>
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Tipo de Pessoa</label>
+                        <div class="flex gap-2 p-1 bg-white/5 rounded-xl border border-white/10">
+                            <button type="button" id="reg-toggle-pf" class="flex-1 py-2 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest text-center transition-all bg-orange-500 text-white" onclick="setGlobalRegPersonType('PF')">Pessoa Física (PF)</button>
+                            <button type="button" id="reg-toggle-pj" class="flex-1 py-2 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest text-center transition-all text-gray-400 hover:text-white" onclick="setGlobalRegPersonType('PJ')">Pessoa Jurídica (PJ)</button>
+                        </div>
+                        <input type="hidden" name="type" id="reg-type" value="PF">
                     </div>
 
                     <div class="space-y-1.5">
-                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Nome / Studio</label>
-                        <input type="text" name="name" required class="input-premium-compact h-10" placeholder="Ex: Studio Alpha Arch">
+                        <label id="reg-label-name" class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Nome Completo</label>
+                        <input type="text" name="name" required class="input-premium-compact h-10" placeholder="Ex: Leonardo Zanoello">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label id="reg-label-document" class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">CPF</label>
+                            <input type="text" name="document" id="reg-document" required class="input-premium-compact h-10" placeholder="000.000.000-00">
+                        </div>
+                        <div class="space-y-1.5" id="reg-group-company">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Empresa / Studio (Opcional)</label>
+                            <input type="text" name="company" id="reg-company" class="input-premium-compact h-10" placeholder="Ex: Studio Alpha">
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
@@ -153,23 +200,38 @@
                         </div>
                         <div class="space-y-1.5">
                             <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">WhatsApp</label>
-                            <input type="text" name="phone" class="input-premium-compact h-10" placeholder="(00) 00000-0000">
+                            <input type="text" name="phone" id="reg-phone" class="input-premium-compact h-10" placeholder="(00) 00000-0000">
                         </div>
                     </div>
 
+                    <!-- IBGE State and City Selects -->
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Cidade</label>
-                            <input type="text" name="city" class="input-premium-compact h-10" placeholder="Cidade">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Status Contato</label>
-                            <select name="status" class="input-premium-compact h-10">
-                                <option value="Ativo">Ativo</option>
-                                <option value="Prospect">Em Negociação</option>
-                                <option value="Inativo">Inativo</option>
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Estado</label>
+                            <select name="state" id="reg-state" class="input-premium-compact h-10" required>
+                                <option value="">Carregando...</option>
                             </select>
                         </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Cidade</label>
+                            <select name="city" id="reg-city" class="input-premium-compact h-10" required disabled>
+                                <option value="">Selecione o Estado...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Payment Methods Checklist -->
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Formas de Pagamento Permitidas</label>
+                        <div id="reg-payment-methods" class="grid grid-cols-1 gap-2 p-3 bg-white/5 rounded-xl border border-white/10 max-h-32 overflow-y-auto no-scrollbar text-[9px] font-bold text-gray-300">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Observations -->
+                    <div class="space-y-1.5">
+                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Observações</label>
+                        <textarea name="notes" class="input-premium-compact py-2 h-16 no-scrollbar resize-none" placeholder="Observações importantes..."></textarea>
                     </div>
 
                     <button type="submit" class="w-full bg-white/10 hover:bg-white/20 text-white font-black py-4 rounded-xl transition-all text-[10px] uppercase tracking-widest border border-white/10 mt-4">
@@ -316,7 +378,205 @@
 </style>
 
 <script>
+// IBGE Loader functions (exposed globally)
+async function loadIBGEStates(stateSelectId, citySelectId, defaultState = '', defaultCity = '') {
+    const stateSel = document.getElementById(stateSelectId);
+    const citySel = document.getElementById(citySelectId);
+    if (!stateSel) return;
+    
+    try {
+        stateSel.innerHTML = '<option value="">Carregando...</option>';
+        const res = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
+        const states = await res.json();
+        
+        stateSel.innerHTML = '<option value="">Selecione...</option>';
+        states.forEach(state => {
+            const opt = document.createElement('option');
+            opt.value = state.sigla;
+            opt.textContent = `${state.nome} (${state.sigla})`;
+            if (state.sigla === defaultState) opt.selected = true;
+            stateSel.appendChild(opt);
+        });
+        
+        const changeHandler = async function() {
+            const uf = this.value;
+            if (!uf) {
+                citySel.innerHTML = '<option value="">Selecione o Estado...</option>';
+                citySel.disabled = true;
+                return;
+            }
+            await loadIBGECities(uf, citySelectId, defaultCity);
+        };
+        
+        stateSel.removeEventListener('change', stateSel._changeHandler || (() => {}));
+        stateSel._changeHandler = changeHandler;
+        stateSel.addEventListener('change', changeHandler);
+        
+        if (defaultState) {
+            await loadIBGECities(defaultState, citySelectId, defaultCity);
+        }
+    } catch (err) {
+        console.error('Erro ao carregar estados do IBGE:', err);
+        stateSel.innerHTML = '<option value="">Erro ao carregar</option>';
+    }
+}
+
+async function loadIBGECities(uf, citySelectId, defaultCity = '') {
+    const citySel = document.getElementById(citySelectId);
+    if (!citySel) return;
+    
+    try {
+        citySel.disabled = true;
+        citySel.innerHTML = '<option value="">Carregando cidades...</option>';
+        
+        const res = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`);
+        const cities = await res.json();
+        
+        citySel.innerHTML = '<option value="">Selecione...</option>';
+        cities.forEach(city => {
+            const opt = document.createElement('option');
+            opt.value = city.nome;
+            opt.textContent = city.nome;
+            if (city.nome === defaultCity) opt.selected = true;
+            citySel.appendChild(opt);
+        });
+        
+        citySel.disabled = false;
+    } catch (err) {
+        console.error('Erro ao carregar cidades do IBGE:', err);
+        citySel.innerHTML = '<option value="">Erro ao carregar</option>';
+    }
+}
+
+const pfPayments = [
+    { value: 'Pix', label: 'Pix' },
+    { value: 'Cartão de Crédito', label: 'Cartão de Crédito' },
+    { value: 'Boleto à Vista', label: 'Boleto à Vista' }
+];
+
+const pjPayments = [
+    { value: 'Faturamento Bancário 15/30/45 dias', label: 'Faturamento 15/30/45 dias' },
+    { value: 'Pix', label: 'Pix' },
+    { value: 'TED/DOC', label: 'TED/DOC' },
+    { value: 'Contrato de Prestação de Serviços', label: 'Contrato de Prestação de Serviços' }
+];
+
+function renderPaymentMethods(containerId, isPJ) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    const list = isPJ ? pjPayments : pfPayments;
+    container.innerHTML = list.map((p, idx) => `
+        <label class="flex items-center gap-2 cursor-pointer p-1.5 hover:bg-white/5 rounded-lg transition-all text-[9px] font-bold text-gray-300">
+            <input type="checkbox" name="paymentMethods" value="${p.value}" checked class="rounded border-white/10 text-orange-500 focus:ring-0 bg-transparent">
+            <span>${p.label}</span>
+        </label>
+    `).join('');
+}
+
+function applyDocumentMask(inputEl, isPJ) {
+    if (!inputEl) return;
+    
+    inputEl.placeholder = isPJ ? '00.000.000/0000-00' : '000.000.000-00';
+    
+    const maskHandler = function(e) {
+        let v = e.target.value.replace(/\D/g, '');
+        if (isPJ) {
+            // CNPJ: 00.000.000/0000-00
+            if (v.length > 14) v = v.slice(0, 14);
+            if (v.length > 12) {
+                v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
+            } else if (v.length > 8) {
+                v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,4})/, "$1.$2.$3/$4");
+            } else if (v.length > 5) {
+                v = v.replace(/^(\d{2})(\d{3})(\d{0,3})/, "$1.$2.$3");
+            } else if (v.length > 2) {
+                v = v.replace(/^(\d{2})(\d{0,3})/, "$1.$2");
+            }
+        } else {
+            // CPF: 000.000.000-00
+            if (v.length > 11) v = v.slice(0, 11);
+            if (v.length > 9) {
+                v = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            } else if (v.length > 6) {
+                v = v.replace(/^(\d{3})(\d{3})(\d{0,3})/, "$1.$2.$3");
+            } else if (v.length > 3) {
+                v = v.replace(/^(\d{3})(\d{0,3})/, "$1.$2");
+            }
+        }
+        e.target.value = v;
+    };
+    
+    if (inputEl._maskHandler) {
+        inputEl.removeEventListener('input', inputEl._maskHandler);
+    }
+    inputEl._maskHandler = maskHandler;
+    inputEl.addEventListener('input', maskHandler);
+    
+    // trigger once to clear/mask existing
+    maskHandler({ target: inputEl });
+}
+
+function applyPhoneMask(inputEl) {
+    if (!inputEl) return;
+    const maskHandler = function(e) {
+        let v = e.target.value.replace(/\D/g, '');
+        if (v.length > 11) v = v.slice(0, 11);
+        if (v.length > 10) {
+            v = v.replace(/^(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+        } else if (v.length > 6) {
+            v = v.replace(/^(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+        } else if (v.length > 2) {
+            v = v.replace(/^(\d{2})(\d{0,4})/, "($1) $2");
+        }
+        e.target.value = v;
+    };
+    inputEl.addEventListener('input', maskHandler);
+}
+
+// Global registry person toggle
+function setGlobalRegPersonType(type) {
+    const isPJ = type === 'PJ';
+    document.getElementById('reg-type').value = type;
+    
+    // Toggle active classes
+    const btnPF = document.getElementById('reg-toggle-pf');
+    const btnPJ = document.getElementById('reg-toggle-pj');
+    
+    if (isPJ) {
+        btnPJ.classList.add('bg-orange-500', 'text-white');
+        btnPJ.classList.remove('text-gray-400');
+        btnPF.classList.remove('bg-orange-500', 'text-white');
+        btnPF.classList.add('text-gray-400');
+        
+        document.getElementById('reg-label-name').innerText = 'Razão Social';
+        document.getElementById('reg-label-document').innerText = 'CNPJ';
+    } else {
+        btnPF.classList.add('bg-orange-500', 'text-white');
+        btnPF.classList.remove('text-gray-400');
+        btnPJ.classList.remove('bg-orange-500', 'text-white');
+        btnPJ.classList.add('text-gray-400');
+        
+        document.getElementById('reg-label-name').innerText = 'Nome Completo';
+        document.getElementById('reg-label-document').innerText = 'CPF';
+    }
+    
+    applyDocumentMask(document.getElementById('reg-document'), isPJ);
+    renderPaymentMethods('reg-payment-methods', isPJ);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Global Registry elements
+    if (document.getElementById('newRegistryModal')) {
+        setGlobalRegPersonType('PF');
+        loadIBGEStates('reg-state', 'reg-city');
+        applyPhoneMask(document.getElementById('reg-phone'));
+    }
+
+    if (document.getElementById('globalNewProjectForm')) {
+        loadIBGEStates('global-project-state', 'global-project-city');
+    }
+
     // Global Project Form
     document.getElementById('globalNewProjectForm')?.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -340,6 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const formData = new FormData(this);
         const data = Object.fromEntries(formData.entries());
+        data.paymentMethods = Array.from(this.querySelectorAll('input[name="paymentMethods"]:checked')).map(el => el.value);
         
         try {
             const res = await fetch('/admin/api/contatos', {

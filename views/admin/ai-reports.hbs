@@ -91,6 +91,51 @@
     </div>
 </div>
 
+<!-- Chart.js Analytics Dashboard -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-10">
+    <!-- Chart 1: Render Engines -->
+    <div class="glass-card p-8 border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent flex flex-col justify-between min-h-[400px]">
+        <div>
+            <h3 class="text-xs font-black text-white uppercase tracking-widest mb-2 flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm text-orange-500">brush</span>
+                Motores de Render
+            </h3>
+            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider mb-6">Contagem de projetos ativos por engine 3D</p>
+        </div>
+        <div class="h-64 relative flex items-center justify-center">
+            <canvas id="renderEngineChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Chart 2: Ticket Médio por Estilo -->
+    <div class="glass-card p-8 border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent flex flex-col justify-between min-h-[400px]">
+        <div>
+            <h3 class="text-xs font-black text-white uppercase tracking-widest mb-2 flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm text-orange-500">architecture</span>
+                Preço Médio por m²
+            </h3>
+            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider mb-6">Valores médios cobrados por Estilo Predominante</p>
+        </div>
+        <div class="h-64 relative">
+            <canvas id="stylePriceChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Chart 3: Funil Comercial -->
+    <div class="glass-card p-8 border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent flex flex-col justify-between min-h-[400px]">
+        <div>
+            <h3 class="text-xs font-black text-white uppercase tracking-widest mb-2 flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm text-orange-500">filter_alt</span>
+                Funil de Vendas
+            </h3>
+            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider mb-6">Taxa de conversão de Leads a Projetos Fechados</p>
+        </div>
+        <div class="h-64 relative">
+            <canvas id="funnelConversionChart"></canvas>
+        </div>
+    </div>
+</div>
+
 <!-- Detailed Reports Table -->
 <div class="glass-card border-white/5 overflow-hidden bg-white/[0.01]">
     <div class="p-8 border-b border-white/5 flex items-center justify-between">
@@ -157,4 +202,131 @@
         </table>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statsData = {{{json stats}}};
+    console.log('BI Stats loaded:', statsData);
+
+    // 1. Render Engines Doughnut Chart
+    const ctxRender = document.getElementById('renderEngineChart')?.getContext('2d');
+    if (ctxRender) {
+        new Chart(ctxRender, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(statsData.renderEngines),
+                datasets: [{
+                    data: Object.values(statsData.renderEngines),
+                    backgroundColor: ['#f97316', '#a855f7', '#6366f1'],
+                    borderWidth: 0,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#9ca3af',
+                            font: { family: 'Space Grotesk', weight: 'bold', size: 9 },
+                            padding: 15
+                        }
+                    }
+                },
+                cutout: '75%'
+            }
+        });
+    }
+
+    // 2. Average price per style Bar Chart
+    const ctxStyle = document.getElementById('stylePriceChart')?.getContext('2d');
+    if (ctxStyle) {
+        new Chart(ctxStyle, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(statsData.stylePrices),
+                datasets: [{
+                    label: 'Preço Médio / m²',
+                    data: Object.values(statsData.stylePrices),
+                    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                    borderColor: '#6366f1',
+                    borderWidth: 1.5,
+                    borderRadius: 12,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: {
+                            color: '#6b7280',
+                            font: { family: 'Space Grotesk', size: 9 },
+                            callback: function(value) { return 'R$ ' + value; }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#6b7280', font: { family: 'Space Grotesk', size: 9 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    // 3. Commercial Funnel Horizontal Bar Chart
+    const ctxFunnel = document.getElementById('funnelConversionChart')?.getContext('2d');
+    if (ctxFunnel) {
+        new Chart(ctxFunnel, {
+            type: 'bar',
+            data: {
+                labels: ['Leads', 'Propostas', 'Contratos'],
+                datasets: [{
+                    data: [statsData.funnel.leads, statsData.funnel.proposals, statsData.funnel.projects],
+                    backgroundColor: [
+                        'rgba(99, 102, 241, 0.2)', // Leads (Indigo)
+                        'rgba(249, 115, 22, 0.2)', // Proposals (Orange)
+                        'rgba(16, 185, 129, 0.2)'  // Closed Projects (Emerald)
+                    ],
+                    borderColor: [
+                        '#6366f1',
+                        '#f97316',
+                        '#10b981'
+                    ],
+                    borderWidth: 1.5,
+                    borderRadius: 12,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#6b7280', font: { family: 'Space Grotesk', size: 9 } }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#6b7280', font: { family: 'Space Grotesk', size: 9 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+});
+</script>
 

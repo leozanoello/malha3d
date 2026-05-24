@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
     const totalPages = Math.ceil(count / limit);
 
     res.render('galeria', {
-      title: 'Galeria de Projetos - Zanoello 3D',
+      title: 'Galeria de Projetos - Malha 3D',
       projects: projects.map(p => p.get({ plain: true })) || [],
       currentPage: page,
       totalPages: totalPages,
@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar projetos:', error);
     res.render('galeria', {
-      title: 'Galeria de Projetos - Zanoello 3D',
+      title: 'Galeria de Projetos - Malha 3D',
       projects: [],
       categories: []
     });

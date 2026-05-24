@@ -24,12 +24,22 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ error: 'Usuário não encontrado' });
     }
     
-    if (user.isActive === false) {
+    if (user.isActive === false || user.status === 'inactive' || user.status === 'suspended') {
       return res.status(401).json({ error: 'Usuário inativo' });
     }
 
     req.user = user;
-    next();
+    
+    // Injeta o contexto de isolamento de tenant
+    const { runWithTenant } = require('../utils/tenantContext');
+    const isMasterAdmin = user.email === 'admin@zanoello.com' || user.email === 'admin@malha3d.com';
+    
+    if (!isMasterAdmin) {
+      const tenantId = user.parentId || user.id;
+      return runWithTenant(tenantId, next);
+    } else {
+      next();
+    }
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({ error: 'Token expirado' });

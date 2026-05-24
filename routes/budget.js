@@ -6,7 +6,7 @@ const emailService = require('../services/emailService');
 // Página de orçamento
 router.get('/', (req, res) => {
   res.render('orcamento', {
-    title: 'Solicitar Orçamento - Zanoello 3D',
+    title: 'Solicitar Orçamento - Malha 3D',
     projectTypes: [
       'Renderização de Interiores',
       'Renderização de Exteriores',

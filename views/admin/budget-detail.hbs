@@ -774,9 +774,9 @@ async function addFollowUpNote(title, reminderDate) {
                 </h2>
                 <button type="button" class="btn-close btn-close-white scale-75 opacity-30" data-bs-dismiss="modal"></button>
             </div>
-            <form id="newProjectForm">
+            <form id="newProjectForm" enctype="multipart/form-data">
                 <input type="hidden" name="budgetId" value="{{budget.id}}">
-                <div class="modal-body p-5 space-y-4">
+                <div class="modal-body p-5 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
                     <div class="space-y-1.5">
                         <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Título do Projeto</label>
                         <input type="text" name="title" value="{{budget.title}}" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
@@ -808,6 +808,51 @@ async function addFollowUpNote(title, reminderDate) {
                         <textarea name="description" rows="2" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all resize-none">{{budget.description}}</textarea>
                     </div>
 
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Imagem Principal</label>
+                            <input type="file" name="image" accept="image/*" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Miniatura</label>
+                            <input type="file" name="thumbnail" accept="image/*" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Slug (URL)</label>
+                            <input type="text" name="slug" placeholder="Opcional" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Tags (vírgula)</label>
+                            <input type="text" name="tags" placeholder="Ex: 3D, Render" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Ordem</label>
+                            <input type="number" name="order" value="0" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Layout</label>
+                            <select name="layout" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+                                <option value="standard" class="bg-[#0f0f0f]">Padrão</option>
+                                <option value="wide" class="bg-[#0f0f0f]">Largo</option>
+                                <option value="compact" class="bg-[#0f0f0f]">Compacto</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Cores</label>
+                            <select name="colorScheme" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+                                <option value="default" class="bg-[#0f0f0f]">Padrão</option>
+                                <option value="dark" class="bg-[#0f0f0f]">Escuro</option>
+                                <option value="light" class="bg-[#0f0f0f]">Claro</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="flex items-center gap-4 pt-2">
                         <label class="flex items-center gap-2 cursor-pointer group">
                             <input type="checkbox" name="isActive" checked class="w-3.5 h-3.5 rounded bg-white/5 border-white/20 text-orange-500 focus:ring-orange-500/30">
@@ -834,32 +879,38 @@ async function addFollowUpNote(title, reminderDate) {
 document.getElementById('newProjectForm')?.addEventListener('submit', async function(e) {
     e.preventDefault();
     const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
-    data.isActive = formData.has('isActive');
-    data.isFeatured = formData.has('isFeatured');
+    
+    // Convert checkboxes to boolean since FormData only sends them if checked
+    formData.set('isActive', formData.has('isActive') ? 'true' : 'false');
+    formData.set('isFeatured', formData.has('isFeatured') ? 'true' : 'false');
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Lançando...';
+    submitBtn.disabled = true;
     
     try {
         const response = await fetch('/admin/api/projects', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: formData
         });
         
         const result = await response.json();
         if (result.success) {
             window.location.href = '/admin/projetos/kanban';
         } else {
-            alert('Erro: ' + result.message);
+            alert('Erro: ' + (result.message || 'Erro desconhecido ao criar projeto'));
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
         }
     } catch (error) {
         console.error('Error creating project:', error);
         alert('Erro ao criar projeto');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
     }
 });
 </script>
- = `/admin/projetos/criar?budgetId={{budget.id}}`;
-    }
-}
 
 // Print budget
 function printBudget() {

@@ -8,7 +8,7 @@ const FinanceTransaction = sequelize.define('FinanceTransaction', {
     primaryKey: true
   },
   type: {
-    type: DataTypes.ENUM('receita', 'despesa'),
+    type: DataTypes.ENUM('receita', 'despesa', 'transferir'),
     allowNull: false
   },
   description: {
@@ -18,6 +18,15 @@ const FinanceTransaction = sequelize.define('FinanceTransaction', {
   beneficiary: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  payer: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return this.beneficiary;
+    },
+    set(val) {
+      this.setDataValue('beneficiary', val);
+    }
   },
   amount: {
     type: DataTypes.DECIMAL(10, 2),
@@ -75,6 +84,18 @@ const FinanceTransaction = sequelize.define('FinanceTransaction', {
     allowNull: true
   },
   costCenter: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  costClassification: {
+    type: DataTypes.STRING,
+    allowNull: true // 'fixo' ou 'variavel'
+  },
+  originAccount: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  destinationAccount: {
     type: DataTypes.STRING,
     allowNull: true
   },

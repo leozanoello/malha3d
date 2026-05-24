@@ -182,6 +182,42 @@ const Budget = sequelize.define('Budget', {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
+  imagesFachadaCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  imagesInterioresCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  imagesPlantaCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  imageFormat: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  videoFachadaCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  videoInterioresCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  videoPanoramasCount: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  videoFormat: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  videoResolution: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
   winStatus: {
     type: DataTypes.ENUM('aberto', 'ganho', 'perdido'),
     defaultValue: 'aberto'
@@ -238,6 +274,10 @@ const Budget = sequelize.define('Budget', {
     type: DataTypes.STRING,
     defaultValue: 'rascunho'
   },
+  trackingCode: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   // PHASE 3 Expansion: ArchViz Data
   profileType: {
     type: DataTypes.STRING,
@@ -253,6 +293,26 @@ const Budget = sequelize.define('Budget', {
   },
   location: {
     type: DataTypes.STRING,
+    allowNull: true
+  },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  state: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  paymentDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: true
+  },
+  paymentStatus: {
+    type: DataTypes.ENUM('pendente', 'pago', 'parcial', 'atrasado', 'cancelado'),
+    allowNull: true
+  },
+  installmentsData: {
+    type: DataTypes.JSONB,
     allowNull: true
   },
   receivedFormat: {
