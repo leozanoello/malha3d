@@ -1,12 +1,12 @@
 const express = require('express');
 const crypto = require('crypto');
-const { 
-  Budget, CRMNote, CRMTask, Project, Testimonial, User, Setting, 
-  Client, FinanceTransaction, Revision, Delivery, CalendarEvent, 
+const {
+  Budget, CRMTask, Project, User, Setting,
+  Client, FinanceTransaction, Revision, Delivery, CalendarEvent,
   KanbanColumn, TimeLog, Freelancer, PortfolioItem, ProjectTemplate,
-  Instance, SubscriptionPlan, SystemLog, Webhook, NotificationTemplate,
-  SmartNote, ApiKey, ProjectLog,
-  sequelize 
+  Instance, SubscriptionPlan, SystemLog, NotificationTemplate,
+  SmartNote, ApiKey, ProjectLog, ProjectTask,
+  Milestone, Task, TaskFile, TaskHistoryComment, TaskDependency, TaskTemplate
 } = require('../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
@@ -21,11 +21,11 @@ const { getAutomatedFieldsForStatus } = require('../services/crmAutomation');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/uploads/')
+    cb(null, 'public/uploads/');
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, uniqueSuffix + path.extname(file.originalname))
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+    cb(null, uniqueSuffix + path.extname(file.originalname));
   }
 });
 const upload = multer({ storage: storage });
@@ -47,11 +47,13 @@ const requireAuth = async (req, res, next) => {
     }
 
     req.user = user.toJSON();
-    
+    res.locals.user = req.user;
+    res.locals.isAdmin = req.user.role === 'admin';
+
     // Injeta o contexto de isolamento de tenant
     const { runWithTenant } = require('../utils/tenantContext');
     const isMasterAdmin = req.user.email === 'admin@zanoello.com' || req.user.email === 'admin@malha3d.com';
-    
+
     if (!isMasterAdmin) {
       const tenantId = req.user.parentId || req.user.id;
       return runWithTenant(tenantId, next);
@@ -66,17 +68,41 @@ const requireAuth = async (req, res, next) => {
 
 const checkPermission = (module) => {
   return (req, res, next) => {
+    // Admin tem acesso total
     if (req.user && req.user.role === 'admin') {
       return next();
     }
+    // Assinante root (dono do estúdio) tem acesso total a tudo no seu tenant
+    if (req.user && req.user.role === 'subscriber') {
+      return next();
+    }
+    // Compatibilidade com permissões antigas
     if (req.user && req.user.permissions && req.user.permissions[module]) {
       return next();
+    }
+    // Verificação baseada no novo Controle de Acessos (allowed_menus)
+    if (req.user && req.user.permissions && req.user.permissions.allowed_menus) {
+      const menuMapping = {
+        'crm': 'crm',
+        'proposals': 'propostas',
+        'finance': 'financeiro',
+        'admin': 'equipe'
+      };
+      const checkMenu = menuMapping[module] || module;
+      if (req.user.permissions.allowed_menus.includes(checkMenu)) {
+        return next();
+      }
+    }
+
+    // Se a requisição for de API (espera JSON)
+    if (req.path.startsWith('/api/') || req.xhr) {
+      return res.status(403).json({ success: false, message: 'Acesso Negado. Você não tem permissão.' });
     }
 
     res.status(403).render('admin/error', {
       layout: 'admin',
       title: 'Acesso Negado',
-      message: 'Você não tem permissão para acessar este módulo.',
+      message: 'Você não tem permissão para acessar este módulo (RBAC Bloqueado).',
       user: req.user
     });
   };
@@ -107,6 +133,11 @@ router.post('/login', async (req, res) => {
     if (!isValidPassword) {
       return res.render('admin/login', { layout: 'login', title: 'Login - Admin', error: 'Credenciais inválidas' });
     }
+
+    if (!user.isVerified) {
+      return res.redirect(`/admin/verify?email=${encodeURIComponent(email)}`);
+    }
+
     req.session.userId = user.id;
     req.session.user = user.toJSON();
     res.redirect('/admin');
@@ -126,6 +157,31 @@ router.post('/logout', (req, res) => {
   res.redirect('/admin/login');
 });
 
+// ==========================================
+// GOOGLE OAUTH
+// ==========================================
+const passport = require('../config/passport');
+
+router.get('/auth/google', passport.authenticate('google', {
+  scope: ['profile', 'email']
+}));
+
+router.get('/auth/google/callback', passport.authenticate('google', {
+  failureRedirect: '/admin/login',
+  failureFlash: true
+}), async (req, res) => {
+  try {
+    // Passport coloca o user em req.user após autenticação bem-sucedida
+    // Precisamos também configurar a sessão no formato que o requireAuth espera
+    req.session.userId = req.user.id;
+    req.session.user = req.user.toJSON ? req.user.toJSON() : req.user;
+    res.redirect('/admin');
+  } catch (error) {
+    console.error('Google OAuth callback error:', error);
+    res.redirect('/admin/login');
+  }
+});
+
 router.get('/register', (req, res) => {
   if (req.session.userId) {
     return res.redirect('/admin');
@@ -138,7 +194,7 @@ router.get('/register', (req, res) => {
 
 router.post('/register', async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword } = req.body;
-  
+
   if (!firstName || !lastName || !email || !password || !confirmPassword) {
     return res.render('admin/register', {
       layout: 'login',
@@ -166,6 +222,8 @@ router.post('/register', async (req, res) => {
     }
 
     const name = `${firstName} ${lastName}`;
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digits
+
     const user = await User.create({
       firstName,
       lastName,
@@ -175,7 +233,64 @@ router.post('/register', async (req, res) => {
       role: 'admin',
       isActive: true,
       status: 'active',
-      isVerified: true
+      isVerified: false,
+      verificationCode
+    });
+
+    try {
+      await emailService.sendVerificationCode(user, verificationCode);
+    } catch (emailErr) {
+      console.error('Erro ao enviar email de verificação:', emailErr);
+      // We still redirect to verify, they might need to request a new code later if we implement resend.
+    }
+
+    res.redirect(`/admin/verify?email=${encodeURIComponent(email)}`);
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.render('admin/register', {
+      layout: 'login',
+      title: 'Criar Conta - Admin',
+      error: 'Ocorreu um erro ao criar a conta. Tente novamente.'
+    });
+  }
+});
+
+router.get('/verify', (req, res) => {
+  const email = req.query.email || '';
+  res.render('admin/verify', {
+    layout: 'login',
+    title: 'Verificar Conta',
+    email
+  });
+});
+
+router.post('/verify', async (req, res) => {
+  const { email, code } = req.body;
+  if (!email || !code) {
+    return res.render('admin/verify', { layout: 'login', title: 'Verificar Conta', email, error: 'Código inválido.' });
+  }
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.render('admin/verify', { layout: 'login', title: 'Verificar Conta', email, error: 'Usuário não encontrado.' });
+    }
+
+    if (user.isVerified) {
+       // Already verified, just log them in
+       req.session.userId = user.id;
+       req.session.user = user.toJSON();
+       return res.redirect('/admin');
+    }
+
+    if (user.verificationCode !== code) {
+      return res.render('admin/verify', { layout: 'login', title: 'Verificar Conta', email, error: 'Código incorreto.' });
+    }
+
+    // Success
+    await user.update({
+      isVerified: true,
+      verificationCode: null
     });
 
     req.session.userId = user.id;
@@ -183,11 +298,206 @@ router.post('/register', async (req, res) => {
 
     res.redirect('/admin');
   } catch (error) {
-    console.error('Registration error:', error);
-    res.render('admin/register', {
+    console.error('Verification error:', error);
+    res.render('admin/verify', { layout: 'login', title: 'Verificar Conta', email, error: 'Erro ao verificar a conta.' });
+  }
+});
+
+router.post('/resend-verification', async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.render('admin/verify', { layout: 'login', title: 'Verificar Conta', error: 'E-mail é obrigatório para reenviar o código.' });
+  }
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.render('admin/verify', { layout: 'login', title: 'Verificar Conta', email, error: 'Usuário não encontrado.' });
+    }
+
+    if (user.isVerified) {
+       return res.render('admin/login', { layout: 'login', title: 'Login - Admin', error: 'Esta conta já está verificada. Faça login.' });
+    }
+
+    // Gerar novo código
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    await user.update({ verificationCode });
+
+    try {
+      const emailService = require('../services/emailService');
+      await emailService.sendVerificationCode(user, verificationCode);
+    } catch (emailErr) {
+      console.error('Erro ao reenviar email de verificação:', emailErr);
+      return res.render('admin/verify', { layout: 'login', title: 'Verificar Conta', email, error: 'Erro ao enviar o e-mail. Tente novamente mais tarde.' });
+    }
+
+    res.render('admin/verify', { 
+      layout: 'login', 
+      title: 'Verificar Conta', 
+      email, 
+      message: 'Um novo código foi enviado para seu e-mail!' 
+    });
+  } catch (error) {
+    console.error('Resend verification error:', error);
+    res.render('admin/verify', { layout: 'login', title: 'Verificar Conta', email, error: 'Erro ao reenviar o código.' });
+  }
+});
+
+
+// ==========================================
+// PASSWORD RESET (FORGOT / RESET)
+// ==========================================
+
+router.get('/forgot-password', (req, res) => {
+  if (req.session.userId) {
+    return res.redirect('/admin');
+  }
+  res.render('admin/forgot-password', {
+    layout: 'login',
+    title: 'Recuperar Senha - Admin'
+  });
+});
+
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.render('admin/forgot-password', {
       layout: 'login',
-      title: 'Criar Conta - Admin',
-      error: 'Ocorreu um erro ao criar a conta. Tente novamente.'
+      title: 'Recuperar Senha - Admin',
+      error: 'Por favor, digite seu e-mail.'
+    });
+  }
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (user) {
+      const token = crypto.randomBytes(32).toString('hex');
+      user.resetToken = token;
+      user.resetTokenExpires = Date.now() + 3600000; // 1 hora de validade
+      await user.save();
+
+      try {
+        await emailService.sendPasswordReset(user);
+      } catch (emailErr) {
+        console.error('Erro ao enviar e-mail de redefinição:', emailErr);
+      }
+    }
+
+    // Mesmo que o e-mail não exista, exibimos mensagem genérica por segurança
+    res.render('admin/forgot-password', {
+      layout: 'login',
+      title: 'Recuperar Senha - Admin',
+      success: 'Se o e-mail informado estiver cadastrado, enviaremos um link de redefinição de senha para você.'
+    });
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.render('admin/forgot-password', {
+      layout: 'login',
+      title: 'Recuperar Senha - Admin',
+      error: 'Ocorreu um erro ao processar sua solicitação.'
+    });
+  }
+});
+
+router.get('/reset-password', async (req, res) => {
+  const { token } = req.query;
+  if (!token) {
+    return res.render('admin/login', {
+      layout: 'login',
+      title: 'Login - Admin',
+      error: 'Token de redefinição ausente.'
+    });
+  }
+
+  try {
+    const { Op } = require('sequelize');
+    const user = await User.findOne({
+      where: {
+        resetToken: token,
+        resetTokenExpires: { [Op.gt]: new Date() }
+      }
+    });
+
+    if (!user) {
+      return res.render('admin/login', {
+        layout: 'login',
+        title: 'Login - Admin',
+        error: 'O link de redefinição é inválido ou expirou.'
+      });
+    }
+
+    res.render('admin/reset-password', {
+      layout: 'login',
+      title: 'Nova Senha - Admin',
+      token
+    });
+  } catch (error) {
+    console.error('Reset password GET error:', error);
+    res.render('admin/login', {
+      layout: 'login',
+      title: 'Login - Admin',
+      error: 'Erro ao validar solicitação.'
+    });
+  }
+});
+
+router.post('/reset-password', async (req, res) => {
+  const { token, password, confirmPassword } = req.body;
+
+  if (!token || !password || !confirmPassword) {
+    return res.render('admin/reset-password', {
+      layout: 'login',
+      title: 'Nova Senha - Admin',
+      token,
+      error: 'Todos os campos são obrigatórios.'
+    });
+  }
+
+  if (password !== confirmPassword) {
+    return res.render('admin/reset-password', {
+      layout: 'login',
+      title: 'Nova Senha - Admin',
+      token,
+      error: 'As senhas não coincidem.'
+    });
+  }
+
+  try {
+    const { Op } = require('sequelize');
+    const user = await User.findOne({
+      where: {
+        resetToken: token,
+        resetTokenExpires: { [Op.gt]: new Date() }
+      }
+    });
+
+    if (!user) {
+      return res.render('admin/login', {
+        layout: 'login',
+        title: 'Login - Admin',
+        error: 'O link de redefinição é inválido ou expirou.'
+      });
+    }
+
+    // Atualiza a senha e remove o token do banco
+    user.password = password;
+    user.resetToken = null;
+    user.resetTokenExpires = null;
+    await user.save();
+
+    res.render('admin/login', {
+      layout: 'login',
+      title: 'Login - Admin',
+      success: 'Senha alterada com sucesso! Faça login com suas novas credenciais.'
+    });
+  } catch (error) {
+    console.error('Reset password POST error:', error);
+    res.render('admin/reset-password', {
+      layout: 'login',
+      title: 'Nova Senha - Admin',
+      token,
+      error: 'Erro ao redefinir a senha.'
     });
   }
 });
@@ -200,16 +510,16 @@ router.get('/', requireAuth, async (req, res) => {
   try {
     const today = new Date();
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    
+
     // 1. KPI Financeiro (Global & Mensal)
     const receitasMes = await FinanceTransaction.sum('amount', { where: { type: 'receita', dueDate: { [Op.gte]: startOfMonth } } }) || 0;
     const despesasMes = await FinanceTransaction.sum('amount', { where: { type: 'despesa', dueDate: { [Op.gte]: startOfMonth } } }) || 0;
-    
+
     // Global stats for "Auditoria de Fluxo"
     const totalReceitas = await FinanceTransaction.sum('amount', { where: { type: 'receita' } }) || 0;
     const totalDespesas = await FinanceTransaction.sum('amount', { where: { type: 'despesa' } }) || 0;
     const receitasPendentes = await FinanceTransaction.sum('amount', { where: { type: 'receita', status: 'pendente' } }) || 0;
-    
+
     const saldoProjetadoTotal = totalReceitas - totalDespesas;
     const margemGlobal = totalReceitas > 0 ? Math.round(((totalReceitas - totalDespesas) / totalReceitas) * 100) : 0;
     const margemMensal = receitasMes > 0 ? Math.round(((receitasMes - despesasMes) / receitasMes) * 100) : 0;
@@ -218,14 +528,14 @@ router.get('/', requireAuth, async (req, res) => {
     const currentWeekDays = [];
     const dayOfWeek = today.getDay(); // 0-6 (Sun-Sat)
     for (let i = 0; i < 7; i++) {
-        const d = new Date(today);
-        d.setDate(today.getDate() - dayOfWeek + i);
-        currentWeekDays.push({
-            dayName: d.toLocaleDateString('pt-BR', { weekday: 'short' }).substring(0, 3),
-            dayNumber: d.getDate(),
-            isToday: d.toDateString() === today.toDateString(),
-            hasTasks: false // will map with upcomingTasks below
-        });
+      const d = new Date(today);
+      d.setDate(today.getDate() - dayOfWeek + i);
+      currentWeekDays.push({
+        dayName: d.toLocaleDateString('pt-BR', { weekday: 'short' }).substring(0, 3),
+        dayNumber: d.getDate(),
+        isToday: d.toDateString() === today.toDateString(),
+        hasTasks: false // will map with upcomingTasks below
+      });
     }
 
     // 2. Previsão de Vendas (Forecast)
@@ -233,11 +543,11 @@ router.get('/', requireAuth, async (req, res) => {
     let forecastMax = 0;
     let forecastMed = 0;
     let forecastMin = 0;
-    
+
     openLeads.forEach(lead => {
       const value = parseFloat(lead.estimatedValue) || 0;
-      const prob = parseFloat(lead.probability) || 0; 
-      
+      const prob = parseFloat(lead.probability) || 0;
+
       forecastMax += value;
       forecastMed += value * (prob / 100);
       if (prob >= 80) {
@@ -258,15 +568,15 @@ router.get('/', requireAuth, async (req, res) => {
 
     // Map upcoming tasks to calendar
     upcomingTasks.forEach(task => {
-        if (task.dueDate) {
-            const taskDateStr = new Date(task.dueDate).toDateString();
-            const weekDay = currentWeekDays.find(wd => {
-                const wdDate = new Date();
-                wdDate.setDate(new Date().getDate() - new Date().getDay() + currentWeekDays.indexOf(wd));
-                return wdDate.toDateString() === taskDateStr;
-            });
-            if (weekDay) weekDay.hasTasks = true;
-        }
+      if (task.dueDate) {
+        const taskDateStr = new Date(task.dueDate).toDateString();
+        const weekDay = currentWeekDays.find(wd => {
+          const wdDate = new Date();
+          wdDate.setDate(new Date().getDate() - new Date().getDay() + currentWeekDays.indexOf(wd));
+          return wdDate.toDateString() === taskDateStr;
+        });
+        if (weekDay) {weekDay.hasTasks = true;}
+      }
     });
 
     // 4. Smart Notes
@@ -281,7 +591,7 @@ router.get('/', requireAuth, async (req, res) => {
         startTime: { [Op.gte]: startOfMonth }
       }
     });
-    
+
     let totalHoursLogged = 0;
     timeLogsThisMonth.forEach(log => {
       if (log.endTime) {
@@ -289,20 +599,20 @@ router.get('/', requireAuth, async (req, res) => {
         totalHoursLogged += durationMs / (1000 * 60 * 60);
       }
     });
-    
-    const metaHorasMensal = 160; 
+
+    const metaHorasMensal = 160;
     let produtividadeStatus = 'Gargalo';
     let produtividadeCor = 'text-red-500 bg-red-500/10 border-red-500/20';
     let produtividadeIcon = 'warning';
-    
+
     if (totalHoursLogged >= (metaHorasMensal * 0.8)) {
-        produtividadeStatus = 'Ótimo';
-        produtividadeCor = 'text-green-500 bg-green-500/10 border-green-500/20';
-        produtividadeIcon = 'check_circle';
+      produtividadeStatus = 'Ótimo';
+      produtividadeCor = 'text-green-500 bg-green-500/10 border-green-500/20';
+      produtividadeIcon = 'check_circle';
     } else if (totalHoursLogged >= (metaHorasMensal * 0.5)) {
-        produtividadeStatus = 'Atenção';
-        produtividadeCor = 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
-        produtividadeIcon = 'pending';
+      produtividadeStatus = 'Atenção';
+      produtividadeCor = 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
+      produtividadeIcon = 'pending';
     }
 
     res.render('admin/dashboard', {
@@ -349,7 +659,7 @@ router.get('/', requireAuth, async (req, res) => {
 router.post('/api/notes', requireAuth, async (req, res) => {
   try {
     const { content, color } = req.body;
-    
+
     // Extração de hashtags simples usando Regex (#palavra)
     const hashtagsMatch = content.match(/#[a-zA-Z0-9_]+/g);
     const hashtags = hashtagsMatch ? hashtagsMatch.join(',') : '';
@@ -360,7 +670,7 @@ router.post('/api/notes', requireAuth, async (req, res) => {
       hashtags,
       createdBy: req.user.name
     });
-    
+
     res.json({ success: true, note });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -407,35 +717,35 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
       'fechado': 'fechamento'
     };
 
-    const dealsRaw = await Budget.findAll({ 
+    const dealsRaw = await Budget.findAll({
       where: { winStatus: 'aberto' },
       include: [
         { model: Client, as: 'client', attributes: ['id', 'name', 'phone', 'email', 'company'] },
         { model: User, as: 'assignedUser', attributes: ['id', 'name'] }
       ],
-      order: [['order', 'ASC'], ['createdAt', 'DESC']] 
+      order: [['order', 'ASC'], ['createdAt', 'DESC']]
     });
     const deals = dealsRaw.map(d => {
       const data = d.get({ plain: true });
       // Normalize Status to standard sales stages
       data.status = statusMap[data.status] || data.status;
       // Fallback para campos novos (Graceful Degradation)
-      data.visualStyle = data.visualStyle || "";
+      data.visualStyle = data.visualStyle || '';
       data.inputFormats = data.inputFormats || [];
       data.imagesCount = data.imagesCount || 0;
       data.animationSeconds = data.animationSeconds || 0;
       data.panoramasCount = data.panoramasCount || 0;
-      data.winStatus = data.winStatus || "aberto";
+      data.winStatus = data.winStatus || 'aberto';
       data.installments = data.installments || 1;
       data.softwareStack = data.softwareStack || [];
       data.productionDays = data.productionDays || null;
       return data;
     });
-    
+
     // Carregar equipe para o select de Responsável Comercial
-    const teamMembers = (await User.findAll({ 
+    const teamMembers = (await User.findAll({
       attributes: ['id', 'name', 'role'],
-      order: [['name', 'ASC']] 
+      order: [['name', 'ASC']]
     })).map(u => u.get({ plain: true }));
 
     const kanban = {};
@@ -451,7 +761,7 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
     const selectedMonth = req.query.month || moment().format('YYYY-MM');
     const startOfMonth = moment(selectedMonth, 'YYYY-MM').startOf('month');
     const endOfMonth = moment(selectedMonth, 'YYYY-MM').endOf('month');
-    
+
     // Beautiful capitalized month name in Portuguese, e.g. "Maio de 2026"
     const selectedMonthFormatted = moment(selectedMonth, 'YYYY-MM').format('MMMM [de] YYYY').replace(/^\w/, c => c.toUpperCase());
 
@@ -461,18 +771,18 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
       data.status = statusMap[data.status] || data.status;
       return data;
     });
-    
+
     // Filter deals expected to close in the selected month
     const filteredPlain = allPlain.filter(d => {
       const dateToUse = d.expectedRevenueDate || d.createdAt;
-      if (!dateToUse) return false;
+      if (!dateToUse) {return false;}
       const mDate = moment(dateToUse);
       return mDate.isSameOrAfter(startOfMonth) && mDate.isSameOrBefore(endOfMonth);
     });
-    
+
     const billingWon = filteredPlain.filter(d => d.winStatus === 'ganho').reduce((sum, d) => sum + (parseFloat(d.estimatedValue) || 0), 0);
     const openDeals = filteredPlain.filter(d => d.winStatus === 'aberto');
-    
+
     let forecastMin = billingWon;
     let forecastMed = billingWon;
     let forecastMax = billingWon;
@@ -480,7 +790,7 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
     openDeals.forEach(d => {
       const val = parseFloat(d.estimatedValue) || 0;
       const prob = (parseFloat(d.probability) || 0) / 100;
-      
+
       // Medium scenario is based on the card's individual probability
       forecastMed += val * prob;
 
@@ -518,8 +828,8 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
     stats.ticketMedio = wonDeals.length > 0 ? stats.billingWon / wonDeals.length : 0;
 
     const lostDealsCount = filteredPlain.filter(d => d.winStatus === 'perdido').length;
-    stats.conversionRate = (wonDeals.length + lostDealsCount) > 0 
-      ? (wonDeals.length / (wonDeals.length + lostDealsCount)) * 100 
+    stats.conversionRate = (wonDeals.length + lostDealsCount) > 0
+      ? (wonDeals.length / (wonDeals.length + lostDealsCount)) * 100
       : 0;
 
     const charts = {
@@ -539,18 +849,18 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
         data: []
       }
     };
-    charts.lossReasons.data = charts.lossReasons.labels.map(reason => 
+    charts.lossReasons.data = charts.lossReasons.labels.map(reason =>
       filteredPlain.filter(d => d.lossReason === reason).length
     );
 
-    res.render('admin/negociacoes', { 
-      layout: 'admin', 
-      title: 'CRM - Inteligência Comercial', 
-      currentPage: 'negociacoes', 
-      user: req.user, 
-      columns, 
-      kanban, 
-      pipelineTotals, 
+    res.render('admin/negociacoes', {
+      layout: 'admin',
+      title: 'CRM - Inteligência Comercial',
+      currentPage: 'negociacoes',
+      user: req.user,
+      columns,
+      kanban,
+      pipelineTotals,
       totalNegotiationValue,
       teamMembers,
       stats,
@@ -566,14 +876,14 @@ router.get('/negociacoes', requireAuth, checkPermission('crm'), async (req, res)
 
 router.post('/negociacoes/add', requireAuth, async (req, res) => {
   try {
-    const { 
-      name, email, phone, projectType, estimatedValue, description, 
-      targetSoftware, floorPlansCount, imagesCount, animationSeconds, 
-      driveLink, visualStyle, color, totalArea, productionDays, 
-      clientBudget, assignedUserId, softwareStack, complexity, 
+    const {
+      name, email, phone, projectType, estimatedValue, description,
+      targetSoftware, floorPlansCount, imagesCount, animationSeconds,
+      driveLink, visualStyle, color, totalArea, productionDays,
+      clientBudget, assignedUserId, softwareStack, complexity,
       installments, probability, origin
     } = req.body;
-    
+
     await Budget.create({
       name,
       email: email || null,
@@ -606,7 +916,7 @@ router.post('/negociacoes/add', requireAuth, async (req, res) => {
     res.redirect('/admin/negociacoes');
   } catch (error) {
     console.error('Create Lead Error:', error);
-    req.flash('error_msg', 'Erro ao criar lead: ' + error.message);
+    req.flash('error_msg', `Erro ao criar lead: ${error.message}`);
     res.redirect('/admin/negociacoes');
   }
 });
@@ -615,24 +925,24 @@ router.post('/negociacoes/:id/confirm-project', requireAuth, async (req, res) =>
   try {
     const { id } = req.params;
     const budget = await Budget.findByPk(id);
-    if (!budget) return res.status(404).json({ success: false, error: 'Negociação não encontrada' });
+    if (!budget) {return res.status(404).json({ success: false, error: 'Negociação não encontrada' });}
 
     // Clonar para Projeto com integridade total de dados (Tier 1 Mirror)
     const project = await Project.create({
       title: budget.name,
       client: budget.clientName || budget.name || 'Cliente Direto',
       clientId: budget.clientId,
-      category: budget.projectType === 'Arquitetônico' ? 'arquitetonico' : 
-                (budget.projectType === 'Interiores' ? 'interior' : 
-                (budget.projectType === 'Animação' ? 'animacao' : 
-                (budget.projectType === 'Comercial' ? 'exterior' :
-                (budget.projectType === 'Visualização de Produtos' ? 'produto' : 'outro')))),
+      category: budget.projectType === 'Arquitetônico' ? 'arquitetonico' :
+        (budget.projectType === 'Interiores' ? 'interior' :
+          (budget.projectType === 'Animação' ? 'animacao' :
+            (budget.projectType === 'Comercial' ? 'exterior' :
+              (budget.projectType === 'Visualização de Produtos' ? 'produto' : 'outro')))),
       software: budget.targetSoftware || budget.software,
       softwareStack: budget.softwareStack || [],
       renderEngine: budget.renderEngine || 'D5 Render',
       price: budget.estimatedValue,
       deadline: budget.deadline,
-      totalArea: budget.totalArea, 
+      totalArea: budget.totalArea,
       productionDays: budget.productionDays,
       origin: budget.origin,
       visualStyle: budget.visualStyle,
@@ -716,8 +1026,8 @@ router.post('/negociacoes/:id/confirm-project', requireAuth, async (req, res) =>
     });
 
     // Atualizar Negociação
-    await budget.update({ 
-      status: 'fechado', 
+    await budget.update({
+      status: 'fechado',
       winStatus: 'ganho',
       closeDate: new Date(),
       proposalStatus: 'aceita'
@@ -776,15 +1086,17 @@ router.get('/previsao', requireAuth, checkPermission('crm'), async (req, res) =>
   try {
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    
+
     const allDeals = await Budget.findAll();
-    const deals = allDeals.map(d => {
-      const data = d.get({ plain: true });
-      data.winStatus = data.winStatus || "aberto";
-      data.estimatedValue = parseFloat(data.estimatedValue) || 0;
-      data.probability = parseFloat(data.probability) || 0;
-      return data;
-    });
+    const deals = allDeals
+      .filter(d => d.status !== 'recuperar')
+      .map(d => {
+        const data = d.get({ plain: true });
+        data.winStatus = data.winStatus || 'aberto';
+        data.estimatedValue = parseFloat(data.estimatedValue) || 0;
+        data.probability = parseFloat(data.probability) || 0;
+        return data;
+      });
 
     // KPIs
     const wonThisMonth = deals.filter(d => d.winStatus === 'ganho' && new Date(d.updatedAt) >= firstDayOfMonth);
@@ -801,14 +1113,14 @@ router.get('/previsao', requireAuth, checkPermission('crm'), async (req, res) =>
       const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
       const monthLabel = d.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
       months.push(monthLabel);
-      
+
       const monthDeals = inNegotiation.filter(deal => {
         const estDate = deal.expectedRevenueDate || deal.deadline;
-        if (!estDate) return false;
+        if (!estDate) {return false;}
         const ed = new Date(estDate);
         return ed.getMonth() === d.getMonth() && ed.getFullYear() === d.getFullYear();
       });
-      
+
       const weighted = monthDeals.reduce((sum, deal) => {
         return sum + deal.estimatedValue * (deal.probability / 100);
       }, 0);
@@ -826,6 +1138,13 @@ router.get('/previsao', requireAuth, checkPermission('crm'), async (req, res) =>
         labels: months,
         data: weightedRevenue
       },
+      winRate: {
+        labels: ['Ganhos', 'Perdidos'],
+        data: [
+          deals.filter(d => d.winStatus === 'ganho' && new Date(d.updatedAt) >= firstDayOfMonth).length,
+          deals.filter(d => d.winStatus === 'perdido' && new Date(d.updatedAt) >= firstDayOfMonth).length
+        ]
+      },
       lossReasons: {
         labels: ['Preço', 'Prazo', 'Concorrente', 'Outros'],
         data: [
@@ -837,13 +1156,13 @@ router.get('/previsao', requireAuth, checkPermission('crm'), async (req, res) =>
       }
     };
 
-    res.render('admin/previsao', { 
-      layout: 'admin', 
-      title: 'Previsão Comercial', 
-      currentPage: 'previsao', 
+    res.render('admin/previsao', {
+      layout: 'admin',
+      title: 'Previsão Comercial',
+      currentPage: 'previsao',
       user: req.user,
       stats,
-      chartsData: JSON.stringify(chartsData)
+      charts: chartsData
     });
   } catch (error) {
     console.error('Forecast Route Error:', error);
@@ -855,11 +1174,11 @@ router.get('/propostas', requireAuth, checkPermission('proposals'), async (req, 
   try {
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    
+
     const allDeals = await Budget.findAll();
     const deals = allDeals.map(d => {
       const data = d.get({ plain: true });
-      data.winStatus = data.winStatus || "aberto";
+      data.winStatus = data.winStatus || 'aberto';
       data.estimatedValue = parseFloat(data.estimatedValue) || 0;
       data.probability = parseFloat(data.probability) || 0;
       return data;
@@ -879,14 +1198,14 @@ router.get('/propostas', requireAuth, checkPermission('proposals'), async (req, 
       const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
       const monthLabel = d.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
       months.push(monthLabel);
-      
+
       const monthDeals = inNegotiation.filter(deal => {
         const estDate = deal.expectedRevenueDate || deal.deadline;
-        if (!estDate) return false;
+        if (!estDate) {return false;}
         const ed = new Date(estDate);
         return ed.getMonth() === d.getMonth() && ed.getFullYear() === d.getFullYear();
       });
-      
+
       const weighted = monthDeals.reduce((sum, deal) => {
         return sum + (parseFloat(deal.estimatedValue) || 0) * (deal.probability / 100);
       }, 0);
@@ -961,10 +1280,10 @@ router.delete('/kanban/columns/:id', requireAuth, async (req, res) => {
 router.post('/negociacoes/novo', requireAuth, async (req, res) => {
   try {
     const { name, clientName, projectType, totalArea, visualStyle, targetSoftware, estimatedValue, deadline, productionDays, clientBudget } = req.body;
-    
+
     const columns = await KanbanColumn.findAll({ where: { type: 'leads' }, order: [['order', 'ASC']] });
     const firstStatus = columns.length > 0 ? columns[0].statusKey : 'novo_lead';
-    
+
     const lead = await Budget.create({
       name,
       clientName: clientName || null,
@@ -984,7 +1303,7 @@ router.post('/negociacoes/novo', requireAuth, async (req, res) => {
     if (req.headers.accept && req.headers.accept.includes('application/json')) {
       return res.json({ success: true, lead });
     }
-    
+
     req.flash('success_msg', 'Lead criado com sucesso!');
     res.redirect('/admin/crm');
   } catch (error) {
@@ -992,7 +1311,7 @@ router.post('/negociacoes/novo', requireAuth, async (req, res) => {
     if (req.headers.accept && req.headers.accept.includes('application/json')) {
       return res.status(500).json({ success: false, error: error.message });
     }
-    req.flash('error_msg', 'Erro ao criar lead: ' + error.message);
+    req.flash('error_msg', `Erro ao criar lead: ${error.message}`);
     res.redirect('/admin/crm');
   }
 });
@@ -1000,12 +1319,12 @@ router.post('/negociacoes/novo', requireAuth, async (req, res) => {
 router.post('/negociacoes/:id/update', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const { 
-      name, email, phone, projectType, estimatedValue, description, 
-      targetSoftware, floorPlansCount, imagesCount, animationSeconds, 
-      driveLink, visualStyle, color, deadline, productionDays, clientBudget 
+    const {
+      name, email, phone, projectType, estimatedValue, description,
+      targetSoftware, floorPlansCount, imagesCount, animationSeconds,
+      driveLink, visualStyle, color, deadline, productionDays, clientBudget
     } = req.body;
-    
+
     const budget = await Budget.findByPk(id);
     if (!budget) {
       if (req.headers.accept && req.headers.accept.includes('application/json')) {
@@ -1045,7 +1364,7 @@ router.post('/negociacoes/:id/update', requireAuth, async (req, res) => {
     if (req.headers.accept && req.headers.accept.includes('application/json')) {
       return res.status(500).json({ success: false, error: error.message });
     }
-    req.flash('error_msg', 'Erro ao atualizar lead: ' + error.message);
+    req.flash('error_msg', `Erro ao atualizar lead: ${error.message}`);
     res.redirect('/admin/crm');
   }
 });
@@ -1056,13 +1375,13 @@ router.get('/projetos/criar', requireAuth, async (req, res) => {
     let budgetData = null;
     if (budgetId) {
       budgetData = await Budget.findByPk(budgetId);
-      if (budgetData) budgetData = budgetData.get({ plain: true });
+      if (budgetData) {budgetData = budgetData.get({ plain: true });}
     }
-    
-    res.render('admin/projects-create', { 
-      layout: 'admin', 
-      title: 'Lançar Novo Projeto', 
-      currentPage: 'projetos', 
+
+    res.render('admin/projects-create', {
+      layout: 'admin',
+      title: 'Lançar Novo Projeto',
+      currentPage: 'projetos',
       user: req.user,
       budgetData
     });
@@ -1075,16 +1394,16 @@ router.post('/negociacoes/:id/update-status', requireAuth, async (req, res) => {
   try {
     const { status } = req.body;
     const budget = await Budget.findByPk(req.params.id);
-    if (!budget) return res.status(404).json({ error: 'Negociação não encontrada' });
-    
+    if (!budget) {return res.status(404).json({ error: 'Negociação não encontrada' });}
+
     // Obter campos automatizados para a transição de etapa
     const automatedFields = getAutomatedFieldsForStatus(status, budget);
-    
+
     // Atualizar o budget com o novo status e os campos automatizados
     await budget.update(automatedFields);
-    
-    res.json({ 
-      success: true, 
+
+    res.json({
+      success: true,
       budget: {
         id: budget.id,
         status: budget.status,
@@ -1097,7 +1416,7 @@ router.post('/negociacoes/:id/update-status', requireAuth, async (req, res) => {
     });
   } catch (error) {
     console.error('Update Status Error:', error);
-    res.status(500).json({ error: 'Erro ao atualizar status: ' + error.message });
+    res.status(500).json({ error: `Erro ao atualizar status: ${error.message}` });
   }
 });
 
@@ -1105,8 +1424,8 @@ router.post('/negociacoes/:id/status', requireAuth, async (req, res) => {
   try {
     const { winStatus, lossReason } = req.body;
     const budget = await Budget.findByPk(req.params.id);
-    if (!budget) return res.status(404).json({ error: 'Negociação não encontrada' });
-    
+    if (!budget) {return res.status(404).json({ error: 'Negociação não encontrada' });}
+
     await budget.update({ winStatus, lossReason });
     res.json({ success: true });
   } catch (error) {
@@ -1119,7 +1438,7 @@ router.get('/crm', requireAuth, checkPermission('crm'), async (req, res) => {
     const columns = (await KanbanColumn.findAll({ where: { type: 'crm' }, order: [['order', 'ASC']] })).map(c => c.get({ plain: true }));
     const budgetsRaw = await Budget.findAll({ order: [['createdAt', 'DESC']] });
     const budgets = budgetsRaw.map(b => b.get({ plain: true }));
-    
+
     const kanban = {};
     columns.forEach(col => { kanban[col.statusKey] = budgets.filter(b => b.status === col.statusKey); });
 
@@ -1128,28 +1447,28 @@ router.get('/crm', requireAuth, checkPermission('crm'), async (req, res) => {
     res.render('admin/crm', { layout: 'admin', title: 'Pipeline de Leads', currentPage: 'crm', user: req.user, columns, kanban, budgets, totalVgv });
   } catch (error) {
     console.error('CRM Route Error:', error);
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro no CRM: ' + error.message });
+    res.status(500).render('admin/error', { layout: 'admin', message: `Erro no CRM: ${error.message}` });
   }
 });
 
 router.get('/orcamentos', requireAuth, async (req, res) => {
   try {
-    const budgetsRaw = await Budget.findAll({ 
+    const budgetsRaw = await Budget.findAll({
       include: [
         { model: Client, as: 'client', attributes: ['id', 'name', 'phone', 'email', 'company'] },
         { model: User, as: 'assignedUser', attributes: ['id', 'name'] }
       ],
-      order: [['createdAt', 'DESC']] 
+      order: [['createdAt', 'DESC']]
     });
     const budgets = budgetsRaw.map(b => {
       const data = b.get({ plain: true });
       // Fallback para campos novos (Graceful Degradation)
-      data.visualStyle = data.visualStyle || "";
+      data.visualStyle = data.visualStyle || '';
       data.inputFormats = data.inputFormats || [];
       data.imagesCount = data.imagesCount || 0;
       data.animationSeconds = data.animationSeconds || 0;
       data.panoramasCount = data.panoramasCount || 0;
-      data.winStatus = data.winStatus || "aberto";
+      data.winStatus = data.winStatus || 'aberto';
       data.installments = data.installments || 1;
       data.softwareStack = data.softwareStack || [];
       data.productionDays = data.productionDays || null;
@@ -1158,14 +1477,14 @@ router.get('/orcamentos', requireAuth, async (req, res) => {
     res.render('admin/budgets', { layout: 'admin', title: 'Propostas Comercial', currentPage: 'budgets', user: req.user, budgets });
   } catch (error) {
     console.error('Orcamentos Route Error:', error);
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar orçamentos: ' + error.message });
+    res.status(500).render('admin/error', { layout: 'admin', message: `Erro ao carregar orçamentos: ${error.message}` });
   }
 });
 
 router.get('/orcamento/:id', requireAuth, async (req, res) => {
   try {
     const budget = await Budget.findByPk(req.params.id);
-    if (!budget) return res.status(404).render('admin/error', { layout: 'admin', message: 'Orçamento não encontrado' });
+    if (!budget) {return res.status(404).render('admin/error', { layout: 'admin', message: 'Orçamento não encontrado' });}
     res.render('admin/budget-detail', { layout: 'admin', title: `Orçamento #${budget.id}`, currentPage: 'budgets', user: req.user, budget: budget.get({ plain: true }) });
   } catch (error) {
     res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar detalhes do orçamento' });
@@ -1212,42 +1531,42 @@ router.get('/projetos', requireAuth, async (req, res) => {
   try {
     const rawProjects = await Project.findAll({ order: [['createdAt', 'DESC']] });
     const projects = rawProjects.map(p => p.get({ plain: true }));
-    
+
     // Configuração das Colunas do Kanban de Projetos (ArchViz)
     const pipelineColumns = [
-        { key: 'briefing', title: '1. Briefing & Setup', color: '#6366f1' },       // Indigo
-        { key: 'modelagem', title: '2. Modelagem 3D', color: '#f59e0b' },        // Amber
-        { key: 'renderizacao', title: '3. Render & Setup', color: '#ef4444' },   // Red
-        { key: 'pos_producao', title: '4. Pós-Produção', color: '#8b5cf6' },     // Purple
-        { key: 'entregue', title: '5. Entregue / Aprovado', color: '#10b981' }   // Emerald
+      { key: 'briefing', title: '1. Briefing & Setup', color: '#6366f1' },       // Indigo
+      { key: 'modelagem', title: '2. Modelagem 3D', color: '#f59e0b' },        // Amber
+      { key: 'renderizacao', title: '3. Render & Setup', color: '#ef4444' },   // Red
+      { key: 'pos_producao', title: '4. Pós-Produção', color: '#8b5cf6' },     // Purple
+      { key: 'entregue', title: '5. Entregue / Aprovado', color: '#10b981' }   // Emerald
     ];
 
     // Agrupar os projetos por status (fallback para briefing se não houver)
     const projectsKanban = {
-        briefing: [],
-        modelagem: [],
-        renderizacao: [],
-        pos_producao: [],
-        entregue: []
+      briefing: [],
+      modelagem: [],
+      renderizacao: [],
+      pos_producao: [],
+      entregue: []
     };
 
     projects.forEach(p => {
-        const status = p.status || 'briefing';
-        if (projectsKanban[status]) {
-            projectsKanban[status].push(p);
-        } else {
-            projectsKanban['briefing'].push(p); // Fallback
-        }
+      const status = p.status || 'briefing';
+      if (projectsKanban[status]) {
+        projectsKanban[status].push(p);
+      } else {
+        projectsKanban['briefing'].push(p); // Fallback
+      }
     });
 
-    res.render('admin/projects', { 
-        layout: 'admin', 
-        title: 'Produção ArchViz', 
-        currentPage: 'projects', 
-        user: req.user, 
-        projects,
-        pipelineColumns,
-        projectsKanban
+    res.render('admin/projects', {
+      layout: 'admin',
+      title: 'Produção ArchViz',
+      currentPage: 'projects',
+      user: req.user,
+      projects,
+      pipelineColumns,
+      projectsKanban
     });
   } catch (error) {
     res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar lista de projetos' });
@@ -1285,7 +1604,7 @@ router.delete('/api/revisions/:id', requireAuth, async (req, res) => {
 router.get('/projetos/kanban', requireAuth, async (req, res) => {
   try {
     const columns = (await KanbanColumn.findAll({ where: { type: 'project' }, order: [['order', 'ASC']] })).map(c => c.get({ plain: true }));
-    const projectsRaw = await Project.findAll({ 
+    const projectsRaw = await Project.findAll({
       order: [['order', 'ASC'], ['createdAt', 'DESC']],
       include: [
         { model: Client, as: 'customer' },
@@ -1293,10 +1612,10 @@ router.get('/projetos/kanban', requireAuth, async (req, res) => {
         { model: TimeLog, as: 'timeLogs' }
       ]
     });
-    
+
     const projects = projectsRaw.map(p => {
       const proj = p.get({ plain: true });
-      
+
       // Sum time tracking logs
       let totalLoggedMinutes = 0;
       let isTrackingNow = false;
@@ -1311,12 +1630,12 @@ router.get('/projetos/kanban', requireAuth, async (req, res) => {
           }
         });
       }
-      
+
       proj.executedHours = parseFloat((totalLoggedMinutes / 60).toFixed(1));
       proj.isTrackingNow = isTrackingNow;
       proj.activeLogStart = activeLogStart;
       proj.remainingHours = Math.max(0, (proj.plannedHours || 0) - proj.executedHours);
-      
+
       // Sum financial transactions
       let totalRevenue = 0;
       let totalExpenses = 0;
@@ -1332,10 +1651,10 @@ router.get('/projetos/kanban', requireAuth, async (req, res) => {
       }
       proj.totalRevenue = totalRevenue;
       proj.totalExpenses = totalExpenses;
-      
+
       return proj;
     });
-    
+
     const kanbanColumns = columns.map(col => {
       const colProjects = projects.filter(p => p.status === col.statusKey);
       return {
@@ -1345,13 +1664,22 @@ router.get('/projetos/kanban', requireAuth, async (req, res) => {
         totalValue: colProjects.reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0)
       };
     });
-    
-    res.render('admin/projects-kanban', { layout: 'admin', title: 'Gestão de Projetos', currentPage: 'projects', user: req.user, columns: kanbanColumns });
+
+    const totalProjectsValue = projects.reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0);
+
+    res.render('admin/projects-kanban', {
+      layout: 'admin',
+      title: 'Gestão de Projetos',
+      currentPage: 'projects',
+      user: req.user,
+      columns: kanbanColumns,
+      totalProjectsValue
+    });
   } catch (error) {
     console.error('CRITICAL KANBAN ERROR:', error);
-    res.status(500).render('admin/error', { 
-      layout: 'admin', 
-      message: 'Erro ao carregar projetos: ' + error.message,
+    res.status(500).render('admin/error', {
+      layout: 'admin',
+      message: `Erro ao carregar projetos: ${error.message}`,
       error: error
     });
   }
@@ -1361,7 +1689,7 @@ router.post('/api/projects/move', requireAuth, async (req, res) => {
   try {
     const { projectId, status } = req.body;
     const project = await Project.findByPk(projectId);
-    
+
     if (!project) {
       return res.status(404).json({ success: false, message: 'Projeto não encontrado' });
     }
@@ -1370,19 +1698,19 @@ router.post('/api/projects/move', requireAuth, async (req, res) => {
 
     // Automações de Comunicação Criativa
     try {
-        const fullProject = await Project.findByPk(projectId, { include: [{ model: Client, as: 'client' }] });
-        const clientEmail = fullProject.client?.email || fullProject.budget?.email;
-        const clientName = fullProject.client?.name || 'Cliente';
+      const fullProject = await Project.findByPk(projectId, { include: [{ model: Client, as: 'client' }] });
+      const clientEmail = fullProject.client?.email || fullProject.budget?.email;
+      const clientName = fullProject.client?.name || 'Cliente';
 
-        if (clientEmail) {
-            if (status === 'revisao') {
-                await emailService.sendProjectReviewReady(fullProject, clientEmail, clientName);
-            } else if (status === 'finalizado') {
-                await emailService.sendProjectFinished(fullProject, clientEmail, clientName);
-            }
+      if (clientEmail) {
+        if (status === 'revisao') {
+          await emailService.sendProjectReviewReady(fullProject, clientEmail, clientName);
+        } else if (status === 'finalizado') {
+          await emailService.sendProjectFinished(fullProject, clientEmail, clientName);
         }
+      }
     } catch (notifErr) {
-        console.error('Erro na automação de e-mail:', notifErr);
+      console.error('Erro na automação de e-mail:', notifErr);
     }
 
     res.json({ success: true });
@@ -1407,8 +1735,8 @@ router.get('/api/projects/:id', requireAuth, async (req, res) => {
         [{ model: ProjectLog, as: 'logs' }, 'createdAt', 'DESC']
       ]
     });
-    if (!project) return res.status(404).json({ success: false, error: 'Projeto não encontrado' });
-    
+    if (!project) {return res.status(404).json({ success: false, error: 'Projeto não encontrado' });}
+
     // Check if there is an active tracker for this user
     const activeTimeLog = await TimeLog.findOne({
       where: {
@@ -1417,9 +1745,41 @@ router.get('/api/projects/:id', requireAuth, async (req, res) => {
       }
     });
 
-    res.json({ 
-      success: true, 
-      project, 
+    const projectData = project.get({ plain: true });
+
+    // RBAC: Check if the user is not an admin
+    if (req.user.role !== 'admin') {
+      delete projectData.price;
+      delete projectData.value;
+      delete projectData.cost;
+      delete projectData.revenue;
+      delete projectData.proposedPrice;
+      delete projectData.budget;
+      delete projectData.transactions;
+
+      if (projectData.timeLogs) {
+        projectData.timeLogs = projectData.timeLogs.map(log => {
+          delete log.hourlyRate;
+          delete log.totalCost;
+          return log;
+        });
+      }
+
+      if (projectData.logs) {
+        projectData.logs = projectData.logs.filter(log => {
+          const lowerDetails = (log.details || '').toLowerCase();
+          return !lowerDetails.includes('custo') &&
+                 !lowerDetails.includes('reais') &&
+                 !lowerDetails.includes('r$') &&
+                 !lowerDetails.includes('preço') &&
+                 !lowerDetails.includes('valor');
+        });
+      }
+    }
+
+    res.json({
+      success: true,
+      project: projectData,
       activeTimeLog: activeTimeLog ? activeTimeLog.get({ plain: true }) : null,
       currentUserId: req.user.id
     });
@@ -1432,16 +1792,16 @@ router.get('/api/projects/:id', requireAuth, async (req, res) => {
 router.put('/api/projects/:id', requireAuth, async (req, res) => {
   try {
     const project = await Project.findByPk(req.params.id);
-    if (!project) return res.status(404).json({ success: false, error: 'Projeto não encontrado' });
-    
+    if (!project) {return res.status(404).json({ success: false, error: 'Projeto não encontrado' });}
+
     // Convert numerical fields
     const data = { ...req.body };
-    if (data.price) data.price = parseFloat(data.price);
-    if (data.totalArea) data.totalArea = parseFloat(data.totalArea);
-    if (data.productionDays) data.productionDays = parseInt(data.productionDays);
-    if (data.plannedHours) data.plannedHours = parseInt(data.plannedHours);
-    if (data.priority_value) data.priority_value = parseInt(data.priority_value);
-    
+    if (data.price) {data.price = parseFloat(data.price);}
+    if (data.totalArea) {data.totalArea = parseFloat(data.totalArea);}
+    if (data.productionDays) {data.productionDays = parseInt(data.productionDays);}
+    if (data.plannedHours) {data.plannedHours = parseInt(data.plannedHours);}
+    if (data.priority_value) {data.priority_value = parseInt(data.priority_value);}
+
     // Parse software stack from body if it is a JSON string or map
     if (data.softwareStack && typeof data.softwareStack === 'string') {
       try {
@@ -1518,8 +1878,8 @@ router.put('/api/projects/:id', requireAuth, async (req, res) => {
     }
 
     // Register action in ProjectLog
-    let logDetails = `Especificações técnicas atualizadas por ${req.user.name}.`;
-    
+    const logDetails = `Especificações técnicas atualizadas por ${req.user.name}.`;
+
     if (data.status && data.status !== previousStatus) {
       await ProjectLog.create({
         projectId: project.id,
@@ -1568,8 +1928,8 @@ router.put('/api/projects/:id', requireAuth, async (req, res) => {
 router.delete('/api/projects/:id', requireAuth, async (req, res) => {
   try {
     const project = await Project.findByPk(req.params.id);
-    if (!project) return res.status(404).json({ success: false, error: 'Projeto não encontrado' });
-    
+    if (!project) {return res.status(404).json({ success: false, error: 'Projeto não encontrado' });}
+
     await project.destroy();
     res.json({ success: true, message: 'Projeto excluído com sucesso' });
   } catch (error) {
@@ -1584,27 +1944,92 @@ router.post('/api/projects', requireAuth, upload.fields([
 ]), async (req, res) => {
   try {
     const data = { ...req.body };
-    if (data.price) data.price = parseFloat(data.price);
-    if (data.totalArea) data.totalArea = parseFloat(data.totalArea);
-    if (data.productionDays) data.productionDays = parseInt(data.productionDays);
-    
+    if (data.price) {data.price = parseFloat(data.price);}
+    if (data.totalArea) {data.totalArea = parseFloat(data.totalArea);}
+    if (data.productionDays) {data.productionDays = parseInt(data.productionDays);}
+
     // Default status if not provided
-    if (!data.status) data.status = 'briefing';
+    if (!data.status) {data.status = 'briefing';}
 
     if (req.files && req.files.image) {
-      data.image = '/uploads/' + req.files.image[0].filename;
+      data.image = `/uploads/${req.files.image[0].filename}`;
     } else {
       data.image = '/assets/img/default-project.jpg'; // default if none provided
     }
 
     if (req.files && req.files.thumbnail) {
-      data.thumbnail = '/uploads/' + req.files.thumbnail[0].filename;
+      data.thumbnail = `/uploads/${req.files.thumbnail[0].filename}`;
     }
 
     const project = await Project.create(data);
     res.json({ success: true, project });
   } catch (error) {
     console.error('API Create Project Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// --- PROJECT TASKS MANAGEMENT ROUTES ---
+router.get('/api/projects/:id/tasks', requireAuth, async (req, res) => {
+  try {
+    const tasks = await ProjectTask.findAll({
+      where: { projectId: req.params.id },
+      order: [['order', 'ASC'], ['createdAt', 'ASC']]
+    });
+    res.json({ success: true, tasks });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.post('/api/projects/:id/tasks/template', requireAuth, async (req, res) => {
+  try {
+    const { template } = req.body;
+    let newTasks = [];
+    if (template === 'ArchViz') {
+      newTasks = [
+        { stage: 'Modelagem', title: 'Ajuste de Topografia', order: 1 },
+        { stage: 'Modelagem', title: 'Modelagem Arquitetônica', order: 2 },
+        { stage: 'Renderização', title: 'Configuração de Materiais', order: 3 },
+        { stage: 'Renderização', title: 'Iluminação Natural/Artificial', order: 4 },
+        { stage: 'Renderização', title: 'Render Final', order: 5 },
+        { stage: 'Pós-Produção', title: 'Tratamento de Imagem', order: 6 }
+      ];
+    } else if (template === 'Modelagem') {
+      newTasks = [
+        { stage: 'Preparação', title: 'Limpeza de Planta DWG', order: 1 },
+        { stage: 'Modelagem', title: 'Levantamento de Paredes', order: 2 },
+        { stage: 'Modelagem', title: 'Aberturas (Portas e Janelas)', order: 3 },
+        { stage: 'Modelagem', title: 'Cobertura/Telhado', order: 4 }
+      ];
+    } else {
+      return res.status(400).json({ success: false, message: 'Template inválido.' });
+    }
+
+    const projectId = req.params.id;
+    const project = await Project.findByPk(projectId);
+    if (!project) {return res.status(404).json({ success: false, message: 'Projeto não encontrado.' });}
+
+    // Inserir as tarefas
+    const tasksToInsert = newTasks.map(t => ({ ...t, projectId, isCompleted: false }));
+    await ProjectTask.bulkCreate(tasksToInsert);
+
+    const tasks = await ProjectTask.findAll({ where: { projectId }, order: [['order', 'ASC']] });
+    res.json({ success: true, tasks });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.put('/api/projects/:projectId/tasks/:taskId', requireAuth, async (req, res) => {
+  try {
+    const { isCompleted } = req.body;
+    const task = await ProjectTask.findOne({ where: { id: req.params.taskId, projectId: req.params.projectId } });
+    if (!task) {return res.status(404).json({ success: false, message: 'Tarefa não encontrada' });}
+
+    await task.update({ isCompleted });
+    res.json({ success: true, task });
+  } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -1641,8 +2066,8 @@ router.post('/api/projects/:id/deliveries', requireAuth, async (req, res) => {
 router.put('/api/deliveries/:id', requireAuth, async (req, res) => {
   try {
     const delivery = await Delivery.findByPk(req.params.id);
-    if (!delivery) return res.status(404).json({ success: false, message: 'Entrega não encontrada' });
-    
+    if (!delivery) {return res.status(404).json({ success: false, message: 'Entrega não encontrada' });}
+
     await delivery.update(req.body);
     res.json({ success: true });
   } catch (error) {
@@ -1653,8 +2078,8 @@ router.put('/api/deliveries/:id', requireAuth, async (req, res) => {
 router.delete('/api/deliveries/:id', requireAuth, async (req, res) => {
   try {
     const delivery = await Delivery.findByPk(req.params.id);
-    if (!delivery) return res.status(404).json({ success: false, message: 'Entrega não encontrada' });
-    
+    if (!delivery) {return res.status(404).json({ success: false, message: 'Entrega não encontrada' });}
+
     await delivery.destroy();
     res.json({ success: true });
   } catch (error) {
@@ -1665,8 +2090,27 @@ router.delete('/api/deliveries/:id', requireAuth, async (req, res) => {
 // --- TIME TRACKER ENGINE ROUTES ---
 router.post('/api/tracker/start', requireAuth, async (req, res) => {
   try {
-    const { projectId, taskType, description } = req.body;
-    
+    const { projectId, taskId, taskType, description } = req.body;
+
+    // Check if task is blocked by dependencies
+    if (taskId) {
+      const task = await Task.findByPk(taskId, {
+        include: [{
+          model: Task,
+          as: 'dependencies',
+          where: { status: { [Op.ne]: 'concluido' } },
+          required: false
+        }]
+      });
+      if (task && task.dependencies && task.dependencies.length > 0) {
+        const blockedByNames = task.dependencies.map(d => d.title).join(', ');
+        return res.status(400).json({
+          success: false,
+          error: `Esta tarefa está bloqueada por tarefas pendentes: ${blockedByNames}`
+        });
+      }
+    }
+
     // Check if there is already a running tracker for this user
     const activeTracker = await TimeLog.findOne({
       where: {
@@ -1681,6 +2125,7 @@ router.post('/api/tracker/start', requireAuth, async (req, res) => {
 
     const timeLog = await TimeLog.create({
       projectId: projectId || null,
+      taskId: taskId || null,
       taskType: taskType || 'other',
       description: description || 'Rastreio automático de produção',
       startTime: new Date(),
@@ -1696,6 +2141,16 @@ router.post('/api/tracker/start', requireAuth, async (req, res) => {
         userName: req.user.name,
         action: 'TIME_TRACKING',
         details: `Rastreamento de tempo iniciado por ${req.user.name}: Tipo = ${taskType || 'outro'}, Descrição = ${description || 'Nenhuma'}`
+      });
+    }
+
+    // Register comment log in Task history
+    if (taskId) {
+      await TaskHistoryComment.create({
+        taskId,
+        userId: req.user.id,
+        type: 'system',
+        content: `Iniciou cronômetro de trabalho para esta tarefa.`
       });
     }
 
@@ -1722,9 +2177,15 @@ router.post('/api/tracker/stop', requireAuth, async (req, res) => {
 
     const endTime = new Date();
     const durationMinutes = Math.max(1, Math.round((endTime - new Date(timeLog.startTime)) / 60000));
-    
+
+    // Format duration nicely (e.g. 2h30m or 45m)
+    const hours = Math.floor(durationMinutes / 60);
+    const minutes = durationMinutes % 60;
+    let durationStr = hours > 0 ? `${hours}h` : '';
+    durationStr += minutes > 0 ? `${minutes}m` : (hours === 0 ? '0m' : '');
+
     // Calculate total cost if hourly rate exists
-    const hourlyRate = parseFloat(req.user.hourlyRate) || 50.00; // default $50/h if none provided
+    const hourlyRate = parseFloat(req.user.costHour || req.user.hourlyRate) || 50.00;
     const totalCost = parseFloat(((durationMinutes / 60) * hourlyRate).toFixed(2));
 
     await timeLog.update({
@@ -1735,6 +2196,22 @@ router.post('/api/tracker/stop', requireAuth, async (req, res) => {
       status: 'completed'
     });
 
+    if (timeLog.taskId) {
+      const task = await Task.findByPk(timeLog.taskId);
+      if (task) {
+        const nextSpent = (task.spentMinutes || 0) + durationMinutes;
+        await task.update({ spentMinutes: nextSpent });
+      }
+
+      // Inject system comment in Task comments history
+      await TaskHistoryComment.create({
+        taskId: timeLog.taskId,
+        userId: req.user.id,
+        type: 'system',
+        content: `Trabalhou ${durationStr} nesta sessão.`
+      });
+    }
+
     // Register log in ProjectLog
     if (timeLog.projectId) {
       await ProjectLog.create({
@@ -1742,7 +2219,7 @@ router.post('/api/tracker/stop', requireAuth, async (req, res) => {
         userId: req.user.id,
         userName: req.user.name,
         action: 'TIME_TRACKING',
-        details: `Rastreamento de tempo finalizado por ${req.user.name}. Duração: ${durationMinutes} min. Custo calculado: R$ ${totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+        details: `Rastreamento de tempo finalizado por ${req.user.name}. Duração: ${durationStr}. Custo calculado: R$ ${totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
       });
     }
 
@@ -1782,9 +2259,9 @@ router.get('/entregas', requireAuth, async (req, res) => {
 router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, res) => {
   try {
     const transactions = (await FinanceTransaction.findAll({ order: [['dueDate', 'DESC']] })).map(t => t.get({ plain: true }));
-    const projectsRaw = await Project.findAll({ where: { status: { [Op.ne]: 'finalizado' } } });
+    const projectsRaw = await Project.findAll();
     const projects = projectsRaw.map(p => p.get({ plain: true }));
-    
+
     // Buscar clientes para o modal de receita
     const clients = (await Client.findAll({ order: [['name', 'ASC']] })).map(c => c.get({ plain: true }));
 
@@ -1806,7 +2283,7 @@ router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, r
 
     const income = transactions.filter(t => t.type === 'receita').reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
     const expense = transactions.filter(t => t.type === 'despesa').reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
-    
+
     // Calcular Custos Fixos vs Variáveis
     const fixedExpenses = transactions
       .filter(t => t.type === 'despesa' && t.costClassification === 'fixo')
@@ -1816,8 +2293,8 @@ router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, r
       .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
 
     // BI Metrics
-    const avgMargin = projectProfits.length > 0 
-      ? (projectProfits.reduce((sum, p) => sum + parseFloat(p.margin), 0) / projectProfits.length).toFixed(1) 
+    const avgMargin = projectProfits.length > 0
+      ? (projectProfits.reduce((sum, p) => sum + parseFloat(p.margin), 0) / projectProfits.length).toFixed(1)
       : 0;
 
     // FRENTE 3: Centro de Custos (Despesas agrupadas por categoria)
@@ -1841,13 +2318,13 @@ router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, r
     // FRENTE 3: Fluxo de Caixa Realizado vs. Projetado (Últimos 6 meses)
     const now = new Date();
     const cashFlow = { labels: [], realized: [], projected: [] };
-    
+
     for (let i = 5; i >= 0; i--) {
       const month = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const monthEnd = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
       const label = month.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
       cashFlow.labels.push(label.charAt(0).toUpperCase() + label.slice(1));
-      
+
       // Realizado: transações que foram pagas/recebidas neste mês
       const monthTransactions = transactions.filter(t => {
         const d = new Date(t.paymentDate || t.dueDate);
@@ -1856,7 +2333,7 @@ router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, r
       const monthIncome = monthTransactions.filter(t => t.type === 'receita').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
       const monthExpense = monthTransactions.filter(t => t.type === 'despesa').reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
       cashFlow.realized.push(monthIncome - monthExpense);
-      
+
       // Projetado: todas as transações com vencimento neste mês (incluindo pendentes)
       const projectedTransactions = transactions.filter(t => {
         const d = new Date(t.dueDate);
@@ -1870,9 +2347,7 @@ router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, r
     // Projeção futura: parcelas de propostas fechadas (won deals)
     const wonBudgets = (await Budget.findAll({ where: { winStatus: 'ganho' } })).map(b => b.get({ plain: true }));
     const futureInstallments = wonBudgets.reduce((total, b) => {
-      const installments = b.installments || 1;
       const valor = parseFloat(b.estimatedValue) || 0;
-      const parcelaMensal = valor / installments;
       // Contar parcelas que ainda não foram registradas como transação
       const registeredIncome = transactions
         .filter(t => t.budgetId === b.id && t.type === 'receita')
@@ -1880,19 +2355,19 @@ router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, r
       return total + Math.max(0, valor - registeredIncome);
     }, 0);
 
-    res.render('admin/finance', { 
-      layout: 'admin', 
-      title: 'Fluxo Financeiro', 
-      currentPage: 'finance', 
-      user: req.user, 
-      transactions, 
+    res.render('admin/finance', {
+      layout: 'admin',
+      title: 'Fluxo Financeiro',
+      currentPage: 'finance',
+      user: req.user,
+      transactions,
       clients,
-      activeProjects: projects.map(p => ({ id: p.id, name: p.title })), 
+      activeProjects: projects.map(p => ({ id: p.id, name: p.title })),
       projectProfits,
       bi: { avgMargin, expenseCategories, costCenters, fixedExpenses, variableExpenses },
       cashFlow,
       futureInstallments,
-      stats: { income, expense, balance: income - expense } 
+      stats: { income, expense, balance: income - expense }
     });
   } catch (error) {
     console.error('Finance Route Error:', error);
@@ -1910,7 +2385,7 @@ router.post('/api/financeiro', requireAuth, async (req, res) => {
       data.budgetId = null;
     }
     const transaction = await FinanceTransaction.create(data);
-    
+
     // Register log in ProjectLog if projectId is associated
     if (transaction.projectId) {
       await ProjectLog.create({
@@ -1938,10 +2413,7 @@ router.get('/relatorios', requireAuth, async (req, res) => {
     const renderEngines = { 'D5 Render': 0, '3ds Max/Corona': 0, 'Unreal': 0 };
     projects.forEach(p => {
       const re = p.renderEngine || 'D5 Render';
-      if (re.includes('D5')) renderEngines['D5 Render']++;
-      else if (re.includes('Corona') || re.includes('3ds')) renderEngines['3ds Max/Corona']++;
-      else if (re.includes('Unreal')) renderEngines['Unreal']++;
-      else renderEngines['D5 Render']++;
+      if (re.includes('D5')) {renderEngines['D5 Render']++;} else if (re.includes('Corona') || re.includes('3ds')) {renderEngines['3ds Max/Corona']++;} else if (re.includes('Unreal')) {renderEngines['Unreal']++;} else {renderEngines['D5 Render']++;}
     });
     // Add realistic seed values to ensure beautiful density
     renderEngines['D5 Render'] += 14;
@@ -2051,7 +2523,7 @@ router.get('/marketing-ia', requireAuth, async (req, res) => {
 
 router.get('/avancado', requireAuth, checkPermission('admin'), async (req, res) => {
   try {
-    const usersRaw = await User.findAll({ order: [['name', 'ASC']] });
+    const usersRaw = await User.findAll({ order: [['createdAt', 'DESC']] });
     const users = usersRaw.map(u => {
       const data = u.get({ plain: true });
       data.permissions = data.permissions || {};
@@ -2069,7 +2541,7 @@ router.get('/avancado', requireAuth, checkPermission('admin'), async (req, res) 
 
     // 3. Colaboradores e outros usuários
     const collaboratorUsers = users.filter(u => u.role === 'collaborator' || u.role === 'user');
-    
+
     // Identificar orfãos (colaboradores sem pai vinculado)
     const orphanUsers = collaboratorUsers.filter(u => !u.parentId);
 
@@ -2084,10 +2556,10 @@ router.get('/avancado', requireAuth, checkPermission('admin'), async (req, res) 
 
     console.log(`[AVANCADO] Renderizando: ${subscriberUsers.length} Assinantes, ${otherUsers.length} Equipe/Outros.`);
 
-    res.render('admin/advanced-admin', { 
-      layout: 'admin', 
-      title: 'Painel Administrativo Avançado', 
-      currentPage: 'advanced-admin', 
+    res.render('admin/advanced-admin', {
+      layout: 'admin',
+      title: 'Painel Administrativo Avançado',
+      currentPage: 'advanced-admin',
       user: req.user,
       users,
       subscriberUsers,
@@ -2099,7 +2571,7 @@ router.get('/avancado', requireAuth, checkPermission('admin'), async (req, res) 
     });
   } catch (error) {
     console.error('Advanced Admin Route Error:', error);
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar painel avançado: ' + error.message });
+    res.status(500).render('admin/error', { layout: 'admin', message: `Erro ao carregar painel avançado: ${error.message}` });
   }
 });
 
@@ -2135,7 +2607,7 @@ router.get('/freelancers', requireAuth, async (req, res) => {
 router.get('/portal-cliente', requireAuth, async (req, res) => {
   try {
     const clients = (await Client.findAll({ order: [['name', 'ASC']] })).map(c => c.get({ plain: true }));
-    
+
     // Load Global Settings from DB
     const cpSettingsRaw = await Setting.findAll({ where: { group: 'portal_cliente' } });
     const cpSettings = {};
@@ -2163,10 +2635,10 @@ router.get('/portal-cliente', requireAuth, async (req, res) => {
       }
     }
 
-    res.render('admin/client-portal', { 
-      layout: 'admin', 
-      title: 'Painel do Cliente', 
-      currentPage: 'client-portal', 
+    res.render('admin/client-portal', {
+      layout: 'admin',
+      title: 'Painel do Cliente',
+      currentPage: 'client-portal',
       user: req.user,
       clientsWithAccess: clients,
       cpSettings
@@ -2211,10 +2683,10 @@ router.get('/contatos', requireAuth, async (req, res) => {
 router.post('/admin/api/contatos', requireAuth, async (req, res) => {
   try {
     const { name, type, document, email, phone, company, city, state, paymentMethods, notes, category, status } = req.body;
-    
+
     // Validar tipo (PF ou PJ)
     const clientType = type || 'PF';
-    
+
     // Validar CPF/CNPJ se fornecido
     const { validateCPF, validateCNPJ } = require('../utils/validators');
     if (document) {
@@ -2281,78 +2753,22 @@ router.get('/portfolio', requireAuth, async (req, res) => {
 // CONFIGURAÇÕES & ADMINISTRAÇÃO
 // ==========================================
 
-// Criar novo usuário manual (Painel Master) — Extended for ArchViz Studio
-router.post('/api/users', requireAuth, checkPermission('admin'), async (req, res) => {
-  try {
-    console.log('[API/Users] Criando usuário manual:', req.body.email);
-    const { 
-      name, email, password, role, tenantName, parentId, specialty, mainTool,
-      phone, phoneWhatsapp, jobTitle, weeklyHours, costHour, techStack, softwareLicenses,
-      permissions
-    } = req.body;
-    
-    const existing = await User.findOne({ where: { email } });
-    if (existing) return res.status(400).json({ error: 'E-mail já está em uso.' });
-    
-    // NOTA: Password hashing é tratado pelo hook beforeCreate no model User.js
-    const newUser = await User.create({
-      name,
-      email,
-      password, // O model cuidará do hash
-      role,
-      tenantName,
-      parentId: parentId || null,
-      specialty: specialty || null,
-      mainTool: mainTool || null,
-      phone: phone || null,
-      phoneWhatsapp: phoneWhatsapp || null,
-      jobTitle: jobTitle || null,
-      weeklyHours: weeklyHours ? parseInt(weeklyHours) : 40,
-      costHour: costHour ? parseFloat(costHour) : 0,
-      techStack: techStack || [],
-      softwareLicenses: softwareLicenses || [],
-      permissions: permissions || {
-        crm: true,
-        projects: true,
-        finance: false,
-        canApproveBudgets: false,
-        canSeeFinance: false,
-        ownProjectsOnly: false
-      },
-      isVerified: true,
-      isActive: true
-    });
-    
-    await SystemLog.create({
-      action: 'User Created Manually',
-      module: 'Security/Admin',
-      details: `User: ${name} (${role})`,
-      userName: req.user.name,
-      ipAddress: req.ip
-    });
-
-    console.log('[API/Users] Usuário criado com sucesso ID:', newUser.id);
-    res.json({ success: true, user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role } });
-  } catch (err) {
-    console.error('Create user error:', err);
-    res.status(500).json({ error: 'Erro ao criar usuário: ' + err.message });
-  }
-});
 
 // Forçar troca de senha (Painel Master)
 router.post('/api/users/:id/reset-password', requireAuth, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
-    
+    if (req.user.role !== 'admin') {return res.status(403).json({ error: 'Acesso negado.' });}
+
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
-    
+    if (!user) {return res.status(404).json({ error: 'Usuário não encontrado.' });}
+
     const { newPassword } = req.body;
-    if (!newPassword) return res.status(400).json({ error: 'Nova senha é obrigatória.' });
-    
+    if (!newPassword) {return res.status(400).json({ error: 'Nova senha é obrigatória.' });}
+
     user.password = newPassword;
+    user.forcedLogoutAt = new Date(); // Revoga sessões ativas
     await user.save();
-    
+
     res.json({ success: true, message: 'Senha atualizada com sucesso.' });
   } catch (err) {
     console.error(err);
@@ -2360,17 +2776,149 @@ router.post('/api/users/:id/reset-password', requireAuth, async (req, res) => {
   }
 });
 
+// GET /api/users/profile/data - Obter dados do próprio perfil
+router.get('/api/users/profile/data', requireAuth, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    if (!user) {return res.status(404).json({ error: 'Usuário não encontrado' });}
+    const userData = user.toJSON();
+    delete userData.password;
+    res.json({ success: true, user: userData });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/users/profile/update - Atualizar dados do próprio perfil
+router.post('/api/users/profile/update', requireAuth, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    if (!user) {return res.status(404).json({ error: 'Usuário não encontrado' });}
+
+    const allowed = [
+      'name', 'email', 'cpf', 'phoneWhatsapp', 'addressDetails',
+      'jobTitle', 'portfolioUrl', 'techStack', 'theme', 'notificationPreferences',
+      'socialInstagram', 'socialFacebook', 'socialTwitter'
+    ];
+
+    const updates = {};
+    allowed.forEach(f => {
+      if (req.body[f] !== undefined) {
+        if (f === 'techStack') {
+          if (typeof req.body[f] === 'string') {
+            try {
+              updates[f] = JSON.parse(req.body[f]);
+            } catch (e) {
+              updates[f] = req.body[f].split(',').map(s => s.trim()).filter(Boolean);
+            }
+          } else {
+            updates[f] = req.body[f];
+          }
+        } else if (f === 'notificationPreferences') {
+          if (typeof req.body[f] === 'string') {
+            try {
+              updates[f] = JSON.parse(req.body[f]);
+            } catch (e) {
+              updates[f] = req.body[f];
+            }
+          } else {
+            updates[f] = req.body[f];
+          }
+        } else {
+          updates[f] = req.body[f];
+        }
+      }
+    });
+
+    if (updates.email && updates.email !== user.email) {
+      const emailExists = await User.findOne({ where: { email: updates.email } });
+      if (emailExists) {
+        return res.status(400).json({ error: 'E-mail já está em uso por outro usuário.' });
+      }
+    }
+
+    await user.update(updates);
+
+    req.session.user = user.toJSON();
+
+    res.json({ success: true, message: 'Perfil atualizado com sucesso!', user: req.session.user });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/users/profile/change-password - Alterar própria senha
+router.post('/api/users/profile/change-password', requireAuth, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Preencha todos os campos.' });
+    }
+    if (newPassword.length < 8) {
+      return res.status(400).json({ error: 'A nova senha deve ter no mínimo 8 caracteres.' });
+    }
+
+    const user = await User.findByPk(req.user.id);
+    if (!user) {return res.status(404).json({ error: 'Usuário não encontrado.' });}
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: 'Senha atual incorreta.' });
+    }
+
+    await user.update({ password: newPassword });
+    res.json({ success: true, message: 'Senha atualizada com sucesso!' });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/users/profile/upload-avatar - Upload de foto de perfil
+router.post('/api/users/profile/upload-avatar', requireAuth, upload.single('avatar'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'Nenhum arquivo enviado.' });
+    }
+
+    const user = await User.findByPk(req.user.id);
+    if (!user) {return res.status(404).json({ error: 'Usuário não encontrado' });}
+
+    if (user.avatar && user.avatar.startsWith('/uploads/')) {
+      const oldPath = path.join(__dirname, '..', 'public', user.avatar);
+      try {
+        await fs.unlink(oldPath);
+      } catch (err) {
+        console.warn('Aviso: Foto de perfil antiga não pôde ser excluída.', err.message);
+      }
+    }
+
+    const avatarUrl = `/uploads/${req.file.filename}`;
+    user.avatar = avatarUrl;
+    await user.save();
+
+    req.session.user = user.toJSON();
+
+    res.json({ success: true, message: 'Foto de perfil atualizada!', avatarUrl });
+  } catch (error) {
+    console.error('Avatar upload error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 // Atualizar dados de usuário (Painel Master)
 router.patch('/api/users/:id', requireAuth, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    if (req.user.role !== 'admin') {return res.status(403).json({ error: 'Acesso negado.' });}
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
-    
-    const allowed = ['name','email','role','phone','phoneWhatsapp','jobTitle','specialty','mainTool','weeklyHours','costHour','techStack','softwareLicenses','permissions','tenantName'];
+    if (!user) {return res.status(404).json({ error: 'Usuário não encontrado.' });}
+
+    const allowed = ['name', 'email', 'role', 'phone', 'phoneWhatsapp', 'jobTitle', 'specialty', 'mainTool', 'weeklyHours', 'costHour', 'techStack', 'softwareLicenses', 'permissions', 'tenantName'];
     const updates = {};
-    allowed.forEach(f => { if (req.body[f] !== undefined) updates[f] = req.body[f]; });
-    
+    allowed.forEach(f => { if (req.body[f] !== undefined) {updates[f] = req.body[f];} });
+
     await user.update(updates);
     res.json({ success: true });
   } catch (err) {
@@ -2381,12 +2929,12 @@ router.patch('/api/users/:id', requireAuth, async (req, res) => {
 // Ações de gestão de usuário: suspend, force-logout
 router.post('/api/users/:id/action', requireAuth, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    if (req.user.role !== 'admin') {return res.status(403).json({ error: 'Acesso negado.' });}
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
-    
+    if (!user) {return res.status(404).json({ error: 'Usuário não encontrado.' });}
+
     const { action, reason } = req.body;
-    
+
     if (action === 'suspend') {
       await user.update({ isActive: false, suspendedAt: new Date(), suspensionReason: reason || 'Suspenso pelo admin' });
       return res.json({ success: true, message: 'Acesso suspenso.' });
@@ -2399,25 +2947,13 @@ router.post('/api/users/:id/action', requireAuth, async (req, res) => {
       await user.update({ forcedLogoutAt: new Date() });
       return res.json({ success: true, message: 'Logout forçado registrado.' });
     }
-    
-    res.status(400).json({ error: 'Ação desconhecida: ' + action });
+
+    res.status(400).json({ error: `Ação desconhecida: ${action}` });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// DELETE User
-router.delete('/api/users/:id', requireAuth, checkPermission('admin'), async (req, res) => {
-  try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
-    
-    await user.destroy();
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 // ==========================================
 // API PLANOS B2B
@@ -2446,8 +2982,8 @@ router.post('/api/plans', requireAuth, checkPermission('admin'), async (req, res
 router.patch('/api/plans/:id', requireAuth, checkPermission('admin'), async (req, res) => {
   try {
     const plan = await SubscriptionPlan.findByPk(req.params.id);
-    if (!plan) return res.status(404).json({ error: 'Plano não encontrado' });
-    
+    if (!plan) {return res.status(404).json({ error: 'Plano não encontrado' });}
+
     await plan.update(req.body);
     await SystemLog.create({
       action: 'Plan Updated',
@@ -2472,26 +3008,14 @@ router.delete('/api/plans/:id', requireAuth, checkPermission('admin'), async (re
 });
 
 // ==========================================
-// API PROJETOS
+// API PROJETOS (Duplicate route removed - handled above at line 1432)
 // ==========================================
-
-router.get('/api/projects/:id', requireAuth, async (req, res) => {
-  try {
-    const project = await Project.findByPk(req.params.id, {
-      include: [{ model: Client, as: 'client' }]
-    });
-    if (!project) return res.status(404).json({ error: 'Projeto não encontrado' });
-    res.json(project);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 router.post('/api/projects/move', requireAuth, async (req, res) => {
   try {
     const { projectId, statusId } = req.body;
     await Project.update({ status: statusId }, { where: { id: projectId } });
-    
+
     await SystemLog.create({
       action: 'Project Moved',
       module: 'Production',
@@ -2499,7 +3023,7 @@ router.post('/api/projects/move', requireAuth, async (req, res) => {
       userName: req.user.name,
       ipAddress: req.ip
     });
-    
+
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -2523,7 +3047,7 @@ router.post('/api/instances', requireAuth, checkPermission('admin'), async (req,
       cpuUsage: 0,
       uptime: '0h'
     });
-    
+
     await SystemLog.create({
       action: 'Instance Created',
       module: 'Infrastructure',
@@ -2531,7 +3055,7 @@ router.post('/api/instances', requireAuth, checkPermission('admin'), async (req,
       userName: req.user.name,
       ipAddress: req.ip
     });
-    
+
     res.json({ success: true, instance });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -2560,15 +3084,15 @@ router.post('/api/instances/:id/action', requireAuth, checkPermission('admin'), 
   try {
     const { action } = req.body;
     const instance = await Instance.findByPk(req.params.id);
-    if (!instance) return res.status(404).json({ error: 'Instância não encontrada' });
+    if (!instance) {return res.status(404).json({ error: 'Instância não encontrada' });}
 
     // Lógica simulada de infra
     let status = 'online';
-    if (action === 'restart') status = 'restarting';
-    if (action === 'stop') status = 'offline';
+    if (action === 'restart') {status = 'restarting';}
+    if (action === 'stop') {status = 'offline';}
 
     await instance.update({ status });
-    
+
     await SystemLog.create({
       action: `Instance ${action.toUpperCase()}`,
       module: 'Infrastructure',
@@ -2584,6 +3108,425 @@ router.post('/api/instances/:id/action', requireAuth, checkPermission('admin'), 
 });
 
 // ==========================================
+// API PLANEJAMENTO 360º (MARCOS & TAREFAS)
+// ==========================================
+
+// GET /api/projects/:projectId/milestones - Retorna todos os marcos e suas tarefas subordinadas do projeto
+// GET /api/projects/:projectId/milestones - Retorna todos os marcos e suas tarefas subordinadas do projeto
+router.get('/api/projects/:projectId/milestones', requireAuth, async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const milestones = await Milestone.findAll({
+      where: { projectId },
+      order: [['order', 'ASC']],
+      include: [{
+        model: Task,
+        as: 'tasks',
+        where: { parentTaskId: null },
+        required: false,
+        include: [
+          { model: Task, as: 'subTasks', required: false, include: [{ model: User, as: 'assignee', required: false }] },
+          { model: TaskFile, as: 'files', required: false },
+          { model: TaskHistoryComment, as: 'comments', required: false },
+          { model: Task, as: 'dependencies', required: false },
+          { model: User, as: 'assignee', required: false }
+        ]
+      }]
+    });
+
+    let filteredMilestones = milestones.map(m => m.get({ plain: true }));
+    const isArtist = req.user.role !== 'admin';
+
+    if (isArtist) {
+      filteredMilestones = filteredMilestones.map(m => {
+        if (!m.tasks) {return m;}
+        m.tasks = m.tasks.filter(t => {
+          if (t.assigneeId === req.user.id) {return true;}
+          if (t.subTasks && t.subTasks.some(st => st.assigneeId === req.user.id)) {return true;}
+          return false;
+        }).map(t => {
+          if (t.subTasks) {
+            t.subTasks = t.subTasks.filter(st => st.assigneeId === req.user.id);
+          }
+          return t;
+        });
+        return m;
+      }).filter(m => m.tasks && m.tasks.length > 0);
+    }
+
+    res.json({ success: true, milestones: filteredMilestones });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/task-templates - Listar todos os templates
+router.get('/api/task-templates', requireAuth, async (req, res) => {
+  try {
+    const templates = await TaskTemplate.findAll({ order: [['name', 'ASC']] });
+    res.json({ success: true, templates });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/task-templates - Criar ou salvar um template (pode ler de um projeto existente)
+router.post('/api/task-templates', requireAuth, async (req, res) => {
+  try {
+    const { name, category, content, projectId } = req.body;
+    let templateContent = content;
+
+    if (projectId && !content) {
+      const milestones = await Milestone.findAll({
+        where: { projectId },
+        order: [['order', 'ASC']],
+        include: [{
+          model: Task,
+          as: 'tasks',
+          where: { parentTaskId: null },
+          order: [['createdAt', 'ASC']],
+          include: [{ model: Task, as: 'subTasks', order: [['createdAt', 'ASC']] }]
+        }]
+      });
+
+      templateContent = milestones.map(m => ({
+        milestoneTitle: m.title,
+        milestoneDescription: m.description,
+        order: m.order,
+        tasks: m.tasks.map(t => ({
+          title: t.title,
+          description: t.description,
+          priority: t.priority,
+          estimatedMinutes: t.estimatedMinutes,
+          subTasks: t.subTasks.map(st => ({
+            title: st.title,
+            description: st.description,
+            priority: st.priority,
+            estimatedMinutes: st.estimatedMinutes
+          }))
+        }))
+      }));
+    }
+
+    if (!name || !templateContent) {
+      return res.status(400).json({ error: 'Nome e conteúdo do template ou projectId são obrigatórios.' });
+    }
+
+    const template = await TaskTemplate.create({
+      name,
+      category: category || 'ArchViz',
+      content: templateContent,
+      userId: req.user.id
+    });
+
+    res.status(201).json({ success: true, template });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/projects/:projectId/apply-template - Aplicar template completo com marcos e tarefas
+router.post('/api/projects/:projectId/apply-template', requireAuth, async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { templateId } = req.body;
+
+    const dbTemplate = await TaskTemplate.findByPk(templateId);
+    if (!dbTemplate) {return res.status(404).json({ error: 'Template não encontrado.' });}
+
+    const project = await Project.findByPk(projectId);
+    if (!project) {return res.status(404).json({ error: 'Projeto não encontrado.' });}
+
+    const content = dbTemplate.content;
+    if (!Array.isArray(content)) {
+      return res.status(400).json({ error: 'Formato de template inválido.' });
+    }
+
+    for (const mItem of content) {
+      const milestone = await Milestone.create({
+        projectId,
+        title: mItem.milestoneTitle || mItem.title || 'Fase do Projeto',
+        description: mItem.milestoneDescription || mItem.description || '',
+        order: mItem.order || 0
+      });
+
+      if (mItem.tasks && Array.isArray(mItem.tasks)) {
+        for (const tItem of mItem.tasks) {
+          const task = await Task.create({
+            milestoneId: milestone.id,
+            title: tItem.title,
+            description: tItem.description || '',
+            priority: tItem.priority || 'media',
+            status: 'a_fazer',
+            estimatedMinutes: tItem.estimatedMinutes || 0
+          });
+
+          if (tItem.subTasks && Array.isArray(tItem.subTasks)) {
+            for (const stItem of tItem.subTasks) {
+              await Task.create({
+                milestoneId: milestone.id,
+                parentTaskId: task.id,
+                title: stItem.title,
+                description: stItem.description || '',
+                priority: stItem.priority || 'media',
+                status: 'a_fazer',
+                estimatedMinutes: stItem.estimatedMinutes || 0
+              });
+            }
+          }
+        }
+      }
+    }
+
+    res.json({ success: true, message: 'Template de planejamento aplicado com sucesso!' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/tasks/:id/dependencies - Adicionar dependência
+router.post('/api/tasks/:id/dependencies', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { dependsOnTaskId } = req.body;
+
+    if (!dependsOnTaskId) {
+      return res.status(400).json({ error: 'ID da tarefa de dependência é obrigatório.' });
+    }
+    if (id === dependsOnTaskId) {
+      return res.status(400).json({ error: 'Uma tarefa não pode depender de si mesma.' });
+    }
+
+    const task = await Task.findByPk(id);
+    const dependencyTask = await Task.findByPk(dependsOnTaskId);
+    if (!task || !dependencyTask) {
+      return res.status(404).json({ error: 'Tarefa ou dependência não encontrada.' });
+    }
+
+    const circular = await TaskDependency.findOne({
+      where: {
+        taskId: dependsOnTaskId,
+        dependsOnTaskId: id
+      }
+    });
+    if (circular) {
+      return res.status(400).json({ error: 'Dependência circular detectada!' });
+    }
+
+    const [dependency, created] = await TaskDependency.findOrCreate({
+      where: {
+        taskId: id,
+        dependsOnTaskId
+      }
+    });
+
+    res.json({ success: true, dependency, created });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// DELETE /api/tasks/:id/dependencies/:dependsOnTaskId - Remover dependência
+router.delete('/api/tasks/:id/dependencies/:dependsOnTaskId', requireAuth, async (req, res) => {
+  try {
+    const { id, dependsOnTaskId } = req.params;
+    await TaskDependency.destroy({
+      where: {
+        taskId: id,
+        dependsOnTaskId
+      }
+    });
+    res.json({ success: true, message: 'Dependência removida.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/milestones - Criar um marco
+router.post('/api/milestones', requireAuth, async (req, res) => {
+  try {
+    const { projectId, title, description, order } = req.body;
+    const milestone = await Milestone.create({ projectId, title, description, order });
+    res.status(201).json({ success: true, milestone });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// PUT /api/milestones/:id - Atualizar um marco
+router.put('/api/milestones/:id', requireAuth, async (req, res) => {
+  try {
+    const milestone = await Milestone.findByPk(req.params.id);
+    if (!milestone) {return res.status(404).json({ error: 'Marco não encontrado.' });}
+    await milestone.update(req.body);
+    res.json({ success: true, milestone });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// DELETE /api/milestones/:id - Remover um marco
+router.delete('/api/milestones/:id', requireAuth, async (req, res) => {
+  try {
+    await Milestone.destroy({ where: { id: req.params.id } });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/tasks/:id - Detalhes de uma tarefa específica
+router.get('/api/tasks/:id', requireAuth, async (req, res) => {
+  try {
+    const task = await Task.findByPk(req.params.id, {
+      include: [
+        { model: Task, as: 'subTasks', required: false, include: [{ model: User, as: 'assignee', required: false }] },
+        { model: TaskFile, as: 'files', required: false },
+        { model: TaskHistoryComment, as: 'comments', required: false },
+        { model: Task, as: 'dependencies', required: false },
+        { model: User, as: 'assignee', required: false },
+        {
+          model: Milestone,
+          as: 'milestone',
+          include: [{
+            model: Project,
+            as: 'project',
+            include: [
+              { model: Client, as: 'customer' },
+              { model: Client, as: 'client' }
+            ]
+          }]
+        }
+      ]
+    });
+
+    if (!task) {return res.status(404).json({ error: 'Tarefa não encontrada.' });}
+
+    // RBAC: Non-admin users can only view if they are the assignee or assigned to a subtask
+    const isArtist = req.user.role !== 'admin';
+    if (isArtist && task.assigneeId !== req.user.id) {
+      const hasSubTaskAssigned = task.subTasks && task.subTasks.some(st => st.assigneeId === req.user.id);
+      if (!hasSubTaskAssigned) {
+        return res.status(403).json({ error: 'Acesso negado. Esta tarefa não está atribuída a você.' });
+      }
+    }
+
+    const taskData = task.get({ plain: true });
+
+    if (isArtist) {
+      if (taskData.assignee) {
+        delete taskData.assignee.costHour;
+        delete taskData.assignee.weeklyHours;
+        delete taskData.assignee.password;
+      }
+      if (taskData.subTasks) {
+        taskData.subTasks = taskData.subTasks.filter(st => st.assigneeId === req.user.id).map(st => {
+          if (st.assignee) {
+            delete st.assignee.costHour;
+            delete st.assignee.weeklyHours;
+            delete st.assignee.password;
+          }
+          return st;
+        });
+      }
+    }
+
+    res.json({ success: true, task: taskData });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/tasks - Criar uma tarefa (principal ou sub-tarefa)
+router.post('/api/tasks', requireAuth, async (req, res) => {
+  try {
+    const { milestoneId, parentTaskId, title, description, status, priority, startDate, dueDate, assigneeId, estimatedMinutes } = req.body;
+    const task = await Task.create({
+      milestoneId, parentTaskId: parentTaskId || null, title, description,
+      status: status || 'a_fazer', priority: priority || 'media',
+      startDate: startDate || null, dueDate: dueDate || null, assigneeId: assigneeId || null, estimatedMinutes: estimatedMinutes || 0
+    });
+    res.status(201).json({ success: true, task });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// PUT /api/tasks/:id - Atualizar uma tarefa
+router.put('/api/tasks/:id', requireAuth, async (req, res) => {
+  try {
+    const task = await Task.findByPk(req.params.id);
+    if (!task) {return res.status(404).json({ error: 'Tarefa não encontrada.' });}
+    await task.update(req.body);
+    res.json({ success: true, task });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// DELETE /api/tasks/:id - Remover uma tarefa
+router.delete('/api/tasks/:id', requireAuth, async (req, res) => {
+  try {
+    await Task.destroy({ where: { id: req.params.id } });
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/tasks/:id/files - Adicionar arquivos (UNC local ou upload na nuvem)
+router.post('/api/tasks/:id/files', requireAuth, upload.single('file'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { filePathOrUrl, fileType } = req.body;
+
+    const lastFile = await TaskFile.findOne({
+      where: { taskId: id },
+      order: [['versionNumber', 'DESC']]
+    });
+    const nextVersion = lastFile ? lastFile.versionNumber + 1 : 1;
+
+    let pathUrl = filePathOrUrl;
+    let type = fileType || 'local';
+
+    if (req.file) {
+      pathUrl = `/uploads/${req.file.filename}`;
+      type = 'image';
+    }
+
+    const taskFile = await TaskFile.create({
+      taskId: id,
+      filePathOrUrl: pathUrl,
+      fileType: type,
+      versionNumber: nextVersion,
+      uploadedBy: req.user.id
+    });
+
+    res.json({ success: true, taskFile });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/tasks/:id/comments - Criar um comentário ou log de auditoria
+router.post('/api/tasks/:id/comments', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { content, type } = req.body;
+    const comment = await TaskHistoryComment.create({
+      taskId: id,
+      userId: req.user.id,
+      type: type || 'team_comment',
+      content
+    });
+    res.json({ success: true, comment });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ==========================================
 // API FREELANCERS
 // ==========================================
 
@@ -2591,14 +3534,14 @@ router.post('/freelancers', requireAuth, async (req, res) => {
   try {
     const { expertise } = req.body;
     const data = { ...req.body };
-    if (Array.isArray(expertise)) data.expertise = expertise.join(', ');
-    
+    if (Array.isArray(expertise)) {data.expertise = expertise.join(', ');}
+
     await Freelancer.create(data);
     req.flash('success_msg', 'Freelancer adicionado ao banco de talentos!');
     res.redirect('/admin/freelancers');
   } catch (error) {
     console.error('Freelancer Create Error:', error);
-    req.flash('error_msg', 'Erro ao adicionar freelancer: ' + error.message);
+    req.flash('error_msg', `Erro ao adicionar freelancer: ${error.message}`);
     res.redirect('/admin/freelancers');
   }
 });
@@ -2625,25 +3568,25 @@ router.delete('/api/freelancers/:id', requireAuth, async (req, res) => {
 // Analytics de usuário para Relatório de Staff
 router.get('/api/users/:id/analytics', requireAuth, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    if (req.user.role !== 'admin') {return res.status(403).json({ error: 'Acesso negado.' });}
     const userId = req.params.id;
-    
+
     const [activeProjects, timeLogs, revisions] = await Promise.all([
-      Project.findAll({ where: { status: { [Op.in]: ['producao','revisao','entrega'] } }, attributes: ['id','title','status','deadline'] }),
-      TimeLog.findAll({ where: { userId }, order: [['startTime','DESC']], limit: 100 }),
-      Revision.findAll({ include: [{ model: Project, as: 'project', attributes: ['id','title'] }], order: [['createdAt','DESC']], limit: 50 })
+      Project.findAll({ where: { status: { [Op.in]: ['producao', 'revisao', 'entrega'] } }, attributes: ['id', 'title', 'status', 'deadline'] }),
+      TimeLog.findAll({ where: { userId }, order: [['startTime', 'DESC']], limit: 100 }),
+      Revision.findAll({ include: [{ model: Project, as: 'project', attributes: ['id', 'title'] }], order: [['createdAt', 'DESC']], limit: 50 })
     ]);
-    
+
     let totalHours = 0;
-    timeLogs.forEach(l => { if (l.endTime) totalHours += (new Date(l.endTime) - new Date(l.startTime)) / 3600000; });
-    
+    timeLogs.forEach(l => { if (l.endTime) {totalHours += (new Date(l.endTime) - new Date(l.startTime)) / 3600000;} });
+
     const projectRevisionCounts = {};
     revisions.forEach(r => {
       const pid = r.projectId;
       projectRevisionCounts[pid] = (projectRevisionCounts[pid] || 0) + 1;
     });
-    const avgRevisions = revisions.length > 0 ? (Object.values(projectRevisionCounts).reduce((s,v) => s+v,0) / Object.keys(projectRevisionCounts).length) : 0;
-    
+    const avgRevisions = revisions.length > 0 ? (Object.values(projectRevisionCounts).reduce((s, v) => s + v, 0) / Object.keys(projectRevisionCounts).length) : 0;
+
     res.json({
       success: true,
       analytics: {
@@ -2662,12 +3605,12 @@ router.get('/api/users/:id/analytics', requireAuth, async (req, res) => {
 
 router.get('/configuracoes', requireAuth, async (req, res) => {
   try {
-    const usersRaw = await User.findAll({ order: [['role', 'ASC'], ['name', 'ASC']] });
-    
+    const usersRaw = await User.findAll({ order: [['createdAt', 'DESC']] });
+
     const subscriberUsers = [];
     const otherUsers = [];
     const subscribers = {};
-    
+
     usersRaw.forEach(u => {
       const plainUser = u.get({ plain: true });
       if (plainUser.role === 'subscriber') {
@@ -2686,17 +3629,17 @@ router.get('/configuracoes', requireAuth, async (req, res) => {
       }
     });
 
-    res.render('admin/settings', { 
-      layout: 'admin', 
-      title: 'Configurações do Sistema', 
-      currentPage: 'settings', 
+    res.render('admin/settings', {
+      layout: 'admin',
+      title: 'Configurações do Sistema',
+      currentPage: 'settings',
       user: req.user,
       subscriberUsers,
       otherUsers
     });
   } catch (error) {
     console.error('Settings Error:', error);
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar configurações: ' + error.message });
+    res.status(500).render('admin/error', { layout: 'admin', message: `Erro ao carregar configurações: ${error.message}` });
   }
 });
 
@@ -2720,8 +3663,8 @@ router.get('/meus-planos', requireAuth, async (req, res) => {
 // ==========================================
 router.post('/api/deploy', requireAuth, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') return res.status(403).json({ success: false, message: 'Acesso negado.' });
-    
+    if (req.user.role !== 'admin') {return res.status(403).json({ success: false, message: 'Acesso negado.' });}
+
     // Forçamos a limpeza do cache do script para garantir que a versão mais nova do disco seja lida
     const scriptPath = require.resolve('../scripts/prod-pull');
     delete require.cache[scriptPath];
@@ -2736,20 +3679,20 @@ router.post('/api/deploy', requireAuth, async (req, res) => {
       service: 'deploy',
       userId: req.user.id
     }).catch(() => {});
-    
+
     if (result.success) {
       return res.json({ success: true, message: 'Servidor atualizado com sucesso via Pipeline Interno!' });
     } else {
       // Se falhou, retornamos os detalhes para o painel
-      return res.status(500).json({ 
-        success: false, 
-        message: result.message, 
-        details: result.details 
+      return res.status(500).json({
+        success: false,
+        message: result.message,
+        details: result.details
       });
     }
   } catch (error) {
     console.error('Deploy Error:', error);
-    res.status(500).json({ success: false, message: 'Erro crítico no executor de deploy: ' + error.message });
+    res.status(500).json({ success: false, message: `Erro crítico no executor de deploy: ${error.message}` });
   }
 });
 
@@ -2760,7 +3703,7 @@ router.post('/api/deploy', requireAuth, async (req, res) => {
 // Listar todas as chaves ativas
 router.get('/api/keys', requireAuth, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    if (req.user.role !== 'admin') {return res.status(403).json({ error: 'Acesso negado.' });}
     const keys = await ApiKey.findAll({
       order: [['createdAt', 'DESC']],
       attributes: ['id', 'name', 'keyMasked', 'keyPrefix', 'isActive', 'scopes', 'lastUsedAt', 'createdAt']
@@ -2774,22 +3717,22 @@ router.get('/api/keys', requireAuth, async (req, res) => {
 // Gerar nova API Key (padrão Stripe — chave exibida apenas uma vez)
 router.post('/api/keys', requireAuth, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
-    
+    if (req.user.role !== 'admin') {return res.status(403).json({ error: 'Acesso negado.' });}
+
     const { name, scopes } = req.body;
-    if (!name) return res.status(400).json({ error: 'Nome da chave é obrigatório.' });
-    
+    if (!name) {return res.status(400).json({ error: 'Nome da chave é obrigatório.' });}
+
     // Gera 32 bytes seguros (256 bits de entropia)
     const rawKey = crypto.randomBytes(32).toString('hex');
     const prefix = 'sk_live_';
     const fullKey = `${prefix}${rawKey}`;
-    
+
     // Hash para armazenamento seguro (nunca salvamos a chave crua)
     const keyHash = crypto.createHash('sha256').update(fullKey).digest('hex');
-    
+
     // Mascarado: sk_live_...Xf7k (últimos 4 chars)
     const keyMasked = `${prefix}...${rawKey.slice(-4)}`;
-    
+
     const apiKey = await ApiKey.create({
       name,
       keyPrefix: prefix,
@@ -2799,7 +3742,7 @@ router.post('/api/keys', requireAuth, async (req, res) => {
       scopes: scopes || ['read'],
       isActive: true
     });
-    
+
     // Retorna a chave completa UMA ÚNICA VEZ
     res.json({
       success: true,
@@ -2820,9 +3763,9 @@ router.post('/api/keys', requireAuth, async (req, res) => {
 // Revogar uma API Key
 router.delete('/api/keys/:id', requireAuth, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado.' });
+    if (req.user.role !== 'admin') {return res.status(403).json({ error: 'Acesso negado.' });}
     const key = await ApiKey.findByPk(req.params.id);
-    if (!key) return res.status(404).json({ error: 'Chave não encontrada.' });
+    if (!key) {return res.status(404).json({ error: 'Chave não encontrada.' });}
     await key.update({ isActive: false });
     res.json({ success: true, message: 'Chave revogada com sucesso.' });
   } catch (err) {
@@ -2834,7 +3777,7 @@ router.delete('/api/keys/:id', requireAuth, async (req, res) => {
 router.post('/api/leads', requireAuth, async (req, res) => {
   try {
     const { name, email, estimatedValue, probability, notes, projectType, totalArea, targetSoftware, visualStyle, clientName } = req.body;
-    
+
     const lead = await Budget.create({
       name: name || 'Novo Lead',
       email: email || null,
@@ -2884,7 +3827,10 @@ router.post('/api/settings/bulk', requireAuth, checkPermission('admin'), async (
   try {
     const { settings } = req.body; // { key: value }
     for (const [key, value] of Object.entries(settings)) {
-      await Setting.upsert({ key, value: String(value), group: 'admin' });
+      const group = (key.startsWith('calculator_') || key === 'gemini_api_key' || key === 'openai_api_key')
+        ? 'calculator'
+        : 'admin';
+      await Setting.upsert({ key, value: String(value), group });
     }
     res.json({ success: true });
   } catch (error) {
@@ -2896,14 +3842,14 @@ router.post('/api/settings/bulk', requireAuth, checkPermission('admin'), async (
 router.post('/api/security/terminate-sessions', requireAuth, checkPermission('admin'), async (req, res) => {
   try {
     await User.update({ forcedLogoutAt: new Date() }, { where: { id: { [Op.ne]: req.user.id } } });
-    
+
     await SystemLog.create({
       action: 'Global Session Termination',
       module: 'Security',
       userName: req.user.name,
       ipAddress: req.ip
     });
-    
+
     res.json({ success: true, message: 'Todas as sessões de terceiros foram invalidadas.' });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -2914,7 +3860,7 @@ router.post('/api/instances/snapshot', requireAuth, checkPermission('admin'), as
   try {
     // Simulação de geração de snapshot SQL (FRENTE 4: Backup)
     const fileName = `snapshot_${new Date().toISOString().replace(/[:.]/g, '-')}.sql`;
-    
+
     await SystemLog.create({
       action: 'SQL Snapshot Generated',
       module: 'Backup',
@@ -2922,7 +3868,7 @@ router.post('/api/instances/snapshot', requireAuth, checkPermission('admin'), as
       userName: req.user.name,
       ipAddress: req.ip
     });
-    
+
     res.json({ success: true, message: `Snapshot ${fileName} gerado e armazenado em Cold Storage com sucesso.` });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -2933,7 +3879,7 @@ router.post('/api/infra/sync-cluster', requireAuth, checkPermission('admin'), as
   try {
     // Sincronização lógica com os nós de renderização e instâncias Docker
     await new Promise(resolve => setTimeout(resolve, 2000)); // Simula processamento
-    
+
     await SystemLog.create({
       action: 'Cluster Sync Executed',
       module: 'Infrastructure',
@@ -2941,7 +3887,7 @@ router.post('/api/infra/sync-cluster', requireAuth, checkPermission('admin'), as
       userName: req.user.name,
       ipAddress: req.ip
     });
-    
+
     res.json({ success: true, message: 'Cluster sincronizado com sucesso. Todos os nós respondendo.' });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -2958,16 +3904,15 @@ router.get('/api/users', requireAuth, (req, res, next) => {
   try {
     const whereClause = {};
     const isMasterAdmin = req.user.email === 'admin@zanoello.com' || req.user.email === 'admin@malha3d.com';
-    
+
     if (!isMasterAdmin && req.user.role !== 'admin') {
-      const { Op } = require('sequelize');
       const activeParentId = req.user.parentId || req.user.id;
       whereClause[Op.or] = [
         { id: activeParentId },
         { parentId: activeParentId }
       ];
     }
-    
+
     const users = await User.findAll({
       where: whereClause,
       attributes: ['id', 'name', 'email', 'role', 'parentId', 'tenantName', 'lastLogin', 'isActive'],
@@ -2983,26 +3928,41 @@ router.post('/api/users', requireAuth, (req, res, next) => {
   if (req.user && (req.user.role === 'admin' || req.user.role === 'subscriber')) {
     return next();
   }
-  return checkPermission('admin')(req, res, next);
+  // Se não for admin nem subscriber, faz a validação de permissão comum (para JSON API)
+  if (req.user && req.user.permissions && req.user.permissions.admin) {
+    return next();
+  }
+  return res.status(403).json({ success: false, message: 'Acesso Negado. Permissão insuficiente.' });
 }, async (req, res) => {
   try {
-    console.log('[API] Tentativa de criação de usuário:', req.body);
-    const { name, email, password, role, tenantName, parentId, specialty, mainTool } = req.body;
-    
+    console.log('[API/Users] Criando usuário manual:', req.body.email);
+    const {
+      name, email, password, role, tenantName, parentId, specialty, mainTool,
+      phone, phoneWhatsapp, jobTitle, weeklyHours, costHour, techStack, softwareLicenses,
+      permissions, allowed_menus
+    } = req.body;
+
     if (!name || !email || !password) {
-      return res.status(400).json({ success: false, message: 'Dados incompletos' });
+      return res.status(400).json({ success: false, message: 'Dados incompletos: nome, email e senha são obrigatórios.' });
     }
 
-    // Validar limite de 10 sub-contas conectadas para a versão equipe (apenas se não for master admin)
     const isMasterAdmin = req.user.email === 'admin@zanoello.com' || req.user.email === 'admin@malha3d.com';
-    const activeParentId = parentId || req.user.parentId || req.user.id;
-    
+
+    // Segurança B2B: se for 'subscriber', forçar parentId como o próprio id do subscriber
+    let activeParentId = parentId || null;
+    if (req.user.role === 'subscriber') {
+      activeParentId = req.user.id;
+    } else if (!isMasterAdmin && req.user.role !== 'admin') {
+      activeParentId = req.user.parentId || req.user.id;
+    }
+
+    // Validar limite de 10 sub-contas conectadas para a versão equipe
     if (!isMasterAdmin && activeParentId) {
       const subUsersCount = await User.count({ where: { parentId: activeParentId } });
       if (subUsersCount >= 10) {
-        return res.status(400).json({ 
-          success: false, 
-          message: 'Limite máximo de 10 contas conectadas atingido para a versão Equipe.' 
+        return res.status(400).json({
+          success: false,
+          message: 'Limite máximo de 10 contas conectadas atingido para a versão Equipe.'
         });
       }
     }
@@ -3010,8 +3970,7 @@ router.post('/api/users', requireAuth, (req, res, next) => {
     // Validar se o usuário já existe
     const existing = await User.findOne({ where: { email } });
     if (existing) {
-      console.log('[API] Usuário já existe:', email);
-      return res.status(400).json({ success: false, message: 'Email já cadastrado' });
+      return res.status(400).json({ success: false, message: 'E-mail já está em uso.' });
     }
 
     // Decompor nome para compatibilidade com colunas firstName/lastName se existirem
@@ -3019,38 +3978,94 @@ router.post('/api/users', requireAuth, (req, res, next) => {
     const firstName = nameParts[0];
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
 
+    // Tratar campos JSON que podem vir serializados como string do frontend
+    let parsedPermissions = permissions;
+    if (typeof permissions === 'string') {
+      try {
+        parsedPermissions = JSON.parse(permissions);
+      } catch (err) {
+        parsedPermissions = null;
+      }
+    }
+
+    let parsedTechStack = techStack;
+    if (typeof techStack === 'string') {
+      try {
+        parsedTechStack = JSON.parse(techStack);
+      } catch (err) {
+        parsedTechStack = null;
+      }
+    }
+
+    let parsedSoftwareLicenses = softwareLicenses;
+    if (typeof softwareLicenses === 'string') {
+      try {
+        parsedSoftwareLicenses = JSON.parse(softwareLicenses);
+      } catch (err) {
+        parsedSoftwareLicenses = null;
+      }
+    }
+
     const newUser = await User.create({
       name,
       firstName,
       lastName,
       email,
-      password, // O hash é feito no hook beforeCreate do modelo
+      password, // O hook beforeCreate do modelo fará o hash
       role: role || 'user',
       tenantName: tenantName || req.user.tenantName || null,
       parentId: activeParentId,
       specialty: specialty || null,
       mainTool: mainTool || null,
-      isActive: true,
-      isVerified: true
+      phone: phone || null,
+      phoneWhatsapp: phoneWhatsapp || null,
+      jobTitle: jobTitle || null,
+      weeklyHours: weeklyHours ? parseInt(weeklyHours) : 40,
+      costHour: costHour ? parseFloat(costHour) : 0,
+      techStack: parsedTechStack || [],
+      softwareLicenses: parsedSoftwareLicenses || [],
+      permissions: {
+        ...(parsedPermissions || {}),
+        allowed_menus: allowed_menus || ['dashboard', 'crm', 'projetos', 'propostas', 'financeiro', 'configuracoes', 'equipe']
+      },
+      isVerified: true,
+      isActive: true
     });
 
-    console.log('[API] Usuário criado com sucesso:', newUser.id);
-    res.json({ success: true, user: { id: newUser.id, name: newUser.name, email: newUser.email } });
+    await SystemLog.create({
+      action: 'User Created Manually',
+      module: 'Security/Admin',
+      details: `User: ${name} (${role || 'user'})`,
+      userName: req.user.name,
+      ipAddress: req.ip
+    });
+
+    console.log('[API/Users] Usuário criado com sucesso ID:', newUser.id);
+    res.json({ success: true, user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role } });
   } catch (error) {
     console.error('API Create User Error:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: error.message,
-      error: error.message // Para compatibilidade com o frontend
+    res.status(500).json({
+      success: false,
+      message: `Erro interno ao criar usuário: ${error.message}`,
+      error: error.message
     });
   }
 });
 
-router.put('/api/users/:id', requireAuth, checkPermission('admin'), async (req, res) => {
+router.put('/api/users/:id', requireAuth, (req, res, next) => {
+  if (req.user && (req.user.role === 'admin' || req.user.role === 'subscriber')) {return next();}
+  if (req.user && req.user.permissions && req.user.permissions.admin) {return next();}
+  return res.status(403).json({ success: false, message: 'Acesso Negado.' });
+}, async (req, res) => {
   try {
-    const { name, email, role, tenantName, parentId, specialty, mainTool, isActive } = req.body;
+    const { name, email, role, tenantName, parentId, specialty, mainTool, isActive, allowed_menus } = req.body;
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+    if (!user) {return res.status(404).json({ success: false, message: 'Usuário não encontrado' });}
+
+    let finalPermissions = user.permissions || {};
+    if (allowed_menus) {
+      finalPermissions = { ...finalPermissions, allowed_menus };
+    }
 
     await user.update({
       name: name || user.name,
@@ -3060,7 +4075,8 @@ router.put('/api/users/:id', requireAuth, checkPermission('admin'), async (req, 
       parentId: parentId || user.parentId,
       specialty: specialty || user.specialty,
       mainTool: mainTool || user.mainTool,
-      isActive: isActive !== undefined ? isActive : user.isActive
+      isActive: isActive !== undefined ? isActive : user.isActive,
+      permissions: finalPermissions
     });
 
     res.json({ success: true, message: 'Usuário atualizado com sucesso' });
@@ -3072,9 +4088,9 @@ router.put('/api/users/:id', requireAuth, checkPermission('admin'), async (req, 
 router.delete('/api/users/:id', requireAuth, checkPermission('admin'), async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
-    
-    if (user.id === req.user.id) return res.status(400).json({ success: false, message: 'Você não pode excluir a si mesmo' });
+    if (!user) {return res.status(404).json({ success: false, message: 'Usuário não encontrado' });}
+
+    if (user.id === req.user.id) {return res.status(400).json({ success: false, message: 'Você não pode excluir a si mesmo' });}
 
     await user.destroy();
     res.json({ success: true, message: 'Usuário excluído com sucesso' });
@@ -3084,5 +4100,4 @@ router.delete('/api/users/:id', requireAuth, checkPermission('admin'), async (re
 });
 
 module.exports = router;
-
 

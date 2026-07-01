@@ -2,7 +2,7 @@ require('dotenv').config();
 const { Budget } = require('../models');
 
 const colors = [
-  '#f97316', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6', 
+  '#f97316', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6',
   '#ec4899', '#f59e0b', '#06b6d4', '#84cc16', '#64748b'
 ];
 

@@ -4,10 +4,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { User } = require('../models');
 const { authMiddleware } = require('../middleware/auth');
+const onboardingController = require('../controllers/onboardingController');
 
 // Secret key for JWT
 const JWT_SECRET = process.env.JWT_SECRET || 'zanoello_jwt_secret';
 const JWT_EXPIRES_IN = '24h';
+
+router.post('/register-root', onboardingController.onboardNewRootTenant);
+router.get('/verify-magic-link', onboardingController.verifyMagicLink);
 
 /**
  * @route   POST /api/auth/register

@@ -26,6 +26,13 @@ const BudgetContact = require('./BudgetContact');
 const SmartNote = require('./SmartNote');
 const ApiKey = require('./ApiKey');
 const ProjectLog = require('./ProjectLog');
+const ProjectTask = require('./ProjectTask')(sequelize);
+const Milestone = require('./Milestone');
+const Task = require('./Task');
+const TaskFile = require('./TaskFile');
+const TaskHistoryComment = require('./TaskHistoryComment');
+const TaskDependency = require('./TaskDependency');
+const TaskTemplate = require('./TaskTemplate');
 
 // Relacionamentos Budget e Client
 Client.hasMany(Budget, { as: 'budgets', foreignKey: 'clientId', onDelete: 'SET NULL' });
@@ -60,6 +67,9 @@ Revision.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
 Project.hasMany(Delivery, { as: 'deliveries', foreignKey: 'projectId', onDelete: 'CASCADE' });
 Delivery.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
 
+Project.hasMany(ProjectTask, { as: 'tasks', foreignKey: 'projectId', onDelete: 'CASCADE' });
+ProjectTask.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
+
 // Relacionamentos Calendar
 Project.hasMany(CalendarEvent, { as: 'calendarEvents', foreignKey: 'projectId' });
 CalendarEvent.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
@@ -77,6 +87,8 @@ Project.hasMany(TimeLog, { as: 'timeLogs', foreignKey: 'projectId', onDelete: 'C
 TimeLog.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
 User.hasMany(TimeLog, { as: 'timeLogs', foreignKey: 'userId', onDelete: 'CASCADE' });
 TimeLog.belongsTo(User, { as: 'user', foreignKey: 'userId' });
+Task.hasMany(TimeLog, { as: 'timeLogs', foreignKey: 'taskId', onDelete: 'CASCADE' });
+TimeLog.belongsTo(Task, { as: 'task', foreignKey: 'taskId' });
 
 // Relacionamentos Freelancers
 Freelancer.hasMany(TimeLog, { as: 'timeLogs', foreignKey: 'freelancerId' });
@@ -98,6 +110,29 @@ ApiKey.belongsTo(User, { as: 'creator', foreignKey: 'created_by' });
 User.hasMany(Budget, { as: 'assignedDeals', foreignKey: 'assigned_user_id' });
 Budget.belongsTo(User, { as: 'assignedUser', foreignKey: 'assigned_user_id' });
 
+// Relacionamentos do Módulo de Planejamento 360º
+Project.hasMany(Milestone, { as: 'milestones', foreignKey: 'projectId', onDelete: 'CASCADE' });
+Milestone.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
+
+Milestone.hasMany(Task, { as: 'tasks', foreignKey: 'milestoneId', onDelete: 'CASCADE' });
+Task.belongsTo(Milestone, { as: 'milestone', foreignKey: 'milestoneId' });
+
+Task.hasMany(Task, { as: 'subTasks', foreignKey: 'parentTaskId', onDelete: 'CASCADE' });
+Task.belongsTo(Task, { as: 'parentTask', foreignKey: 'parentTaskId' });
+
+Task.hasMany(TaskFile, { as: 'files', foreignKey: 'taskId', onDelete: 'CASCADE' });
+TaskFile.belongsTo(Task, { as: 'task', foreignKey: 'taskId' });
+
+Task.hasMany(TaskHistoryComment, { as: 'comments', foreignKey: 'taskId', onDelete: 'CASCADE' });
+TaskHistoryComment.belongsTo(Task, { as: 'task', foreignKey: 'taskId' });
+
+User.hasMany(Task, { as: 'assignedTasks', foreignKey: 'assigneeId', onDelete: 'SET NULL' });
+Task.belongsTo(User, { as: 'assignee', foreignKey: 'assigneeId' });
+
+// Relacionamentos de Dependência e Template de Tarefas
+Task.belongsToMany(Task, { through: TaskDependency, as: 'dependencies', foreignKey: 'taskId', otherKey: 'dependsOnTaskId' });
+Task.belongsToMany(Task, { through: TaskDependency, as: 'dependentTasks', foreignKey: 'dependsOnTaskId', otherKey: 'taskId' });
+
 // Dynamic Tenant Isolation Attribute and Hook Registration
 const { registerTenantHooks } = require('../utils/tenantContext');
 const modelsToIsolate = [
@@ -110,7 +145,14 @@ const modelsToIsolate = [
   CRMTask,
   TimeLog,
   Freelancer,
-  ProjectLog
+  ProjectLog,
+  ProjectTask,
+  Milestone,
+  Task,
+  TaskFile,
+  TaskHistoryComment,
+  TaskDependency,
+  TaskTemplate
 ];
 
 modelsToIsolate.forEach(model => {
@@ -160,5 +202,12 @@ module.exports = {
   BudgetContact,
   SmartNote,
   ApiKey,
-  ProjectLog
+  ProjectLog,
+  ProjectTask,
+  Milestone,
+  Task,
+  TaskFile,
+  TaskHistoryComment,
+  TaskDependency,
+  TaskTemplate
 };

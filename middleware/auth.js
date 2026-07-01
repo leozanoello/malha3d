@@ -15,25 +15,25 @@ const authMiddleware = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'zanoello_jwt_secret');
-    
+
     // Testes esperam userId no payload
     const userId = decoded.userId || decoded.id;
     const user = await User.findByPk(userId);
-    
+
     if (!user) {
       return res.status(401).json({ error: 'Usuário não encontrado' });
     }
-    
+
     if (user.isActive === false || user.status === 'inactive' || user.status === 'suspended') {
       return res.status(401).json({ error: 'Usuário inativo' });
     }
 
     req.user = user;
-    
+
     // Injeta o contexto de isolamento de tenant
     const { runWithTenant } = require('../utils/tenantContext');
     const isMasterAdmin = user.email === 'admin@zanoello.com' || user.email === 'admin@malha3d.com';
-    
+
     if (!isMasterAdmin) {
       const tenantId = user.parentId || user.id;
       return runWithTenant(tenantId, next);
@@ -53,12 +53,12 @@ const authMiddleware = async (req, res, next) => {
  */
 const requireRole = (roles) => {
   const allowedRoles = Array.isArray(roles) ? roles : [roles];
-  
+
   return (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({ error: 'Autenticação necessária' });
     }
-    
+
     if (allowedRoles.includes(req.user.role)) {
       next();
     } else {
@@ -128,7 +128,7 @@ const requireAuth = async (req, res, next) => {
   if (req.user) {
     return next();
   }
-  
+
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Autenticação necessária' });

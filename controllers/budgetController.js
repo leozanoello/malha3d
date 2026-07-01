@@ -1,4 +1,4 @@
-const { Budget, CRMNote, User } = require('../models');
+const { Budget, CRMNote } = require('../models');
 const { Op } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const { validateBudgetData } = require('../utils/validators');
@@ -12,10 +12,10 @@ class BudgetController {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const offset = (page - 1) * limit;
-      
+
       const where = {};
-      if (req.query.status) where.status = req.query.status;
-      if (req.query.projectType) where.projectType = req.query.projectType;
+      if (req.query.status) {where.status = req.query.status;}
+      if (req.query.projectType) {where.projectType = req.query.projectType;}
       if (req.query.clientName) {
         where.clientName = { [Op.like]: `%${req.query.clientName}%` };
       }
@@ -25,7 +25,7 @@ class BudgetController {
         offset,
         order: [['createdAt', 'DESC']]
       };
-      
+
       if (Object.keys(where).length > 0) {
         options.where = where;
       }
@@ -75,14 +75,14 @@ class BudgetController {
     try {
       const validation = validateBudgetData(req.body);
       if (!validation.isValid) {
-        return res.status(400).json({ 
+        return res.status(400).json({
           error: 'Dados inválidos',
           details: validation.errors
         });
       }
 
       const trackingCode = `BUDGET-${uuidv4().substring(0, 8).toUpperCase()}`;
-      
+
       // Cálculo simplificado de valor estimado
       const estimatedValue = req.body.quantity ? req.body.quantity * 90 : 0;
 

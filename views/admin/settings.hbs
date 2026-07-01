@@ -34,6 +34,10 @@
             <span class="material-symbols-outlined">database</span>
             <span class="text-sm">Backup & Dados</span>
         </button>
+        <button data-tab="calculator" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
+            <span class="material-symbols-outlined">calculate</span>
+            <span class="text-sm">Calculadora</span>
+        </button>
         <button data-tab="cicd" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
             <span class="material-symbols-outlined">admin_panel_settings</span>
             <span class="text-sm uppercase tracking-widest text-[10px]">Master: Acessos & CI/CD</span>
@@ -230,6 +234,94 @@
             </div>
         </div>
 
+        <!-- CALCULATOR SETTINGS TAB -->
+        <div id="tab-calculator" class="settings-pane hidden space-y-6">
+            <div class="glass-card p-8">
+                <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
+                    <span class="material-symbols-outlined text-orange-500">calculate</span>
+                    Precificação & Calibração Base (ArchViz)
+                </h3>
+                
+                <form id="calculatorSettingsForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por m² (Modelagem)</label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-gray-500">R$</span>
+                                <input type="number" step="0.01" name="calculator_base_price_m2" id="calculator_base_price_m2" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="50.00">
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por Imagem Estática</label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-gray-500">R$</span>
+                                <input type="number" step="0.01" name="calculator_base_price_image" id="calculator_base_price_image" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="350.00">
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por Segundo de Animação</label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-gray-500">R$</span>
+                                <input type="number" step="0.01" name="calculator_base_price_animation" id="calculator_base_price_animation" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="120.00">
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por Tour 360º</label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-gray-500">R$</span>
+                                <input type="number" step="0.01" name="calculator_base_price_tour" id="calculator_base_price_tour" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="800.00">
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 md:col-span-2">
+                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Custo Adicional por Ambiente Mapeado</label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-gray-500">R$</span>
+                                <input type="number" step="0.01" name="calculator_base_price_environment" id="calculator_base_price_environment" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="100.00">
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-2 font-medium">Este valor compensa o esforço incremental de modelagem e detalhamento de cada ambiente adicionado à lista do escopo.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-black text-white mt-10 mb-6 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-orange-500">smart_toy</span>
+                        Conexão do Motor de IA (Análise de Risco & Briefing)
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 md:col-span-2">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 class="text-sm font-bold text-white">Google Gemini API Key</h4>
+                                    <p class="text-xs text-gray-500">Recomendado para análise de briefing de alta precisão e baixo custo.</p>
+                                </div>
+                            </div>
+                            <input type="password" name="gemini_api_key" id="gemini_api_key" placeholder="AIzaSy..." class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all font-mono">
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 md:col-span-2">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h4 class="text-sm font-bold text-white">OpenAI API Key</h4>
+                                    <p class="text-xs text-gray-500">Chave alternativa para fallback utilizando gpt-4o-mini.</p>
+                                </div>
+                            </div>
+                            <input type="password" name="openai_api_key" id="openai_api_key" placeholder="sk-proj-..." class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all font-mono">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-6">
+                        <button type="submit" id="btnSaveCalculatorSettings" class="bg-orange-500 text-white font-bold py-3.5 px-8 rounded-2xl hover:bg-orange-600 transition-all active:scale-95 shadow-xl shadow-orange-500/20 border border-orange-500/20">
+                            Salvar Calibração
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- MASTER ADMIN & CI/CD TAB — RBAC Guard wraps the entire panel -->
         <div id="tab-cicd" class="settings-pane hidden space-y-8 duration-500">
             {{#if (eq user.role 'admin')}}
@@ -243,11 +335,12 @@
             </header>
 
             <!-- GESTÃO DE USUÁRIOS (MULTI-TENANT) -->
-            <div class="glass-card border-white/5 overflow-hidden">
-                <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center">
-                    <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Hierarquia de Assinantes</h4>
+            <div class="glass-card border-white/5 overflow-hidden mb-8">
+                <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-subscribers')">
+                    <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Assinantes</h4>
+                    <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-subscribers">expand_more</span>
                 </div>
-                <div class="divide-y divide-white/[0.03]">
+                <div id="card-subscribers" class="divide-y divide-white/[0.03]">
                     {{#if subscriberUsers.length}}
                         {{#each subscriberUsers}}
                         <div class="group">
@@ -315,10 +408,11 @@
 
             <!-- OUTROS USUÁRIOS (STAFF/ADMIN) -->
             <div class="glass-card border-white/5 overflow-visible">
-                <div class="p-6 border-b border-white/5 bg-white/5">
-                    <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Interna & Staff</h4>
+                <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-other-users')">
+                    <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Malha 3D</h4>
+                    <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-other-users">expand_more</span>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
+                <div id="card-other-users" class="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
                     {{#each otherUsers}}
                     <div class="p-6 bg-dark-950/40 hover:bg-white/[0.02] transition-all flex items-center justify-between">
                         <div class="flex items-center gap-4 cursor-pointer" data-user-id="{{this.id}}" data-user-name="{{this.name}}">
@@ -856,6 +950,67 @@ document.addEventListener('DOMContentLoaded', function() {
             showToast(d.success ? d.message : d.error, d.success ? 'warn' : 'error');
         }
     });
+
+    // ── Load Calculator settings from database ─────────────────
+    const loadCalculatorSettings = async () => {
+        try {
+            const r = await fetch('/api/calculator-settings');
+            if (r.ok) {
+                const settings = await r.json();
+                const fields = [
+                    'calculator_base_price_m2',
+                    'calculator_base_price_image',
+                    'calculator_base_price_animation',
+                    'calculator_base_price_tour',
+                    'calculator_base_price_environment',
+                    'gemini_api_key',
+                    'openai_api_key'
+                ];
+                fields.forEach(f => {
+                    const input = document.getElementById(f);
+                    if (input && settings[f] !== undefined) {
+                        input.value = settings[f];
+                    }
+                });
+            }
+        } catch (err) {
+            console.error('Erro ao carregar calibração da calculadora:', err);
+        }
+    };
+    loadCalculatorSettings();
+
+    // ── Save Calculator settings to database ─────────────────
+    document.getElementById('calculatorSettingsForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btnSave = document.getElementById('btnSaveCalculatorSettings');
+        btnSave.disabled = true;
+        btnSave.textContent = 'Salvando calibração...';
+
+        const formData = new FormData(e.target);
+        const settings = {};
+        for (const [key, value] of formData.entries()) {
+            settings[key] = value.trim();
+        }
+
+        try {
+            const r = await fetch('/admin/api/settings/bulk', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ settings })
+            });
+            const data = await r.json();
+            if (data.success) {
+                showToast('Calibração da Calculadora salva com sucesso!', 'success');
+            } else {
+                showToast(data.error || 'Erro ao salvar calibração.', 'error');
+            }
+        } catch (err) {
+            showToast('Erro de conexão ao salvar calibração.', 'error');
+        } finally {
+            btnSave.disabled = false;
+            btnSave.textContent = 'Salvar Calibração';
+        }
+    });
 });
 
 // ── Analytics Drawer ──────────────────────────────────────
@@ -909,6 +1064,17 @@ async function openAnalyticsDrawer(userId, userName) {
             </div>`;
     } catch (e) {
         document.getElementById('drawer-content').innerHTML = '<p class="text-center text-red-400 text-xs py-8">Erro ao carregar analytics.</p>';
+    }
+}
+
+function toggleCollapseCard(cardId, iconId) {
+    const card = document.getElementById(cardId);
+    const icon = document.getElementById(iconId || `icon-${cardId}`);
+    if (card) {
+        card.classList.toggle('hidden');
+        if (icon) {
+            icon.classList.toggle('rotate-180');
+        }
     }
 }
 </script>

@@ -12,9 +12,9 @@ async function seedContacts() {
       'Ursula Vaz', 'Vitor Hugo', 'Wagner Dias', 'Xuxa Meneghel', 'Yago Martins',
       'Zuleide Lima', 'Arnaldo Cezar', 'Bia Haddad', 'Caio Castro', 'Drauzio Varella'
     ];
-    
+
     const companies = ['Studio Arch', 'Brick & Mortar', 'Visions 3D', 'Skyline Design', 'Urban Planning', 'Nexus ArchViz', 'Creative Loft', 'Zenith 3D', 'Horizon Studios', 'Vertex Design'];
-    
+
     const contacts = names.map((name, i) => ({
       id: uuidv4(),
       name: name,

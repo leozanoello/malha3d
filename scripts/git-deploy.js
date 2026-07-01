@@ -9,16 +9,16 @@ require('dotenv').config();
 async function runDeploy(commitMessage = '🚀 Production Deploy') {
   return new Promise((resolve, reject) => {
     console.log('--- Iniciando Pipeline de Deploy ---');
-    
+
     // Comando robusto: verifica se há mudanças antes de tentar commitar
     const command = `git add . && (git diff-index --quiet HEAD || git commit -m "${commitMessage}") && git push origin main`;
-    
+
     exec(command, { cwd: path.join(__dirname, '..') }, (error, stdout, stderr) => {
       if (error) {
         console.error(`Erro no Git: ${error.message}`);
         return reject({ success: false, message: error.message, details: stderr });
       }
-      
+
       console.log(`Saída: ${stdout}`);
       resolve({ success: true, message: 'Push realizado com sucesso!', output: stdout });
     });

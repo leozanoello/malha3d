@@ -55,7 +55,7 @@
     top: 0;
     left: 0;
     height: 100vh;
-    z-index: 1000;
+    z-index: 50;
     transition: var(--admin-transition);
     overflow-y: auto;
     scrollbar-width: thin;
@@ -248,7 +248,7 @@
     height: var(--admin-header-height);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 50;
 }
 
 .header-content {
@@ -1197,3 +1197,124 @@
         page-break-inside: avoid;
     }
 }
+
+/* User Profile Modal Custom Styles */
+#profileTab .nav-link {
+    border-bottom: 2px solid transparent !important;
+    border-radius: 0 !important;
+    margin-bottom: -1px;
+}
+#profileTab .nav-link.active {
+    color: #f97316 !important;
+    border-bottom: 2px solid #f97316 !important;
+}
+#avatar-upload-zone {
+    transition: all 0.3s ease;
+}
+#avatar-upload-zone:hover {
+    border-color: #00f2ff !important;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+}
+.tech-tag {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.4rem 0.8rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.02);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+.tech-tag:hover {
+    border-color: rgba(0, 242, 255, 0.3);
+    color: #00f2ff;
+    background: rgba(0, 242, 255, 0.05);
+}
+.tech-tag.active {
+    border-color: rgba(249, 115, 22, 0.5);
+    color: #ffffff;
+    background: rgba(249, 115, 22, 0.15);
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.1);
+}
+#modal-logout-btn {
+    border: 1px solid rgba(239, 68, 68, 0.15) !important;
+}
+#modal-logout-btn:hover {
+    background: rgba(239, 68, 68, 0.1) !important;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+}
+
+/* ==========================================
+   ARQUITETURA DE CAMADAS (Z-INDEX) & ESTABILIDADE
+   ========================================== */
+.kanban-card {
+    position: relative;
+    z-index: 10;
+}
+
+.kanban-card:hover {
+    z-index: 12 !important;
+}
+
+.admin-sidebar {
+    z-index: 50 !important;
+}
+
+.admin-header {
+    z-index: 50 !important;
+}
+
+.modal-backdrop {
+    z-index: 90 !important;
+}
+
+.modal {
+    z-index: 100 !important;
+}
+
+/* Estabilização do Layout Kanban */
+#projects-kanban-board {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 1.5rem;
+    min-height: calc(100vh - 220px) !important;
+}
+
+.kanban-column {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+.kanban-drop-zone.cards-list,
+.cards-list {
+    flex: 1;
+    overflow-y: visible;
+    max-height: none !important;
+    scrollbar-width: none; /* Firefox */
+}
+
+.kanban-drop-zone.cards-list::-webkit-scrollbar,
+.cards-list::-webkit-scrollbar {
+    display: none; /* Safari/Chrome */
+}
+
+/* SweetAlert Overlays above all modais */
+.swal2-container {
+    z-index: 1100 !important;
+}
+
+/* ==========================================
+   Z-INDEX ARCHITECTURE CONSOLIDATION
+   ========================================== */
+.z-bg { z-index: 0 !important; }
+.z-grid { z-index: 10 !important; }
+.z-header { z-index: 50 !important; }
+.z-overlay { z-index: 90 !important; }
+.z-modal { z-index: 100 !important; }
+.z-tooltip { z-index: 110 !important; }

@@ -62,10 +62,15 @@
                                 <select class="form-select" id="category" name="category" required>
                                     <option value="">Selecione uma categoria</option>
                                     <option value="3d" {{#eq project.category "3d"}}selected{{/eq}}>Modelagem 3D</option>
-                                    <option value="render" {{#eq project.category "render"}}selected{{/eq}}>Renderização</option>
-                                    <option value="animation" {{#eq project.category "animation"}}selected{{/eq}}>Animação</option>
-                                    <option value="product" {{#eq project.category "product"}}selected{{/eq}}>Produto</option>
-                                    <option value="architectural" {{#eq project.category "architectural"}}selected{{/eq}}>Arquitetônico</option>
+                                    <option value="ArchViz" {{#eq project.category "ArchViz"}}selected{{/eq}}>ArchViz</option>
+                                    <option value="Modelagem" {{#eq project.category "Modelagem"}}selected{{/eq}}>Modelagem</option>
+                                    <option value="Renderização" {{#eq project.category "Renderização"}}selected{{/eq}}>Renderização</option>
+                                    <option value="interior" {{#eq project.category "interior"}}selected{{/eq}}>Interior</option>
+                                    <option value="exterior" {{#eq project.category "exterior"}}selected{{/eq}}>Exterior</option>
+                                    <option value="produto" {{#eq project.category "produto"}}selected{{/eq}}>Produto</option>
+                                    <option value="arquitetonico" {{#eq project.category "arquitetonico"}}selected{{/eq}}>Arquitetônico</option>
+                                    <option value="animacao" {{#eq project.category "animacao"}}selected{{/eq}}>Animação</option>
+                                    <option value="outro" {{#eq project.category "outro"}}selected{{/eq}}>Outro</option>
                                 </select>
                                 <div class="invalid-feedback">Por favor, selecione uma categoria</div>
                             </div>
@@ -83,8 +88,18 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="client" class="form-label">Cliente</label>
-                                <input type="text" class="form-control" id="client" name="client" 
-                                       value="{{project.client}}" placeholder="Nome do cliente">
+                                <div class="input-group">
+                                    <select class="form-select select2" id="client" name="client">
+                                        <option value="">Selecione o cliente...</option>
+                                        {{#if project.client}}
+                                            <option value="{{project.client}}" selected>{{project.client}}</option>
+                                        {{/if}}
+                                        <!-- Clientes serão injetados aqui via JS -->
+                                    </select>
+                                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#newClientModal" title="Adicionar Cliente">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -268,6 +283,37 @@
     </div>
 </div>
 
+<div class="modal fade" id="newClientModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Novo Cliente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newClientForm">
+                    <div class="mb-3">
+                        <label class="form-label">Nome *</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">E-mail</label>
+                        <input type="email" name="email" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Telefone</label>
+                        <input type="text" name="phone" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="newClientForm" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
 .preview-container {
     margin-top: 1rem;
@@ -317,6 +363,78 @@
 </style>
 
 <script>
+// Load Clients into Select
+async function loadClients() {
+    try {
+        const res = await fetch('/api/clients');
+        if (!res.ok) return;
+        const data = await res.json();
+        const select = document.getElementById('client');
+        const currentValue = select.value;
+        
+        // Preserve current selection logic (from handlebars render or current select)
+        let html = '<option value="">Selecione o cliente...</option>';
+        data.data.forEach(client => {
+            const isSelected = currentValue === client.name ? 'selected' : '';
+            html += `<option value="${client.name}" ${isSelected}>${client.name}</option>`;
+        });
+        select.innerHTML = html;
+        if(currentValue && !data.data.find(c => c.name === currentValue)) {
+            // Add custom client if it existed but wasn't in db
+            select.innerHTML += `<option value="${currentValue}" selected>${currentValue}</option>`;
+        }
+    } catch(e) { console.error('Erro ao carregar clientes', e); }
+}
+
+// New Client Form Submission
+document.getElementById('newClientForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = 'Salvando...';
+    btn.disabled = true;
+
+    try {
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        // A rota atual para criar clientes no CRM pode ser /admin/api/clients ou /api/clients
+        const res = await fetch('/api/clients', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        const resData = await res.json();
+        if(res.ok) {
+            // Adiciona option
+            const select = document.getElementById('client');
+            const option = document.createElement('option');
+            // resData comes directly as object from /api/clients POST
+            const clientName = resData.name || data.name; 
+            option.value = clientName;
+            option.text = clientName;
+            option.selected = true;
+            select.appendChild(option);
+            
+            // Fecha modal
+            const modalEl = document.getElementById('newClientModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if(modal) modal.hide();
+            else { modalEl.classList.remove('show'); modalEl.style.display = 'none'; document.querySelector('.modal-backdrop')?.remove(); }
+            
+            this.reset();
+        } else {
+            alert(resData.message || 'Erro ao criar cliente');
+        }
+    } catch(e) {
+        alert('Falha na comunicação');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+});
+
+document.addEventListener('DOMContentLoaded', loadClients);
+
 // Preview image
 function previewImage(input, previewId) {
     const preview = document.getElementById(previewId);

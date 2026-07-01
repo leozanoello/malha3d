@@ -39,6 +39,10 @@ const TimeLog = sequelize.define('TimeLog', {
     type: DataTypes.ENUM('running', 'completed', 'paused'),
     defaultValue: 'running'
   },
+  taskId: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
   projectId: {
     type: DataTypes.UUID,
     allowNull: true

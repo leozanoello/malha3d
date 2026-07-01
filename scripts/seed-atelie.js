@@ -5,16 +5,16 @@ const { sequelize, User, Project, FinanceTransaction, Client, Budget, CalendarEv
 async function seedAtelie() {
   try {
     console.log('🚀 Iniciando configuração do usuário atelie@zanoello.com...');
-    
+
     // 1. Verificar se o usuário já existe
     let user = await User.findOne({ where: { email: 'atelie@zanoello.com' } });
-    
+
     if (user) {
       console.log('⚠️  Usuário atelie@zanoello.com já existe. Atualizando para Assinante Equipe zerado...');
-      
+
       // Limpar todos os registros operacionais antigos deste usuário para garantir estado zerado
       const tenantId = user.id;
-      
+
       await Project.destroy({ where: { userId: tenantId } });
       await FinanceTransaction.destroy({ where: { userId: tenantId } });
       await Client.destroy({ where: { userId: tenantId } });
@@ -24,7 +24,7 @@ async function seedAtelie() {
       await CRMTask.destroy({ where: { userId: tenantId } });
       await TimeLog.destroy({ where: { userId: tenantId } });
       await Freelancer.destroy({ where: { userId: tenantId } });
-      
+
       // Remover sub-contas antigas
       await User.destroy({ where: { parentId: tenantId } });
 
@@ -49,7 +49,7 @@ async function seedAtelie() {
       console.log('✅ Usuário atelie@zanoello.com atualizado com sucesso!');
     } else {
       console.log('➕ Criando novo usuário atelie@zanoello.com...');
-      
+
       // Criar usuário principal atelie@zanoello.com
       user = await User.create({
         name: 'Ateliê Zanoello',
@@ -75,7 +75,7 @@ async function seedAtelie() {
       });
       console.log('✅ Usuário atelie@zanoello.com criado com sucesso!');
     }
-    
+
     console.log('\n💎 Credenciais de Acesso:');
     console.log('==========================================');
     console.log('📧 Email: atelie@zanoello.com');

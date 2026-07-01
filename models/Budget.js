@@ -148,7 +148,7 @@ const Budget = sequelize.define('Budget', {
   nextActionNote: {
     type: DataTypes.TEXT,
     allowNull: true,
-    defaultValue: ""
+    defaultValue: ''
   },
   imagesCount: {
     type: DataTypes.INTEGER,
@@ -225,7 +225,7 @@ const Budget = sequelize.define('Budget', {
   lossReason: {
     type: DataTypes.STRING,
     allowNull: true,
-    defaultValue: ""
+    defaultValue: ''
   },
   closeDate: {
     type: DataTypes.DATE,

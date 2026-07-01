@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            500: '#ff8c00', // Neon Orange
+                            600: '#e67e00',
+                            800: '#003559',
+                            900: '#002540',
+                        },
+                        cyber: {
+                            500: '#00f2ff', // Cyber Cyan
+                        },
+                        dark: {
+                            900: '#0f172a',
+                            950: '#05070a', // Deep Space
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #05070a;
+            color: #f3f4f6;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(255, 140, 0, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #ff8c00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .active-milestone {
+            border-color: rgba(255, 140, 0, 0.4);
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.1);
+        }
+
+        /* Overlay Watermark */
+        .watermark-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .watermark-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 10;
+            user-select: none;
+        }
+
+        .watermark-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            transform: rotate(-30deg);
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+    </style>
+
+    {{#if cpSettings}}
+    <style>
+        body {
+            background-color: {{cpSettings.cp_color_bg}} !important;
+            background-image: 
+                radial-gradient(at 0% 0%, {{cpSettings.cp_color_accent}}0d 0px, transparent 50%),
+                radial-gradient(at 100% 100%, {{cpSettings.cp_color_accent}}0d 0px, transparent 50%) !important;
+        }
+        .text-orange-500, .text-primary-500 {
+            color: {{cpSettings.cp_color_accent}} !important;
+        }
+        .bg-orange-500, .bg-primary-500 {
+            background-color: {{cpSettings.cp_color_accent}} !important;
+        }
+        .bg-orange-500\/10 {
+            background-color: {{cpSettings.cp_color_accent}}1a !important;
+        }
+        .border-orange-500\/20 {
+            border-color: {{cpSettings.cp_color_accent}}33 !important;
+        }
+        .border-orange-500\/10 {
+            border-color: {{cpSettings.cp_color_accent}}1a !important;
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, {{cpSettings.cp_color_accent}} 100%) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+        .bg-gradient-to-tr {
+            background-image: linear-gradient(to top right, {{cpSettings.cp_color_accent}}, #f59e0b) !important;
+        }
+    </style>
+    {{/if}}
+</head>
+<body class="min-h-screen py-10 px-4 md:px-8">
+
+    <!-- Top Branding Header -->
+    <div class="max-w-4xl mx-auto mb-8">
+        <div class="flex items-center justify-between p-6 glass-panel rounded-3xl">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
+                    <span class="material-symbols-outlined font-black">layers</span>
+                </div>
+                <div>
+                    <span class="text-lg font-black tracking-wider text-white uppercase">Malha<span class="text-orange-500">3D</span></span>
+                    <span class="text-[9px] block text-gray-500 uppercase tracking-[0.2em] -mt-1 font-bold">archviz</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest hidden sm:inline">Acesso Seguro</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Container (Centered Single Column) -->
+    <div class="max-w-4xl mx-auto space-y-8">
+        
+        <!-- Project Info & Timeline Card -->
+        <div class="glass-panel p-8 rounded-[2rem] relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-[50px] -mr-16 -mt-16"></div>
+            <div class="relative z-10 text-center md:text-left md:flex md:items-center md:justify-between md:gap-8">
+                <div>
+                    <span class="text-[10px] text-orange-500 font-black uppercase tracking-[0.2em]">Portal do Cliente</span>
+                    <h2 class="text-2xl font-black text-white mt-1 mb-2 tracking-tight">{{project.title}}</h2>
+                </div>
+                
+                <!-- Project Timeline Progress Bar (ex: 50% concluído) -->
+                <div class="mt-6 md:mt-0 flex-shrink-0 w-full md:w-80">
+                    <div class="flex justify-between items-center text-xs mb-2">
+                        <span class="text-gray-400 font-bold uppercase tracking-wider">Cronograma do Projeto</span>
+                        <span class="text-orange-500 font-black text-sm font-mono">{{progressPercent}}% concluído</span>
+                    </div>
+                    <div class="w-full h-3 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5 shadow-inner">
+                        <div class="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(249,115,22,0.4)]" style="width: {{progressPercent}}%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approval Gallery -->
+        <div class="glass-panel p-8 rounded-[2rem]">
+            <h3 class="text-xl font-black text-white tracking-tight flex items-center gap-2 mb-2">
+                <span class="material-symbols-outlined text-orange-500">wallpaper</span>
+                Galeria de Aprovação
+            </h3>
+            <p class="text-xs text-gray-400 mb-8">Revise as imagens produzidas para este projeto. Aprove cada render ou solicite alterações informando os ajustes necessários.</p>
+            
+            <div class="space-y-10">
+                <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {{#each project.milestones}}
+                        {{#each this.tasks}}
+                            {{#each this.files}}
+                                {{#unless this.isApprovedByClient}}
+                                    {{#ifCond this.fileType '!==' 'local'}}
+                                        <div class="glass-panel rounded-2xl overflow-hidden border border-white/5 flex flex-col gallery-item">
+                                            <!-- Image preview with watermark -->
+                                            <div class="watermark-container bg-black/40 aspect-video relative flex items-center justify-center overflow-hidden group">
+                                                {{#ifCond ../../../cpSettings.cp_watermark '===' 'true'}}
+                                                    <div class="watermark-overlay">
+                                                        <span class="watermark-text text-white" style="opacity: {{#if ../../../cpSettings.cp_wm_opacity}}{{../../../../cpSettings.cp_wm_opacity}}{{else}}30{{/if}}%;">
+                                                            {{#if ../../../cpSettings.cp_wm_text}}{{../../../../cpSettings.cp_wm_text}}{{else}}MALHA3D PREVIEW{{/if}}
+                                                        </span>
+                                                    </div>
+                                                {{/ifCond}}
+                                                
+                                                <img src="{{this.filePathOrUrl}}" alt="Render preview" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 cursor-zoom-in" onclick="openLightbox('{{this.filePathOrUrl}}')">
+                                                
+                                                <span class="absolute top-3 left-3 px-2 py-1 rounded bg-black/60 backdrop-blur-md text-[10px] font-mono text-white">Versão {{this.versionNumber}}</span>
+                                                
+                                                <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-amber-500/90 text-[10px] font-bold text-white uppercase tracking-wider flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-[10px]">pending</span> Pendente
+                                                </span>
+                                            </div>
+
+                                            <!-- Text info & client actions -->
+                                            <div class="p-5 flex-1 flex flex-col justify-between">
+                                                <div class="mb-4">
+                                                    <h4 class="text-sm font-black text-white">{{../this.title}}</h4>
+                                                    <p class="text-xs text-gray-400 mt-1 leading-relaxed">{{../this.description}}</p>
+                                                </div>
+                                                
+                                                <div class="space-y-4">
+                                                    <textarea id="feedback-{{this.id}}" placeholder="Caso precise de alterações, comente aqui os detalhes do ajuste..." class="w-full p-3 rounded-xl bg-black/30 border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40 transition-all resize-none h-16"></textarea>
+                                                    <div class="grid grid-cols-2 gap-3">
+                                                        <button onclick="sendAction('{{../this.id}}', '{{this.id}}', 'adjust')" class="py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 text-xs font-bold transition-all uppercase tracking-wider">
+                                                            Solicitar Alteração
+                                                        </button>
+                                                        <button onclick="sendAction('{{../this.id}}', '{{this.id}}', 'approve')" class="py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-all uppercase tracking-wider shadow-lg shadow-emerald-500/10">
+                                                            Aprovar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {{/ifCond}}
+                                {{/unless}}
+                            {{/each}}
+                        {{/each}}
+                    {{/each}}
+                </div>
+                
+                <div id="no-gallery-message" class="hidden p-12 border border-dashed border-white/10 rounded-2xl text-center text-gray-500">
+                    <span class="material-symbols-outlined text-4xl mb-2">check_circle</span>
+                    <p class="text-xs uppercase tracking-widest font-black">Nenhum render aguardando aprovação no momento.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox for high-res view -->
+    <div id="lightbox" class="fixed inset-0 bg-black/95 z-50 hidden flex items-center justify-center p-4" onclick="closeLightbox()">
+        <button class="absolute top-4 right-4 text-white text-3xl font-bold cursor-pointer" onclick="closeLightbox()">&times;</button>
+        <img id="lightbox-img" src="" alt="Zoom preview" class="max-w-full max-h-[90vh] object-contain rounded-lg">
+    </div>
+
+    <!-- SweetAlert / Toast feedback -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.gallery-item');
+            if (items.length === 0) {
+                document.getElementById('no-gallery-message')?.classList.remove('hidden');
+                document.getElementById('gallery-grid')?.classList.add('hidden');
+            }
+        });
+
+        function openLightbox(url) {
+            const lb = document.getElementById('lightbox');
+            const lbImg = document.getElementById('lightbox-img');
+            lbImg.src = url;
+            lb.classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.add('hidden');
+        }
+
+        async function sendAction(taskId, fileId, action) {
+            const feedbackText = document.getElementById(`feedback-${fileId}`)?.value || '';
+            
+            if (action === 'adjust' && !feedbackText.trim()) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Comentário Necessário',
+                    text: 'Por favor, escreva no campo de texto os detalhes do ajuste que você gostaria que fizéssemos.',
+                    background: '#0c1017',
+                    color: '#fff',
+                    confirmButtonColor: '#ff8c00'
+                });
+                return;
+            }
+
+            try {
+                Swal.showLoading();
+                const response = await fetch(`/api/portal/p/{{project.externalToken}}/action`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        taskId,
+                        fileId,
+                        action,
+                        feedback: feedbackText
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Feedback Enviado!',
+                        text: result.message || 'Seu feedback foi registrado no sistema operacional dos artistas.',
+                        background: '#0c1017',
+                        color: '#fff',
+                        confirmButtonColor: '#ff8c00'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Falha no Envio',
+                        text: result.error || 'Ocorreu um erro ao registrar seu feedback.',
+                        background: '#0c1017',
+                        color: '#fff',
+                        confirmButtonColor: '#ff8c00'
+                    });
+                }
+            } catch (error) {
+                console.error('Error submitting action:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro Crítico',
+                    text: 'Não foi possível conectar ao servidor.',
+                    background: '#0c1017',
+                    color: '#fff',
+                    confirmButtonColor: '#ff8c00'
+                });
+            }
+        }
+    </script>
+</body>
+</html>

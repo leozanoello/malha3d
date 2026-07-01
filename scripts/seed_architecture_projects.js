@@ -2,7 +2,6 @@
  * MALHA 3D - Architecture Project Seeder
  * Populates existing projects with rich mock data and architecture images
  */
-const path = require('path');
 
 // Set up the database connection
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
@@ -12,13 +11,13 @@ async function seedProjects() {
   try {
     await sequelize.authenticate();
     console.log('✅ Database connected');
-    
+
     const Project = require('../models/Project');
-    
+
     // Force sync only the Project table to add new columns
     await Project.sync({ force: true });
     console.log('✅ Project table recreated with all new columns');
-    
+
     const sampleProjects = [
       {
         title: 'Residência Alphaville Premium',

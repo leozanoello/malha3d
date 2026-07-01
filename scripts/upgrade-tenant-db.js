@@ -7,7 +7,7 @@ async function upgrade() {
     console.log('🚀 Iniciando atualização do banco de dados para Multi-Tenancy...');
     const dialect = sequelize.getDialect();
     console.log(`Dialect ativo: ${dialect}`);
-    
+
     const tables = [
       'projects',
       'finance_transactions',
@@ -19,7 +19,7 @@ async function upgrade() {
       'time_logs',
       'freelancers'
     ];
-    
+
     for (const table of tables) {
       let hasColumn = false;
       if (dialect === 'sqlite') {
@@ -31,7 +31,7 @@ async function upgrade() {
         );
         hasColumn = results.length > 0;
       }
-      
+
       if (!hasColumn) {
         console.log(`Adicionando coluna user_id à tabela ${table}...`);
         const columnType = dialect === 'sqlite' ? 'TEXT' : 'UUID REFERENCES users(id) ON DELETE SET NULL';

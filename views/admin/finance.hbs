@@ -336,14 +336,14 @@
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[3rem] overflow-hidden bg-[#0a0c10] backdrop-blur-3xl">
             <div class="modal-header border-none p-10 pb-0">
-                <h2 class="text-2xl font-black text-white tracking-tight">Lançamento Financeiro</h2>
+                <h2 id="newTransactionModalTitle" class="text-2xl font-black text-white tracking-tight">Lançamento Financeiro</h2>
                 <button type="button" class="btn-close btn-close-white opacity-30" data-bs-dismiss="modal"></button>
             </div>
             
             <form id="financeForm">
                 <div class="modal-body p-10 space-y-10">
                     <!-- Type Selection -->
-                    <div class="grid grid-cols-3 gap-6">
+                    <div id="finance-type-selection-grid" class="grid grid-cols-3 gap-6">
                         <button type="button" data-type="receita" class="finance-type-btn btn-set-type p-8 rounded-3xl bg-white/[0.03] border border-white/5 flex flex-col items-center gap-4 transition-all hover:bg-white/5 active">
                             <span class="material-symbols-outlined text-3xl text-emerald-500">add_circle</span>
                             <span class="text-[10px] font-black text-white uppercase tracking-[0.2em]">Receita</span>
@@ -694,6 +694,38 @@ document.addEventListener('DOMContentLoaded', function() {
     window.setModalType = function(type) {
         setTimeout(() => {
             toggleTransactionType(type);
+            
+            const titleEl = document.getElementById('newTransactionModalTitle');
+            const gridEl = document.getElementById('finance-type-selection-grid');
+            
+            if (titleEl && gridEl) {
+                // Título dinâmico em português
+                if (type === 'receita') {
+                    titleEl.textContent = 'Lançamento de Receita';
+                } else if (type === 'despesa') {
+                    titleEl.textContent = 'Lançamento de Despesa';
+                } else if (type === 'transferir') {
+                    titleEl.textContent = 'Lançamento de Transferência';
+                } else {
+                    titleEl.textContent = 'Lançamento Financeiro';
+                }
+                
+                // Mostrar apenas a opção ativa e esconder as demais
+                const buttons = gridEl.querySelectorAll('.finance-type-btn');
+                buttons.forEach(btn => {
+                    if (btn.dataset.type === type) {
+                        btn.classList.remove('hidden');
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.add('hidden');
+                        btn.classList.remove('active');
+                    }
+                });
+                
+                // Ajustar coluna do grid para ocupar espaço total elegante
+                gridEl.classList.remove('grid-cols-3');
+                gridEl.classList.add('grid-cols-1');
+            }
         }, 50);
     };
 

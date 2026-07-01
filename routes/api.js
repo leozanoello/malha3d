@@ -9,7 +9,7 @@ const { getAutomatedFieldsForStatus } = require('../services/crmAutomation');
 router.get('/global-search', async (req, res, next) => {
   try {
     const query = req.query.q;
-    if (!query) return res.json({ deals: [], projects: [], contacts: [] });
+    if (!query) {return res.json({ deals: [], projects: [], contacts: [] });}
 
     const [budgets, projects, clients] = await Promise.all([
       Budget.findAll({
@@ -177,6 +177,41 @@ router.get('/budgets/:id', async (req, res, next) => {
   }
 });
 
+function sanitizeNumericFields(data) {
+  const numericIntFields = [
+    'probability', 'imagesCount', 'animationSeconds', 'panoramasCount', 
+    'installments', 'productionDays', 'imagesFachadaCount', 
+    'imagesInterioresCount', 'imagesPlantaCount', 'floorPlansCount', 
+    'staticImagesCount', 'videoFachadaCount', 'videoInterioresCount', 
+    'videoPanoramasCount', 'period', 'order'
+  ];
+  const numericFloatFields = [
+    'estimatedValue', 'totalArea', 'clientBudget'
+  ];
+
+  numericIntFields.forEach(field => {
+    if (data[field] !== undefined) {
+      if (data[field] === '' || data[field] === null) {
+        data[field] = 0;
+      } else {
+        const val = parseInt(data[field], 10);
+        data[field] = isNaN(val) ? 0 : val;
+      }
+    }
+  });
+
+  numericFloatFields.forEach(field => {
+    if (data[field] !== undefined) {
+      if (data[field] === '' || data[field] === null) {
+        data[field] = 0.0;
+      } else {
+        const val = parseFloat(data[field]);
+        data[field] = isNaN(val) ? 0.0 : val;
+      }
+    }
+  });
+}
+
 // Rota para criar orçamento
 router.post('/budgets', async (req, res, next) => {
   try {
@@ -186,40 +221,32 @@ router.post('/budgets', async (req, res, next) => {
       status: req.body.status || 'leads'
     };
 
-    if (!data.name && data.clientName) data.name = data.clientName;
-    if (!data.email && data.clientEmail) data.email = data.clientEmail;
-    if (!data.phone && data.clientPhone) data.phone = data.clientPhone;
-    
+    if (!data.name && data.clientName) {data.name = data.clientName;}
+    if (!data.email && data.clientEmail) {data.email = data.clientEmail;}
+    if (!data.phone && data.clientPhone) {data.phone = data.clientPhone;}
+
     // Default values to prevent not-null constraints
     data.projectType = data.projectType || 'Outro';
 
-    // Garantir que campos numéricos sejam números
-    if (data.estimatedValue) data.estimatedValue = parseFloat(data.estimatedValue);
-    if (data.probability) data.probability = parseInt(data.probability);
-    if (data.imagesCount) data.imagesCount = parseInt(data.imagesCount);
-    if (data.animationSeconds) data.animationSeconds = parseInt(data.animationSeconds);
-    if (data.panoramasCount) data.panoramasCount = parseInt(data.panoramasCount);
-    if (data.totalArea) data.totalArea = parseFloat(data.totalArea);
-    if (data.installments) data.installments = parseInt(data.installments);
-    if (data.productionDays) data.productionDays = parseInt(data.productionDays);
-    if (data.clientBudget) data.clientBudget = parseFloat(data.clientBudget);
-    
+    // Garantir que campos numéricos sejam números e tratar strings vazias
+    sanitizeNumericFields(data);
+
     // Garantir softwareStack como array
     if (data.softwareStack && !Array.isArray(data.softwareStack)) {
       data.softwareStack = [data.softwareStack];
     }
-    
+
     // Limpar UUIDs vazios para evitar FK violation
-    if (!data.assignedUserId || data.assignedUserId === '') delete data.assignedUserId;
-    if (!data.clientId || data.clientId === '') delete data.clientId;
+    if (!data.assignedUserId || data.assignedUserId === '') {delete data.assignedUserId;}
+    if (!data.clientId || data.clientId === '') {delete data.clientId;}
 
     // Parse installmentsData if string
     if (typeof data.installmentsData === 'string') {
-        try {
-            data.installmentsData = JSON.parse(data.installmentsData);
-        } catch (e) {
-            data.installmentsData = null;
-        }
+      try {
+        data.installmentsData = JSON.parse(data.installmentsData);
+      } catch (e) {
+        data.installmentsData = null;
+      }
     }
 
     const budget = await Budget.create(data);
@@ -237,8 +264,9 @@ router.put('/budgets/:id', async (req, res, next) => {
     if (!budget) {
       return res.status(404).json({ error: 'Orçamento não encontrado' });
     }
-    
+
     let updateData = { ...req.body };
+    sanitizeNumericFields(updateData);
     if (req.body.status && req.body.status !== budget.status) {
       const hasManualScheduling = req.body.nextActionDate || req.body.nextActionNote || req.body.priority;
       if (!hasManualScheduling) {
@@ -248,11 +276,11 @@ router.put('/budgets/:id', async (req, res, next) => {
     }
     // Parse installmentsData if string
     if (typeof updateData.installmentsData === 'string') {
-        try {
-            updateData.installmentsData = JSON.parse(updateData.installmentsData);
-        } catch (e) {
-            updateData.installmentsData = null;
-        }
+      try {
+        updateData.installmentsData = JSON.parse(updateData.installmentsData);
+      } catch (e) {
+        updateData.installmentsData = null;
+      }
     }
 
     await budget.update(updateData);
@@ -283,7 +311,7 @@ router.post('/budgets/:id/notes', async (req, res, next) => {
     if (!budget) {
       return res.status(404).json({ error: 'Orçamento não encontrado' });
     }
-    
+
     const note = await CRMNote.create({
       budgetId: budget.id,
       title: req.body.title || 'Observação',
@@ -297,6 +325,18 @@ router.post('/budgets/:id/notes', async (req, res, next) => {
 });
 
 // === CLIENTS & CONTACTS ===
+
+// Rota para buscar todos os clientes (para o Select)
+router.get('/clients', async (req, res, next) => {
+  try {
+    const clients = await Client.findAll({
+      order: [['name', 'ASC']]
+    });
+    res.json({ success: true, data: clients });
+  } catch (error) {
+    next(error);
+  }
+});
 
 // Rota para buscar clientes (Autocomplete)
 router.get('/clients/search', async (req, res, next) => {
@@ -319,13 +359,13 @@ router.get('/clients/search', async (req, res, next) => {
 });
 
 // Criar novo cliente/contato (Cadastro Rápido)
-router.post('/clients', async (req, res, next) => {
+router.post('/clients', async (req, res) => {
   try {
     const { name, type, document, email, phone, company, city, state, paymentMethods, notes, category, status } = req.body;
-    
+
     // Validar tipo (PF ou PJ)
     const clientType = type || 'PF';
-    
+
     // Validar CPF/CNPJ se fornecido
     const { validateCPF, validateCNPJ } = require('../utils/validators');
     if (document) {
@@ -375,7 +415,7 @@ router.get('/budgets/:id/contacts', async (req, res, next) => {
         through: { attributes: ['responsibilityLevel', 'isPrimary'] }
       }]
     });
-    if (!budget) return res.status(404).json({ error: 'Negociação não encontrada' });
+    if (!budget) {return res.status(404).json({ error: 'Negociação não encontrada' });}
     res.json(budget.contacts);
   } catch (error) {
     next(error);
@@ -386,7 +426,7 @@ router.get('/budgets/:id/contacts', async (req, res, next) => {
 router.post('/budgets/:id/contacts', async (req, res, next) => {
   try {
     const { clientId, responsibilityLevel, isPrimary } = req.body;
-    
+
     // Se for primário, remover primário dos outros
     if (isPrimary) {
       await BudgetContact.update({ isPrimary: false }, { where: { budgetId: req.params.id } });
@@ -427,6 +467,62 @@ router.get('/budgets/:id/tasks', async (req, res, next) => {
       order: [['createdAt', 'DESC']]
     });
     res.json({ success: true, tasks });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Criar tarefa para uma negociação
+router.post('/budgets/:id/tasks', async (req, res, next) => {
+  try {
+    const { title, description, dueDate, priority } = req.body;
+    if (!title) {
+      return res.status(400).json({ error: 'Título é obrigatório' });
+    }
+    const task = await CRMTask.create({
+      budgetId: req.params.id,
+      title,
+      description: description || null,
+      dueDate: dueDate || null,
+      priority: priority || 'media',
+      status: 'ativa',
+      category: 'geral'
+    });
+    res.json({ success: true, task });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Atualizar status/dados de uma tarefa
+router.put('/tasks/:id', async (req, res, next) => {
+  try {
+    const { status, priority, title, description } = req.body;
+    const task = await CRMTask.findByPk(req.params.id);
+    if (!task) {
+      return res.status(404).json({ error: 'Tarefa não encontrada' });
+    }
+    await task.update({
+      status: status !== undefined ? status : task.status,
+      priority: priority !== undefined ? priority : task.priority,
+      title: title !== undefined ? title : task.title,
+      description: description !== undefined ? description : task.description
+    });
+    res.json({ success: true, task });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Excluir uma tarefa
+router.delete('/tasks/:id', async (req, res, next) => {
+  try {
+    const task = await CRMTask.findByPk(req.params.id);
+    if (!task) {
+      return res.status(404).json({ error: 'Tarefa não encontrada' });
+    }
+    await task.destroy();
+    res.json({ success: true });
   } catch (error) {
     next(error);
   }
@@ -478,7 +574,7 @@ router.post('/budgets/:id/convert', async (req, res, next) => {
 });
 
 // Rota de Precificação Inteligente Avançada
-router.post('/calcularOrcamentoAvancado', async (req, res, next) => {
+router.post('/calcularOrcamentoAvancado', async (req, res) => {
   try {
     const {
       metragemTotal,
@@ -561,8 +657,12 @@ router.post('/calcularOrcamentoAvancado', async (req, res, next) => {
 
   } catch (error) {
     console.error('calcularOrcamentoAvancado error:', error);
-    res.status(500).json({ success: false, error: 'Erro interno ao calcular orçamento: ' + error.message });
+    res.status(500).json({ success: false, error: `Erro interno ao calcular orçamento: ${error.message}` });
   }
 });
+
+// Rota de Precificação Inteligente de ArchViz alimentada por IA
+const calculadoraController = require('../controllers/calculadoraController');
+router.post('/calculadora/calcular', (req, res) => calculadoraController.calcularPricingArchvizIA(req, res));
 
 module.exports = router;

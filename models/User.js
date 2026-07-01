@@ -32,7 +32,18 @@ const User = sequelize.define('User', {
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
+  },
+  authProvider: {
+    type: DataTypes.STRING,
+    defaultValue: 'local',
+    allowNull: false,
+    field: 'auth_provider'
+  },
+  authProviderId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'auth_provider_id'
   },
   role: {
     type: DataTypes.ENUM('admin', 'staff', 'subscriber', 'collaborator', 'user', 'client'),
@@ -92,6 +103,16 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  resetToken: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'reset_token'
+  },
+  resetTokenExpires: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'reset_token_expires'
+  },
   lastLogin: {
     type: DataTypes.DATE,
     allowNull: true
@@ -144,6 +165,47 @@ const User = sequelize.define('User', {
     allowNull: true,
     field: 'job_title'
   },
+  cpf: {
+    type: DataTypes.STRING(14),
+    allowNull: true
+  },
+  addressDetails: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    field: 'address_details'
+  },
+  theme: {
+    type: DataTypes.ENUM('dark', 'light', 'system'),
+    defaultValue: 'dark'
+  },
+  notificationPreferences: {
+    type: DataTypes.JSON,
+    defaultValue: {
+      email: true,
+      chat: true
+    },
+    field: 'notification_preferences'
+  },
+  socialInstagram: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'social_instagram'
+  },
+  socialFacebook: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'social_facebook'
+  },
+  socialTwitter: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'social_twitter'
+  },
+  portfolioUrl: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'portfolio_url'
+  },
   suspendedAt: {
     type: DataTypes.DATE,
     allowNull: true,
@@ -169,7 +231,7 @@ const User = sequelize.define('User', {
       }
     },
     beforeUpdate: async (user) => {
-      if (user.changed('password')) {
+      if (user.changed('password') && user.password) {
         const bcrypt = require('bcryptjs');
         user.password = await bcrypt.hash(user.password, 10);
       }

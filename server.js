@@ -14,6 +14,7 @@ const moment = require('moment');
 moment.locale('pt-br');
 
 const { sequelize } = require('./config/database');
+const passport = require('./config/passport');
 const routes = require('./routes');
 const logger = require('./services/logger');
 
@@ -21,6 +22,7 @@ const app = express();
 app.set('trust proxy', 1);
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
+app.set('io', io);
 const PORT = process.env.PORT || 3000;
 
 // Configuração de segurança
@@ -32,9 +34,9 @@ app.use(helmet({
       fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdnjs.cloudflare.com', 'https://unpkg.com'],
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://cdnjs.cloudflare.com', 'https://unpkg.com', 'https://prod.spline.design', 'https://*.spline.design', 'https://cdn.jsdelivr.net', 'https://cdn.tailwindcss.com', 'blob:'],
       scriptSrcAttr: ["'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https:', 'http:', 'https://picsum.photos', 'https://fastly.picsum.photos', 'https://*.googleusercontent.com', 'https://*.supabase.co'],
-      connectSrc: ["'self'", 'https://prod.spline.design', 'https://*.spline.design', 'https://*.google-analytics.com', 'https://*.supabase.co', 'wss://*.supabase.co'],
-      frameSrc: ['https://www.youtube.com', 'https://www.instagram.com', 'https://*.spline.design'],
+      imgSrc: ["'self'", 'data:', 'https:', 'http:', 'https://picsum.photos', 'https://fastly.picsum.photos', 'https://*.googleusercontent.com', 'https://*.supabase.co', 'https://lh3.googleusercontent.com'],
+      connectSrc: ["'self'", 'https://prod.spline.design', 'https://*.spline.design', 'https://*.google-analytics.com', 'https://*.supabase.co', 'wss://*.supabase.co', 'https://accounts.google.com', 'https://servicodados.ibge.gov.br'],
+      frameSrc: ['https://www.youtube.com', 'https://www.instagram.com', 'https://*.spline.design', 'https://accounts.google.com'],
       workerSrc: ["'self'", 'blob:'],
       childSrc: ["'self'", 'blob:']
     }
@@ -75,6 +77,10 @@ app.use(session({
 // Flash messages
 app.use(flash());
 
+// Passport initialization (after session middleware)
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Method override para suportar PUT e DELETE em formulários HTML
 app.use(methodOverride('_method'));
 
@@ -91,58 +97,58 @@ const hbs = exphbs.create({
   helpers: {
     // === DATE & TIME HELPERS ===
     formatDate: (date, format) => {
-      if (!date) return '';
+      if (!date) {return '';}
       const m = moment(date);
-      if (format === 'short') return m.format('DD/MM/YYYY');
-      if (format === 'long') return m.format('DD/MM/YYYY HH:mm');
-      if (format === 'time') return m.format('HH:mm');
-      if (typeof format === 'string') return m.format(format);
+      if (format === 'short') {return m.format('DD/MM/YYYY');}
+      if (format === 'long') {return m.format('DD/MM/YYYY HH:mm');}
+      if (format === 'time') {return m.format('HH:mm');}
+      if (typeof format === 'string') {return m.format(format);}
       return m.format('DD/MM/YYYY');
     },
     dateFormat: (date, format) => {
-      if (!date) return '';
+      if (!date) {return '';}
       return moment(date).format(typeof format === 'string' ? format : 'DD/MM/YYYY');
     },
     formatDateShort: (date) => {
-      if (!date) return '';
+      if (!date) {return '';}
       return moment(date).format('DD/MM');
     },
     timeAgo: (date) => {
-      if (!date) return '';
+      if (!date) {return '';}
       return moment(date).fromNow();
     },
     isPast: (date) => {
-      if (!date) return false;
+      if (!date) {return false;}
       return new Date(date) < new Date();
     },
     date: (d, format) => {
-      if (!d) return new Date();
+      if (!d) {return new Date();}
       const dateObj = new Date(d);
-      if (typeof format === 'string') return moment(dateObj).format(format);
+      if (typeof format === 'string') {return moment(dateObj).format(format);}
       return dateObj;
     },
     now: () => new Date(),
 
     // === STRING & UI HELPERS ===
     firstLetter: (str) => {
-      if (!str || typeof str !== 'string') return 'U';
+      if (!str || typeof str !== 'string') {return 'U';}
       return str.charAt(0).toUpperCase();
     },
     getFirstLetters: (str) => {
-      if (!str) return 'U';
+      if (!str) {return 'U';}
       return str.split(' ').filter(n => n).map(n => n[0]).join('').substring(0, 2).toUpperCase();
     },
     truncate: (str, len) => {
-      if (!str) return '';
+      if (!str) {return '';}
       const length = parseInt(len) || 50;
-      return str.length > length ? str.substring(0, length) + '...' : str;
+      return str.length > length ? `${str.substring(0, length)}...` : str;
     },
     substring: (str, start, end) => {
-      if (typeof str !== 'string') return '';
+      if (typeof str !== 'string') {return '';}
       return str.substring(start, end);
     },
     split: (str, separator = ',') => {
-      if (!str) return [];
+      if (!str) {return [];}
       return str.split(separator);
     },
     json: (obj) => {
@@ -164,7 +170,7 @@ const hbs = exphbs.create({
       return badges[status] || `<span class="badge bg-light">${status}</span>`;
     },
     ratingStars: (rating) => {
-      if (!rating) return '';
+      if (!rating) {return '';}
       let stars = '';
       for (let i = 1; i <= 5; i++) {
         stars += `<i class="${i <= rating ? 'fas' : 'far'} fa-star ${i <= rating ? 'text-warning' : 'text-muted'}"></i>`;
@@ -174,31 +180,31 @@ const hbs = exphbs.create({
 
     // === FINANCIAL & NUMBER HELPERS ===
     formatCurrency: (value) => {
-      if (value === null || value === undefined) return 'R$ 0,00';
+      if (value === null || value === undefined) {return 'R$ 0,00';}
       const num = parseFloat(value);
-      if (isNaN(num)) return 'R$ 0,00';
+      if (isNaN(num)) {return 'R$ 0,00';}
       return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(num);
     },
     formatMoney: (value) => {
-      if (value === null || value === undefined) return '0,00';
+      if (value === null || value === undefined) {return '0,00';}
       const num = parseFloat(value);
-      if (isNaN(num)) return '0,00';
+      if (isNaN(num)) {return '0,00';}
       return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
     },
     numberFormat: (number, decimals = 2, decPoint = ',', thousandsSep = '.') => {
       const num = parseFloat(number);
-      if (isNaN(num)) return '0';
+      if (isNaN(num)) {return '0';}
       const n = num.toFixed(decimals);
       const parts = n.split('.');
       parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSep);
       return parts.join(decPoint);
     },
     percent: (val, total) => {
-      if (!total || total === 0) return 0;
+      if (!total || total === 0) {return 0;}
       return Math.round((val / total) * 100);
     },
     calculatePercentage: (val, total) => {
-      if (!total || total === 0) return 0;
+      if (!total || total === 0) {return 0;}
       return Math.round((val / total) * 100);
     },
 
@@ -213,7 +219,7 @@ const hbs = exphbs.create({
     or: (...args) => args.slice(0, -1).some(Boolean),
     ifCond: function (v1, operator, v2, options) {
       const conditions = {
-        '==': v1 == v2, '===': v1 === v2, '!=': v1 != v2, '!==': v1 !== v2,
+        '==': v1 == v2, '===': v1 === v2, '!=': v1 != v2, '!==': v1 !== v2, // eslint-disable-line eqeqeq
         '<': v1 < v2, '<=': v1 <= v2, '>': v1 > v2, '>=': v1 >= v2,
         '&&': v1 && v2, '||': v1 || v2
       };
@@ -236,18 +242,17 @@ const hbs = exphbs.create({
 
     // === UTILITY & ARRAY HELPERS ===
     array: (...args) => args.slice(0, -1),
-    json: (obj) => JSON.stringify(obj),
     length: (arr) => (arr && arr.length) ? arr.length : 0,
     list: (...args) => args.slice(0, -1),
     limit: (arr, limit) => (Array.isArray(arr) ? arr.slice(0, limit) : []),
     times: (n, block) => {
       let accum = '';
-      for (let i = 1; i <= n; ++i) accum += block.fn(i);
+      for (let i = 1; i <= n; ++i) {accum += block.fn(i);}
       return accum;
     },
     range: (start, end) => {
       const res = [];
-      for (let i = start; i <= end; i++) res.push(i);
+      for (let i = start; i <= end; i++) {res.push(i);}
       return res;
     },
     random: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min,
@@ -259,19 +264,19 @@ const hbs = exphbs.create({
       const query = options.data.root.query || {};
       const params = new URLSearchParams();
       for (const [key, value] of Object.entries(query)) {
-        if (key !== 'page' && value) params.append(key, value);
+        if (key !== 'page' && value) {params.append(key, value);}
       }
       return params.toString();
     },
     formatPhone: (phone) => {
-      if (!phone) return '';
+      if (!phone) {return '';}
       const cleaned = phone.replace(/\D/g, '');
-      if (cleaned.length === 11) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;
-      if (cleaned.length === 10) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+      if (cleaned.length === 11) {return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7)}`;}
+      if (cleaned.length === 10) {return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;}
       return phone;
     },
     formatWhatsappLink: (phone, name, context = 'default') => {
-      if (!phone) return '#';
+      if (!phone) {return '#';}
       const cleanPhone = phone.replace(/\D/g, '');
       const messages = {
         'lead': `Olá ${name}! Recebemos seu interesse aqui na Malha 3D. 🚀 Vamos transformar essa visão em realidade?`,
@@ -299,8 +304,8 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
   res.locals.error = req.flash('error');
-  res.locals.user = req.session.user || null;
-  res.locals.isAdmin = req.session.user && req.session.user.role === 'admin';
+  res.locals.user = req.user || req.session.user || null;
+  res.locals.isAdmin = (req.user && req.user.role === 'admin') || (req.session.user && req.session.user.role === 'admin');
   res.locals.query = req.query;
   next();
 });
@@ -352,7 +357,7 @@ app.use((err, req, res, _next) => {
   // HTML Error Response
   const logMessage = `[${new Date().toISOString()}] ${err.stack}\n`;
   require('fs').appendFileSync(require('path').join(__dirname, 'server_errors.log'), logMessage);
-  
+
   res.status(err.status || 500).render('error/500', {
     title: 'Erro interno do servidor',
     layout: false,

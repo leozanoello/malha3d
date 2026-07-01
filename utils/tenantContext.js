@@ -11,15 +11,15 @@ function runWithTenant(tenantId, fn) {
 }
 
 function injectTenantFilter(options, tenantId) {
-  if (!options) return;
-  
+  if (!options) {return;}
+
   const { Op } = require('sequelize');
-  
+
   if (options.model && options.model.$isIsolated) {
     if (!options.where) {
       options.where = {};
     }
-    
+
     // Support object-based where clauses
     if (typeof options.where === 'object' && !Array.isArray(options.where) && !(options.where instanceof Date)) {
       // Overwrite/ensure tenant isolation
@@ -33,7 +33,7 @@ function injectTenantFilter(options, tenantId) {
       };
     }
   }
-  
+
   // Recursively apply to includes
   if (options.include && Array.isArray(options.include)) {
     options.include.forEach((inc, index) => {
@@ -53,8 +53,7 @@ function injectTenantFilter(options, tenantId) {
  * Registra os hooks de isolamento no Sequelize
  */
 function registerTenantHooks(sequelize) {
-  const { Op } = require('sequelize');
-  
+
   Object.values(sequelize.models).forEach(model => {
     if (model.$isIsolated) {
       // Registrar hook de busca
@@ -69,7 +68,7 @@ function registerTenantHooks(sequelize) {
       });
 
       // Registrar hook de criação individual
-      model.addHook('beforeCreate', (instance, options) => {
+      model.addHook('beforeCreate', (instance, _options) => {
         const tenantId = getTenantId();
         if (tenantId) {
           instance.userId = tenantId;
@@ -77,7 +76,7 @@ function registerTenantHooks(sequelize) {
       });
 
       // Registrar hook de criação em lote
-      model.addHook('beforeBulkCreate', (instances, options) => {
+      model.addHook('beforeBulkCreate', (instances, _options) => {
         const tenantId = getTenantId();
         if (tenantId) {
           instances.forEach(instance => {

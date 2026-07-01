@@ -33,7 +33,11 @@ const Project = sequelize.define('Project', {
       'produto',
       'arquitetonico',
       'animacao',
-      'outro'
+      'outro',
+      '3d',
+      'ArchViz',
+      'Modelagem',
+      'Renderização'
     ),
     allowNull: false
   },
@@ -404,6 +408,12 @@ const Project = sequelize.define('Project', {
   urgencyFee: {
     type: DataTypes.DECIMAL(5, 2),
     defaultValue: 0
+  },
+  externalToken: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    unique: true,
+    field: 'external_token'
   }
 }, {
   tableName: 'projects',
@@ -429,9 +439,9 @@ const Project = sequelize.define('Project', {
           const user = options.user || {};
           const ip = options.ipAddress || 'system';
           let details = `Projeto '${project.title}' (${project.id}) atualizado. `;
-          if (project.changed('status')) details += `Status alterado de '${project.previous('status')}' para '${project.status}'. `;
-          if (project.changed('price')) details += `Valor alterado de '${project.previous('price')}' para '${project.price}'.`;
-          
+          if (project.changed('status')) {details += `Status alterado de '${project.previous('status')}' para '${project.status}'. `;}
+          if (project.changed('price')) {details += `Valor alterado de '${project.previous('price')}' para '${project.price}'.`;}
+
           await SystemLog.create({
             userId: user.id || null,
             userName: user.name || 'Sistema',

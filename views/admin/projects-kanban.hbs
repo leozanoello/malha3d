@@ -1,60 +1,30 @@
-<!-- 
-    MALHA 3D - PIPELINE DE PRODUÇÃO ARCHVIZ 
-    Refatoração de Alta Performance e Densidade de Dados (Clonagem CRM Parity)
--->
-
 <div class="crm-wrapper animate-in fade-in duration-700">
-    <!-- Header: Production Intelligence & Control -->
-    <div class="mb-10 p-10 glass-card border-none bg-gradient-to-br from-white/10 to-white/[0.02] relative overflow-hidden rounded-[3rem]">
-        <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[120px] -mr-48 -mt-48 animate-pulse"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/5 blur-[100px] -ml-32 -mb-32"></div>
-        
-        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-8 relative z-10">
-            <div>
-                <div class="flex items-center gap-4 mb-3">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-500 flex items-center justify-center shadow-2xl shadow-indigo-500/40">
-                        <span class="material-symbols-outlined text-white text-2xl">precision_manufacturing</span>
-                    </div>
-                    <div>
-                        <h1 class="text-4xl font-black text-white tracking-tighter leading-none">
-                            Fluxo de <span class="text-gradient-indigo">Produção</span>
-                        </h1>
-                        <p class="text-gray-400 font-bold text-[10px] uppercase tracking-[0.3em] mt-1">Control & Delivery Engine</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="flex flex-wrap items-center gap-4">
-                <!-- Stats Summary -->
-                <div class="flex gap-6 px-8 py-4 bg-black/40 rounded-3xl border border-white/5 backdrop-blur-md">
-                    <div class="text-center">
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Ativos</p>
-                        <p class="text-xl font-black text-white" id="stat-active-projects-header">{{columns.0.projects.length}}</p>
-                    </div>
-                    <div class="w-px h-8 bg-white/10 self-center"></div>
-                    <div class="text-center">
-                        <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Eficiência</p>
-                        <p class="text-xl font-black text-indigo-400">94%</p>
-                    </div>
-                </div>
-
-                <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-black py-4 px-10 rounded-2xl shadow-2xl shadow-indigo-500/30 transition-all flex items-center gap-3 text-[11px] uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95" id="btn-new-project">
-                    <span class="material-symbols-outlined text-base">add_circle</span>
-                    Novo Projeto
+    <!-- Header: Production Intelligence & Control (Estilo CRM Parity) -->
+    <div class="mb-6 flex flex-col md:flex-row gap-6 items-center justify-between p-6 glass-card bg-black/20 border-white/5 relative z-10">
+        <div>
+            <h1 class="text-3xl font-black text-white tracking-tight">Fluxo de <span class="text-gradient-indigo">Produção</span></h1>
+            <div class="flex items-center gap-6 mt-4 border-b border-white/5 pb-2">
+                <button class="tab-btn-nav active text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 relative pb-2 group" data-tab="kanban">
+                    Pipeline
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 transition-all"></div>
+                </button>
+                <button class="tab-btn-nav text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-white transition-all pb-2 group relative" data-tab="analytics">
+                    Performance
+                    <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-500 group-hover:w-full transition-all"></div>
                 </button>
             </div>
         </div>
-
-        <!-- Sub-Navigation -->
-        <div class="flex items-center gap-3 mt-12 p-2 bg-black/30 rounded-[1.5rem] w-fit border border-white/5">
-            <button class="px-10 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl transition-all flex items-center gap-2 bg-indigo-500 text-white shadow-xl shadow-indigo-500/20 tab-btn-nav active" data-tab="kanban">
-                <span class="material-symbols-outlined text-sm">view_kanban</span> Pipeline
-            </button>
-            <button class="px-10 py-3.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl text-gray-500 hover:text-white transition-all flex items-center gap-2 tab-btn-nav" data-tab="analytics">
-                <span class="material-symbols-outlined text-sm">analytics</span> Performance
+        <div class="flex items-center gap-4">
+            <!-- VGV Total de Projetos Ativos -->
+            <div class="glass-card px-4 py-2 border-white/5 flex items-center gap-3">
+                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">VGV Ativos:</span>
+                <span class="text-lg font-black text-white" id="stat-active-projects-gv">{{formatCurrency totalProjectsValue}}</span>
+            </div>
+            <button id="btn-new-project" class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm">add_circle</span> Novo Projeto
             </button>
         </div>
-    </div>
+    </div> </div>
 
     <!-- Main Content Area -->
     <div id="projects-main-content">
@@ -124,8 +94,10 @@
                         
                         {{#each this.projects}}
                         <div class="kanban-card glass-card p-3 border-white/5 hover:border-white/20 transition-all cursor-pointer group relative hover:z-[999] overflow-visible mb-3 kanban-card-main" 
-                             draggable="true" 
                              data-id="{{this.id}}"
+                             data-title="{{this.title}}"
+                             data-client="{{#if this.customer.name}}{{this.customer.name}}{{else}}{{this.client}}{{/if}}"
+                             data-status-title="{{../name}}"
                              style="border-left: 3px solid {{../color}}">
                             
                             <!-- Progress Bar -->
@@ -164,6 +136,7 @@
                             </div>
 
                             <div class="flex flex-col gap-1 mb-2">
+                                {{#if ../../isAdmin}}
                                 <div class="flex items-center justify-between pr-1">
                                     <div class="flex items-center gap-1">
                                         <span class="material-symbols-outlined text-emerald-500 text-[12px]">payments</span>
@@ -174,6 +147,7 @@
                                         <span class="text-[9px] font-black text-white" title="Despesas/Custos Reais">R$ {{formatCurrency this.totalExpenses}}</span>
                                     </div>
                                 </div>
+                                {{/if}}
                                 <div class="flex justify-between items-center pr-1">
                                     <div class="flex items-center gap-1.5">
                                         <span class="material-symbols-outlined text-gray-600 text-[12px]">person</span>
@@ -185,6 +159,20 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Next Step Glassmorphic Alert Widget -->
+                            {{#if this.nextActionNote}}
+                            <div class="mt-2 mb-2 p-2.5 rounded-xl bg-orange-500/5 border border-orange-500/10 text-[8px] text-orange-200 flex flex-col gap-1 next-step-container">
+                                <div class="flex items-center gap-1 font-black uppercase tracking-wider text-orange-400">
+                                    <span class="material-symbols-outlined text-[10px]">notifications_active</span>
+                                    PRÓXIMA AÇÃO
+                                </div>
+                                <p class="font-bold leading-normal text-gray-300 break-words card-next-action-note">{{this.nextActionNote}}</p>
+                                {{#if this.nextActionDate}}
+                                <span class="text-[7px] text-orange-300/80 font-black mt-0.5 uppercase tracking-wide card-next-action-date">Prazo: {{formatDate this.nextActionDate 'short'}} {{formatDate this.nextActionDate 'time'}}</span>
+                                {{/if}}
+                            </div>
+                            {{/if}}
 
                             <!-- Technical Specs Sync & Team LZ -->
                             <div class="flex items-center justify-between pt-2 border-t border-white/5 mt-2">
@@ -254,9 +242,11 @@
                                     {{../name}}
                                 </span>
                             </div>
+                            {{#if ../../isAdmin}}
                             <div class="text-right w-24">
                                 <p class="text-[9px] font-black text-indigo-400 font-mono">{{formatCurrency this.price}}</p>
                             </div>
+                            {{/if}}
                             <div onclick="event.stopPropagation();" class="flex gap-2">
                                 <button onclick="window.openProjectDetails('{{this.id}}', false)" class="w-8 h-8 rounded-xl bg-white/5 text-gray-400 hover:text-white flex items-center justify-center">
                                     <span class="material-symbols-outlined text-[14px]">visibility</span>
@@ -281,7 +271,9 @@
                                 <th class="p-4">Cliente</th>
                                 <th class="p-4">Tipo/Categoria</th>
                                 <th class="p-4">Etapa</th>
+                                {{#if isAdmin}}
                                 <th class="p-4">Preço</th>
+                                {{/if}}
                                 <th class="p-4">Prazo</th>
                                 <th class="p-4 text-right">Ações</th>
                             </tr>
@@ -307,9 +299,11 @@
                                             {{../name}}
                                         </span>
                                     </td>
+                                    {{#if ../../isAdmin}}
                                     <td class="p-4 text-xs font-bold text-white font-mono">
                                         {{formatCurrency this.price}}
                                     </td>
+                                    {{/if}}
                                     <td class="p-4 text-xs font-medium text-gray-400">
                                         {{formatDateShort this.deadline}}
                                     </td>
@@ -371,7 +365,7 @@
 <!-- ==========================================
      MODAL: DETALHES DO PROJETO (Clonado do CRM)
      ========================================== -->
-<div class="modal fade" id="projectDetailModal" tabindex="-1">
+<div class="modal fade" id="projectDetailModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content bg-[#0c0e12]/95 border border-white/10 backdrop-blur-3xl rounded-[3rem] overflow-hidden shadow-2xl">
             <!-- Modal Header (Estilo CRM) -->
@@ -385,6 +379,9 @@
                         <h2 id="drawer-name" class="modal-title text-2xl font-black text-white tracking-tight">Nome do Projeto</h2>
                     </div>
                     <div class="flex items-center gap-4">
+                        <button type="button" id="btn-copy-portal-link" class="px-5 py-2.5 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/20 text-orange-400 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">share</span> Link do Portal
+                        </button>
                         <button type="button" id="btn-edit-toggle" class="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-2">
                             <span class="material-symbols-outlined text-sm">edit</span> Editar Campos
                         </button>
@@ -449,10 +446,14 @@
                                                 <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Título do Projeto</label>
                                                 <input type="text" name="title" class="input-premium" required disabled>
                                             </div>
+                                            {{#if isAdmin}}
                                             <div>
                                                 <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Preço de Venda (R$)</label>
                                                 <input type="number" step="0.01" name="price" class="input-premium" disabled>
                                             </div>
+                                            {{else}}
+                                            <input type="hidden" name="price">
+                                            {{/if}}
                                             <div>
                                                 <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Prazo de Entrega</label>
                                                 <input type="date" name="deadline" class="input-premium" disabled>
@@ -474,6 +475,14 @@
                                                     <option value="alta">Alta</option>
                                                     <option value="urgente">Urgente</option>
                                                 </select>
+                                            </div>
+                                            <div>
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Agendar Próxima Ação</label>
+                                                <input type="datetime-local" name="nextActionDate" class="input-premium" disabled>
+                                            </div>
+                                            <div class="col-span-2">
+                                                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Diretrizes / Notas de Ação</label>
+                                                <textarea name="nextActionNote" class="input-premium" rows="2" disabled placeholder="Instruções para a próxima ação..."></textarea>
                                             </div>
                                         </div>
                                     </section>
@@ -598,6 +607,7 @@
                                         </div>
                                     </section>
                                     
+                                    {{#if isAdmin}}
                                     <!-- Widget Financeiro Compacto (Informações) -->
                                     <section class="glass-card p-8 border-white/5 space-y-6">
                                         <h3 class="text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2">
@@ -614,6 +624,7 @@
                                             </div>
                                         </div>
                                     </section>
+                                    {{/if}}
                                 </div>
                             </div>
 
@@ -624,6 +635,7 @@
                         </form>
 
                         <!-- Painel Financeiro Integrado Completo (Lançamentos e histórico) -->
+                        {{#if isAdmin}}
                         <div class="border-t border-white/5 pt-8 mt-8 space-y-6">
                             <div class="flex items-center justify-between">
                                 <h4 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
@@ -741,6 +753,7 @@
                                 </div>
                             </div>
                         </div>
+                        {{/if}}
                     </div>
 
                     <!-- TAB 2: CONTATOS -->
@@ -774,25 +787,74 @@
                         </div>
                     </div>
 
-                    <!-- TAB 3: TAREFAS ( Checklist + Revisões + Entregas ) -->
+                    <!-- TAB 3: TAREFAS ( Checklist + Visualizações + Revisões + Entregas ) -->
                     <div class="tab-pane fade h-full" id="tasks-tab-content" role="tabpanel">
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
                             <!-- Checklist Operacional (Colspan 2) -->
                             <div class="lg:col-span-2 space-y-6">
                                 <section class="glass-card p-8 border-white/5 space-y-6">
-                                    <h3 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2">
-                                        <span class="material-symbols-outlined text-sm">assignment_turned_in</span> Checklist Operacional do Trabalho
-                                    </h3>
+                                    <div class="flex items-center justify-between flex-wrap gap-4">
+                                        <h3 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">assignment_turned_in</span> Cronograma de Produção
+                                        </h3>
+                                        
+                                        <!-- View Switcher -->
+                                        <div class="flex items-center bg-white/5 rounded-xl p-1 border border-white/5 gap-1">
+                                            <button type="button" class="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider text-white bg-indigo-500 transition-all border-0 cursor-pointer" id="btn-view-list" onclick="window.switchTaskView('list')">Lista</button>
+                                            <button type="button" class="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider text-gray-400 hover:text-white transition-all border-0 cursor-pointer" id="btn-view-kanban" onclick="window.switchTaskView('kanban')">Kanban</button>
+                                            <button type="button" class="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider text-gray-400 hover:text-white transition-all border-0 cursor-pointer" id="btn-view-gantt" onclick="window.switchTaskView('gantt')">Gantt</button>
+                                            <button type="button" class="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider text-gray-400 hover:text-white transition-all border-0 cursor-pointer" id="btn-view-calendar" onclick="window.switchTaskView('calendar')">Calendário</button>
+                                        </div>
+
+                                        <div class="dropdown">
+                                            <button class="px-4 py-2 bg-indigo-500/10 text-indigo-400 rounded-xl text-[9px] font-black uppercase tracking-widest border border-indigo-500/20 hover:bg-indigo-500 hover:text-white transition-all flex items-center gap-2" data-bs-toggle="dropdown">
+                                                <span class="material-symbols-outlined text-sm">view_timeline</span> Aplicar Template
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-dark glass-card border-white/10 bg-dark-950 p-2 shadow-2xl" id="dropdown-task-templates-list">
+                                                <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 cursor-pointer" onclick="window.applyTaskTemplate('ArchViz')">Preset ArchViz Completo</a></li>
+                                                <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 cursor-pointer" onclick="window.applyTaskTemplate('Modelagem')">Preset Modelagem Simples</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                     
-                                    <!-- Adicionar nova tarefa -->
-                                    <div class="flex gap-4">
-                                        <input type="text" id="project-new-task-input" class="input-premium" placeholder="Adicionar nova sub-tarefa...">
-                                        <button type="button" id="btn-project-add-task" class="px-6 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-black text-[9px] uppercase tracking-widest transition-all">Adicionar</button>
+                                    <!-- Progress Bar -->
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between text-[9px] font-black uppercase tracking-widest text-gray-500">
+                                            <span>Progresso Geral</span>
+                                            <span id="project-task-progress-text" class="text-indigo-400">0%</span>
+                                        </div>
+                                        <div class="w-full h-2 bg-white/5 border border-white/5 rounded-full overflow-hidden relative">
+                                            <div id="project-task-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 transition-all duration-500" style="width: 0%;"></div>
+                                        </div>
                                     </div>
 
-                                    <!-- Lista de tarefas -->
-                                    <div id="project-checklist-list" class="space-y-3 pt-4">
-                                        <!-- Dynamic Checklist Items -->
+                                    <!-- Visual Containers -->
+                                    <div id="task-view-container-list" class="space-y-4 pt-4">
+                                        <!-- Lista de tarefas agrupadas por Milestone -->
+                                        <div id="project-checklist-list" class="space-y-4 pt-4 max-h-[40vh] overflow-y-auto scrollbar-premium pr-2">
+                                            <!-- Dynamic Checklist Items Grouped by Milestone -->
+                                        </div>
+                                    </div>
+
+                                    <div id="task-view-container-kanban" class="hidden space-y-4 pt-4">
+                                        <!-- Kanban Board -->
+                                        <div class="flex gap-4 overflow-x-auto pb-4 scrollbar-premium" id="task-kanban-board" style="min-height: 40vh;">
+                                            <!-- Dynamic Kanban Columns -->
+                                        </div>
+                                    </div>
+
+                                    <div id="task-view-container-gantt" class="hidden space-y-4 pt-4">
+                                        <!-- Gantt Chart -->
+                                        <div class="glass-panel p-6 rounded-2xl overflow-x-auto scrollbar-premium" id="task-gantt-chart" style="min-height: 40vh;">
+                                            <!-- Gantt tasks rendered via JS -->
+                                        </div>
+                                    </div>
+
+                                    <div id="task-view-container-calendar" class="hidden space-y-4 pt-4">
+                                        <!-- Team Calendar -->
+                                        <div class="glass-panel p-6 rounded-2xl" id="task-task-team-calendar-container" style="min-height: 40vh;">
+                                            <div id="task-team-calendar"></div>
+                                        </div>
                                     </div>
                                 </section>
                             </div>
@@ -976,9 +1038,58 @@
 </div>
 
 <!-- ==========================================
+     MODAL: RESUMO DO PROJETO (Fast Response Pop-up)
+     ========================================== -->
+<div class="modal fade" id="projectSummaryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2.5rem] bg-[#0c0e12]/98 backdrop-blur-3xl overflow-hidden p-8">
+            <div class="modal-header border-b border-white/5 pb-4 mb-6 flex justify-between items-center bg-transparent p-0">
+                <h3 class="text-lg font-black text-white tracking-tight flex items-center gap-2">
+                    <span class="material-symbols-outlined text-indigo-400">info</span>
+                    Resumo do Projeto
+                </h3>
+                <button type="button" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-all border-0" data-bs-dismiss="modal">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </button>
+            </div>
+            <div class="modal-body p-0 space-y-6">
+                <!-- Info Grid -->
+                <div class="space-y-4 text-left">
+                    <div>
+                        <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-1">Título do Projeto</span>
+                        <h4 id="summary-project-title" class="text-xl font-black text-white uppercase tracking-tight">---</h4>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-1">Status Atual</span>
+                            <span id="summary-project-status" class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[9px] font-black text-indigo-400 uppercase tracking-widest">---</span>
+                        </div>
+                        <div>
+                            <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-1">Cliente</span>
+                            <span id="summary-project-client" class="text-xs font-bold text-gray-300">---</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-white/5 flex gap-4">
+                    <button type="button" id="btn-summary-go-planning" class="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm">auto_stories</span>
+                        Ir para Planejamento
+                    </button>
+                    <button type="button" class="flex-1 bg-white/5 text-gray-400 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/10 hover:bg-white/10 hover:text-white transition-all" data-bs-dismiss="modal">
+                        Voltar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
      MODAL: GESTÃO DE COLUNAS (Clonado)
      ========================================== -->
-<div class="modal fade" id="columnSettingsModal" tabindex="-1">
+<div class="modal fade" id="columnSettingsModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content glass-card border-white/10 bg-dark-950 p-8">
             <h3 class="text-2xl font-black text-white mb-8 tracking-tight">Gestão de <span class="text-indigo-400">Etapas de Produção</span></h3>
@@ -1010,7 +1121,7 @@
 <!-- ==========================================
      MODAL: REGISTRAR REVISÃO (Project)
      ========================================== -->
-<div class="modal fade" id="newRevisionModal" tabindex="-1">
+<div class="modal fade" id="newRevisionModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content glass-card border-white/10 bg-dark-950 p-8 rounded-[2.5rem]">
             <h3 class="text-xl font-black text-white mb-6 tracking-tight flex items-center gap-2">
@@ -1059,7 +1170,7 @@
 <!-- ==========================================
      MODAL: NOVA ENTREGA (Project)
      ========================================== -->
-<div class="modal fade" id="newDeliveryModal" tabindex="-1">
+<div class="modal fade" id="newDeliveryModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content glass-card border-white/10 bg-dark-950 p-8 rounded-[2.5rem]">
             <h3 class="text-xl font-black text-white mb-6 tracking-tight flex items-center gap-2">
@@ -1162,11 +1273,87 @@ document.addEventListener('DOMContentLoaded', () => {
     // === INITIALIZATION ===
     let currentProjectId = null;
     const kanbanLists = document.querySelectorAll('.cards-list');
+    
+    // Mover os modais locais para o body antes da inicialização para evitar conflitos de Stacking Context com o .crm-wrapper
     const columnModalElement = document.getElementById('columnSettingsModal');
     const projectModalElement = document.getElementById('projectDetailModal');
+    const newRevisionModalElement = document.getElementById('newRevisionModal');
+    const newDeliveryModalElement = document.getElementById('newDeliveryModal');
+    const projectSummaryModalElement = document.getElementById('projectSummaryModal');
     
+    if (columnModalElement) document.body.appendChild(columnModalElement);
+    if (projectModalElement) document.body.appendChild(projectModalElement);
+    if (newRevisionModalElement) document.body.appendChild(newRevisionModalElement);
+    if (newDeliveryModalElement) document.body.appendChild(newDeliveryModalElement);
+    if (projectSummaryModalElement) document.body.appendChild(projectSummaryModalElement);
+
     const columnModal = columnModalElement ? new bootstrap.Modal(columnModalElement) : null;
     const projectDetailModal = projectModalElement ? new bootstrap.Modal(projectModalElement) : null;
+    const projectSummaryModal = projectSummaryModalElement ? new bootstrap.Modal(projectSummaryModalElement) : null;
+
+    // Failsafe Modal Backdrop & State Cleanup
+    document.querySelectorAll('.modal').forEach(modalEl => {
+        modalEl.addEventListener('hidden.bs.modal', () => {
+            if (modalEl.id === 'projectDetailModal') {
+                window.history.pushState(null, '', window.location.pathname);
+            }
+            if (!document.querySelector('.modal.show')) {
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }
+        });
+    });
+
+    // === PROJECT SUMMARY MODAL LOGIC ===
+    let summaryProjectId = null;
+    
+    function openProjectSummary(card) {
+        summaryProjectId = card.dataset.id;
+        
+        document.getElementById('summary-project-title').innerText = card.dataset.title || '---';
+        
+        const statusTitle = card.dataset.statusTitle || '---';
+        const statusBadge = document.getElementById('summary-project-status');
+        statusBadge.innerText = statusTitle;
+        
+        // Estilizar o badge com a cor da coluna correspondente
+        const colElement = card.closest('.kanban-column');
+        if (colElement) {
+            const headerElement = colElement.querySelector('.glass-card');
+            if (headerElement && headerElement.style.borderTopColor) {
+                statusBadge.style.borderColor = headerElement.style.borderTopColor + '40';
+                statusBadge.style.color = headerElement.style.borderTopColor;
+                statusBadge.style.backgroundColor = headerElement.style.borderTopColor + '15';
+            }
+        }
+        
+        document.getElementById('summary-project-client').innerText = card.dataset.client || 'Nenhum cliente associado';
+        
+        projectSummaryModal.show();
+    }
+
+    document.getElementById('btn-summary-go-planning')?.addEventListener('click', () => {
+        if (!summaryProjectId) return;
+        projectSummaryModal.hide();
+        
+        // Passagem de ID na URL e History API
+        const newUrl = window.location.pathname + '?projectId=' + summaryProjectId;
+        window.history.pushState({ projectId: summaryProjectId }, '', newUrl);
+        
+        // Abre o planejamento completo
+        openProjectDetails(summaryProjectId);
+    });
+
+    // Roteamento Inicial: se a URL tiver ?projectId=..., abre o planejamento detalhado diretamente
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialProjectId = urlParams.get('projectId');
+    if (initialProjectId) {
+        setTimeout(() => {
+            openProjectDetails(initialProjectId);
+        }, 100);
+    }
 
     // === NEW TRANSACTION VIA INLINE AJAX FORM ===
     const financeFormContainer = document.getElementById('project-inline-finance-form-container');
@@ -1308,12 +1495,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (targetTab) targetTab.classList.remove('hidden');
         
         document.querySelectorAll('.tab-btn-nav').forEach(btn => {
-            btn.classList.remove('bg-indigo-500', 'text-white', 'shadow-xl', 'shadow-indigo-500/20');
+            btn.classList.remove('active', 'text-indigo-400');
             btn.classList.add('text-gray-500');
+            const line = btn.querySelector('div');
+            if (line) {
+                line.classList.remove('w-full');
+                line.classList.add('w-0');
+            }
         });
         
-        el.classList.add('bg-indigo-500', 'text-white', 'shadow-xl', 'shadow-indigo-500/20');
+        el.classList.add('active', 'text-indigo-400');
         el.classList.remove('text-gray-500');
+        const line = el.querySelector('div');
+        if (line) {
+            line.classList.remove('w-0');
+            line.classList.add('w-full');
+        }
 
         // Hide/Show projects control bar based on current tab
         const ctrlBar = document.getElementById('projects-control-bar');
@@ -1348,6 +1545,7 @@ document.addEventListener('DOMContentLoaded', () => {
             group: 'production',
             animation: 250,
             ghostClass: 'sortable-ghost',
+            fallbackTolerance: 4, // Ignora pequenos tremores ou cliques rápidos para não cancelar eventos
             onEnd: function(evt) {
                 const projectId = evt.item.dataset.id;
                 const newStatus = evt.to.dataset.status;
@@ -1372,7 +1570,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const card = e.target.closest('.kanban-card');
         if (card) {
-            openProjectDetails(card.dataset.id);
+            openProjectSummary(card);
             return;
         }
 
@@ -1420,6 +1618,31 @@ document.addEventListener('DOMContentLoaded', () => {
     btnEditToggle?.addEventListener('click', () => toggleEditMode(true));
     btnCancelEdit?.addEventListener('click', () => toggleEditMode(false));
 
+    document.getElementById('btn-copy-portal-link')?.addEventListener('click', function() {
+        if (!window.currentProjectExternalToken) {
+            alert('Nenhum token do portal disponível para este projeto.');
+            return;
+        }
+        const link = `${window.location.origin}/portal/p/${window.currentProjectExternalToken}`;
+        navigator.clipboard.writeText(link)
+            .then(() => {
+                const btn = document.getElementById('btn-copy-portal-link');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm text-emerald-400">check</span> Copiado!';
+                btn.classList.remove('bg-orange-500/10', 'text-orange-400', 'border-orange-500/20');
+                btn.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.add('bg-orange-500/10', 'text-orange-400', 'border-orange-500/20');
+                    btn.classList.remove('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Erro ao copiar link:', err);
+                alert('Erro ao copiar link do portal.');
+            });
+    });
+
     // === PROJECT DETAILS LOADER ===
     function openProjectDetails(id, startInEditMode = false) {
         currentProjectId = id;
@@ -1453,6 +1676,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 form.querySelector('[name="fileQuality"]').value = project.fileQuality || 'excelente';
                 form.querySelector('[name="driveLink"]').value = project.driveLink || '';
                 
+                const formatDateLocalProj = (dStr) => {
+                    if (!dStr) return '';
+                    const d = new Date(dStr);
+                    if (isNaN(d.getTime())) return '';
+                    return new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().substring(0, 16);
+                };
+                form.querySelector('[name="nextActionDate"]').value = formatDateLocalProj(project.nextActionDate);
+                form.querySelector('[name="nextActionNote"]').value = project.nextActionNote || '';
+
                 const hasUrg = project.hasUrgency || false;
                 form.querySelector('[name="hasUrgency"]').checked = hasUrg;
                 document.getElementById('urgency-fee-container').classList.toggle('hidden', !hasUrg);
@@ -1704,6 +1936,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
+                window.currentProjectExternalToken = project.externalToken;
                 projectDetailModal.show();
             });
     }
@@ -1867,97 +2100,449 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ==========================================
-    // SEÇÃO OPERACIONAL E IA: CHECKLIST OPERACIONAL
+    // SEÇÃO OPERACIONAL E IA: MOTOR DE TAREFAS E PROGRESSO
     // ==========================================
-    window.loadProjectChecklist = function(projectId) {
-        const listContainer = document.getElementById('project-checklist-list');
-        if (!listContainer) return;
-        
-        let checklist = [];
-        try {
-            checklist = JSON.parse(localStorage.getItem(`project_checklist_${projectId}`)) || [
-                { id: 1, title: 'Modelagem 3D Base', completed: false },
-                { id: 2, title: 'Texturização & Materiais', completed: false },
-                { id: 3, title: 'Iluminação & Câmeras', completed: false },
-                { id: 4, title: 'Pós-produção Finais', completed: false }
-            ];
-        } catch (e) {
-            checklist = [];
-        }
-        
-        if (checklist.length === 0) {
-            listContainer.innerHTML = `
-                <div class="py-6 text-center text-gray-500 text-[10px] font-bold">
-                    Nenhum item no checklist. Adicione acima!
-                </div>
-            `;
+    
+    window.updateProjectTaskProgress = function(tasks) {
+        if (!tasks || tasks.length === 0) {
+            document.getElementById('project-task-progress-text').innerText = '0%';
+            document.getElementById('project-task-progress-bar').style.width = '0%';
             return;
         }
-        
-        listContainer.innerHTML = checklist.map(item => `
-            <div class="p-3 bg-white/2 border border-white/5 rounded-2xl flex items-center justify-between gap-4 group hover:border-white/10 transition-all">
-                <div class="flex items-center gap-3">
-                    <input type="checkbox" ${item.completed ? 'checked' : ''} onchange="toggleChecklistItem(${item.id}, this.checked)" class="w-4 h-4 rounded border-white/10 bg-black/40 text-indigo-500 cursor-pointer">
-                    <span class="text-[11px] font-medium transition-all ${item.completed ? 'text-gray-500 line-through' : 'text-white'}">${item.title}</span>
+        const total = tasks.length;
+        const completed = tasks.filter(t => t.isCompleted).length;
+        const percent = Math.round((completed / total) * 100);
+        document.getElementById('project-task-progress-text').innerText = percent + '%';
+        document.getElementById('project-task-progress-bar').style.width = percent + '%';
+    };
+
+    let currentViewMode = 'list'; // list, kanban, gantt, calendar
+    let projectMilestonesData = []; // Store loaded milestones and tasks
+
+    window.switchTaskView = function(mode) {
+        currentViewMode = mode;
+        const modes = ['list', 'kanban', 'gantt', 'calendar'];
+        modes.forEach(m => {
+            const btn = document.getElementById(`btn-view-${m}`);
+            const container = document.getElementById(`task-view-container-${m}`);
+            if (btn) {
+                if (m === mode) {
+                    btn.classList.add('bg-indigo-500', 'text-white');
+                    btn.classList.remove('text-gray-400');
+                } else {
+                    btn.classList.remove('bg-indigo-500', 'text-white');
+                    btn.classList.add('text-gray-400');
+                }
+            }
+            if (container) {
+                if (m === mode) {
+                    container.classList.remove('hidden');
+                } else {
+                    container.classList.add('hidden');
+                }
+            }
+        });
+        renderCurrentTaskView();
+    };
+
+    function renderCurrentTaskView() {
+        if (!projectMilestonesData || projectMilestonesData.length === 0) {
+            const emptyHtml = `
+                <div class="py-6 text-center text-gray-500 text-[10px] font-bold">
+                    Nenhuma tarefa cadastrada nesta fase. Crie um marco e adicione tarefas!
                 </div>
-                <button type="button" onclick="deleteChecklistItem(${item.id})" class="text-gray-600 hover:text-red-400 transition-all opacity-0 group-hover:opacity-100 cursor-pointer">
-                    <span class="material-symbols-outlined text-sm">delete</span>
-                </button>
+            `;
+            document.getElementById('project-checklist-list').innerHTML = emptyHtml;
+            document.getElementById('task-kanban-board').innerHTML = emptyHtml;
+            document.getElementById('task-gantt-chart').innerHTML = emptyHtml;
+            const calendarContainer = document.getElementById('task-team-calendar');
+            if (calendarContainer) calendarContainer.innerHTML = emptyHtml;
+            return;
+        }
+
+        // Calculate progress text and bar
+        let totalTasks = 0;
+        let completedTasks = 0;
+        projectMilestonesData.forEach(m => {
+            if (m.tasks) {
+                m.tasks.forEach(t => {
+                    totalTasks++;
+                    if (t.status === 'concluido') completedTasks++;
+                    if (t.subTasks) {
+                        t.subTasks.forEach(st => {
+                            totalTasks++;
+                            if (st.status === 'concluido') completedTasks++;
+                        });
+                    }
+                });
+            }
+        });
+        const percent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        document.getElementById('project-task-progress-text').innerText = percent + '%';
+        document.getElementById('project-task-progress-bar').style.width = percent + '%';
+
+        if (currentViewMode === 'list') {
+            renderListView();
+        } else if (currentViewMode === 'kanban') {
+            renderKanbanView();
+        } else if (currentViewMode === 'gantt') {
+            renderGanttView();
+        } else if (currentViewMode === 'calendar') {
+            renderCalendarView();
+        }
+    }
+
+    function renderListView() {
+        const container = document.getElementById('project-checklist-list');
+        if (!container) return;
+
+        let html = '';
+        projectMilestonesData.forEach(m => {
+            html += `
+            <div class="mb-6 p-4 bg-white/[0.01] border border-white/5 rounded-2xl text-left">
+                <div class="flex items-center justify-between border-b border-white/5 pb-2 mb-3">
+                    <h4 class="text-xs font-black uppercase text-orange-500">${m.title}</h4>
+                    <span class="text-[9px] text-gray-500 font-bold">${m.description || ''}</span>
+                </div>
+                <div class="space-y-3">
+            `;
+            if (m.tasks && m.tasks.length > 0) {
+                m.tasks.forEach(t => {
+                    const assigneeName = t.assignee ? t.assignee.name : 'Sem responsável';
+                    const pendingDeps = (t.dependencies || []).filter(dep => dep.status !== 'concluido');
+                    const isBlocked = pendingDeps.length > 0;
+                    const depStr = isBlocked ? `<span class="px-1.5 py-0.5 rounded bg-red-500/10 text-red-500 text-[8px] font-bold inline-flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px]">lock</span> Bloqueada</span>` : '';
+                    const revStr = t.revisionRound > 0 ? `<span class="px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-500 text-[8px] font-bold">🔄 Rev ${t.revisionRound}</span>` : '';
+                    
+                    html += `
+                    <div class="p-3 bg-white/2 border border-white/5 rounded-xl hover:border-white/10 transition-all flex flex-col gap-2">
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" ${t.status === 'concluido' ? 'checked' : ''} ${isBlocked ? 'disabled title="Esta tarefa está bloqueada por dependências pendentes"' : ''} onchange="window.toggleNewTaskStatus('${t.id}', this.checked)" class="w-4 h-4 rounded border-white/10 bg-black/40 text-orange-500 ${isBlocked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}">
+                                <span onclick="window.openTaskDetails('${t.id}')" class="text-xs font-bold transition-all ${t.status === 'concluido' ? 'text-gray-500 line-through' : 'text-white'} cursor-pointer hover:text-indigo-400">
+                                    ${t.title} ${depStr} ${revStr}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[9px] text-gray-500 font-bold">${assigneeName}</span>
+                                <span class="px-2 py-0.5 rounded bg-white/5 text-[9px] text-gray-400 font-mono">${t.estimatedMinutes || 0}m</span>
+                            </div>
+                        </div>
+                    `;
+                    if (t.subTasks && t.subTasks.length > 0) {
+                        html += `<div class="pl-6 border-l border-white/5 space-y-2 mt-1">`;
+                        t.subTasks.forEach(st => {
+                            html += `
+                            <div class="flex items-center justify-between text-[11px]">
+                                <div class="flex items-center gap-2">
+                                    <input type="checkbox" ${st.status === 'concluido' ? 'checked' : ''} onchange="window.toggleNewTaskStatus('${st.id}', this.checked)" class="w-3.5 h-3.5 rounded border-white/10 bg-black/40 text-orange-500 cursor-pointer">
+                                    <span onclick="window.openTaskDetails('${st.id}')" class="cursor-pointer ${st.status === 'concluido' ? 'text-gray-600 line-through' : 'text-gray-300'}">${st.title}</span>
+                                </div>
+                            </div>
+                            `;
+                        });
+                        html += `</div>`;
+                    }
+                    html += `</div>`;
+                });
+            } else {
+                html += `<p class="text-xs text-gray-500 italic">Nenhuma tarefa neste marco.</p>`;
+            }
+            html += `</div></div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function renderKanbanView() {
+        const board = document.getElementById('task-kanban-board');
+        if (!board) return;
+
+        const columns = [
+            { id: 'a_fazer', title: 'A Fazer', color: 'border-blue-500/30 text-blue-400 bg-blue-500/5' },
+            { id: 'em_modelagem', title: 'Em Modelagem', color: 'border-yellow-500/30 text-yellow-400 bg-yellow-500/5' },
+            { id: 'renderizando', title: 'Renderizando', color: 'border-purple-500/30 text-purple-400 bg-purple-500/5' },
+            { id: 'em_revisao', title: 'Em Revisão', color: 'border-orange-500/30 text-orange-400 bg-orange-500/5' },
+            { id: 'concluido', title: 'Concluído', color: 'border-emerald-500/30 text-emerald-400 bg-emerald-500/5' }
+        ];
+
+        const allTasks = [];
+        projectMilestonesData.forEach(m => {
+            if (m.tasks) {
+                m.tasks.forEach(t => {
+                    allTasks.push(t);
+                });
+            }
+        });
+
+        board.innerHTML = columns.map(col => {
+            const colTasks = allTasks.filter(t => t.status === col.id);
+            const taskCards = colTasks.map(t => {
+                const assigneeName = t.assignee ? t.assignee.name : 'Sem responsável';
+                const pendingDeps = (t.dependencies || []).filter(dep => dep.status !== 'concluido');
+                const isBlocked = pendingDeps.length > 0;
+                const depStr = isBlocked ? `<span class="px-1 py-0.5 rounded bg-red-500/10 text-red-500 text-[8px] font-bold inline-flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px]">lock</span> Bloqueada</span>` : '';
+                const revStr = t.revisionRound > 0 ? `<span class="px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-500 text-[8px] font-bold">🔄 Rev ${t.revisionRound}</span>` : '';
+                const cardStyle = isBlocked ? 'border-red-500/20 bg-red-500/[0.01]' : 'border-white/5 bg-white/2';
+                return `
+                    <div onclick="window.openTaskDetails('${t.id}')" class="p-3 ${cardStyle} border rounded-xl hover:border-white/10 transition-all cursor-pointer space-y-2 text-left">
+                        <p class="text-xs font-bold text-white leading-tight">${t.title} ${depStr} ${revStr}</p>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-[9px] text-gray-500 font-bold">${assigneeName}</span>
+                            <span class="text-[9px] text-gray-400 font-mono">${t.estimatedMinutes || 0}m</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="flex-1 min-w-[200px] max-w-[280px] p-4 bg-white/[0.01] border border-white/5 rounded-2xl flex flex-col gap-4">
+                    <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                        <h5 class="text-[10px] font-black uppercase tracking-wider ${col.color.split(' ')[1]}">${col.title}</h5>
+                        <span class="px-2 py-0.5 bg-white/5 rounded-full text-[9px] text-gray-400 font-bold">${colTasks.length}</span>
+                    </div>
+                    <div class="space-y-3 flex-1 overflow-y-auto" style="max-height: 35vh;">
+                        ${taskCards || `<p class="text-[10px] text-gray-600 italic text-center py-4">Nenhuma tarefa</p>`}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderGanttView() {
+        const gantt = document.getElementById('task-gantt-chart');
+        if (!gantt) return;
+
+        const tasks = [];
+        projectMilestonesData.forEach(m => {
+            if (m.tasks) {
+                m.tasks.forEach(t => {
+                    tasks.push(t);
+                });
+            }
+        });
+
+        if (tasks.length === 0) {
+            gantt.innerHTML = `<p class="text-xs text-gray-500 italic text-center py-4">Nenhuma tarefa cadastrada.</p>`;
+            return;
+        }
+
+        let html = `
+        <div class="space-y-4 text-left">
+            <div class="grid grid-cols-12 gap-4 border-b border-white/5 pb-2 text-[9px] font-black text-gray-500 uppercase tracking-widest">
+                <div class="col-span-5">Tarefa</div>
+                <div class="col-span-3">Status</div>
+                <div class="col-span-4 text-right">Progresso Tempo (Gasto / Est)</div>
             </div>
-        `).join('');
+            <div class="space-y-2">
+        `;
+
+        tasks.forEach(t => {
+            const percent = t.estimatedMinutes > 0 ? Math.min(100, Math.round((t.spentMinutes / t.estimatedMinutes) * 100)) : 0;
+            const isOver = t.spentMinutes > t.estimatedMinutes;
+            const barColor = isOver ? 'bg-red-500' : 'bg-indigo-500';
+            const pendingDeps = (t.dependencies || []).filter(dep => dep.status !== 'concluido');
+            const isBlocked = pendingDeps.length > 0;
+            const depBadge = isBlocked ? `<span class="ml-1 px-1.5 py-0.5 rounded bg-red-500/10 text-red-500 text-[8px] font-bold inline-flex items-center gap-0.5"><span class="material-symbols-outlined text-[9px]">lock</span> Bloqueada</span>` : '';
+            
+            html += `
+            <div onclick="window.openTaskDetails('${t.id}')" class="grid grid-cols-12 gap-4 items-center p-3 ${isBlocked ? 'bg-red-500/[0.01] border-red-500/20' : 'bg-white/2 border-white/5'} border rounded-xl hover:border-white/10 transition-all cursor-pointer">
+                <div class="col-span-5">
+                    <p class="text-xs font-bold text-white truncate">${t.title} ${depBadge}</p>
+                    <span class="text-[9px] text-gray-500 font-bold">${t.assignee ? t.assignee.name : 'Sem responsável'}</span>
+                </div>
+                <div class="col-span-3">
+                    <span class="px-2 py-0.5 bg-white/5 text-[9px] font-bold text-gray-400 rounded-full uppercase">${t.status.replace('_',' ')}</span>
+                </div>
+                <div class="col-span-4 space-y-1">
+                    <div class="flex justify-between text-[8px] font-bold text-gray-500">
+                        <span>${t.spentMinutes || 0}m</span>
+                        <span>Estimado: ${t.estimatedMinutes || 0}m</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <div class="h-full ${barColor}" style="width: ${percent}%;"></div>
+                    </div>
+                </div>
+            </div>
+            `;
+        });
+
+        html += `</div></div>`;
+        gantt.innerHTML = html;
+    }
+
+    function renderCalendarView() {
+        const cal = document.getElementById('task-team-calendar');
+        if (!cal) return;
+
+        const tasks = [];
+        projectMilestonesData.forEach(m => {
+            if (m.tasks) {
+                m.tasks.forEach(t => {
+                    tasks.push(t);
+                });
+            }
+        });
+
+        let html = `
+        <div class="space-y-4 text-left">
+            <h4 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Prazos e Entregas da Equipe</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        `;
+
+        const tasksWithDeadline = tasks.filter(t => t.dueDate);
+        if (tasksWithDeadline.length === 0) {
+            html += `<p class="col-span-3 text-xs text-gray-500 italic text-center py-4">Nenhuma tarefa com prazo definido.</p>`;
+        } else {
+            tasksWithDeadline.sort((a,b) => new Date(a.dueDate) - new Date(b.dueDate)).forEach(t => {
+                const dateStr = new Date(t.dueDate).toLocaleDateString('pt-BR');
+                html += `
+                <div onclick="window.openTaskDetails('${t.id}')" class="p-4 bg-white/2 border border-white/5 rounded-2xl hover:border-white/10 transition-all cursor-pointer space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 bg-white/5 rounded text-[9px] font-bold text-gray-400">${dateStr}</span>
+                        <span class="px-2 py-0.5 bg-indigo-500/10 text-indigo-400 rounded text-[9px] font-bold uppercase">${t.status.replace('_',' ')}</span>
+                    </div>
+                    <p class="text-xs font-bold text-white leading-tight">${t.title}</p>
+                    <div class="flex justify-between items-center text-[9px] text-gray-500 font-bold pt-1 border-t border-white/5">
+                        <span>Responsável: ${t.assignee ? t.assignee.name : 'Sem responsável'}</span>
+                        <span>Est: ${t.estimatedMinutes || 0}m</span>
+                    </div>
+                </div>
+                `;
+            });
+        }
+
+        html += `</div></div>`;
+        cal.innerHTML = html;
+    }
+
+    window.toggleNewTaskStatus = async function(taskId, isChecked) {
+        try {
+            const res = await fetch(`/admin/api/tasks/${taskId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: isChecked ? 'concluido' : 'a_fazer' })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.showNotification?.('Status da tarefa atualizado!', 'success');
+                window.loadProjectChecklist(currentProjectId);
+            } else {
+                alert('Erro ao atualizar status: ' + data.error);
+            }
+        } catch (e) {
+            console.error(e);
+        }
     };
 
-    // Adicionar item ao checklist
-    document.getElementById('btn-project-add-task')?.addEventListener('click', () => {
-        const input = document.getElementById('project-new-task-input');
-        if (!input || !input.value.trim()) return;
-        
-        const title = input.value.trim();
-        let checklist = [];
+    window.loadProjectChecklist = async function(projectId) {
         try {
-            checklist = JSON.parse(localStorage.getItem(`project_checklist_${currentProjectId}`)) || [];
-        } catch (e) {
-            checklist = [];
+            const res = await fetch(`/admin/api/projects/${projectId}/milestones`);
+            const data = await res.json();
+            if (data.success) {
+                projectMilestonesData = data.milestones || [];
+                renderCurrentTaskView();
+                window.loadTaskTemplatesList();
+            }
+        } catch (error) {
+            console.error(error);
+            document.getElementById('project-checklist-list').innerHTML = `<div class="text-red-500 text-xs">Erro ao carregar planejamento.</div>`;
         }
-        
-        const newItem = {
-            id: Date.now(),
-            title,
-            completed: false
-        };
-        
-        checklist.push(newItem);
-        localStorage.setItem(`project_checklist_${currentProjectId}`, JSON.stringify(checklist));
-        input.value = '';
-        window.loadProjectChecklist(currentProjectId);
-        window.showNotification('Sub-tarefa adicionada!', 'success');
-    });
-
-    window.toggleChecklistItem = function(id, completed) {
-        let checklist = [];
-        try {
-            checklist = JSON.parse(localStorage.getItem(`project_checklist_${currentProjectId}`)) || [];
-        } catch (e) {
-            checklist = [];
-        }
-        
-        checklist = checklist.map(item => item.id === id ? { ...item, completed } : item);
-        localStorage.setItem(`project_checklist_${currentProjectId}`, JSON.stringify(checklist));
-        window.loadProjectChecklist(currentProjectId);
     };
 
-    window.deleteChecklistItem = function(id) {
-        let checklist = [];
+    window.loadTaskTemplatesList = async function() {
         try {
-            checklist = JSON.parse(localStorage.getItem(`project_checklist_${currentProjectId}`)) || [];
+            const res = await fetch('/admin/api/task-templates');
+            const data = await res.json();
+            const dropdown = document.getElementById('dropdown-task-templates-list');
+            if (dropdown && data.success && data.templates) {
+                let html = `
+                    <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 cursor-pointer shadow-indigo-500/20" onclick="window.applyTaskTemplate('ArchViz')">Preset ArchViz Completo</a></li>
+                    <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 cursor-pointer shadow-indigo-500/20" onclick="window.applyTaskTemplate('Modelagem')">Preset Modelagem Simples</a></li>
+                    <li><hr class="dropdown-divider border-white/5"></li>
+                `;
+                if (data.templates.length === 0) {
+                    html += `<li><span class="dropdown-item text-gray-500 text-[10px] italic">Sem templates salvos</span></li>`;
+                } else {
+                    data.templates.forEach(t => {
+                        html += `<li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 cursor-pointer" onclick="window.applyTaskTemplateDb('${t.id}')">${t.name}</a></li>`;
+                    });
+                }
+                
+                html += `
+                    <li><hr class="dropdown-divider border-white/5"></li>
+                    <li><a class="dropdown-item rounded-xl text-[10px] font-black text-orange-500 uppercase py-2 cursor-pointer" onclick="window.saveCurrentAsTemplate()">Salvar Atual como Template</a></li>
+                `;
+                dropdown.innerHTML = html;
+            }
         } catch (e) {
-            checklist = [];
+            console.error('Erro ao carregar templates:', e);
         }
+    };
+
+    window.applyTaskTemplateDb = async function(templateId) {
+        if (!currentProjectId) return;
+        try {
+            const res = await fetch(`/admin/api/projects/${currentProjectId}/apply-template`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ templateId })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.showNotification?.('Template de planejamento aplicado!', 'success');
+                window.loadProjectChecklist(currentProjectId);
+            } else {
+                alert('Erro ao aplicar template: ' + data.error);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    window.saveCurrentAsTemplate = async function() {
+        if (!currentProjectId) return;
+        const name = prompt('Informe o nome para o novo template:');
+        if (!name) return;
         
-        checklist = checklist.filter(item => item.id !== id);
-        localStorage.setItem(`project_checklist_${currentProjectId}`, JSON.stringify(checklist));
-        window.loadProjectChecklist(currentProjectId);
-        window.showNotification('Tarefa excluída!', 'success');
+        try {
+            const res = await fetch('/admin/api/task-templates', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name,
+                    projectId: currentProjectId
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.showNotification?.('Template de planejamento salvo com sucesso!', 'success');
+                window.loadTaskTemplatesList();
+            } else {
+                alert('Erro ao salvar template: ' + data.error);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    window.applyTaskTemplate = async function(template) {
+        if (!currentProjectId) return;
+        try {
+            const res = await fetch(`/admin/api/projects/${currentProjectId}/tasks/template`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ template })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.showNotification(`Template ${template} aplicado!`, 'success');
+                window.loadProjectChecklist(currentProjectId);
+            } else {
+                window.showNotification(data.message || 'Erro ao aplicar template Preset', 'error');
+            }
+        } catch (e) {
+            window.showNotification('Erro na requisição Preset', 'error');
+        }
     };
 
     // ==========================================

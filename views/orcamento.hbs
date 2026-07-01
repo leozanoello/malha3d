@@ -7,73 +7,21 @@
         <div class="section-header" data-aos="fade-up">
             <div class="badge">
                 <span class="badge-dot"></span>
-                VALORIZAÇÃO DE ATIVOS
+                PRECIFAÇÃO INTELIGENTE DE ARCHVIZ
             </div>
-            <h1 class="section-title text-gradient">Solicite seu Orçamento</h1>
-            <p class="section-subtitle">Transforme sua visão em um projeto industrial de alta precisão.</p>
+            <h1 class="section-title text-gradient">Calculadora de ArchViz</h1>
+            <p class="section-subtitle">Calcule o escopo do seu projeto com precisão matemática e inteligência artificial.</p>
         </div>
 
         <div class="asymmetric-grid">
-            {{!-- Main Form Bento --}}
-            <div class="bento-box col-8" data-aos="fade-right">
-                <div class="bento-header">
-                    <div class="icon-box"><i class="fas fa-calculator"></i></div>
-                    <h3>Especificações do Projeto</h3>
+            {{!-- Main Form Bento: Hosted by React App --}}
+            <div class="bento-box col-8" data-aos="fade-right" style="min-height: 680px; position: relative;">
+                <div id="archviz-wizard-root">
+                    <div style="display: flex; justify-content: center; align-items: center; height: 500px; color: var(--muted); flex-direction: column; gap: 1.5rem;">
+                        <i class="fas fa-spinner fa-spin fa-2x text-accent"></i>
+                        <span style="font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.85rem;">Inicializando Motor de IA...</span>
+                    </div>
                 </div>
-
-                <form id="budgetForm" class="modern-form" enctype="multipart/form-data">
-                    <div class="form-section-title">Dados de Contato</div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="name">Nome Completo</label>
-                            <input type="text" id="name" name="name" placeholder="João Silva" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">E-mail</label>
-                            <input type="email" id="email" name="email" placeholder="email@empresa.com" required>
-                        </div>
-                    </div>
-
-                    <div class="form-section-title">Detalhes Industriais</div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="projectType">Tipo de Projeto</label>
-                            <select id="projectType" name="projectType" required>
-                                <option value="" disabled selected>Selecione...</option>
-                                <option value="Modelagem 3D">Modelagem 3D</option>
-                                <option value="Renderizacao">Renderização 4K</option>
-                                <option value="Integracao ERP">Integração Ctx7 ERP</option>
-                                <option value="Consultoria">Consultoria Técnica</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="deadline">Prazo Desejado</label>
-                            <input type="date" id="deadline" name="deadline">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Descrição Técnica</label>
-                        <textarea id="description" name="description" rows="4" placeholder="Descreva os requisitos técnicos e objetivos do projeto..." required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Arquivos de Referência (Opcional)</label>
-                        <div class="file-upload-bento" id="dropZone">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <p>Arraste arquivos ou clique para selecionar</p>
-                            <span class="file-info">Máx 10MB por arquivo (JPG, PNG, PDF, DWG)</span>
-                            <input type="file" id="files" name="files" multiple style="display: none;">
-                        </div>
-                        <div id="fileList" class="file-chip-container"></div>
-                    </div>
-
-                    <button type="submit" class="btn-nav btn-primary" style="width: 100%; justify-content: center;">
-                        <span class="btn-text">Enviar Solicitação</span>
-                        <span class="loading" style="display: none;"><i class="fas fa-spinner fa-spin"></i></span>
-                    </button>
-                    <div id="formMessage" class="form-status"></div>
-                </form>
             </div>
 
             {{!-- Sidebar Bentos --}}
@@ -82,12 +30,12 @@
                 <div class="bento-box" data-aos="fade-left" data-aos-delay="100">
                     <div class="bento-header">
                         <div class="icon-box"><i class="fas fa-search"></i></div>
-                        <h3>Status do Pedido</h3>
+                        <h3>Acompanhar Proposta</h3>
                     </div>
-                    <p class="bento-text">Acompanhe o progresso da sua análise técnica.</p>
+                    <p class="bento-text">Insira o código do seu orçamento para verificar o status.</p>
                     <form id="statusForm" class="mini-status-form">
                         <input type="text" id="budgetId" placeholder="Código: Z3D-0000" required>
-                        <button type="submit" class="btn-nav btn-glass" style="margin-top: 1rem; width: 100%; justify-content: center;">Verificar</button>
+                        <button type="submit" class="btn-nav btn-glass" style="margin-top: 1rem; width: 100%; justify-content: center;">Consultar Status</button>
                     </form>
                     <div id="statusResult" class="status-mini-result"></div>
                 </div>
@@ -100,16 +48,16 @@
                     </div>
                     <div class="faq-mini-list">
                         <details>
-                            <summary>Prazo de resposta?</summary>
-                            <p>Análise técnica em até 24h úteis.</p>
+                            <summary>Como a IA calcula o preço?</summary>
+                            <p>Nosso algoritmo analisa a escala e ambientes do projeto, enquanto a IA avalia o nível de subjetividade técnica e risco do briefing textual.</p>
                         </details>
                         <details>
-                            <summary>Formatos aceitos?</summary>
-                            <p>PDF, DWG, SKP, JPG, PNG.</p>
+                            <summary>O valor sugerido é definitivo?</summary>
+                            <p>É uma estimativa base de alta precisão baseada em custos reais de estúdios Tier-1. Nossa equipe validará a proposta após o envio.</p>
                         </details>
                         <details>
-                            <summary>Suporte Ctx7?</summary>
-                            <p>Incluído em projetos de integração.</p>
+                            <summary>Qual o prazo médio de entrega?</summary>
+                            <p>Projetos normais levam de 10 a 20 dias. Projetos com SLA Urgente ou Crítico ganham prioridade máxima em nossa renderfarm.</p>
                         </details>
                     </div>
                 </div>
@@ -118,7 +66,22 @@
     </div>
 </section>
 
+{{!-- Styling for components --}}
 <style>
+    .asymmetric-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+    .col-8 { grid-column: span 1; }
+    .col-4 { grid-column: span 1; }
+
+    @media (max-width: 992px) {
+        .asymmetric-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
     .form-section-title {
         color: var(--accent);
         font-size: 0.75rem;
@@ -138,94 +101,6 @@
         background: var(--border);
     }
 
-    .modern-form .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-    }
-
-    .modern-form .form-group {
-        margin-bottom: 2rem;
-    }
-
-    .modern-form label {
-        display: block;
-        margin-bottom: 0.75rem;
-        color: var(--muted);
-        font-size: 0.85rem;
-        font-weight: 600;
-    }
-
-    .modern-form input, .modern-form select, .modern-form textarea {
-        width: 100%;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid var(--border);
-        border-radius: 1rem;
-        padding: 1rem 1.5rem;
-        color: white;
-        font-family: inherit;
-        transition: var(--transition);
-    }
-
-    .modern-form input:focus, .modern-form select:focus, .modern-form textarea:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 20px var(--accent-glow);
-    }
-
-    .file-upload-bento {
-        border: 2px dashed var(--border);
-        border-radius: 1.5rem;
-        padding: 3rem 2rem;
-        text-align: center;
-        cursor: pointer;
-        transition: var(--transition);
-        background: rgba(255, 255, 255, 0.01);
-    }
-
-    .file-upload-bento:hover {
-        border-color: var(--accent);
-        background: rgba(255, 107, 53, 0.05);
-    }
-
-    .file-upload-bento i {
-        font-size: 2.5rem;
-        color: var(--muted);
-        margin-bottom: 1rem;
-    }
-
-    .file-info {
-        display: block;
-        font-size: 0.75rem;
-        color: var(--muted);
-        margin-top: 0.5rem;
-    }
-
-    .file-chip-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-top: 1.5rem;
-    }
-
-    .file-chip {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--border);
-        padding: 0.5rem 1rem;
-        border-radius: 100px;
-        font-size: 0.8rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .file-chip button {
-        background: none;
-        border: none;
-        color: #EF4444;
-        cursor: pointer;
-    }
-
     .mini-status-form input {
         width: 100%;
         background: rgba(255, 255, 255, 0.03);
@@ -233,6 +108,13 @@
         border-radius: 1rem;
         padding: 0.75rem 1rem;
         color: white;
+        transition: var(--transition);
+    }
+
+    .mini-status-form input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 15px var(--accent-glow);
     }
 
     .faq-mini-list details {
@@ -266,89 +148,799 @@
         padding-top: 0.5rem;
     }
 
-    .form-status {
+    .status-mini-result {
         margin-top: 1.5rem;
         padding: 1rem;
         border-radius: 1rem;
+        font-size: 0.85rem;
         display: none;
-        text-align: center;
     }
 
-    .form-status.success { background: rgba(16, 185, 129, 0.1); color: #10B981; border: 1px solid #10B981; }
-    .form-status.error { background: rgba(239, 68, 68, 0.1); color: #EF4444; border: 1px solid #EF4444; }
+    .status-mini-result.success {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10B981;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
 
-    @media (max-width: 768px) {
-        .modern-form .form-row { grid-template-columns: 1fr; gap: 0; }
+    .status-mini-result.error {
+        background: rgba(239, 68, 68, 0.1);
+        color: #EF4444;
+        border: 1px solid rgba(239, 68, 68, 0.2);
     }
 </style>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('files');
-        const fileList = document.getElementById('fileList');
-        let files = [];
+{{!-- React Dependencies from CDN --}}
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-        dropZone.addEventListener('click', () => fileInput.click());
+{{!-- React Component: React Multi-Step Wizard --}}
+<script type="text/babel">
+    const { useState, useEffect } = React;
 
-        fileInput.addEventListener('change', (e) => {
-            Array.from(e.target.files).forEach(file => addFile(file));
-        });
+    function ArchVizWizard() {
+        const [step, setStep] = useState(1);
+        const [calibratedM2Price, setCalibratedM2Price] = useState(50.00);
+        const [showAdminPanel, setShowAdminPanel] = useState(false);
+        const [adminPassword, setAdminPassword] = useState('');
+        const [isAdminVerified, setIsAdminVerified] = useState(false);
 
-        function addFile(file) {
-            files.push(file);
-            const chip = document.createElement('div');
-            chip.className = 'file-chip';
-            chip.innerHTML = `<span>${file.name}</span><button type="button">&times;</button>`;
-            chip.querySelector('button').onclick = () => {
-                files = files.filter(f => f !== file);
-                chip.remove();
+        // Form fields state
+        const [metragemTotal, setMetragemTotal] = useState('');
+        const [tipoEmpreendimento, setTipoEmpreendimento] = useState('');
+        const [ambientes, setAmbientes] = useState([]);
+        const [formatoBase, setFormatoBase] = useState('');
+        const [estiloArquitetonico, setEstiloArquitetonico] = useState('');
+        const [detalhamentoExigido, setDetalhamentoExigido] = useState('');
+        const [briefingTextual, setBriefingTextual] = useState('');
+        const [imagensEstaticas, setImagensEstaticas] = useState(0);
+        const [segundosAnimacao, setSegundosAnimacao] = useState(0);
+        const [tourVirtual360, setTourVirtual360] = useState(false);
+        const [prazoSLA, setPrazoSLA] = useState('Normal');
+
+        // Contact details
+        const [contatoNome, setContatoNome] = useState('');
+        const [contatoEmail, setContatoEmail] = useState('');
+        const [contatoPhone, setContatoPhone] = useState('');
+
+        // Calculation result state
+        const [loading, setLoading] = useState(false);
+        const [result, setResult] = useState(null);
+        const [error, setError] = useState(null);
+
+        // Env categories definition
+        const envCategories = {
+            'Áreas Secas': ['Living', 'Quarto Suíte', 'Quarto Solteiro', 'Home Office', 'Sala de Jantar', 'Hall', 'Closet'],
+            'Áreas Molhadas': ['Cozinha', 'Banheiro Master', 'Lavabo', 'Área de Serviço'],
+            'Áreas Externas': ['Fachada Frontal', 'Fachada Fundos', 'Espaço Gourmet', 'Piscina', 'Deck', 'Paisagismo/Jardim', 'Rooftop'],
+            'Áreas Comuns': ['Pilotis', 'Salão de Festas', 'Academia', 'Brinquedoteca', 'Guarita']
+        };
+
+        // Fetch calibrated prices on mount
+        useEffect(() => {
+            fetch('/api/calculator-settings')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.calculator_base_price_m2) {
+                        setCalibratedM2Price(parseFloat(data.calculator_base_price_m2));
+                    }
+                })
+                .catch(err => console.error('Erro ao ler calibração inicial:', err));
+        }, []);
+
+        // Dynamic environment tag toggle
+        const toggleAmbiente = (name) => {
+            if (ambientes.includes(name)) {
+                setAmbientes(ambientes.filter(a => a !== name));
+            } else {
+                setAmbientes([...ambientes, name]);
+            }
+        };
+
+        // Standard validation check to enable advancement
+        const isStepValid = () => {
+            if (step === 1) {
+                return tipoEmpreendimento !== '' && metragemTotal !== '' && parseFloat(metragemTotal) > 0;
+            }
+            if (step === 2) {
+                return ambientes.length > 0;
+            }
+            if (step === 3) {
+                return formatoBase !== '' && estiloArquitetonico !== '' && detalhamentoExigido !== '';
+            }
+            if (step === 4) {
+                // Ensure at least one deliverable is selected
+                return (imagensEstaticas > 0 || segundosAnimacao > 0 || tourVirtual360) && prazoSLA !== '';
+            }
+            if (step === 5) {
+                return contatoNome.trim().length >= 3 && contatoEmail.includes('@') && contatoPhone.trim().length >= 8;
+            }
+            return true;
+        };
+
+        // Submit to API
+        const handleCalculate = async (e) => {
+            if (e) e.preventDefault();
+            setLoading(true);
+            setError(null);
+
+            const payload = {
+                metragemTotal: parseFloat(metragemTotal),
+                tipoEmpreendimento,
+                ambientes,
+                formatoBase,
+                estiloArquitetonico,
+                detalhamentoExigido,
+                briefingTextual,
+                imagensEstaticas: parseInt(imagensEstaticas) || 0,
+                segundosAnimacao: parseInt(segundosAnimacao) || 0,
+                tourVirtual360,
+                prazoSLA,
+                contatoNome,
+                contatoEmail,
+                contatoPhone
             };
-            fileList.appendChild(chip);
-        }
 
-        // Form Submission
-        const budgetForm = document.getElementById('budgetForm');
-        budgetForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitBtn = budgetForm.querySelector('button[type="submit"]');
-            const btnText = submitBtn.querySelector('.btn-text');
-            const loading = submitBtn.querySelector('.loading');
-            const formMessage = document.getElementById('formMessage');
-
-            submitBtn.disabled = true;
-            btnText.style.display = 'none';
-            loading.style.display = 'inline-block';
-
-            const formData = new FormData(budgetForm);
-            files.forEach(file => formData.append('files', file));
+            // Inject base price override if changed locally by admin
+            if (isAdminVerified) {
+                payload.overrideBaseM2Price = calibratedM2Price;
+            }
 
             try {
-                const response = await fetch('/orcamento/solicitar', {
+                const response = await fetch('/api/calculadora/calcular', {
                     method: 'POST',
-                    body: formData
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
-                const result = await response.json();
-                if (result.success) {
-                    formMessage.innerHTML = `Sucesso! ID: <strong>${result.budgetId}</strong>`;
-                    formMessage.className = 'form-status success';
-                    formMessage.style.display = 'block';
-                    budgetForm.reset();
-                    fileList.innerHTML = '';
-                    files = [];
+                const resData = await response.json();
+                if (resData.success) {
+                    setResult(resData);
+                    setStep(6);
                 } else {
-                    formMessage.textContent = result.message;
-                    formMessage.className = 'form-status error';
-                    formMessage.style.display = 'block';
+                    setError(resData.error || 'Erro ao processar precificação.');
                 }
             } catch (err) {
-                formMessage.textContent = 'Erro ao enviar. Tente novamente.';
-                formMessage.className = 'form-status error';
-                formMessage.style.display = 'block';
+                setError('Erro na rede. Não foi possível conectar ao servidor.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        const handleVerifyAdmin = () => {
+            if (adminPassword === 'zanoello123' || adminPassword === 'admin') {
+                setIsAdminVerified(true);
+                setShowAdminPanel(false);
+            } else {
+                alert('Senha administrativa incorreta.');
+            }
+        };
+
+        const handleRestart = () => {
+            setStep(1);
+            setMetragemTotal('');
+            setTipoEmpreendimento('');
+            setAmbientes([]);
+            setFormatoBase('');
+            setEstiloArquitetonico('');
+            setDetalhamentoExigido('');
+            setBriefingTextual('');
+            setImagensEstaticas(0);
+            setSegundosAnimacao(0);
+            setTourVirtual360(false);
+            setPrazoSLA('Normal');
+            setContatoNome('');
+            setContatoEmail('');
+            setContatoPhone('');
+            setResult(null);
+            setError(null);
+        };
+
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+                
+                {/* Header and Step Indicators */}
+                {step < 6 && (
+                    <div style={{ marginBottom: '2rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                            <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', fontWeight: 'bold' }}>
+                                Etapa {step} de 5
+                            </span>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: '500' }}>
+                                {step === 1 && 'Dimensões & Tipo'}
+                                {step === 2 && 'Mapeamento de Ambientes'}
+                                {step === 3 && 'Complexidade Técnica'}
+                                {step === 4 && 'Entregáveis & SLA'}
+                                {step === 5 && 'Dados de Contato'}
+                            </span>
+                        </div>
+                        {/* Progress Bar */}
+                        <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
+                            <div style={{ 
+                                width: `${(step / 5) * 100}%`, 
+                                height: '100%', 
+                                background: 'linear-gradient(90deg, #ff6b35, #f7b05b)', 
+                                transition: 'width 0.4s cubic-bezier(0.4, 0, 0.2, 1)' 
+                            }}></div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Form Body wrapper */}
+                <div style={{ flex: 1, minHeight: '380px' }}>
+                    {error && (
+                        <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', padding: '1rem', borderRadius: '1rem', marginBottom: '1.5rem', border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: '0.85rem' }}>
+                            <i className="fas fa-exclamation-circle me-2"></i> {error}
+                        </div>
+                    )}
+
+                    {/* Step 1: Enterprise type & scale */}
+                    {step === 1 && (
+                        <div>
+                            <div className="form-section-title">Empreendimento e Escala</div>
+                            <div style={{ display: 'grid', gap: '1.5rem' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>Tipo de Empreendimento</label>
+                                    <select 
+                                        value={tipoEmpreendimento} 
+                                        onChange={(e) => setTipoEmpreendimento(e.target.value)}
+                                        style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '1rem', color: 'white' }}
+                                    >
+                                        <option value="" disabled>Selecione...</option>
+                                        <option value="Residencial Unifamiliar (Casa)">Residencial Unifamiliar (Casa)</option>
+                                        <option value="Edifício Residencial (Vertical)">Edifício Residencial (Vertical)</option>
+                                        <option value="Comercial/Varejo">Comercial/Varejo</option>
+                                        <option value="Corporativo (Escritórios)">Corporativo (Escritórios)</option>
+                                        <option value="Loteamento/Urbanístico">Loteamento/Urbanístico</option>
+                                        <option value="Design de Interiores (Apartamento)">Design de Interiores (Apartamento)</option>
+                                        <option value="Estande de Vendas/Cenografia">Estande de Vendas/Cenografia</option>
+                                    </select>
+                                </div>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>Metragem Total a ser Modelada/Renderizada (m²)</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <input 
+                                            type="number" 
+                                            value={metragemTotal} 
+                                            onChange={(e) => setMetragemTotal(e.target.value)}
+                                            placeholder="Ex: 250"
+                                            style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '1rem', color: 'white' }}
+                                        />
+                                        <span style={{ position: 'absolute', right: '1.5rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)', fontSize: '0.85rem', fontWeight: 'bold' }}>m²</span>
+                                    </div>
+                                </div>
+
+                                {/* Admin Calibration override */}
+                                <div style={{ marginTop: '2rem', borderTop: '1px dashed var(--border)', paddingTop: '1.5rem' }}>
+                                    {isAdminVerified ? (
+                                        <div style={{ background: 'rgba(249, 115, 22, 0.05)', padding: '1rem', borderRadius: '1rem', border: '1px solid rgba(249, 115, 22, 0.15)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div>
+                                                <p style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--accent)' }}>ADMIN: CALIBRAÇÃO ATIVA</p>
+                                                <p style={{ fontSize: '0.85rem', color: 'white', marginTop: '0.2rem' }}>Valor Base por m²:</p>
+                                            </div>
+                                            <input 
+                                                type="number" 
+                                                value={calibratedM2Price} 
+                                                onChange={(e) => setCalibratedM2Price(parseFloat(e.target.value) || 0)}
+                                                style={{ width: '100px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--accent)', borderRadius: '0.5rem', padding: '0.4rem', color: 'white', textAlign: 'right', fontWeight: 'bold' }}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>Valor Base atual: R$ {calibratedM2Price.toFixed(2)}/m²</span>
+                                            <button 
+                                                onClick={() => setShowAdminPanel(!showAdminPanel)}
+                                                style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', fontSize: '0.9rem' }}
+                                                title="Calibrar como Admin"
+                                            >
+                                                <i className="fas fa-cog"></i>
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {showAdminPanel && (
+                                        <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
+                                            <input 
+                                                type="password" 
+                                                placeholder="Senha Master"
+                                                value={adminPassword}
+                                                onChange={(e) => setAdminPassword(e.target.value)}
+                                                style={{ flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '0.8rem', padding: '0.6rem 1rem', color: 'white', fontSize: '0.85rem' }}
+                                            />
+                                            <button 
+                                                onClick={handleVerifyAdmin}
+                                                style={{ background: 'var(--accent)', border: 'none', color: 'white', borderRadius: '0.8rem', padding: '0.6rem 1.2rem', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 'bold' }}
+                                            >
+                                                Verificar
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Step 2: Environments */}
+                    {step === 2 && (
+                        <div>
+                            <div className="form-section-title">Ambientes a serem Modelados/Renderizados</div>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--muted)', marginBottom: '1.5rem', marginTop: '-1rem' }}>Selecione todos os ambientes que farão parte do escopo técnico do orçamento.</p>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '350px', overflowY: 'auto', paddingRight: '0.5rem' }}>
+                                {Object.keys(envCategories).map(category => (
+                                    <div key={category}>
+                                        <h4 style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--accent)', fontWeight: 'bold', marginBottom: '0.75rem' }}>
+                                            {category}
+                                        </h4>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                            {envCategories[category].map(envName => {
+                                                const selected = ambientes.includes(envName);
+                                                return (
+                                                    <button
+                                                        key={envName}
+                                                        onClick={() => toggleAmbiente(envName)}
+                                                        style={{
+                                                            background: selected ? 'rgba(255, 107, 53, 0.12)' : 'rgba(255,255,255,0.02)',
+                                                            border: selected ? '1px solid #ff6b35' : '1px solid var(--border)',
+                                                            color: selected ? '#ff6b35' : 'var(--muted)',
+                                                            padding: '0.5rem 1rem',
+                                                            borderRadius: '100px',
+                                                            fontSize: '0.8rem',
+                                                            fontWeight: '600',
+                                                            cursor: 'pointer',
+                                                            transition: 'all 0.2s ease',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '0.4rem'
+                                                        }}
+                                                    >
+                                                        {selected && <i className="fas fa-check" style={{ fontSize: '0.7rem' }}></i>}
+                                                        {envName}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Step 3: Complexity & Heuristics */}
+                    {step === 3 && (
+                        <div>
+                            <div className="form-section-title">Formato da Base e Estilo</div>
+                            <div style={{ display: 'grid', gap: '1.2rem' }}>
+                                
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>Formato da Base Recebida</label>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                                        {['BIM Limpo (Revit/Archicad)', 'Modelo Sujo (Sketchup)', 'Desenho 2D (AutoCAD/PDF)', 'Modelagem do Zero'].map(option => {
+                                            const selected = formatoBase === option;
+                                            return (
+                                                <button
+                                                    key={option}
+                                                    type="button"
+                                                    onClick={() => setFormatoBase(option)}
+                                                    style={{
+                                                        background: selected ? 'rgba(255, 107, 53, 0.08)' : 'rgba(255,255,255,0.02)',
+                                                        border: selected ? '1px solid #ff6b35' : '1px solid var(--border)',
+                                                        color: selected ? '#ff6b35' : 'white',
+                                                        padding: '0.8rem',
+                                                        borderRadius: '0.8rem',
+                                                        fontSize: '0.8rem',
+                                                        fontWeight: 'bold',
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.2s ease',
+                                                        textAlign: 'center'
+                                                    }}
+                                                >
+                                                    {option}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                        <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>Estilo Arquitetônico</label>
+                                        <select 
+                                            value={estiloArquitetonico} 
+                                            onChange={(e) => setEstiloArquitetonico(e.target.value)}
+                                            style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '0.8rem 1rem', color: 'white' }}
+                                        >
+                                            <option value="" disabled>Selecione...</option>
+                                            <option value="Minimalista">Minimalista</option>
+                                            <option value="Moderno">Moderno</option>
+                                            <option value="Industrial">Industrial</option>
+                                            <option value="Clássico/Neoclássico">Clássico/Neoclássico</option>
+                                            <option value="Rústico">Rústico</option>
+                                        </select>
+                                    </div>
+
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                        <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>Detalhamento Exigido</label>
+                                        <select 
+                                            value={detalhamentoExigido} 
+                                            onChange={(e) => setDetalhamentoExigido(e.target.value)}
+                                            style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '0.8rem 1rem', color: 'white' }}
+                                        >
+                                            <option value="" disabled>Selecione...</option>
+                                            <option value="Baixo (Estudo Volumétrico)">Baixo (Estudo Volumétrico)</option>
+                                            <option value="Médio (Aprovação Comercial)">Médio (Aprovação Comercial)</option>
+                                            <option value="Alto (Fotorrealismo High-End)">Alto (Fotorrealismo High-End)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>Briefing Textual para Inteligência Artificial</label>
+                                    <textarea 
+                                        value={briefingTextual}
+                                        onChange={(e) => setBriefingTextual(e.target.value)}
+                                        placeholder="Descreva detalhes que influenciam na complexidade (ex: teto paramétrico orgânico de madeira, biofilia densa com plantas nativas, etc.)"
+                                        rows="3"
+                                        style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '1rem', color: 'white', resize: 'none' }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Step 4: Deliverables & SLA */}
+                    {step === 4 && (
+                        <div>
+                            <div className="form-section-title">Mídias de Entrega e SLA</div>
+                            <div style={{ display: 'grid', gap: '1.5rem' }}>
+                                
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                        <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>Imagens Estáticas (4K)</label>
+                                        <input 
+                                            type="number" 
+                                            min="0"
+                                            value={imagensEstaticas} 
+                                            onChange={(e) => setImagensEstaticas(parseInt(e.target.value) || 0)}
+                                            style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '0.8rem 1rem', color: 'white' }}
+                                        />
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                        <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>Segundos de Animação</label>
+                                        <input 
+                                            type="number" 
+                                            min="0"
+                                            value={segundosAnimacao} 
+                                            onChange={(e) => setSegundosAnimacao(parseInt(e.target.value) || 0)}
+                                            style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '0.8rem 1rem', color: 'white' }}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border)', padding: '1rem 1.5rem', borderRadius: '1.2rem' }}>
+                                    <div>
+                                        <p style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'white' }}>Tour Virtual 360º Integrado</p>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '0.2rem' }}>Interface de navegação panorâmica imersiva.</p>
+                                    </div>
+                                    <label style={{ position: 'relative', display: 'inline-block', width: '48px', height: '24px', cursor: 'pointer' }}>
+                                        <input 
+                                            type="checkbox" 
+                                            checked={tourVirtual360} 
+                                            onChange={(e) => setTourVirtual360(e.target.checked)}
+                                            style={{ opacity: 0, width: 0, height: 0 }}
+                                        />
+                                        <span style={{
+                                            position: 'absolute',
+                                            top: 0, left: 0, right: 0, bottom: 0,
+                                            background: tourVirtual360 ? 'var(--accent)' : 'rgba(255,255,255,0.1)',
+                                            borderRadius: '34px',
+                                            transition: '0.4s',
+                                        }}></span>
+                                        <span style={{
+                                            position: 'absolute',
+                                            height: '18px', width: '18px',
+                                            left: tourVirtual360 ? '26px' : '3px',
+                                            bottom: '3px',
+                                            background: 'white',
+                                            borderRadius: '50%',
+                                            transition: '0.4s',
+                                        }}></span>
+                                    </label>
+                                </div>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>Prazo de Produção (SLA)</label>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.5rem' }}>
+                                        {['Normal', 'Urgente (+30%)', 'Crítico (+50%)'].map(option => {
+                                            const selected = prazoSLA === option || (option === 'Urgente (+30%)' && prazoSLA === 'Urgente') || (option === 'Crítico (+50%)' && prazoSLA === 'Crítico');
+                                            return (
+                                                <button
+                                                    key={option}
+                                                    type="button"
+                                                    onClick={() => setPrazoSLA(option)}
+                                                    style={{
+                                                        background: selected ? 'rgba(255, 107, 53, 0.08)' : 'rgba(255,255,255,0.02)',
+                                                        border: selected ? '1px solid #ff6b35' : '1px solid var(--border)',
+                                                        color: selected ? '#ff6b35' : 'white',
+                                                        padding: '0.8rem',
+                                                        borderRadius: '0.8rem',
+                                                        fontSize: '0.75rem',
+                                                        fontWeight: 'bold',
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.2s ease',
+                                                        textAlign: 'center'
+                                                    }}
+                                                >
+                                                    {option}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Step 5: Contact Details */}
+                    {step === 5 && (
+                        <div>
+                            <div className="form-section-title">Cadastro Rápido do Orçamento</div>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--muted)', marginBottom: '1.5rem', marginTop: '-1rem' }}>Preencha seus dados de contato para salvar esta estimativa na plataforma e enviar a proposta à nossa equipe.</p>
+                            <div style={{ display: 'grid', gap: '1.5rem' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>Nome Completo</label>
+                                    <input 
+                                        type="text" 
+                                        value={contatoNome} 
+                                        onChange={(e) => setContatoNome(e.target.value)}
+                                        placeholder="Ex: João Souza"
+                                        required
+                                        style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '1rem', color: 'white' }}
+                                    />
+                                </div>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>E-mail de Trabalho</label>
+                                    <input 
+                                        type="email" 
+                                        value={contatoEmail} 
+                                        onChange={(e) => setContatoEmail(e.target.value)}
+                                        placeholder="Ex: email@empresa.com"
+                                        required
+                                        style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '1rem', color: 'white' }}
+                                    />
+                                </div>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <label style={{ fontSize: '0.85rem', color: 'var(--muted)', fontWeight: '600' }}>Telefone / WhatsApp</label>
+                                    <input 
+                                        type="tel" 
+                                        value={contatoPhone} 
+                                        onChange={(e) => setContatoPhone(e.target.value)}
+                                        placeholder="Ex: (11) 99999-9999"
+                                        required
+                                        style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '1rem', padding: '1rem', color: 'white' }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Step 6: Pricing suggestions screen */}
+                    {step === 6 && result && (
+                        <div>
+                            <div className="form-section-title">Proposta Comercial Gerada</div>
+                            
+                            {/* suggested big price card */}
+                            <div style={{ 
+                                background: 'linear-gradient(135deg, rgba(255, 107, 53, 0.15) 0%, rgba(247, 176, 91, 0.05) 100%)', 
+                                border: '1px solid rgba(255, 107, 53, 0.3)',
+                                borderRadius: '1.5rem', 
+                                padding: '2rem', 
+                                textAlign: 'center', 
+                                marginBottom: '2rem',
+                                boxShadow: '0 10px 30px rgba(255, 107, 53, 0.08)'
+                            }}>
+                                <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>VALOR TOTAL ESTIMADO</span>
+                                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', color: 'white', marginTop: '0.5rem', letterSpacing: '-0.02em' }}>
+                                    R$ {result.valorTotalSugerido.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </h2>
+                                <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '0.5rem' }}>
+                                    Código de rastreamento: <strong style={{ color: 'white' }}>{result.trackingCode}</strong>
+                                </p>
+                            </div>
+
+                            {/* cost breakdown graph list */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginBottom: '2rem' }}>
+                                <h4 style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'white', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Breakdown dos Custos</h4>
+                                
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    {/* Modelagem */}
+                                    <div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.4rem' }}>
+                                            <span style={{ color: 'var(--muted)', fontWeight: '600' }}>Modelagem e Volumetria</span>
+                                            <span style={{ color: 'white', fontWeight: 'bold' }}>R$ {result.breakdown.modelagem.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                        </div>
+                                        <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
+                                            <div style={{ width: `${(result.breakdown.modelagem / result.valorTotalSugerido) * 100}%`, height: '100%', background: '#ff6b35', borderRadius: '10px' }}></div>
+                                        </div>
+                                    </div>
+
+                                    {/* Renderização */}
+                                    <div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.4rem' }}>
+                                            <span style={{ color: 'var(--muted)', fontWeight: '600' }}>Renderização & Entregáveis</span>
+                                            <span style={{ color: 'white', fontWeight: 'bold' }}>R$ {result.breakdown.renderizacao.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                        </div>
+                                        <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
+                                            <div style={{ width: `${(result.breakdown.renderizacao / result.valorTotalSugerido) * 100}%`, height: '100%', background: '#f7b05b', borderRadius: '10px' }}></div>
+                                        </div>
+                                    </div>
+
+                                    {/* Risco/IA */}
+                                    <div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.4rem' }}>
+                                            <span style={{ color: 'var(--muted)', fontWeight: '600' }}>Fator de Risco / IA / SLA</span>
+                                            <span style={{ color: 'white', fontWeight: 'bold' }}>R$ {result.breakdown.taxaRisco.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                        </div>
+                                        <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
+                                            <div style={{ width: `${(result.breakdown.taxaRisco / result.valorTotalSugerido) * 100}%`, height: '100%', background: '#a855f7', borderRadius: '10px' }}></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Rationale and subjectivity IA card */}
+                            <div style={{ 
+                                background: 'rgba(255, 255, 255, 0.01)', 
+                                border: '1px solid var(--border)', 
+                                padding: '1.2rem', 
+                                borderRadius: '1.2rem', 
+                                display: 'flex', 
+                                gap: '1rem',
+                                alignItems: 'flex-start',
+                                marginBottom: '2.5rem'
+                            }}>
+                                <div style={{ 
+                                    background: 'rgba(255, 107, 53, 0.1)', 
+                                    border: '1px solid rgba(255, 107, 53, 0.2)',
+                                    padding: '0.6rem', 
+                                    borderRadius: '0.8rem', 
+                                    color: 'var(--accent)',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    <i className="fas fa-brain" style={{ fontSize: '1.1rem' }}></i>
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <h5 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        Análise Subjetiva do Briefing
+                                        <span style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem', borderRadius: '50px', background: result.aiSource === 'ai' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(99, 102, 241, 0.15)', color: result.aiSource === 'ai' ? '#10B981' : '#818cf8', border: '1px solid border-transparent', fontWeight: 'bold' }}>
+                                            {result.aiSource === 'ai' ? 'MODELO IA' : 'REGRAS LOCAIS'}
+                                        </span>
+                                    </h5>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: '0.3rem', lineHeight: '1.4' }}>
+                                        {result.aiRationale} (Multiplicador de Complexidade: <b>{result.aiMultiplier}x</b>)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer Navigation Buttons */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem', marginTop: '2rem' }}>
+                    {step > 1 && step < 6 && (
+                        <button 
+                            type="button" 
+                            onClick={() => setStep(step - 1)}
+                            className="btn-nav btn-glass"
+                            style={{ flex: 1, justifyContent: 'center' }}
+                        >
+                            Voltar
+                        </button>
+                    )}
+
+                    {step < 5 ? (
+                        <button 
+                            type="button" 
+                            disabled={!isStepValid()}
+                            onClick={() => setStep(step + 1)}
+                            className="btn-nav btn-primary"
+                            style={{ flex: step === 1 ? 'none' : 1, width: step === 1 ? '100%' : 'auto', justifyContent: 'center', opacity: isStepValid() ? 1 : 0.4 }}
+                        >
+                            Próxima Etapa
+                        </button>
+                    ) : step === 5 ? (
+                        <button 
+                            type="button" 
+                            disabled={!isStepValid() || loading}
+                            onClick={handleCalculate}
+                            className="btn-nav btn-primary"
+                            style={{ flex: 1, justifyContent: 'center', opacity: isStepValid() && !loading ? 1 : 0.4 }}
+                        >
+                            {loading ? (
+                                <span><i className="fas fa-spinner fa-spin me-2"></i>Calculando...</span>
+                            ) : (
+                                <span>Ver Proposta Comercial</span>
+                            )}
+                        </button>
+                    ) : (
+                        <div style={{ display: 'flex', width: '100%', gap: '1rem' }}>
+                            <button 
+                                type="button" 
+                                onClick={handleRestart}
+                                className="btn-nav btn-glass"
+                                style={{ flex: 1, justifyContent: 'center' }}
+                            >
+                                <i className="fas fa-redo me-2"></i> Novo Orçamento
+                            </button>
+                            <a 
+                                href={`https://wa.me/554920181541?text=${encodeURIComponent(`Olá! Gostaria de dar andamento no meu orçamento de ArchViz gerado pela IA. Código: ${result?.trackingCode}. O valor estimado foi de R$ ${result?.valorTotalSugerido.toLocaleString('pt-BR')}`)}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="btn-nav btn-primary"
+                                style={{ flex: 1.5, justifyContent: 'center', textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+                            >
+                                <i className="fab fa-whatsapp me-2"></i> Falar com Consultor
+                            </a>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    }
+
+    // Mount to DOM
+    const rootEl = document.getElementById('archviz-wizard-root');
+    if (rootEl) {
+        ReactDOM.render(<ArchVizWizard />, rootEl);
+    }
+</script>
+
+{{!-- Standard budget query checks script --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Query status form
+        const statusForm = document.getElementById('statusForm');
+        statusForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = statusForm.querySelector('button[type="submit"]');
+            const statusResult = document.getElementById('statusResult');
+            const budgetId = document.getElementById('budgetId').value.trim();
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Buscando...';
+            statusResult.style.display = 'none';
+
+            try {
+                const response = await fetch(`/orcamento/status/${budgetId}`);
+                const result = await response.json();
+                if (result.success) {
+                    const b = result.budget;
+                    const dateFormatted = new Date(b.createdAt).toLocaleDateString('pt-BR');
+                    
+                    let statusLabel = 'Pendente';
+                    if (b.status === 'aprovado' || b.status === 'ganho') statusLabel = 'Aprovado 🚀';
+                    else if (b.status === 'perdido') statusLabel = 'Perdido';
+                    else if (b.status === 'analise' || b.status === 'respondido') statusLabel = 'Em Análise';
+
+                    statusResult.innerHTML = `Orçamento encontrado para <strong>${b.name}</strong>.<br>Status atual: <strong>${statusLabel}</strong><br>Criado em: ${dateFormatted}`;
+                    statusResult.className = 'status-mini-result success';
+                    statusResult.style.display = 'block';
+                } else {
+                    statusResult.textContent = result.message || 'Código não encontrado.';
+                    statusResult.className = 'status-mini-result error';
+                    statusResult.style.display = 'block';
+                }
+            } catch (err) {
+                statusResult.textContent = 'Erro ao conectar. Tente novamente.';
+                statusResult.className = 'status-mini-result error';
+                statusResult.style.display = 'block';
             } finally {
                 submitBtn.disabled = false;
-                btnText.style.display = 'inline-block';
-                loading.style.display = 'none';
+                submitBtn.textContent = 'Consultar Status';
             }
         });
     });

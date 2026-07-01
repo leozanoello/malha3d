@@ -1,7 +1,7 @@
 <!-- Global Modals for Malha 3D Dashboard -->
 
 <!-- <!-- 1. Modal: Criar Novo Projeto (Archviz High-Density Compact) -->
-<div class="modal fade" id="newProjectModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="newProjectModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] bg-[#0a0c10]/98 backdrop-blur-3xl overflow-hidden scale-95">
             <div class="modal-header border-white/5 p-5 bg-white/[0.02]">
@@ -135,7 +135,7 @@
 </div>
 
 <!-- 2. Modal: Novo Cadastro (Stakeholders / CRM Compact) -->
-<div class="modal fade" id="newRegistryModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="newRegistryModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] bg-[#0a0c10]/98 backdrop-blur-3xl overflow-hidden scale-90">
             <div class="modal-header border-white/5 p-6">
@@ -244,7 +244,7 @@
 </div>
 
 <!-- 3. Modal: Nova Transação Financeira -->
-<div class="modal fade" id="newTransactionModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="newTransactionModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2.5rem] bg-[#0a0c10]/95 backdrop-blur-3xl overflow-hidden">
             <div class="modal-header border-white/5 p-8 flex flex-col items-start gap-4">
@@ -376,6 +376,421 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
+
+<!-- Modal Perfil do Usuário -->
+<div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content glass-card">
+      <div class="modal-header border-bottom border-white/5 p-4 flex justify-between items-center">
+        <h5 class="modal-title text-gradient text-xl font-bold flex items-center gap-2" id="userProfileModalLabel">
+          <span class="material-symbols-outlined text-orange-500">account_circle</span>
+          Perfil do Usuário
+        </h5>
+        <button type="button" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white transition-all border-0" data-bs-dismiss="modal" aria-label="Close">
+          <span class="material-symbols-outlined text-sm">close</span>
+        </button>
+      </div>
+      
+      <div class="modal-body p-0">
+        <!-- Navegação das Abas -->
+        <ul class="nav nav-tabs border-bottom border-white/5 px-4 pt-3 flex gap-2" id="profileTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active bg-transparent border-0 text-gray-400 hover:text-white px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors active-orange" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab" aria-controls="general" aria-selected="true">Dados Pessoais</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link bg-transparent border-0 text-gray-400 hover:text-white px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors" id="professional-tab" data-bs-toggle="tab" data-bs-target="#professional" type="button" role="tab" aria-controls="professional" aria-selected="false">Profissional (Portfólio/Tags)</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link bg-transparent border-0 text-gray-400 hover:text-white px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false">Segurança (Reset de senha/Logoff)</button>
+          </li>
+        </ul>
+        
+        <form id="user-profile-form" class="p-6">
+          <div class="tab-content" id="profileTabContent">
+            <!-- ABA 1: GERAL -->
+            <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+              <!-- Upload Avatar Section -->
+              <div class="flex flex-col items-center justify-center mb-6">
+                <div class="relative w-28 h-28 rounded-full overflow-hidden group border-2 border-orange-500 cursor-pointer" id="avatar-upload-zone">
+                  <img id="avatar-preview" src="{{#if user.avatar}}{{user.avatar}}{{else}}/public/images/default-avatar.png{{/if}}" class="w-full h-full object-cover transition-transform group-hover:scale-105" alt="Avatar">
+                  <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity">
+                    <span class="material-symbols-outlined text-orange-500 text-2xl">photo_camera</span>
+                    <span class="text-[8px] font-black text-white uppercase tracking-widest mt-1">Alterar Foto</span>
+                  </div>
+                </div>
+                <input type="file" id="avatar-input" class="hidden" accept="image/*">
+                <span class="text-[9px] text-gray-500 font-bold tracking-widest mt-2 uppercase">Clique para alterar (Máx. 2MB)</span>
+              </div>
+              
+              <!-- Form Grid -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Nome de Usuário (Login)</label>
+                  <div class="relative">
+                    <input type="text" class="input-premium pr-10" value="{{user.email}}" disabled readonly>
+                    <span class="material-symbols-outlined text-sm text-gray-600 absolute right-4 top-1/2 -translate-y-1/2">lock</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Nome Completo</label>
+                  <input type="text" name="name" class="input-premium" value="{{user.name}}" required>
+                </div>
+                <div>
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">E-mail de Contato</label>
+                  <input type="email" name="email" class="input-premium" value="{{user.email}}" required>
+                </div>
+                <div>
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">CPF</label>
+                  <input type="text" name="cpf" id="profile-cpf" class="input-premium" placeholder="000.000.000-00" value="{{user.cpf}}">
+                </div>
+                <div>
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">WhatsApp</label>
+                  <input type="text" name="phoneWhatsapp" id="profile-whatsapp" class="input-premium" placeholder="+55 (00) 00000-0000" value="{{user.phoneWhatsapp}}">
+                </div>
+                <div>
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Endereço</label>
+                  <input type="text" name="addressDetails" class="input-premium" placeholder="Rua, Número, Bairro, Cidade - UF" value="{{user.addressDetails}}">
+                </div>
+                <div>
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Instagram</label>
+                  <input type="text" name="socialInstagram" class="input-premium" placeholder="https://instagram.com/seuusuario" value="{{user.socialInstagram}}">
+                </div>
+                <div>
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Facebook</label>
+                  <input type="text" name="socialFacebook" class="input-premium" placeholder="https://facebook.com/seuusuario" value="{{user.socialFacebook}}">
+                </div>
+                <div class="md:col-span-2">
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">X (Twitter)</label>
+                  <input type="text" name="socialTwitter" class="input-premium" placeholder="https://x.com/seuusuario" value="{{user.socialTwitter}}">
+                </div>
+              </div>
+            </div>
+            
+            <!-- ABA 2: PROFISSIONAL -->
+            <div class="tab-pane fade" id="professional" role="tabpanel" aria-labelledby="professional-tab">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Cargo Principal</label>
+                  <input type="text" name="jobTitle" class="input-premium" value="{{user.jobTitle}}" placeholder="Ex: Artista 3D Sênior">
+                </div>
+                <div>
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Modalidade</label>
+                  <select name="role" class="input-premium" disabled>
+                    <option value="{{user.role}}" selected>{{user.role}}</option>
+                  </select>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Link Portfólio (Behance / ArtStation)</label>
+                  <input type="url" name="portfolioUrl" class="input-premium" placeholder="https://www.behance.net/seu_perfil" value="{{user.portfolioUrl}}">
+                </div>
+                <div class="md:col-span-2">
+                  <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Tecnologias & Softwares Dominados (Tags Clique para Selecionar)</label>
+                  <div class="flex flex-wrap gap-2 p-3 bg-white/[0.01] border border-white/5 rounded-2xl" id="tech-stack-container">
+                    <!-- Tags interativas geradas via JS -->
+                  </div>
+                  <input type="hidden" name="techStack" id="profile-techstack-input">
+                </div>
+              </div>
+            </div>
+            
+            <!-- ABA 3: CONFIGURAÇÕES -->
+            <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+              <!-- Reset de Senha Própria -->
+              <div class="mb-6 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                <h6 class="text-xs font-black uppercase text-white tracking-widest mb-3 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm text-orange-500">lock</span>
+                  Alterar Minha Senha
+                </h6>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Senha Atual</label>
+                    <input type="password" id="profile-self-current-password" class="input-premium" placeholder="Senha atual">
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Nova Senha</label>
+                    <input type="password" id="profile-self-new-password" class="input-premium" placeholder="Mínimo 8 caracteres">
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Confirmar Nova Senha</label>
+                    <div class="flex gap-2">
+                      <input type="password" id="profile-self-confirm-password" class="input-premium" placeholder="Repita a nova senha">
+                      <button type="button" id="btn-self-change-password" class="px-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-black hover:bg-orange-500 hover:text-black transition-all">ALTERAR</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Reset de Senha Admin Condicional -->
+              <div id="admin-password-reset-section" class="mb-6 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                <h6 class="text-xs font-black uppercase text-white tracking-widest mb-3 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm text-yellow-500">lock_reset</span>
+                  Reset de Senha Administrativo
+                </h6>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Selecionar Usuário</label>
+                    <select id="reset-target-user" class="input-premium">
+                      <!-- Usuários preenchidos dinamicamente -->
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1.5 block">Nova Senha Temporária</label>
+                    <div class="flex gap-2">
+                      <input type="password" id="reset-new-password" class="input-premium" placeholder="Mínimo 8 caracteres">
+                      <button type="button" id="btn-submit-reset" class="px-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 text-xs font-black hover:bg-yellow-500 hover:text-black transition-all">ALTERAR</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Logoff / Sair da Conta -->
+              <div class="mt-8 pt-6 border-t border-white/5 flex justify-between items-center">
+                <div>
+                  <h6 class="text-xs font-black uppercase text-white tracking-widest mb-1">Encerrar Sessão</h6>
+                  <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Desconectar deste dispositivo com segurança</p>
+                </div>
+                <button type="button" id="modal-logout-btn" class="flex items-center gap-2 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500/10 border border-red-500/10 transition-all">
+                  <span class="material-symbols-outlined text-lg">logout</span>
+                  Sair da Conta
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- FOOTER INTEGRADO AO FORMULÁRIO -->
+          <div class="modal-footer border-t border-white/5 mt-6 pt-4 flex justify-end items-center gap-4 bg-black/20 p-4">
+            <button type="button" class="px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-white/5 transition-all border-0" data-bs-dismiss="modal">Fechar</button>
+            <button type="submit" class="px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white bg-orange-500 hover:bg-orange-600 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 transition-all border-0">Salvar Dados</button>
+          </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+<!-- Modal: Detalhes da Tarefa 360º -->
+<div class="modal fade" id="taskDetailsModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] bg-[#0a0c10]/98 backdrop-blur-3xl overflow-hidden">
+      
+      <!-- Header -->
+      <div class="modal-header border-white/5 p-6 bg-white/[0.02] flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <span class="text-[10px] text-orange-500 font-black uppercase tracking-[0.2em]" id="task-modal-milestone-title">MARCO DA TAREFA</span>
+          <h2 class="modal-title text-xl font-black text-white tracking-tight" id="task-modal-title">Título da Tarefa</h2>
+          <div class="flex items-center gap-2 mt-1 flex-wrap">
+            <span class="px-2.5 py-0.5 rounded-full bg-white/5 text-[9px] font-bold text-gray-400 uppercase" id="task-modal-status">Status</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-orange-500/10 text-[9px] font-bold text-orange-500 border border-orange-500/20" id="task-modal-round">🔄 Rev 00</span>
+            <span class="text-xs text-gray-500 font-medium" id="task-modal-client-name">Cliente: ---</span>
+            <a href="#" id="task-modal-whatsapp-link" target="_blank" class="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 text-[11px] font-bold ml-2">
+              <i class="fab fa-whatsapp"></i> Falar com Cliente
+            </a>
+          </div>
+        </div>
+        
+        <!-- Timer Controls in Header -->
+        <div class="flex items-center gap-4 ml-auto">
+          <div class="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-xl border border-white/5">
+            <span class="w-2.5 h-2.5 rounded-full bg-gray-600 inline-block" id="task-timer-pulse"></span>
+            <span class="text-sm font-black text-white font-mono" id="task-timer-display">00:00:00</span>
+          </div>
+          <button type="button" id="btn-task-timer-toggle" class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-white bg-indigo-500 hover:bg-indigo-600 transition-all border-0 shadow-lg shadow-indigo-500/20 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm">play_arrow</span> Play
+          </button>
+          <button type="button" class="btn-close btn-close-white scale-75 opacity-30 border-0 bg-transparent text-white text-2xl" data-bs-dismiss="modal">&times;</button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-8">
+        <!-- Dependency Blocked Alert Banner -->
+        <div id="task-dependency-blocked-banner" class="hidden mb-6"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          <!-- CORPO ESQUERDO: Descrição, Milestone, Progresso do tempo -->
+          <div class="lg:col-span-6 space-y-6">
+            <!-- Descrição -->
+            <div class="glass-panel p-6 rounded-2xl">
+              <h3 class="text-xs font-black text-white uppercase tracking-wider mb-3">Descrição da Tarefa</h3>
+              <p class="text-xs text-gray-400 leading-relaxed" id="task-modal-description">Instruções da tarefa...</p>
+            </div>
+
+            <!-- Milestone Selector -->
+            <div class="glass-panel p-6 rounded-2xl space-y-3">
+              <h3 class="text-xs font-black text-white uppercase tracking-wider">Módulo & Fase (Milestone)</h3>
+              <div>
+                <select id="task-modal-milestone-select" class="input-premium">
+                  <!-- Carregado dinamicamente -->
+                </select>
+              </div>
+            </div>
+
+            <!-- Pasta de Rede Local (UNC) -->
+            <div class="glass-panel p-6 rounded-2xl space-y-3">
+              <h3 class="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm text-indigo-400">folder_open</span>
+                Pasta de Rede (UNC)
+              </h3>
+              <div class="flex items-center gap-2">
+                <input type="text" id="task-unc-path-display" class="input-premium flex-1 text-xs" readonly>
+                <button type="button" id="btn-copy-unc-path" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all border-0 shadow-lg shadow-indigo-500/20 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-sm">content_copy</span> Copiar
+                </button>
+              </div>
+            </div>
+
+            <!-- Time Tracking (Progresso e tempos) -->
+            <div class="glass-panel p-6 rounded-2xl space-y-4">
+              <h3 class="text-xs font-black text-white uppercase tracking-wider">Progresso de Produção</h3>
+              
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Tempo Estimado</p>
+                  <p class="text-xs font-bold text-white font-mono" id="task-time-estimated">0 min</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Tempo Gasto Acumulado</p>
+                  <p class="text-xs font-bold text-indigo-400 font-mono" id="task-time-spent">0 min</p>
+                </div>
+              </div>
+
+              <!-- Time Progress Bar -->
+              <div class="w-full h-3 bg-white/5 border border-white/5 rounded-full overflow-hidden relative">
+                <div id="task-time-progress-bar" class="h-full bg-indigo-500 transition-all duration-500" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CORPO DIREITO: Checklist, Subtarefas, Arquivos & Qualidade (QC) -->
+          <div class="lg:col-span-6 space-y-6">
+            <!-- Tabs Menu -->
+            <ul class="nav nav-tabs border-0 flex gap-6 w-full" id="taskModalTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="task-subtasks-tab" data-bs-toggle="tab" data-bs-target="#task-subtasks-content" type="button" role="tab">
+                  Checklist & Sub-tarefas
+                  <div class="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 scale-x-0 group-hover:scale-x-100 transition-all"></div>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="task-files-tab" data-bs-toggle="tab" data-bs-target="#task-files-content" type="button" role="tab">
+                  Arquivos & Versões
+                  <div class="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 scale-x-0 group-hover:scale-x-100 transition-all"></div>
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="task-qc-tab" data-bs-toggle="tab" data-bs-target="#task-qc-content" type="button" role="tab">
+                  Qualidade (QC)
+                  <div class="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 scale-x-0 group-hover:scale-x-100 transition-all"></div>
+                </button>
+              </li>
+            </ul>
+
+            <div class="tab-content pt-4" id="taskModalTabsContent">
+              <!-- Aba 1: Subtarefas / Checklist -->
+              <div class="tab-pane fade show active" id="task-subtasks-content" role="tabpanel">
+                <div class="space-y-4">
+                  <!-- Add subtask -->
+                  <div class="flex gap-2">
+                    <input type="text" id="new-subtask-input" class="input-premium flex-1" placeholder="Adicionar item ao checklist...">
+                    <button type="button" id="btn-add-subtask" class="px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black text-[9px] uppercase tracking-widest transition-all">Add</button>
+                  </div>
+                  <!-- Checklist list -->
+                  <div id="subtasks-list-container" class="space-y-2 max-h-[30vh] overflow-y-auto scrollbar-premium pr-2">
+                    <!-- Dynamic check items -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Aba 2: Arquivos (UNC copy & uploads) -->
+              <div class="tab-pane fade" id="task-files-content" role="tabpanel">
+                <div class="space-y-4">
+                  <!-- Upload form / local path input -->
+                  <div class="p-4 bg-white/2 border border-white/5 rounded-2xl space-y-4">
+                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Registrar Novo Arquivo / Versão</p>
+                    <div class="space-y-3">
+                      <div>
+                        <input type="text" id="new-file-local-path" class="input-premium text-xs" placeholder="Caminho local do Windows (D:\...) ou URL...">
+                      </div>
+                      <div class="flex items-center justify-between gap-4">
+                        <span class="text-xs text-gray-500 font-medium">Ou upload na Nuvem:</span>
+                        <input type="file" id="new-file-upload-input" class="hidden">
+                        <button type="button" onclick="document.getElementById('new-file-upload-input').click()" class="px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest text-white transition-all">Escolher Imagem</button>
+                      </div>
+                      <button type="button" id="btn-save-task-file" class="w-full py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-[9px] font-black uppercase tracking-widest transition-all border-0 shadow-lg shadow-orange-500/20">Registrar Arquivo</button>
+                    </div>
+                  </div>
+
+                  <!-- File List -->
+                  <div id="task-files-list-container" class="space-y-3 max-h-[30vh] overflow-y-auto scrollbar-premium pr-2">
+                    <!-- Dynamic Files -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Aba 3: Controle de Qualidade (QC) -->
+              <div class="tab-pane fade" id="task-qc-content" role="tabpanel">
+                <div class="space-y-4 p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
+                  <h4 class="text-xs font-black text-white uppercase tracking-wider mb-2">Checklist Crítico de Validação de Imagem</h4>
+                  <div class="space-y-3 pt-2">
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                      <input type="checkbox" name="qc_ratio" class="form-checkbox bg-transparent border-white/10 rounded text-orange-500 focus:ring-0">
+                      <span class="text-xs text-gray-400 group-hover:text-white transition-colors">Validação de proporção de imagem (16:9, etc)</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                      <input type="checkbox" name="qc_exposure" class="form-checkbox bg-transparent border-white/10 rounded text-orange-500 focus:ring-0">
+                      <span class="text-xs text-gray-400 group-hover:text-white transition-colors">Configuração de exposição e gama de cor</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                      <input type="checkbox" name="qc_noise" class="form-checkbox bg-transparent border-white/10 rounded text-orange-500 focus:ring-0">
+                      <span class="text-xs text-gray-400 group-hover:text-white transition-colors">Ausência de ruídos / nível de ruído aceitável</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                      <input type="checkbox" name="qc_scale" class="form-checkbox bg-transparent border-white/10 rounded text-orange-500 focus:ring-0">
+                      <span class="text-xs text-gray-400 group-hover:text-white transition-colors">Validação de escala dos blocos e proporções 3D</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                      <input type="checkbox" name="qc_materials" class="form-checkbox bg-transparent border-white/10 rounded text-orange-500 focus:ring-0">
+                      <span class="text-xs text-gray-400 group-hover:text-white transition-colors">Acabamento dos encontros de materiais e mapeamento UV</span>
+                    </label>
+                  </div>
+                  <div class="pt-2">
+                    <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest leading-relaxed">Todos os itens de QC devem ser verificados antes de enviar o render para aprovação do cliente.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- SEÇÃO INFERIOR: Feed de Comentários e Histórico -->
+        <div class="border-t border-white/5 pt-8 mt-8 space-y-6">
+          <h3 class="text-xs font-black text-white uppercase tracking-wider flex items-center gap-2">
+            <span class="material-symbols-outlined text-orange-500 text-lg">forum</span>
+            Histórico & Comentários da Tarefa
+          </h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-8 space-y-4">
+              <div id="task-comments-feed" class="space-y-3 max-h-[35vh] overflow-y-auto scrollbar-premium pr-2">
+                <!-- Dynamic comments -->
+              </div>
+            </div>
+            
+            <div class="lg:col-span-4 space-y-4">
+              <textarea id="task-new-comment-input" class="w-full p-4 rounded-2xl bg-black/40 border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40 transition-all resize-none h-24" placeholder="Adicionar comentário ou feedback..."></textarea>
+              <div class="flex gap-3">
+                <button type="button" id="btn-save-task-comment" class="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black text-[10px] uppercase tracking-widest transition-all border-0">Enviar Comentário</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <script>
 // IBGE Loader functions (exposed globally)
@@ -630,6 +1045,877 @@ document.addEventListener('DOMContentLoaded', () => {
             if(result.success) window.location.reload();
             else alert('Erro: ' + result.message);
         } catch(err) { console.error(err); }
+    });
+
+    // === USER PROFILE MODAL JS LOGIC ===
+    const profileModalEl = document.getElementById('userProfileModal');
+    const profileForm = document.getElementById('user-profile-form');
+    
+    // Softwares predefinidos para a aba de Archviz
+    const AVAILABLE_SOFTWARES = [
+        '3ds Max', 'Revit', 'D5 Render', 'Blender', 'Corona Renderer', 
+        'V-Ray', 'Unreal Engine', 'Photoshop', 'SketchUp', 'Illustrator', 'Premiere'
+    ];
+    let selectedSoftwares = [];
+
+    // Formatar WhatsApp em tempo real
+    const phoneInput = document.getElementById('profile-whatsapp');
+    phoneInput?.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 0 && !e.target.value.startsWith('+')) {
+            value = '55' + value; // Prefixo Brasil por padrão se não digitado
+        }
+        if (value.length <= 11) {
+            value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+            value = value.replace(/(\d)(\d{4})$/g, '$1-$2');
+        } else {
+            value = value.replace(/^(\d{2})(\d{2})(\d)/g, '+$1 ($2) $3');
+            value = value.replace(/(\d)(\d{4})$/g, '$1-$2');
+        }
+        e.target.value = value;
+    });
+
+    // Formatar CPF em tempo real
+    const cpfInput = document.getElementById('profile-cpf');
+    cpfInput?.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        e.target.value = value;
+    });
+
+    // Função de validação de CPF
+    function validateCPF(cpf) {
+        cpf = cpf.replace(/[^\d]+/g, '');
+        if (cpf.length !== 11 || !!cpf.match(/(\d)\1{10}/)) return false;
+        let sum = 0;
+        let remainder;
+        for (let i = 1; i <= 9; i++) sum = sum + parseInt(cpf.substring(i - 1, i)) * (11 - i);
+        remainder = (sum * 10) % 11;
+        if ((remainder === 10) || (remainder === 11)) remainder = 0;
+        if (remainder !== parseInt(cpf.substring(9, 10))) return false;
+        sum = 0;
+        for (let i = 1; i <= 10; i++) sum = sum + parseInt(cpf.substring(i - 1, i)) * (12 - i);
+        remainder = (sum * 10) % 11;
+        if ((remainder === 10) || (remainder === 11)) remainder = 0;
+        if (remainder !== parseInt(cpf.substring(10, 11))) return false;
+        return true;
+    }
+
+    // Carregar dados de perfil ao abrir o modal
+    profileModalEl?.addEventListener('show.bs.modal', async () => {
+        try {
+            const res = await fetch('/admin/api/users/profile/data');
+            const result = await res.json();
+            if (result.success) {
+                const user = result.user;
+                
+                // Preencher campos
+                profileForm.name.value = user.name || '';
+                profileForm.email.value = user.email || '';
+                profileForm.cpf.value = user.cpf || '';
+                profileForm.phoneWhatsapp.value = user.phoneWhatsapp || '';
+                profileForm.addressDetails.value = user.addressDetails || '';
+                profileForm.jobTitle.value = user.jobTitle || '';
+                profileForm.portfolioUrl.value = user.portfolioUrl || '';
+                profileForm.socialInstagram.value = user.socialInstagram || '';
+                profileForm.socialFacebook.value = user.socialFacebook || '';
+                profileForm.socialTwitter.value = user.socialTwitter || '';
+                
+                if (user.avatar) {
+                    document.getElementById('avatar-preview').src = user.avatar;
+                } else {
+                    document.getElementById('avatar-preview').src = '/public/images/default-avatar.png';
+                }
+                
+                // Tema do sistema
+                document.getElementById('profile-theme').value = user.theme || 'dark';
+                
+                // Notificações
+                const notif = user.notificationPreferences || { email: true, chat: true };
+                document.getElementById('notif-email').checked = notif.email !== false;
+                document.getElementById('notif-chat').checked = notif.chat !== false;
+
+                // Renderizar tags de softwares
+                selectedSoftwares = Array.isArray(user.techStack) ? user.techStack : [];
+                renderTechTags();
+
+                // Lógica de UI Condicional para Admin
+                const adminSection = document.getElementById('admin-password-reset-section');
+                if (user.role === 'admin') {
+                    adminSection?.classList.remove('hidden');
+                    loadAdminUsersSelect();
+                } else {
+                    adminSection?.classList.add('hidden');
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao carregar dados de perfil:', error);
+        }
+    });
+
+    // Renderizar tags do Software Stack
+    function renderTechTags() {
+        const container = document.getElementById('tech-stack-container');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        AVAILABLE_SOFTWARES.forEach(software => {
+            const tag = document.createElement('div');
+            tag.className = 'tech-tag' + (selectedSoftwares.includes(software) ? ' active' : '');
+            tag.textContent = software;
+            tag.addEventListener('click', () => {
+                if (selectedSoftwares.includes(software)) {
+                    selectedSoftwares = selectedSoftwares.filter(s => s !== software);
+                    tag.classList.remove('active');
+                } else {
+                    selectedSoftwares.push(software);
+                    tag.classList.add('active');
+                }
+                document.getElementById('profile-techstack-input').value = JSON.stringify(selectedSoftwares);
+            });
+            container.appendChild(tag);
+        });
+        document.getElementById('profile-techstack-input').value = JSON.stringify(selectedSoftwares);
+    }
+
+    // Carregar usuários para admin resetar senha
+    async function loadAdminUsersSelect() {
+        const select = document.getElementById('reset-target-user');
+        if (!select) return;
+        
+        try {
+            const res = await fetch('/admin/api/users');
+            const data = await res.json();
+            const users = data.users || data;
+            
+            select.innerHTML = '';
+            users.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.id;
+                opt.textContent = `${u.name} (${u.role})`;
+                select.appendChild(opt);
+            });
+        } catch(e) {
+            console.error('Erro ao carregar usuários para reset:', e);
+        }
+    }
+
+    // Ação de Alterar Senha (Admin)
+    document.getElementById('btn-submit-reset')?.addEventListener('click', async () => {
+        const targetUserId = document.getElementById('reset-target-user').value;
+        const newPassword = document.getElementById('reset-new-password').value;
+        
+        if (!newPassword || newPassword.length < 8) {
+            alert('A senha deve ter pelo menos 8 caracteres.');
+            return;
+        }
+
+        try {
+            const res = await fetch(`/admin/api/users/${targetUserId}/reset-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ newPassword })
+            });
+            const result = await res.json();
+            if (result.success) {
+                alert('Senha alterada com sucesso! O usuário foi deslogado.');
+                document.getElementById('reset-new-password').value = '';
+            } else {
+                alert('Erro: ' + (result.error || result.message));
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Ocorreu um erro ao resetar a senha.');
+        }
+    });
+
+    // Ação de Alterar Própria Senha (Self-service)
+    document.getElementById('btn-self-change-password')?.addEventListener('click', async () => {
+        const currentPassword = document.getElementById('profile-self-current-password').value;
+        const newPassword = document.getElementById('profile-self-new-password').value;
+        const confirmPassword = document.getElementById('profile-self-confirm-password').value;
+        
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            alert('Por favor, preencha todos os campos de senha.');
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            alert('A nova senha e a confirmação não coincidem.');
+            return;
+        }
+        if (newPassword.length < 8) {
+            alert('A nova senha deve ter no mínimo 8 caracteres.');
+            return;
+        }
+
+        try {
+            const res = await fetch('/admin/api/users/profile/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ currentPassword, newPassword })
+            });
+            const result = await res.json();
+            if (result.success) {
+                alert('Sua senha foi atualizada com sucesso!');
+                document.getElementById('profile-self-current-password').value = '';
+                document.getElementById('profile-self-new-password').value = '';
+                document.getElementById('profile-self-confirm-password').value = '';
+            } else {
+                alert('Erro: ' + (result.error || result.message));
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Ocorreu um erro ao alterar a senha.');
+        }
+    });
+
+    // Upload de avatar ao clicar na zona da foto
+    const avatarZone = document.getElementById('avatar-upload-zone');
+    const avatarInput = document.getElementById('avatar-input');
+    
+    avatarZone?.addEventListener('click', () => avatarInput.click());
+    
+    avatarInput?.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        if (file.size > 2 * 1024 * 1024) {
+            alert('A foto deve ter no máximo 2MB.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        try {
+            const res = await fetch('/admin/api/users/profile/upload-avatar', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await res.json();
+            if (result.success) {
+                document.getElementById('avatar-preview').src = result.avatarUrl;
+                const sidebarImg = document.getElementById('sidebar-avatar-img');
+                if (sidebarImg) {
+                    sidebarImg.src = result.avatarUrl;
+                } else {
+                    const letterAvatar = document.getElementById('sidebar-avatar-letter');
+                    if (letterAvatar) {
+                        const parent = letterAvatar.parentElement;
+                        parent.classList.remove('bg-gradient-to-br', 'from-orange-400', 'to-orange-600', 'shadow-orange-500/20');
+                        parent.innerHTML = `<img src="${result.avatarUrl}" class="w-full h-full object-cover" id="sidebar-avatar-img">`;
+                    }
+                }
+                alert('Foto de perfil atualizada!');
+            } else {
+                alert('Erro ao enviar foto: ' + result.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Erro de conexão ao enviar avatar.');
+        }
+    });
+
+    // Enviar formulário de edição de perfil
+    profileForm?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const cpfVal = document.getElementById('profile-cpf').value;
+        if (cpfVal && cpfVal.length > 0 && !validateCPF(cpfVal)) {
+            alert('CPF inválido! Por favor digite um CPF válido ou deixe o campo vazio.');
+            return;
+        }
+
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        
+        try {
+            data.techStack = JSON.parse(data.techStack || '[]');
+        } catch(err) {
+            data.techStack = [];
+        }
+
+        data.notificationPreferences = {
+            email: document.getElementById('notif-email').checked,
+            chat: document.getElementById('notif-chat').checked
+        };
+
+        try {
+            const res = await fetch('/admin/api/users/profile/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.success) {
+                alert('Perfil updated com sucesso!');
+                const nameEl = document.getElementById('sidebar-user-name');
+                if (nameEl) nameEl.textContent = data.name;
+                
+                bootstrap.Modal.getInstance(profileModalEl).hide();
+            } else {
+                alert('Erro ao salvar perfil: ' + result.error);
+            }
+        } catch(err) {
+            console.error(err);
+            alert('Erro de conexão ao salvar dados.');
+        }
+    });
+
+    // ==========================================
+    // TASK DETAILS MODAL JAVASCRIPT LOGIC
+    // ==========================================
+    const taskDetailsModalEl = document.getElementById('taskDetailsModal');
+    let taskDetailsModal = null;
+    if (taskDetailsModalEl) {
+        taskDetailsModal = new bootstrap.Modal(taskDetailsModalEl);
+    }
+
+    let activeTaskId = null;
+    let activeProjectDetailsId = null;
+    let timerInterval = null;
+    let secondsElapsed = 0;
+
+    window.openTaskDetails = async function(taskId) {
+        activeTaskId = taskId;
+        try {
+            const res = await fetch(`/admin/api/tasks/${taskId}`);
+            const data = await res.json();
+            if (!data.success) {
+                alert('Erro ao carregar detalhes da tarefa: ' + data.error);
+                return;
+            }
+
+            const task = data.task;
+            activeProjectDetailsId = task.milestone?.project?.id;
+            
+            // Text values
+            document.getElementById('task-modal-title').innerText = task.title;
+            document.getElementById('task-modal-description').innerText = task.description || 'Sem descrição cadastrada.';
+            document.getElementById('task-modal-status').innerText = (task.status || 'a_fazer').replace('_', ' ').toUpperCase();
+            document.getElementById('task-modal-milestone-title').innerText = task.milestone?.title || 'SEM MARCO';
+            document.getElementById('task-modal-round').innerText = `🔄 Rev ${task.revisionRound || 0}`;
+
+            const customer = task.milestone?.project?.customer || task.milestone?.project?.client;
+            if (customer) {
+                document.getElementById('task-modal-client-name').innerText = `Cliente: ${customer.name}`;
+                const whatsapp = customer.phoneWhatsapp || customer.phone || '';
+                const cleanPhone = whatsapp.replace(/\D/g, '');
+                if (cleanPhone) {
+                    document.getElementById('task-modal-whatsapp-link').href = `https://wa.me/${cleanPhone}`;
+                    document.getElementById('task-modal-whatsapp-link').classList.remove('hidden');
+                } else {
+                    document.getElementById('task-modal-whatsapp-link').classList.add('hidden');
+                }
+            } else {
+                document.getElementById('task-modal-client-name').innerText = 'Cliente: Sem Vínculo';
+                document.getElementById('task-modal-whatsapp-link').classList.add('hidden');
+            }
+
+            // Milestone selector list load
+            if (activeProjectDetailsId) {
+                try {
+                    const mRes = await fetch(`/admin/api/projects/${activeProjectDetailsId}/milestones`);
+                    const mData = await mRes.json();
+                    const select = document.getElementById('task-modal-milestone-select');
+                    if (select && mData.success && mData.milestones) {
+                        select.innerHTML = mData.milestones.map(m => `
+                            <option value="${m.id}" ${m.id === task.milestoneId ? 'selected' : ''}>${m.title}</option>
+                        `).join('');
+                    }
+                } catch (mErr) {
+                     console.error('Erro ao carregar marcos:', mErr);
+                }
+            }
+
+            // Time Tracking values
+            document.getElementById('task-time-estimated').innerText = `${task.estimatedMinutes || 0} min`;
+            const spentEl = document.getElementById('task-time-spent');
+            spentEl.innerText = `${task.spentMinutes || 0} min`;
+            
+            // Progress Bar
+            const totalEst = task.estimatedMinutes || 1;
+            const spent = task.spentMinutes || 0;
+            const timeProgress = Math.min(100, Math.round((spent / totalEst) * 100));
+            const progressBar = document.getElementById('task-time-progress-bar');
+            progressBar.style.width = `${timeProgress}%`;
+            
+            if (spent > totalEst) {
+                progressBar.className = 'h-full bg-gradient-to-r from-red-500 to-rose-600 animate-pulse';
+                spentEl.className = 'text-xs font-bold text-red-500 font-mono';
+            } else {
+                progressBar.className = 'h-full bg-indigo-500 transition-all duration-500';
+                spentEl.className = 'text-xs font-bold text-indigo-400 font-mono';
+            }
+
+            // Populate UNC Path
+            const clientName = (customer?.name || 'CLIENTE').toUpperCase().replace(/[^A-Z0-9\s-_]/g, '').trim();
+            const projectTitle = (task.milestone?.project?.title || 'PROJETO').toUpperCase().replace(/[^A-Z0-9\s-_]/g, '').trim();
+            const uncPath = `\\\\ZANOELLO-SERVER\\Projetos\\${clientName}\\${projectTitle}`;
+            const uncInput = document.getElementById('task-unc-path-display');
+            if (uncInput) {
+                uncInput.value = uncPath;
+            }
+
+            // Dependency Block check
+            const pendingDependencies = (task.dependencies || []).filter(dep => dep.status !== 'concluido');
+            const timerBtn = document.getElementById('btn-task-timer-toggle');
+            const alertBanner = document.getElementById('task-dependency-blocked-banner');
+            
+            if (pendingDependencies.length > 0) {
+                timerBtn.disabled = true;
+                timerBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                timerBtn.title = 'Esta tarefa está bloqueada por dependências pendentes.';
+                
+                const blockedNames = pendingDependencies.map(dep => dep.title).join(', ');
+                alertBanner.innerHTML = `
+                    <div class="p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-xl flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">warning</span>
+                        <span>Bloqueado pelas tarefas: <strong>${blockedNames}</strong></span>
+                    </div>
+                `;
+                alertBanner.classList.remove('hidden');
+            } else {
+                timerBtn.disabled = false;
+                timerBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                timerBtn.removeAttribute('title');
+                alertBanner.classList.add('hidden');
+            }
+
+            // Load QC checklist checkboxes
+            const qcState = JSON.parse(localStorage.getItem(`qc_${taskId}`) || '{}');
+            document.querySelectorAll('#task-qc-content input[type="checkbox"]').forEach(cb => {
+                cb.checked = !!qcState[cb.name];
+            });
+
+            // Reset Timer state
+            updateTimerDisplay(0);
+            secondsElapsed = 0;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            updateTimerUI(false);
+
+            // Checklist & Subtasks
+            renderSubtasks(task.subTasks || []);
+
+            // Files & Versions
+            renderTaskFiles(task.files || []);
+
+            // Comments feed
+            renderCommentsFeed(task.comments || []);
+
+            // Open Modal
+            taskDetailsModal.show();
+        } catch (error) {
+            console.error('Erro no openTaskDetails:', error);
+            alert('Não foi possível carregar as informações da tarefa.');
+        }
+    };
+
+    // Milestone Select Change Handler
+    document.getElementById('task-modal-milestone-select')?.addEventListener('change', async function(e) {
+        if (!activeTaskId) return;
+        const milestoneId = e.target.value;
+        try {
+            const res = await fetch(`/admin/api/tasks/${activeTaskId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ milestoneId })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.showNotification?.('Fase da tarefa atualizada com sucesso!', 'success');
+                if (window.loadProjectChecklist) {
+                    window.loadProjectChecklist(activeProjectDetailsId);
+                }
+                document.getElementById('task-modal-milestone-title').innerText = e.target.options[e.target.selectedIndex].text.toUpperCase();
+            } else {
+                alert('Erro ao transferir fase: ' + data.error);
+            }
+        } catch (err) {
+            console.error('Erro ao salvar alteração de marco:', err);
+        }
+    });
+
+    // QC Checkbox Change Handler
+    document.querySelectorAll('#task-qc-content input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', function() {
+            if (!activeTaskId) return;
+            const qcState = JSON.parse(localStorage.getItem(`qc_${activeTaskId}`) || '{}');
+            qcState[this.name] = this.checked;
+            localStorage.setItem(`qc_${activeTaskId}`, JSON.stringify(qcState));
+        });
+    });
+
+    function updateTimerDisplay(totalSeconds) {
+        const hrs = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+        const mins = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+        const secs = (totalSeconds % 60).toString().padStart(2, '0');
+        document.getElementById('task-timer-display').innerText = `${hrs}:${mins}:${secs}`;
+    }
+
+    function updateTimerUI(isRunning) {
+        const pulse = document.getElementById('task-timer-pulse');
+        const btn = document.getElementById('btn-task-timer-toggle');
+        if (!btn) return;
+        if (isRunning) {
+            pulse?.classList.add('bg-red-500', 'animate-pulse');
+            pulse?.classList.remove('bg-gray-600');
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">stop</span> Stop';
+            btn.classList.add('bg-red-500', 'hover:bg-red-600', 'shadow-red-500/20');
+            btn.classList.remove('bg-indigo-500', 'hover:bg-indigo-600', 'shadow-indigo-500/20');
+        } else {
+            pulse?.classList.remove('bg-red-500', 'animate-pulse');
+            pulse?.classList.add('bg-gray-600');
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">play_arrow</span> Play';
+            btn.classList.remove('bg-red-500', 'hover:bg-red-600', 'shadow-red-500/20');
+            btn.classList.add('bg-indigo-500', 'hover:bg-indigo-600', 'shadow-indigo-500/20');
+        }
+    }
+
+    document.getElementById('btn-task-timer-toggle')?.addEventListener('click', async function() {
+        if (!activeTaskId) return;
+
+        if (timerInterval) {
+            // STOP TIMER - FRONTEND INSTANT UPDATE
+            const minutesToAdd = Math.round(secondsElapsed / 60);
+            const spentEl = document.getElementById('task-time-spent');
+            const currentSpentText = spentEl ? spentEl.innerText : '0 min';
+            const currentSpentNum = parseInt(currentSpentText) || 0;
+            const newSpentNum = currentSpentNum + minutesToAdd;
+
+            if (spentEl) {
+                spentEl.innerText = `${newSpentNum} min`;
+            }
+
+            const estimatedText = document.getElementById('task-time-estimated')?.innerText || '0 min';
+            const estimatedNum = parseInt(estimatedText) || 1;
+            const timeProgress = Math.min(100, Math.round((newSpentNum / estimatedNum) * 100));
+            const progressBar = document.getElementById('task-time-progress-bar');
+            if (progressBar) {
+                progressBar.style.width = `${timeProgress}%`;
+                if (newSpentNum > estimatedNum) {
+                    progressBar.className = 'h-full bg-gradient-to-r from-red-500 to-rose-600 animate-pulse';
+                    if (spentEl) spentEl.className = 'text-xs font-bold text-red-500 font-mono';
+                } else {
+                    progressBar.className = 'h-full bg-indigo-500 transition-all duration-500';
+                    if (spentEl) spentEl.className = 'text-xs font-bold text-indigo-400 font-mono';
+                }
+            }
+
+            clearInterval(timerInterval);
+            timerInterval = null;
+            updateTimerDisplay(0);
+            const prevSeconds = secondsElapsed;
+            secondsElapsed = 0;
+            updateTimerUI(false);
+            
+            try {
+                const res = await fetch('/admin/api/tracker/stop', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await res.json();
+                if (result.success) {
+                    openTaskDetails(activeTaskId);
+                } else {
+                    alert('Erro ao parar rastreio: ' + result.error);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        } else {
+            // START TIMER
+            try {
+                const res = await fetch('/admin/api/tracker/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        projectId: activeProjectDetailsId,
+                        taskId: activeTaskId,
+                        taskType: 'other',
+                        description: `Trabalho na tarefa: ${document.getElementById('task-modal-title').innerText}`
+                    })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    timerInterval = setInterval(() => {
+                        secondsElapsed++;
+                        updateTimerDisplay(secondsElapsed);
+                    }, 1000);
+                    updateTimerUI(true);
+                } else {
+                    alert(result.error || 'Erro ao iniciar o cronômetro.');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    });
+
+    // Copy UNC Path Button Listener
+    document.getElementById('btn-copy-unc-path')?.addEventListener('click', function() {
+        const uncInput = document.getElementById('task-unc-path-display');
+        if (!uncInput) return;
+        navigator.clipboard.writeText(uncInput.value)
+            .then(() => {
+                const btn = document.getElementById('btn-copy-unc-path');
+                if (!btn) return;
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span> Copiado';
+                btn.classList.replace('bg-indigo-500', 'bg-emerald-500');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.replace('bg-emerald-500', 'bg-indigo-500');
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Erro ao copiar UNC:', err);
+            });
+    });
+
+    // CÓPIA DE CAMINHO DE REDE (UNC Copy)
+    window.copyLocalPathToClipboard = function(btn, path) {
+        const windowsPath = path.replace(/\//g, '\\');
+        navigator.clipboard.writeText(windowsPath)
+            .then(() => {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span class="material-symbols-outlined text-[10px] text-emerald-400">check</span> Copiado!';
+                btn.classList.add('border-emerald-500/30', 'text-emerald-400');
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.remove('border-emerald-500/30', 'text-emerald-400');
+                }, 2000);
+            })
+            .catch(err => {
+                console.error('Erro ao copiar:', err);
+                alert('Erro ao copiar para a área de transferência.');
+            });
+    };
+
+    function renderSubtasks(subtasks) {
+        const list = document.getElementById('subtasks-list-container');
+        if (!list) return;
+
+        if (subtasks.length === 0) {
+            list.innerHTML = '<p class="text-xs text-gray-500 italic">Nenhum item no checklist.</p>';
+            return;
+        }
+
+        list.innerHTML = subtasks.map(item => `
+            <div class="p-3 bg-white/2 border border-white/5 rounded-2xl flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" ${item.status === 'concluido' ? 'checked' : ''} onchange="window.toggleSubtaskStatus('${item.id}', this.checked)" class="w-4 h-4 rounded border-white/10 bg-black/40 text-orange-500 cursor-pointer">
+                    <span class="text-xs ${item.status === 'concluido' ? 'text-gray-500 line-through' : 'text-white'}">${item.title}</span>
+                </div>
+                <button onclick="window.deleteSubtask('${item.id}')" class="w-6 h-6 rounded-lg bg-white/5 hover:bg-red-500/10 text-gray-500 hover:text-red-500 transition-all border-0 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-xs">delete</span>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    window.toggleSubtaskStatus = async function(subtaskId, isChecked) {
+        try {
+            await fetch(`/admin/api/tasks/${subtaskId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: isChecked ? 'concluido' : 'a_fazer' })
+            });
+            openTaskDetails(activeTaskId);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    window.deleteSubtask = async function(subtaskId) {
+        if (!confirm('Deseja excluir esta sub-tarefa?')) return;
+        try {
+            await fetch(`/admin/api/tasks/${subtaskId}`, { method: 'DELETE' });
+            openTaskDetails(activeTaskId);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    document.getElementById('btn-add-subtask')?.addEventListener('click', async function() {
+        const input = document.getElementById('new-subtask-input');
+        const title = input.value.trim();
+        if (!title) return;
+
+        try {
+            const res = await fetch('/admin/api/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    parentTaskId: activeTaskId,
+                    milestoneId: document.getElementById('task-modal-milestone-title').dataset.milestoneId || activeTaskId,
+                    title,
+                    status: 'a_fazer'
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                input.value = '';
+                openTaskDetails(activeTaskId);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
+    function renderTaskFiles(files) {
+        const list = document.getElementById('task-files-list-container');
+        if (!list) return;
+
+        if (files.length === 0) {
+            list.innerHTML = '<p class="text-xs text-gray-500 italic">Nenhum arquivo ou render anexado.</p>';
+            return;
+        }
+
+        list.innerHTML = files.map(file => {
+            const isLocal = file.fileType === 'local';
+            return `
+                <div class="p-4 bg-white/2 border border-white/5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400">
+                            <span class="material-symbols-outlined">${isLocal ? 'folder' : 'image'}</span>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-white font-mono break-all">${file.filePathOrUrl}</p>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[9px] text-gray-500 font-bold uppercase">Versão V${file.versionNumber}</span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-gray-700"></span>
+                                <span class="text-[9px] ${file.isApprovedByClient ? 'text-emerald-400' : 'text-amber-500'} font-bold uppercase">
+                                    ${file.isApprovedByClient ? 'Aprovado pelo Cliente' : 'Pendente de Aprovação'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        ${isLocal ? `
+                            <button onclick="window.copyLocalPathToClipboard(this, '${file.filePathOrUrl}')" class="px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest text-white transition-all">
+                                <i class="fa-solid fa-copy mr-1"></i> Copiar Caminho
+                            </button>
+                        ` : `
+                            <a href="${file.filePathOrUrl}" target="_blank" class="px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest text-white transition-all inline-block">
+                                <i class="fa-solid fa-eye mr-1"></i> Visualizar
+                            </a>
+                        `}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    document.getElementById('btn-save-task-file')?.addEventListener('click', async function() {
+        const localPathInput = document.getElementById('new-file-local-path');
+        const uploadInput = document.getElementById('new-file-upload-input');
+        const localPath = localPathInput.value.trim();
+        const fileToUpload = uploadInput.files[0];
+
+        if (!localPath && !fileToUpload) {
+            alert('Por favor, informe um caminho local ou faça upload de um arquivo.');
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            if (fileToUpload) {
+                formData.append('file', fileToUpload);
+                formData.append('fileType', 'image');
+            } else {
+                formData.append('filePathOrUrl', localPath);
+                formData.append('fileType', 'local');
+            }
+
+            const res = await fetch(`/admin/api/tasks/${activeTaskId}/files`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                localPathInput.value = '';
+                uploadInput.value = '';
+                openTaskDetails(activeTaskId);
+            } else {
+                alert('Erro ao salvar arquivo: ' + data.error);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
+    function renderCommentsFeed(comments) {
+        const feed = document.getElementById('task-comments-feed');
+        if (!feed) return;
+
+        if (comments.length === 0) {
+            feed.innerHTML = '<p class="text-xs text-gray-500 italic">Nenhum comentário registrado.</p>';
+            return;
+        }
+
+        const sorted = comments.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        feed.innerHTML = sorted.map(c => {
+            let typeLabel = 'Comentário da Equipe';
+            let bgClass = 'bg-white/[0.02] border-white/5 text-gray-300';
+            if (c.type === 'client_feedback') {
+                typeLabel = 'Feedback do Cliente';
+                bgClass = 'bg-orange-500/10 border-orange-500/20 text-orange-400 shadow-[0_0_15px_rgba(249,115,22,0.05)]';
+            } else if (c.type === 'system') {
+                typeLabel = 'Sistema';
+                bgClass = 'bg-white/[0.01] border-white/5 text-gray-500';
+            }
+
+            return `
+                <div class="p-4 rounded-2xl border ${bgClass} transition-all">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-wider">${typeLabel}</span>
+                        <span class="text-[9px] font-mono opacity-60">${new Date(c.createdAt).toLocaleString('pt-BR')}</span>
+                    </div>
+                    <p class="text-xs leading-relaxed font-medium">${c.content}</p>
+                </div>
+            `;
+        }).join('');
+    }
+
+    document.getElementById('btn-save-task-comment')?.addEventListener('click', async function() {
+        const input = document.getElementById('task-new-comment-input');
+        const content = input.value.trim();
+        if (!content) return;
+
+        try {
+            const res = await fetch(`/admin/api/tasks/${activeTaskId}/comments`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content, type: 'team_comment' })
+            });
+            const data = await res.json();
+            if (data.success) {
+                input.value = '';
+                openTaskDetails(activeTaskId);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
+    // Botão de Logout dentro do modal
+    document.getElementById('modal-logout-btn')?.addEventListener('click', () => {
+        if (confirm('Deseja realmente sair da sua conta?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/admin/logout';
+            document.body.appendChild(form);
+            form.submit();
+        }
     });
 });
 </script>

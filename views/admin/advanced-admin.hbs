@@ -11,7 +11,7 @@
                 <div class="flex flex-col gap-2">
                     <button class="advanced-tab-btn" data-tab="usuarios">
                         <span class="material-symbols-outlined text-lg">group</span>
-                        <span>Gestão Multi-Tenant</span>
+                        <span>Gestão de Equipe</span>
                     </button>
                     <button class="advanced-tab-btn" data-tab="instancias">
                         <span class="material-symbols-outlined text-lg">memory</span>
@@ -64,10 +64,11 @@
 
                     <!-- Bloco de Assinantes -->
                     <div class="glass-card border-white/5 overflow-hidden mb-8">
-                        <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center">
-                            <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Hierarquia de Assinantes</h4>
+                        <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-subscribers')">
+                            <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Assinantes</h4>
+                            <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-subscribers">expand_more</span>
                         </div>
-                        <div class="divide-y divide-white/[0.03]">
+                        <div id="card-subscribers" class="divide-y divide-white/[0.03]">
                             {{#if subscriberUsers.length}}
                                  {{#each subscriberUsers}}
                                  <div class="group subscriber-item" data-id="{{this.id}}">
@@ -91,7 +92,7 @@
                                              <div class="flex items-center gap-1">
                                                  <button class="btn-edit-user p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
                                                          data-id="{{this.id}}" data-name="{{this.name}}" data-email="{{this.email}}" 
-                                                         data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}"
+                                                         data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}" data-menus="{{this.permissions.allowed_menus}}"
                                                          title="Editar Usuário"><span class="material-symbols-outlined text-xs">edit</span></button>
                                                  <button class="btn-reset-pass p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
                                                          data-id="{{this.id}}" data-name="{{this.name}}"
@@ -143,10 +144,11 @@
 
                     <!-- Bloco de Outros Usuários (Staff/Admins/Avulsos) -->
                     <div class="glass-card border-white/5 overflow-hidden">
-                        <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center">
-                            <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Malha 3D e Colaboradores Avulsos</h4>
+                        <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-other-users')">
+                            <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Malha 3D</h4>
+                            <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-other-users">expand_more</span>
                         </div>
-                        <div class="divide-y divide-white/[0.03]">
+                        <div id="card-other-users" class="divide-y divide-white/[0.03]">
                             {{#if otherUsers.length}}
                                 {{#each otherUsers}}
                                 <div class="px-4 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors border-b border-white/[0.01]">
@@ -172,7 +174,7 @@
                                          <div class="flex items-center gap-1">
                                              <button class="btn-edit-user p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
                                                      data-id="{{this.id}}" data-name="{{this.name}}" data-email="{{this.email}}" 
-                                                     data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}"
+                                                     data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}" data-menus="{{this.permissions.allowed_menus}}"
                                                      title="Editar Usuário"><span class="material-symbols-outlined text-xs">edit</span></button>
                                              <button class="btn-reset-pass p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
                                                      data-id="{{this.id}}" data-name="{{this.name}}"
@@ -190,10 +192,11 @@
 
                 <!-- Dynamic Users View (Audit Mode) -->
                 <div id="users-audit-view" class="hidden pt-10">
-                    <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center mb-6 rounded-xl">
+                    <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center mb-6 rounded-xl cursor-pointer" onclick="toggleCollapseCard('card-audit-grid')">
                         <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Visualização de Auditoria Flat</h4>
+                        <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-audit-grid">expand_more</span>
                     </div>
-                    <div class="users-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+                    <div id="card-audit-grid" class="users-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
                 </div>
             </div>
 
@@ -768,6 +771,24 @@ document.addEventListener('DOMContentLoaded', function() {
      const paneUsuarios = document.getElementById('pane-usuarios');
      if (paneUsuarios) {
          paneUsuarios.addEventListener('click', function(e) {
+             // Handle Edit User
+             const editBtn = e.target.closest('.btn-edit-user');
+             if (editBtn) {
+                 e.stopPropagation();
+                 const d = editBtn.dataset;
+                 openEditUserModal(d.id, d.name, d.email, d.role, d.parent, d.tenant, d.menus);
+                 return;
+             }
+ 
+             // Handle Reset Password
+             const resetBtn = e.target.closest('.btn-reset-pass');
+             if (resetBtn) {
+                 e.stopPropagation();
+                 const d = resetBtn.dataset;
+                 openResetPasswordModal(d.id, d.name);
+                 return;
+             }
+
              // Handle Accordion Toggle
              const header = e.target.closest('.accordion-header');
              if (header) {
@@ -779,24 +800,6 @@ document.addEventListener('DOMContentLoaded', function() {
                      content.classList.toggle('hidden');
                      if (icon) icon.classList.toggle('rotate-180');
                  }
-                 return;
-             }
- 
-             // Handle Edit User
-             const editBtn = e.target.closest('.btn-edit-user');
-             if (editBtn) {
-                 e.stopPropagation();
-                 const d = editBtn.dataset;
-                 openEditUserModal(d.id, d.name, d.email, d.role, d.parent, d.tenant);
-                 return;
-             }
- 
-             // Handle Reset Password
-             const resetBtn = e.target.closest('.btn-reset-pass');
-             if (resetBtn) {
-                 e.stopPropagation();
-                 const d = resetBtn.dataset;
-                 openResetPasswordModal(d.id, d.name);
                  return;
              }
          });
@@ -836,6 +839,17 @@ function switchAdvTab(tabId, btn) {
     }
 }
 
+function toggleCollapseCard(cardId, iconId) {
+    const card = document.getElementById(cardId);
+    const icon = document.getElementById(iconId || `icon-${cardId}`);
+    if (card) {
+        card.classList.toggle('hidden');
+        if (icon) {
+            icon.classList.toggle('rotate-180');
+        }
+    }
+}
+
 // --- USER MANAGEMENT ---
 function openNewUserModal() {
     const modal = document.getElementById('newUserModal');
@@ -866,7 +880,8 @@ async function submitNewUser(e) {
         tenantName: form.tenantName.value || null,
         parentId: form.parentId.value || null,
         specialty: form.specialty.value || null,
-        mainTool: form.mainTool.value || null
+        mainTool: form.mainTool.value || null,
+        allowed_menus: Array.from(form.querySelectorAll('input[name="allowed_menus"]:checked')).map(cb => cb.value)
     };
 
     try {
@@ -945,7 +960,7 @@ async function loadUsers() {
                 </div>
 
                 <div class="flex gap-2">
-                    <button onclick="openEditUserModal('${u.id}', '${u.name}', '${u.email}', '${u.role}', '${u.parentId || ''}', '${u.tenantName || ''}')" 
+                    <button onclick="openEditUserModal('${u.id}', '${u.name}', '${u.email}', '${u.role}', '${u.parentId || ''}', '${u.tenantName || ''}', '${u.permissions?.allowed_menus ? u.permissions.allowed_menus.join(',') : ''}')" 
                             class="flex-1 btn-premium text-[9px] py-2 bg-white/5 hover:bg-orange-500 hover:text-white transition-all text-center">
                         Editar Perfil
                     </button>
@@ -966,7 +981,7 @@ async function loadUsers() {
     }
 }
 
-function openEditUserModal(id, name, email, role, parentId, tenantName) {
+function openEditUserModal(id, name, email, role, parentId, tenantName, menusStr) {
     const modal = document.getElementById('editUserModal');
     if (!modal) return;
     
@@ -976,6 +991,11 @@ function openEditUserModal(id, name, email, role, parentId, tenantName) {
     form.email.value = email;
     form.role.value = role;
     form.parentId.value = parentId || '';
+    
+    const allowed = menusStr ? menusStr.split(',') : [];
+    form.querySelectorAll('input[name="allowed_menus"]').forEach(cb => {
+        cb.checked = allowed.includes(cb.value);
+    });
     
     modal.classList.remove('hidden');
     modal.classList.add('flex');
@@ -1001,7 +1021,8 @@ async function submitEditUser(e) {
         name: form.name.value,
         email: form.email.value,
         role: form.role.value,
-        parentId: form.parentId.value || null
+        parentId: form.parentId.value || null,
+        allowed_menus: Array.from(form.querySelectorAll('input[name="allowed_menus"]:checked')).map(cb => cb.value)
     };
 
     try {
@@ -1064,11 +1085,15 @@ async function generateSnapshot() {
 function openResetPasswordModal(id, name) {
     document.getElementById('resetPasswordUserId').value = id;
     document.getElementById('resetPasswordUserName').innerText = name;
-    document.getElementById('resetPasswordModal').classList.remove('hidden');
+    const modal = document.getElementById('resetPasswordModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
 }
 
 function closeResetPasswordModal() {
-    document.getElementById('resetPasswordModal').classList.add('hidden');
+    const modal = document.getElementById('resetPasswordModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
 }
 
 async function submitResetPassword(e) {
@@ -1356,7 +1381,7 @@ function toggleAccordion(id) {
         </button>
         <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Criar Novo Usuário Manual</h3>
         
-        <form id="newUserForm" class="space-y-4">
+        <form id="newUserForm" onsubmit="submitNewUser(event)" class="space-y-4">
             <div>
                 <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome Completo</label>
                 <input type="text" name="name" required class="input-premium w-full">
@@ -1419,6 +1444,41 @@ function toggleAccordion(id) {
                     </select>
                 </div>
             </div>
+
+            <div class="pt-2 border-t border-white/5 mt-4">
+                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Controle de Acessos (Menus)</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="dashboard"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">CRM</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="crm"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Projetos</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="projetos"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Propostas</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="propostas"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Financeiro</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="financeiro"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Configurações</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="configuracoes"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Gestão de Equipe</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="equipe"><span class="slider round"></span></label>
+                    </div>
+                </div>
+            </div>
+
             <div class="pt-4 flex justify-end gap-3">
                 <button type="button" id="btnCancelNewUser" class="btn bg-white/5 text-white">Cancelar</button>
                 <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Criar Conta</button>
@@ -1444,7 +1504,7 @@ function toggleAccordion(id) {
             </div>
             <div class="pt-4 flex justify-end gap-3">
                 <button type="button" class="btn bg-white/5 text-white" onclick="closeResetPasswordModal()">Cancelar</button>
-                <button type="submit" class="btn bg-red-500 text-white shadow-lg shadow-red-500/20">Forçar Troca</button>
+                <button type="submit" class="btn bg-green-500/10 text-green-500 border border-green-500/20 hover:bg-green-500/20 shadow-lg shadow-green-500/10">Troca</button>
             </div>
         </form>
     </div>
@@ -1608,6 +1668,40 @@ function toggleAccordion(id) {
                             {{/if}}
                         {{/each}}
                     </select>
+                </div>
+            </div>
+
+            <div class="pt-2 border-t border-white/5 mt-4">
+                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Controle de Acessos (Menus)</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="dashboard"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">CRM</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="crm"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Projetos</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="projetos"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Propostas</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="propostas"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Financeiro</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="financeiro"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Configurações</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="configuracoes"><span class="slider round"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Gestão de Equipe</span>
+                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="equipe"><span class="slider round"></span></label>
+                    </div>
                 </div>
             </div>
 

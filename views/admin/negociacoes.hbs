@@ -2,8 +2,16 @@
     .cards-list:has(.kanban-card) .kanban-empty-state { display: none !important; }
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Force Kanban columns and lists to grow vertically without internal scrolls */
+    .kanban-column,
+    .cards-list {
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+    }
 </style>
-<div class="container-fluid py-4 flex-1 flex flex-col min-h-0 overflow-hidden">
+<div class="container-fluid py-4 flex flex-col h-auto">
     <!-- Header -->
     <div class="flex items-center justify-between mb-8 flex-shrink-0">
         <div class="flex flex-col gap-1">
@@ -13,7 +21,7 @@
                     Quadro Kanban
                     <div class="absolute bottom-0 left-0 w-full h-0.5 bg-cyber-500"></div>
                 </button>
-                <button class="crm-page-tab text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-white transition-all pb-2 group relative" data-tab="analytics">
+                <button class="crm-page-tab text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 hover:text-white transition-all pb-2 group relative" data-tab="analise">
                     Análise & Previsão
                     <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-cyber-500 group-hover:w-full transition-all"></div>
                 </button>
@@ -54,13 +62,13 @@
     </div>
 
     <!-- View Containers -->
-    <div id="kanban-board-container" class="flex-1 flex flex-col min-h-0">
+    <div id="kanban-board-container" class="h-auto">
         <!-- Kanban Board -->
-        <div id="kanban-board" class="flex-1 flex gap-6 overflow-x-auto pb-6 scrollbar-hide select-none">
+        <div id="kanban-board" class="flex gap-6 overflow-x-auto pb-6 scrollbar-hide select-none h-auto">
             {{#each columns}}
-            <div class="kanban-column w-80 flex-shrink-0 flex flex-col h-full" data-status="{{this.statusKey}}" data-id="{{this.id}}">
+            <div class="kanban-column w-80 flex-shrink-0 flex flex-col h-auto" data-status="{{this.statusKey}}" data-id="{{this.id}}">
                 <!-- Column Header -->
-                <div class="glass-card mb-4 border-white/10 relative flex-shrink-0 min-h-[100px] flex flex-col justify-center overflow-hidden pt-5" style="border-top: 4px solid {{this.color}}">
+                <div class="column-header glass-card mb-4 border-white/10 relative flex-shrink-0 min-h-[100px] flex flex-col justify-center overflow-hidden pt-5" style="border-top: 4px solid {{this.color}}">
                     <!-- Column top banner -->
                     <div class="absolute top-0 left-0 w-full h-[18px] flex items-center justify-between px-3" style="background: linear-gradient(90deg, {{this.color}}18 0%, {{this.color}}03 100%); border-bottom: 1px solid {{this.color}}12;">
                         <span class="text-[6.5px] font-black uppercase tracking-[0.25em]" style="color: {{this.color}}">Etapa do Funil</span>
@@ -88,13 +96,11 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Cards Container -->
-                <div class="cards-list flex-1 overflow-y-auto space-y-3 px-3 mx-[-0.75rem] scrollbar-hide pb-10" data-status="{{this.statusKey}}">
+                <div class="cards-list flex-1 space-y-3 px-3 mx-[-0.75rem] scrollbar-hide pb-10" data-status="{{this.statusKey}}">
                     {{#each (lookup ../kanban this.statusKey)}}
-                    <div class="kanban-card glass-card p-3 border-white/5 hover:border-white/20 transition-all cursor-pointer group relative hover:z-[999] overflow-visible" 
+                    <div class="kanban-card glass-card p-3 border-white/5 hover:border-white/20 transition-all cursor-pointer group hover:z-[999] overflow-visible" 
                          data-id="{{this.id}}" 
-                         data-lead='{{json this}}'
                          style="{{#if this.color}}border-left: 3px solid {{this.color}}{{/if}}">
                         <!-- Progress Bar -->
                         <div class="absolute top-0 left-0 w-full h-1 bg-white/5">
@@ -133,19 +139,19 @@
                             </div>
                             <div class="flex items-center gap-1">
                                 {{#if this.client}}{{#if this.client.phone}}
-                                <a href="{{formatWhatsappLink this.client.phone this.client.name 'lead'}}" target="_blank" class="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 transition-all flex items-center justify-center stop-propagation">
+                                <a href="{{formatWhatsappLink this.client.phone this.client.name 'lead'}}" target="_blank" class="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 transition-all flex items-center justify-center stop-propagation" onclick="event.stopPropagation();">
                                     <i class="fab fa-whatsapp text-[9px]"></i>
                                 </a>
                                 {{/if}}{{/if}}
-                                <div class="dropdown stop-propagation">
-                                    <button class="text-gray-600 hover:text-white transition-all p-1 flex items-center justify-center" data-bs-toggle="dropdown" data-bs-boundary="viewport" data-bs-popper-config='{"strategy":"fixed"}'>
+                                <div class="dropdown stop-propagation" onclick="event.stopPropagation();">
+                                    <button class="text-gray-600 hover:text-white transition-all p-1 flex items-center justify-center" data-bs-toggle="dropdown" data-bs-boundary="viewport" data-bs-popper-config='{"strategy":"fixed"}' onclick="event.stopPropagation();">
                                         <span class="material-symbols-outlined text-[16px]">more_vert</span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-dark glass-card border-white/10 bg-dark-950 p-2 shadow-2xl">
-                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2" href="#" onclick="window.openDealDetails('{{this.id}}')"><span class="material-symbols-outlined text-sm">edit</span> Editar Detalhes</a></li>
-                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm">task</span> Nova Tarefa</a></li>
+                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2 stop-propagation" href="#" onclick="event.stopPropagation(); window.openDealDetails('{{this.id}}')"><span class="material-symbols-outlined text-sm">edit</span> Editar Detalhes</a></li>
+                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2 stop-propagation" href="#" onclick="event.stopPropagation();"><span class="material-symbols-outlined text-sm">task</span> Nova Tarefa</a></li>
                                         <li><hr class="dropdown-divider border-white/5"></li>
-                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2 text-red-500" href="#"><span class="material-symbols-outlined text-sm">archive</span> Arquivar Lead</a></li>
+                                        <li><a class="dropdown-item rounded-xl text-[10px] font-black uppercase py-2 flex items-center gap-2 text-red-500 stop-propagation" href="#" onclick="event.stopPropagation();"><span class="material-symbols-outlined text-sm">archive</span> Arquivar Lead</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -191,7 +197,7 @@
                         </div>
 
                         <div class="flex items-center justify-between pt-2 border-t border-white/5 mt-2">
-                            <button class="bg-cyber-500 hover:bg-cyber-400 text-dark-950 px-2 py-1 rounded-lg font-black text-[7px] uppercase tracking-widest transition-all btn-confirm-project" data-id="{{this.id}}">
+                            <button class="bg-cyber-500 hover:bg-cyber-400 text-dark-950 px-2 py-1 rounded-lg font-black text-[7px] uppercase tracking-widest transition-all btn-confirm-project stop-propagation" data-id="{{this.id}}" onclick="event.stopPropagation(); window.confirmDealProject('{{this.id}}');">
                                 Confirmar Proposta
                             </button>
                             <div class="flex items-center gap-1">
@@ -322,7 +328,7 @@
     </div>
 
     <!-- Analytics View (Hidden by default) -->
-    <div id="analytics-container" class="flex-1 overflow-y-auto hidden pb-20 scrollbar-hide">
+    <div id="analise-container" class="flex-1 overflow-y-auto hidden pb-20 scrollbar-hide">
         <!-- Analytics Header & Month Filter -->
         <div class="glass-card p-4 border-white/5 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex flex-col gap-0.5">
@@ -799,15 +805,27 @@
                                         <div class="grid grid-cols-3 gap-2">
                                             <div class="text-center">
                                                 <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">Fachada</label>
-                                                <input type="number" name="imagesFachadaCount" class="bg-transparent text-white font-black text-center w-full focus:outline-none text-sm" value="0" min="0" disabled onchange="updateTotalImages(this)">
+                                                <div class="flex items-center justify-center gap-1 mt-1">
+                                                    <button type="button" class="btn-qty-dec w-5 h-5 rounded bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white flex items-center justify-center font-bold text-xs opacity-50 pointer-events-none" data-target="imagesFachadaCount" disabled>-</button>
+                                                    <input type="number" name="imagesFachadaCount" class="bg-transparent text-white font-black text-center w-6 focus:outline-none text-xs" value="0" min="0" disabled onchange="updateTotalImages(this)">
+                                                    <button type="button" class="btn-qty-inc w-5 h-5 rounded bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white flex items-center justify-center font-bold text-xs opacity-50 pointer-events-none" data-target="imagesFachadaCount" disabled>+</button>
+                                                </div>
                                             </div>
                                             <div class="text-center">
                                                 <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">Interiores</label>
-                                                <input type="number" name="imagesInterioresCount" class="bg-transparent text-white font-black text-center w-full focus:outline-none text-sm" value="0" min="0" disabled onchange="updateTotalImages(this)">
+                                                <div class="flex items-center justify-center gap-1 mt-1">
+                                                    <button type="button" class="btn-qty-dec w-5 h-5 rounded bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white flex items-center justify-center font-bold text-xs opacity-50 pointer-events-none" data-target="imagesInterioresCount" disabled>-</button>
+                                                    <input type="number" name="imagesInterioresCount" class="bg-transparent text-white font-black text-center w-6 focus:outline-none text-xs" value="0" min="0" disabled onchange="updateTotalImages(this)">
+                                                    <button type="button" class="btn-qty-inc w-5 h-5 rounded bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white flex items-center justify-center font-bold text-xs opacity-50 pointer-events-none" data-target="imagesInterioresCount" disabled>+</button>
+                                                </div>
                                             </div>
                                             <div class="text-center">
                                                 <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">Planta 3D</label>
-                                                <input type="number" name="imagesPlantaCount" class="bg-transparent text-white font-black text-center w-full focus:outline-none text-sm" value="0" min="0" disabled onchange="updateTotalImages(this)">
+                                                <div class="flex items-center justify-center gap-1 mt-1">
+                                                    <button type="button" class="btn-qty-dec w-5 h-5 rounded bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white flex items-center justify-center font-bold text-xs opacity-50 pointer-events-none" data-target="imagesPlantaCount" disabled>-</button>
+                                                    <input type="number" name="imagesPlantaCount" class="bg-transparent text-white font-black text-center w-6 focus:outline-none text-xs" value="0" min="0" disabled onchange="updateTotalImages(this)">
+                                                    <button type="button" class="btn-qty-inc w-5 h-5 rounded bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white flex items-center justify-center font-bold text-xs opacity-50 pointer-events-none" data-target="imagesPlantaCount" disabled>+</button>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/5">
@@ -1753,6 +1771,57 @@
     </div>
 </div>
 
+<!-- MODAL: QUICK TASK (Sub-modal) -->
+<div class="modal fade" id="quickTaskModal" tabindex="-1" style="z-index: 1060;">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-white/10 bg-[#0a0c10]/98 backdrop-blur-3xl p-8 rounded-[2.5rem]">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h4 class="text-sm font-black text-white uppercase tracking-wider">Nova Tarefa</h4>
+                    <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Adicione um item ao To-Do list</p>
+                </div>
+                <button type="button" class="text-gray-500 hover:text-white" data-bs-dismiss="modal">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <form id="quickTaskForm" class="space-y-4">
+                <input type="hidden" name="budgetId" id="quickTaskBudgetId">
+                
+                <div>
+                    <label class="text-[7px] font-black text-gray-500 uppercase tracking-widest block mb-1">Título da Tarefa</label>
+                    <input type="text" name="title" required class="input-premium text-xs" placeholder="Ex: Ajustar iluminação da fachada">
+                </div>
+                
+                <div>
+                    <label class="text-[7px] font-black text-gray-500 uppercase tracking-widest block mb-1">Descrição</label>
+                    <textarea name="description" class="input-premium text-xs" rows="2" placeholder="Detalhes sobre a tarefa..."></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[7px] font-black text-gray-500 uppercase tracking-widest block mb-1">Prioridade</label>
+                        <select name="priority" class="input-premium text-xs">
+                            <option value="baixa">Baixa</option>
+                            <option value="media" selected>Média</option>
+                            <option value="alta">Alta</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[7px] font-black text-gray-500 uppercase tracking-widest block mb-1">Data Limite</label>
+                        <input type="date" name="dueDate" class="input-premium text-xs">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex gap-3">
+                    <button type="button" class="flex-1 bg-white/5 text-white py-3 rounded-xl font-black text-[10px] uppercase tracking-widest border border-white/10" data-bs-dismiss="modal">Voltar</button>
+                    <button type="submit" class="flex-1 bg-cyber-500 text-dark-950 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-cyber-400 transition-all">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <style>
     /* Dropdown UI Fix for Dark Mode */
     .dropdown-menu, .dropdown-menu-dark {
@@ -2195,6 +2264,38 @@ window.changeView = changeView;
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('CRM Negociacoes Initialized');
+
+    // Increment/Decrement controls for specifications
+    document.addEventListener('click', function(e) {
+        const incBtn = e.target.closest('.btn-qty-inc');
+        const decBtn = e.target.closest('.btn-qty-dec');
+        
+        if (incBtn) {
+            e.preventDefault();
+            const targetName = incBtn.getAttribute('data-target');
+            const form = incBtn.closest('#dealForm') || document;
+            const input = form.querySelector(`input[name="${targetName}"]`);
+            if (input && !input.disabled) {
+                let val = parseInt(input.value, 10) || 0;
+                input.value = val + 1;
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
+        
+        if (decBtn) {
+            e.preventDefault();
+            const targetName = decBtn.getAttribute('data-target');
+            const form = decBtn.closest('#dealForm') || document;
+            const input = form.querySelector(`input[name="${targetName}"]`);
+            if (input && !input.disabled) {
+                let val = parseInt(input.value, 10) || 0;
+                if (val > 0) {
+                    input.value = val - 1;
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+        }
+    });
     
     let savedMode = localStorage.getItem('crm_view_mode') || 'kanban';
     if (!['kanban', 'list', 'spreadsheet'].includes(savedMode)) savedMode = 'kanban';
@@ -2244,12 +2345,54 @@ document.addEventListener('DOMContentLoaded', function() {
     const columnModalElement = document.getElementById('columnSettingsModal');
     const lossModalElement = document.getElementById('lossReasonModal');
     const quickContactModalElement = document.getElementById('quickContactModal');
+    const quickTaskModalElement = document.getElementById('quickTaskModal');
 
     window.dealDetailModal = dealModalElement ? new bootstrap.Modal(dealModalElement) : null;
     window.newDealModal = newDealModalElement ? new bootstrap.Modal(newDealModalElement) : null;
     window.columnModal = columnModalElement ? new bootstrap.Modal(columnModalElement) : null;
     window.lossModal = lossModalElement ? new bootstrap.Modal(lossModalElement) : null;
     window.quickContactModal = quickContactModalElement ? new bootstrap.Modal(quickContactModalElement) : null;
+    window.quickTaskModal = quickTaskModalElement ? new bootstrap.Modal(quickTaskModalElement) : null;
+
+    // === QUICK TASK MODAL BINDINGS ===
+    const btnAddTaskDeal = document.getElementById('btn-add-task-deal');
+    if (btnAddTaskDeal) {
+        btnAddTaskDeal.addEventListener('click', function() {
+            const dealId = document.getElementById('deal-id-input').value;
+            const budgetIdInput = document.getElementById('quickTaskBudgetId');
+            if (budgetIdInput) budgetIdInput.value = dealId;
+            
+            window.quickTaskModal?.show();
+        });
+    }
+
+    const quickTaskForm = document.getElementById('quickTaskForm');
+    if (quickTaskForm) {
+        quickTaskForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const dealId = document.getElementById('quickTaskBudgetId').value;
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            fetch(`/api/budgets/${dealId}/tasks`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    window.quickTaskModal?.hide();
+                    quickTaskForm.reset();
+                    loadTasks(dealId);
+                    window.showNotification('Tarefa adicionada com sucesso!', 'success');
+                } else {
+                    window.showNotification(result.error || 'Erro ao criar tarefa', 'error');
+                }
+            })
+            .catch(() => window.showNotification('Erro de conexão.', 'error'));
+        });
+    }
 
     if (quickContactModalElement) {
         window.setQuickRegPersonType('PF');
@@ -2281,8 +2424,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const monthParam = urlParams.get('month');
     const leadId = urlParams.get('leadId');
 
-    if (activeTab === 'analytics' || monthParam) {
-        const analyticsTabBtn = document.querySelector('.crm-page-tab[data-tab="analytics"]');
+    if (activeTab === 'analise' || activeTab === 'analytics' || monthParam) {
+        const analyticsTabBtn = document.querySelector('.crm-page-tab[data-tab="analise"]') || document.querySelector('.crm-page-tab[data-tab="analytics"]');
         if (analyticsTabBtn) {
             analyticsTabBtn.click();
         }
@@ -2301,7 +2444,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (monthFilter) {
         monthFilter.addEventListener('change', function() {
             const selectedVal = this.value;
-            window.location.href = `/admin/negociacoes?month=${selectedVal}&activeTab=analytics`;
+            window.location.href = `/admin/negociacoes?month=${selectedVal}&activeTab=analise`;
         });
     }
 
@@ -2319,6 +2462,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!form) return;
         form.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(i => {
             i.disabled = !enabled;
+        });
+        form.querySelectorAll('.btn-qty-inc, .btn-qty-dec').forEach(btn => {
+            btn.disabled = !enabled;
+            if (!enabled) {
+                btn.classList.add('opacity-50', 'pointer-events-none');
+            } else {
+                btn.classList.remove('opacity-50', 'pointer-events-none');
+            }
         });
         document.getElementById('edit-actions')?.classList.toggle('hidden', !enabled);
         document.getElementById('header-edit-actions')?.classList.toggle('hidden', !enabled);
@@ -2364,7 +2515,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 window.renderInstallments('edit', true);
 
-                setVal('firstPreviewDate', budget.firstPreviewDate ? budget.firstPreviewDate.split('T')[0] : '');
+                setVal('firstPreviewDate', budget.firstPreviewDate ? String(budget.firstPreviewDate).split('T')[0] : '');
                 setVal('profileType', budget.profileType);
                 setVal('projectCategory', budget.projectCategory);
                 setVal('receivedFormat', budget.receivedFormat);
@@ -2407,13 +2558,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 setVal('nextActionDate', formatDateLocal(budget.nextActionDate));
                 setVal('nextActionNote', budget.nextActionNote || '');
-                setVal('paymentDate', budget.paymentDate ? budget.paymentDate.split('T')[0] : '');
+                setVal('paymentDate', budget.paymentDate ? String(budget.paymentDate).split('T')[0] : '');
                 setVal('paymentStatus', budget.paymentStatus || '');
                 setVal('city', budget.city || '');
                 setVal('state', budget.state || '');
 
                 ['softwareStack', 'imageResolution', 'extraDeliverables', 'lightingMood', 'videoResolution'].forEach(key => {
-                    const values = budget[key] || [];
+                    const values = Array.isArray(budget[key]) ? budget[key] : (typeof budget[key] === 'string' ? [budget[key]] : []);
                     form.querySelectorAll(`[name="${key}"]`).forEach(cb => {
                         cb.checked = values.includes(cb.value);
                     });
@@ -2442,6 +2593,21 @@ document.addEventListener('DOMContentLoaded', function() {
             .finally(() => {
                 if (card) card.classList.remove('opacity-50', 'pointer-events-none');
             });
+    };
+
+    window.confirmDealProject = function(id) {
+        if (confirm('Deseja converter esta negociação em um PROJETO ativo?')) {
+            fetch(`/admin/negociacoes/${id}/confirm-project`, { method: 'POST' })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        window.showNotification('Projeto confirmado!', 'success');
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        window.showNotification(result.error || 'Erro ao converter', 'error');
+                    }
+                });
+        }
     };
 
     // === CHART LOGIC ===
@@ -2579,11 +2745,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (target === 'kanban') {
                 document.getElementById('kanban-board-container')?.classList.remove('hidden');
                 document.getElementById('crm-control-bar')?.classList.remove('hidden');
-                document.getElementById('analytics-container')?.classList.add('hidden');
-            } else {
+                document.getElementById('analise-container')?.classList.add('hidden');
+            } else if (target === 'analise' || target === 'analytics') {
                 document.getElementById('kanban-board-container')?.classList.add('hidden');
                 document.getElementById('crm-control-bar')?.classList.add('hidden');
-                document.getElementById('analytics-container')?.classList.remove('hidden');
+                document.getElementById('analise-container')?.classList.remove('hidden');
                 if (typeof initCharts === 'function') initCharts();
             }
         });
@@ -2630,6 +2796,7 @@ document.addEventListener('DOMContentLoaded', function() {
             new Sortable(list, {
                 group: 'kanban',
                 animation: 250,
+                draggable: '.kanban-card',
                 ghostClass: 'sortable-ghost',
                 dragClass: 'sortable-drag',
                 onEnd: function(evt) {
@@ -2746,7 +2913,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('kanban-board') && typeof Sortable !== 'undefined') {
         new Sortable(document.getElementById('kanban-board'), {
             draggable: '.kanban-column',
-            handle: '.glass-card',
+            handle: '.column-header',
             animation: 250,
             onEnd: function() {
                 const columns = [...document.querySelectorAll('.kanban-column')].map((col, index) => ({
@@ -3040,8 +3207,72 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function loadTasks(dealId) {
         const list = document.getElementById('deal-tasks-list');
-        if (list) list.innerHTML = `<div class="py-10 text-center opacity-10"><p class="text-[9px] font-black uppercase tracking-widest">Em breve...</p></div>`;
+        if (!list) return;
+        
+        fetch(`/api/budgets/${dealId}/tasks`)
+            .then(res => res.json())
+            .then(({ success, tasks }) => {
+                if (!success || !tasks || tasks.length === 0) {
+                    list.innerHTML = `<div class="py-10 text-center opacity-10"><p class="text-[9px] font-black uppercase tracking-widest">Nenhuma tarefa pendente</p></div>`;
+                    return;
+                }
+                
+                list.innerHTML = tasks.map(t => {
+                    const isDone = t.status === 'concluida';
+                    return `
+                        <div class="glass-card p-4 border-white/5 flex items-center justify-between mb-3 hover:bg-white/[0.01] transition-all">
+                            <div class="flex items-center gap-3">
+                                <button onclick="toggleTaskStatus('${t.id}', '${isDone ? 'ativa' : 'concluida'}')" class="w-5 h-5 rounded-full border ${isDone ? 'bg-cyber-500 border-cyber-500 text-dark-950' : 'border-white/20 hover:border-cyber-500 text-transparent'} flex items-center justify-center transition-all">
+                                    <span class="material-symbols-outlined text-[10px] font-black">${isDone ? 'check' : ''}</span>
+                                </button>
+                                <div>
+                                    <p class="text-xs font-black uppercase ${isDone ? 'line-through text-gray-500' : 'text-white'}">${t.title}</p>
+                                    ${t.description ? `<p class="text-[9px] text-gray-400 mt-1">${t.description}</p>` : ''}
+                                    ${t.dueDate ? `<p class="text-[8px] text-orange-400 font-bold mt-1 uppercase tracking-wider"><span class="material-symbols-outlined text-[10px] align-middle mr-1">calendar_today</span>Prazo: ${new Date(t.dueDate).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</p>` : ''}
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase tracking-widest ${t.priority === 'alta' ? 'bg-red-500/10 text-red-500 border border-red-500/20' : t.priority === 'media' ? 'bg-orange-500/10 text-orange-500 border border-orange-500/20' : 'bg-blue-500/10 text-blue-500 border border-blue-500/20'}">${t.priority}</span>
+                                <button onclick="deleteTask('${t.id}')" class="p-1 text-gray-500 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-sm">delete</span></button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            })
+            .catch(err => {
+                console.error('Error loading tasks:', err);
+                list.innerHTML = `<div class="py-10 text-center opacity-10 text-red-400"><p class="text-[9px] font-black uppercase tracking-widest">Erro ao carregar</p></div>`;
+            });
     }
+
+    window.toggleTaskStatus = function(taskId, newStatus) {
+        fetch(`/api/tasks/${taskId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const dealId = document.getElementById('deal-id-input').value;
+                loadTasks(dealId);
+            }
+        });
+    };
+
+    window.deleteTask = function(taskId) {
+        if (!confirm('Deseja excluir esta tarefa?')) return;
+        fetch(`/api/tasks/${taskId}`, {
+            method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const dealId = document.getElementById('deal-id-input').value;
+                loadTasks(dealId);
+            }
+        });
+    };
 
     function loadNotes(dealId) {
         fetch(`/api/budgets/${dealId}`)

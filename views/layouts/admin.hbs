@@ -520,20 +520,19 @@
             <!-- Sidebar Footer -->
             <div class="mt-auto pt-6 border-t border-white/5">
                 <div class="flex items-center justify-between px-2 mb-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold shadow-lg shadow-orange-500/20">
-                            {{firstLetter user.name}}
+                    <div class="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-2 rounded-2xl transition-all w-full" id="sidebar-profile-trigger" data-bs-toggle="modal" data-bs-target="#userProfileModal">
+                        <div class="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center text-white font-bold shadow-lg {{#unless user.avatar}}bg-gradient-to-br from-orange-400 to-orange-600 shadow-orange-500/20{{/unless}}">
+                            {{#if user.avatar}}
+                                <img src="{{user.avatar}}" class="w-full h-full object-cover" id="sidebar-avatar-img">
+                            {{else}}
+                                <span id="sidebar-avatar-letter">{{firstLetter user.name}}</span>
+                            {{/if}}
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xs font-black text-white">{{user.name}}</span>
-                            <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Admin Master</span>
+                            <span class="text-xs font-black text-white" id="sidebar-user-name">{{user.name}}</span>
+                            <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest" id="sidebar-user-role">{{user.role}}</span>
                         </div>
                     </div>
-                    <form action="/admin/logout" method="POST">
-                        <button type="submit" class="p-2.5 rounded-xl text-red-500 hover:bg-red-500/10 transition-all" title="Sair">
-                            <span class="material-symbols-outlined text-xl">logout</span>
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
