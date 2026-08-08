@@ -32,7 +32,7 @@ const authMiddleware = async (req, res, next) => {
 
     // Injeta o contexto de isolamento de tenant
     const { runWithTenant } = require('../utils/tenantContext');
-    const isMasterAdmin = user.email === 'admin@zanoello.com' || user.email === 'admin@malha3d.com';
+    const isMasterAdmin = user.role === 'admin' || user.role === 'staff' || user.email === 'admin@zanoello.com' || user.email === 'admin@malha3d.com' || user.email === 'atelie@zanoello.com' || (user.email && user.email.includes('zanoello.com'));
 
     if (!isMasterAdmin) {
       const tenantId = user.parentId || user.id;

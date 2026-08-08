@@ -25,16 +25,17 @@
         :root {
             --primary-color: #f97316;
             --accent-color: #fb923c;
-            --bg-dark: #030712;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --border-color: rgba(255, 255, 255, 0.08);
+            --bg-dark: #050505;
+            --bg-soft: #111111;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --border-color: rgba(255, 255, 255, 0.12);
         }
 
         body {
             background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(circle at 20% 20%, rgba(249, 115, 22, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 40%);
+                radial-gradient(circle at 20% 20%, rgba(249, 115, 22, 0.16) 0%, transparent 38%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 42%);
             color: white;
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
@@ -61,13 +62,13 @@
         }
 
         .orb-1 {
-            background: var(--primary-color);
+            background: rgba(249, 115, 22, 0.22);
             top: -100px;
             left: -100px;
         }
 
         .orb-2 {
-            background: var(--accent-color);
+            background: rgba(255, 255, 255, 0.08);
             bottom: -100px;
             right: -100px;
             animation-delay: -5s;

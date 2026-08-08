@@ -10,13 +10,13 @@ async function resetAdminPassword() {
       await User.create({
         name: 'Admin Global',
         email: 'admin@malha3d.com',
-        password: 'admin123',
+        password: await bcrypt.hash('admin123', 10),
         role: 'admin',
         isActive: true
       });
       console.log('User admin@malha3d.com created with password: admin123');
     } else {
-      user.password = 'admin123';
+      user.password = await bcrypt.hash('admin123', 10);
       await user.save();
       console.log('Password for admin@malha3d.com reset to: admin123');
     }

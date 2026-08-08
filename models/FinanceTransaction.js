@@ -102,6 +102,26 @@ const FinanceTransaction = sequelize.define('FinanceTransaction', {
   attachment: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  approvalStatus: {
+    type: DataTypes.STRING,
+    defaultValue: 'aprovado'
+  },
+  approvedBy: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
+  approvedAt: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  originalAmount: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: true
+  },
+  editHistory: {
+    type: DataTypes.TEXT,
+    allowNull: true
   }
 }, {
   tableName: 'finance_transactions'

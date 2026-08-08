@@ -1,719 +1,719 @@
-<!-- 
-    MALHA 3D - ADVANCED ADMIN PANEL
-    Design: Senior ArchViz SaaS / Liquid Glass / High Density
+﻿<!-- 
+ MALHA 3D - ADVANCED ADMIN PANEL
+ Design: Senior ArchViz SaaS / Liquid Glass / High Density
 -->
 
 <div class="advanced-admin-wrapper animate-in fade-in duration-700">
-    <div class="flex flex-col xl:flex-row gap-8">
-        <!-- Vertical Tab Navigation -->
-        <div class="xl:w-72 flex-shrink-0">
-            <div class="glass-card p-4 border-white/5 sticky top-10">
-                <div class="flex flex-col gap-2">
-                    <button class="advanced-tab-btn" data-tab="usuarios">
-                        <span class="material-symbols-outlined text-lg">group</span>
-                        <span>Gestão de Equipe</span>
-                    </button>
-                    <button class="advanced-tab-btn" data-tab="instancias">
-                        <span class="material-symbols-outlined text-lg">memory</span>
-                        <span>Instâncias</span>
-                    </button>
-                    <button class="advanced-tab-btn" data-tab="planos">
-                        <span class="material-symbols-outlined text-lg">workspace_premium</span>
-                        <span>Planos B2B</span>
-                    </button>
-                    <button class="advanced-tab-btn" data-tab="bancario">
-                        <span class="material-symbols-outlined text-lg">account_balance</span>
-                        <span>Bancário</span>
-                    </button>
-                    <button class="advanced-tab-btn" data-tab="seguranca">
-                        <span class="material-symbols-outlined text-lg">admin_panel_settings</span>
-                        <span>Segurança</span>
-                    </button>
-                    <button class="advanced-tab-btn" data-tab="integracoes">
-                        <span class="material-symbols-outlined text-lg">api</span>
-                        <span>Integrações & API</span>
-                    </button>
-                    <button class="advanced-tab-btn" data-tab="notificacoes">
-                        <span class="material-symbols-outlined text-lg">notifications_active</span>
-                        <span>Notificações</span>
-                    </button>
-                    <button class="advanced-tab-btn" data-tab="backup">
-                        <span class="material-symbols-outlined text-lg">cloud_sync</span>
-                        <span>Backup & Dados</span>
-                    </button>
-                    <button class="advanced-tab-btn" data-tab="logs">
-                        <span class="material-symbols-outlined text-lg">terminal</span>
-                        <span>Logs & Auditoria</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+ <div class="flex flex-col xl:flex-row gap-8">
+ <!-- Vertical Tab Navigation -->
+ <div class="xl:w-72 flex-shrink-0">
+ <div class="glass-card p-4 border-white/5 sticky top-10">
+ <div class="flex flex-col gap-2">
+ <button class="advanced-tab-btn" data-tab="usuarios">
+ <span class="material-symbols-outlined text-lg">group</span>
+ <span>GestÃ£o de Equipe</span>
+ </button>
+ <button class="advanced-tab-btn" data-tab="instancias">
+ <span class="material-symbols-outlined text-lg">memory</span>
+ <span>InstÃ¢ncias</span>
+ </button>
+ <button class="advanced-tab-btn" data-tab="planos">
+ <span class="material-symbols-outlined text-lg">workspace_premium</span>
+ <span>Planos B2B</span>
+ </button>
+ <button class="advanced-tab-btn" data-tab="bancario">
+ <span class="material-symbols-outlined text-lg">account_balance</span>
+ <span>BancÃ¡rio</span>
+ </button>
+ <button class="advanced-tab-btn" data-tab="seguranca">
+ <span class="material-symbols-outlined text-lg">admin_panel_settings</span>
+ <span>SeguranÃ§a</span>
+ </button>
+ <button class="advanced-tab-btn" data-tab="integracoes">
+ <span class="material-symbols-outlined text-lg">api</span>
+ <span>IntegraÃ§Ãµes & API</span>
+ </button>
+ <button class="advanced-tab-btn" data-tab="notificacoes">
+ <span class="material-symbols-outlined text-lg">notifications_active</span>
+ <span>NotificaÃ§Ãµes</span>
+ </button>
+ <button class="advanced-tab-btn" data-tab="backup">
+ <span class="material-symbols-outlined text-lg">cloud_sync</span>
+ <span>Backup & Dados</span>
+ </button>
+ <button class="advanced-tab-btn" data-tab="logs">
+ <span class="material-symbols-outlined text-lg">terminal</span>
+ <span>Logs & Auditoria</span>
+ </button>
+ </div>
+ </div>
+ </div>
 
-        <!-- Main Content Area -->
-        <div class="flex-1 min-w-0">
-            <!-- Tab: Gestão de Usuários (Multi-Tenant) -->
-            <div id="pane-usuarios" class="adv-pane hidden">
-                <div class="space-y-8">
-                    <header class="flex justify-between items-end">
-                        <div>
-                            <h2 class="text-3xl font-black text-white tracking-tighter">Painel Master de <span class="text-orange-500">Acessos</span></h2>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gerenciamento de assinantes, staff e sub-contas (RBAC)</p>
-                        </div>
-                        <button id="btnOpenNewUser" class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-orange-500/20 hover:bg-orange-400 transition-all">Criar Usuário Manual</button>
-                    </header>
+ <!-- Main Content Area -->
+ <div class="flex-1 min-w-0">
+ <!-- Tab: GestÃ£o de UsuÃ¡rios (Multi-Tenant) -->
+ <div id="pane-usuarios" class="adv-pane hidden">
+ <div class="space-y-8">
+ <header class="flex justify-between items-end">
+ <div>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Painel Master de <span class="text-orange-500">Acessos</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gerenciamento de assinantes, staff e sub-contas (RBAC)</p>
+ </div>
+ <button id="btnOpenNewUser" class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-orange-500/20 hover:bg-orange-400 transition-all">Criar UsuÃ¡rio Manual</button>
+ </header>
 
-                    <!-- Bloco de Assinantes -->
-                    <div class="glass-card border-white/5 overflow-hidden mb-8">
-                        <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-subscribers')">
-                            <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Assinantes</h4>
-                            <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-subscribers">expand_more</span>
-                        </div>
-                        <div id="card-subscribers" class="divide-y divide-white/[0.03]">
-                            {{#if subscriberUsers.length}}
-                                 {{#each subscriberUsers}}
-                                 <div class="group subscriber-item" data-id="{{this.id}}">
-                                     <div class="px-4 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors cursor-pointer border-b border-white/[0.01] accordion-header">
-                                         <div class="flex items-center gap-3">
-                                             <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 font-black text-xs">
-                                                 {{firstLetter this.name}}
-                                             </div>
-                                             <div>
-                                                 <p class="text-[12px] font-black text-white uppercase">{{this.name}}</p>
-                                                 <p class="text-[9px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
-                                             </div>
-                                         </div>
-                                         <div class="flex items-center gap-4">
-                                             <span class="px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-widest bg-emerald-500/10 border-emerald-500/20 text-emerald-500">
-                                                 {{this.role}}
-                                             </span>
-                                             {{#if this.tenantName}}
-                                             <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest hidden md:inline-block"><span class="material-symbols-outlined text-[10px] align-middle mr-1">domain</span>{{this.tenantName}}</span>
-                                             {{/if}}
-                                             <div class="flex items-center gap-1">
-                                                 <button class="btn-edit-user p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
-                                                         data-id="{{this.id}}" data-name="{{this.name}}" data-email="{{this.email}}" 
-                                                         data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}" data-menus="{{this.permissions.allowed_menus}}"
-                                                         title="Editar Usuário"><span class="material-symbols-outlined text-xs">edit</span></button>
-                                                 <button class="btn-reset-pass p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
-                                                         data-id="{{this.id}}" data-name="{{this.name}}"
-                                                         title="Redefinir Senha"><span class="material-symbols-outlined text-xs">lock_reset</span></button>
-                                                 {{#if this.subUsers.length}}
-                                                 <span class="material-symbols-outlined text-gray-500 transition-transform duration-300 text-sm accordion-icon">expand_more</span>
-                                                 {{/if}}
-                                             </div>
-                                         </div>
-                                     </div>
-                                     
-                                     {{#if this.subUsers.length}}
-                                     <div class="accordion-content hidden bg-black/20 border-t border-white/5 pl-16">
-                                         <div class="divide-y divide-white/[0.03]">
-                                             {{#each this.subUsers}}
-                                             <div class="px-8 py-4 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
-                                                 <div class="flex items-center gap-4">
-                                                     <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-black text-xs">
-                                                         {{firstLetter this.name}}
-                                                     </div>
-                                                     <div>
-                                                         <p class="text-[11px] font-black text-gray-300 uppercase">{{this.name}}</p>
-                                                         <p class="text-[9px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
-                                                     </div>
-                                                 </div>
-                                                 <div class="flex items-center gap-6">
-                                                     {{#if this.specialty}}
-                                                     <span class="text-[9px] font-bold text-orange-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[10px] align-middle mr-1">palette</span>{{this.specialty}}</span>
-                                                     {{/if}}
-                                                     {{#if this.mainTool}}
-                                                     <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[10px] align-middle mr-1">computer</span>{{this.mainTool}}</span>
-                                                     {{/if}}
-                                                     <span class="px-2 py-1 rounded bg-white/5 text-[8px] font-black text-gray-500 uppercase tracking-widest">{{this.role}}</span>
-                                                     <button class="btn-reset-pass p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
-                                                             data-id="{{this.id}}" data-name="{{this.name}}" title="Redefinir Senha"><span class="material-symbols-outlined text-sm">lock_reset</span></button>
-                                                 </div>
-                                             </div>
-                                             {{/each}}
-                                         </div>
-                                     </div>
-                                     {{/if}}
-                                 </div>
-                                {{/each}}
-                            {{else}}
-                                <div class="p-8 text-center text-gray-500 text-[10px] font-bold uppercase tracking-widest">Nenhum assinante encontrado.</div>
-                            {{/if}}
-                        </div>
-                    </div>
+ <!-- Bloco de Assinantes -->
+ <div class="glass-card border-white/5 overflow-hidden mb-8">
+ <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-subscribers')">
+ <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Assinantes</h4>
+ <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-subscribers">expand_more</span>
+ </div>
+ <div id="card-subscribers" class="divide-y divide-white/[0.03]">
+ {{#if subscriberUsers.length}}
+ {{#each subscriberUsers}}
+ <div class="group subscriber-item" data-id="{{this.id}}">
+ <div class="px-4 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors cursor-pointer border-b border-white/[0.01] accordion-header">
+ <div class="flex items-center gap-3">
+ <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 font-black text-xs">
+ {{firstLetter this.name}}
+ </div>
+ <div>
+ <p class="text-[12px] font-black text-white uppercase">{{this.name}}</p>
+ <p class="text-[9px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
+ </div>
+ </div>
+ <div class="flex items-center gap-4">
+ <span class="px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-widest bg-emerald-500/10 border-emerald-500/20 text-emerald-500">
+ {{this.role}}
+ </span>
+ {{#if this.tenantName}}
+ <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest hidden md:inline-block"><span class="material-symbols-outlined text-[10px] align-middle mr-1">domain</span>{{this.tenantName}}</span>
+ {{/if}}
+ <div class="flex items-center gap-1">
+ <button class="btn-edit-user p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
+ data-id="{{this.id}}" data-name="{{this.name}}" data-email="{{this.email}}" 
+ data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}" data-menus="{{this.permissions.allowed_menus}}"
+ title="Editar UsuÃ¡rio"><span class="material-symbols-outlined text-xs">edit</span></button>
+ <button class="btn-reset-pass p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
+ data-id="{{this.id}}" data-name="{{this.name}}"
+ title="Redefinir Senha"><span class="material-symbols-outlined text-xs">lock_reset</span></button>
+ {{#if this.subUsers.length}}
+ <span class="material-symbols-outlined text-gray-500 transition-transform duration-300 text-sm accordion-icon">expand_more</span>
+ {{/if}}
+ </div>
+ </div>
+ </div>
+ 
+ {{#if this.subUsers.length}}
+ <div class="accordion-content hidden bg-black/20 border-t border-white/5 pl-16">
+ <div class="divide-y divide-white/[0.03]">
+ {{#each this.subUsers}}
+ <div class="px-8 py-4 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
+ <div class="flex items-center gap-4">
+ <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 font-black text-xs">
+ {{firstLetter this.name}}
+ </div>
+ <div>
+ <p class="text-[11px] font-black text-gray-300 uppercase">{{this.name}}</p>
+ <p class="text-[9px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
+ </div>
+ </div>
+ <div class="flex items-center gap-6">
+ {{#if this.specialty}}
+ <span class="text-[9px] font-bold text-orange-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[10px] align-middle mr-1">palette</span>{{this.specialty}}</span>
+ {{/if}}
+ {{#if this.mainTool}}
+ <span class="text-[9px] font-bold text-blue-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[10px] align-middle mr-1">computer</span>{{this.mainTool}}</span>
+ {{/if}}
+ <span class="px-2 py-1 rounded bg-white/5 text-[8px] font-black text-gray-500 uppercase tracking-widest">{{this.role}}</span>
+ <button class="btn-reset-pass p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
+ data-id="{{this.id}}" data-name="{{this.name}}" title="Redefinir Senha"><span class="material-symbols-outlined text-sm">lock_reset</span></button>
+ </div>
+ </div>
+ {{/each}}
+ </div>
+ </div>
+ {{/if}}
+ </div>
+ {{/each}}
+ {{else}}
+ <div class="p-8 text-center text-gray-500 text-[10px] font-bold uppercase tracking-widest">Nenhum assinante encontrado.</div>
+ {{/if}}
+ </div>
+ </div>
 
-                    <!-- Bloco de Outros Usuários (Staff/Admins/Avulsos) -->
-                    <div class="glass-card border-white/5 overflow-hidden">
-                        <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-other-users')">
-                            <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Malha 3D</h4>
-                            <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-other-users">expand_more</span>
-                        </div>
-                        <div id="card-other-users" class="divide-y divide-white/[0.03]">
-                            {{#if otherUsers.length}}
-                                {{#each otherUsers}}
-                                <div class="px-4 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors border-b border-white/[0.01]">
-                                     <div class="flex items-center gap-3">
-                                         <div class="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 font-black text-xs">
-                                             {{firstLetter this.name}}
-                                         </div>
-                                         <div>
-                                             <p class="text-[12px] font-black text-white uppercase">{{this.name}}</p>
-                                             <p class="text-[9px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
-                                         </div>
-                                     </div>
-                                     <div class="flex items-center gap-4">
-                                         {{#if this.specialty}}
-                                         <span class="text-[8px] font-bold text-orange-500 uppercase tracking-widest hidden sm:inline-block"><span class="material-symbols-outlined text-[10px] align-middle mr-1">palette</span>{{this.specialty}}</span>
-                                         {{/if}}
-                                         <span class="px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-widest
-                                             {{#if (eq this.role 'admin')}}bg-red-500/10 border-red-500/20 text-red-500
-                                             {{else if (eq this.role 'staff')}}bg-orange-500/10 border-orange-500/20 text-orange-500
-                                             {{else}}bg-blue-500/10 border-blue-500/20 text-blue-500{{/if}}">
-                                             {{this.role}}
-                                         </span>
-                                         <div class="flex items-center gap-1">
-                                             <button class="btn-edit-user p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
-                                                     data-id="{{this.id}}" data-name="{{this.name}}" data-email="{{this.email}}" 
-                                                     data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}" data-menus="{{this.permissions.allowed_menus}}"
-                                                     title="Editar Usuário"><span class="material-symbols-outlined text-xs">edit</span></button>
-                                             <button class="btn-reset-pass p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
-                                                     data-id="{{this.id}}" data-name="{{this.name}}"
-                                                     title="Redefinir Senha"><span class="material-symbols-outlined text-xs">lock_reset</span></button>
-                                         </div>
-                                     </div>
-                                 </div>
-                                {{/each}}
-                            {{else}}
-                                <div class="p-8 text-center text-gray-500 text-[10px] font-bold uppercase tracking-widest">Nenhum colaborador encontrado.</div>
-                            {{/if}}
-                        </div>
-                    </div>
-                </div>
+ <!-- Bloco de Outros UsuÃ¡rios (Staff/Admins/Avulsos) -->
+ <div class="glass-card border-white/5 overflow-hidden">
+ <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-other-users')">
+ <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Malha 3D</h4>
+ <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-other-users">expand_more</span>
+ </div>
+ <div id="card-other-users" class="divide-y divide-white/[0.03]">
+ {{#if otherUsers.length}}
+ {{#each otherUsers}}
+ <div class="px-4 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors border-b border-white/[0.01]">
+ <div class="flex items-center gap-3">
+ <div class="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 font-black text-xs">
+ {{firstLetter this.name}}
+ </div>
+ <div>
+ <p class="text-[12px] font-black text-white uppercase">{{this.name}}</p>
+ <p class="text-[9px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
+ </div>
+ </div>
+ <div class="flex items-center gap-4">
+ {{#if this.specialty}}
+ <span class="text-[8px] font-bold text-orange-500 uppercase tracking-widest hidden sm:inline-block"><span class="material-symbols-outlined text-[10px] align-middle mr-1">palette</span>{{this.specialty}}</span>
+ {{/if}}
+ <span class="px-2 py-0.5 rounded-full border text-[8px] font-black uppercase tracking-widest
+ {{#if (eq this.role 'admin')}}bg-red-500/10 border-red-500/20 text-red-500
+ {{else if (eq this.role 'staff')}}bg-orange-500/10 border-orange-500/20 text-orange-500
+ {{else}}bg-blue-500/10 border-blue-500/20 text-blue-500{{/if}}">
+ {{this.role}}
+ </span>
+ <div class="flex items-center gap-1">
+ <button class="btn-edit-user p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
+ data-id="{{this.id}}" data-name="{{this.name}}" data-email="{{this.email}}" 
+ data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}" data-menus="{{this.permissions.allowed_menus}}"
+ title="Editar UsuÃ¡rio"><span class="material-symbols-outlined text-xs">edit</span></button>
+ <button class="btn-reset-pass p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
+ data-id="{{this.id}}" data-name="{{this.name}}"
+ title="Redefinir Senha"><span class="material-symbols-outlined text-xs">lock_reset</span></button>
+ </div>
+ </div>
+ </div>
+ {{/each}}
+ {{else}}
+ <div class="p-8 text-center text-gray-500 text-[10px] font-bold uppercase tracking-widest">Nenhum colaborador encontrado.</div>
+ {{/if}}
+ </div>
+ </div>
+ </div>
 
-                <!-- Dynamic Users View (Audit Mode) -->
-                <div id="users-audit-view" class="hidden pt-10">
-                    <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center mb-6 rounded-xl cursor-pointer" onclick="toggleCollapseCard('card-audit-grid')">
-                        <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Visualização de Auditoria Flat</h4>
-                        <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-audit-grid">expand_more</span>
-                    </div>
-                    <div id="card-audit-grid" class="users-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
-                </div>
-            </div>
+ <!-- Dynamic Users View (Audit Mode) -->
+ <div id="users-audit-view" class="hidden pt-10">
+ <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center mb-6 rounded-xl cursor-pointer" onclick="toggleCollapseCard('card-audit-grid')">
+ <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">VisualizaÃ§Ã£o de Auditoria Flat</h4>
+ <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-audit-grid">expand_more</span>
+ </div>
+ <div id="card-audit-grid" class="users-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+ </div>
+ </div>
 
-            <!-- Tab: Instâncias -->
-            <div id="pane-instancias" class="adv-pane hidden">
-                <div class="space-y-8">
-                    <header class="flex justify-between items-end">
-                        <div>
-                            <h2 class="text-3xl font-black text-white tracking-tighter">Infraestrutura & <span class="text-orange-500">Automação</span></h2>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gestão de contêineres e render nodes</p>
-                        </div>
-                        <div class="flex gap-4">
-                            <button class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-orange-500/20" onclick="openNewInstanceModal()">Nova Instância</button>
-                            <button class="px-6 py-3 bg-orange-500/10 border border-orange-500/20 text-orange-500 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-orange-500 hover:text-white transition-all" onclick="syncCluster()">Sincronizar Cluster</button>
-                        </div>
-                    </header>
+ <!-- Tab: InstÃ¢ncias -->
+ <div id="pane-instancias" class="adv-pane hidden">
+ <div class="space-y-8">
+ <header class="flex justify-between items-end">
+ <div>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Infraestrutura & <span class="text-orange-500">AutomaÃ§Ã£o</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">GestÃ£o de contÃªineres e render nodes</p>
+ </div>
+ <div class="flex gap-4">
+ <button class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-orange-500/20" onclick="openNewInstanceModal()">Nova InstÃ¢ncia</button>
+ <button class="px-6 py-3 bg-orange-500/10 border border-orange-500/20 text-orange-500 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-orange-500 hover:text-white transition-all" onclick="syncCluster()">Sincronizar Cluster</button>
+ </div>
+ </header>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="glass-card p-6 border-white/5 bg-white/[0.01]">
-                            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2">Total Instâncias</p>
-                            <h4 class="text-2xl font-black text-white">{{instances.length}}</h4>
-                            <div class="mt-4 flex items-center gap-2">
-                                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                                <span class="text-[9px] font-bold text-emerald-500 uppercase">Todo o Cluster Online</span>
-                            </div>
-                        </div>
-                        <!-- More summary cards can go here -->
-                    </div>
+ <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+ <div class="glass-card p-6 border-white/5 bg-white/[0.01]">
+ <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2">Total InstÃ¢ncias</p>
+ <h4 class="text-2xl font-black text-white">{{instances.length}}</h4>
+ <div class="mt-4 flex items-center gap-2">
+ <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+ <span class="text-[9px] font-bold text-emerald-500 uppercase">Todo o Cluster Online</span>
+ </div>
+ </div>
+ <!-- More summary cards can go here -->
+ </div>
 
-                    <div class="glass-card border-white/5 overflow-hidden">
-                        <table class="w-full text-left">
-                            <thead class="bg-white/5 border-b border-white/5">
-                                <tr>
-                                    <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Instância</th>
-                                    <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-                                    <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Uptime</th>
-                                    <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Carga</th>
-                                    <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-white/[0.03]">
-                                {{#each instances}}
-                                <tr class="hover:bg-white/[0.02] transition-colors">
-                                    <td class="px-8 py-6">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-orange-500">
-                                                <span class="material-symbols-outlined text-lg">{{#if (eq this.type 'docker')}}terminal{{else if (eq this.type 'ia')}}psychology{{else}}dns{{/if}}</span>
-                                            </div>
-                                            <div>
-                                                <p class="text-[11px] font-black text-white uppercase">{{this.name}}</p>
-                                                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-1">{{this.ipAddress}}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-8 py-6">
-                                        <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-500 uppercase tracking-widest">{{this.status}}</span>
-                                    </td>
-                                    <td class="px-8 py-6 text-[10px] font-bold text-gray-400">{{this.uptime}}</td>
-                                    <td class="px-8 py-6">
-                                        <div class="flex flex-col gap-2 w-32">
-                                            <div class="flex justify-between text-[8px] font-black uppercase tracking-widest">
-                                                <span class="text-gray-500">Load</span>
-                                                <span class="text-white">{{this.cpuUsage}}%</span>
-                                            </div>
-                                            <div class="h-1 bg-white/5 rounded-full overflow-hidden">
-                                                <div class="h-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.4)]" style="width: {{this.cpuUsage}}%"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-8 py-6">
-                                        <div class="flex items-center gap-2">
-                                            <button onclick="viewInstanceLogs('{{this.id}}')" class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all"><span class="material-symbols-outlined text-sm">history</span></button>
-                                            <button onclick="instanceAction('{{this.id}}', 'restart')" class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-orange-500 transition-all"><span class="material-symbols-outlined text-sm">restart_alt</span></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {{/each}}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+ <div class="glass-card border-white/5 overflow-hidden">
+ <table class="w-full text-left">
+ <thead class="bg-white/5 border-b border-white/5">
+ <tr>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">InstÃ¢ncia</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Uptime</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Carga</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">AÃ§Ãµes</th>
+ </tr>
+ </thead>
+ <tbody class="divide-y divide-white/[0.03]">
+ {{#each instances}}
+ <tr class="hover:bg-white/[0.02] transition-colors">
+ <td class="px-8 py-6">
+ <div class="flex items-center gap-4">
+ <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-orange-500">
+ <span class="material-symbols-outlined text-lg">{{#if (eq this.type 'docker')}}terminal{{else if (eq this.type 'ia')}}psychology{{else}}dns{{/if}}</span>
+ </div>
+ <div>
+ <p class="text-[11px] font-black text-white uppercase">{{this.name}}</p>
+ <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-1">{{this.ipAddress}}</p>
+ </div>
+ </div>
+ </td>
+ <td class="px-8 py-6">
+ <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black text-emerald-500 uppercase tracking-widest">{{this.status}}</span>
+ </td>
+ <td class="px-8 py-6 text-[10px] font-bold text-gray-400">{{this.uptime}}</td>
+ <td class="px-8 py-6">
+ <div class="flex flex-col gap-2 w-32">
+ <div class="flex justify-between text-[8px] font-black uppercase tracking-widest">
+ <span class="text-gray-500">Load</span>
+ <span class="text-white">{{this.cpuUsage}}%</span>
+ </div>
+ <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+ <div class="h-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.4)]" style="width: {{this.cpuUsage}}%"></div>
+ </div>
+ </div>
+ </td>
+ <td class="px-8 py-6">
+ <div class="flex items-center gap-2">
+ <button onclick="viewInstanceLogs('{{this.id}}')" class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all"><span class="material-symbols-outlined text-sm">history</span></button>
+ <button onclick="instanceAction('{{this.id}}', 'restart')" class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-orange-500 transition-all"><span class="material-symbols-outlined text-sm">restart_alt</span></button>
+ </div>
+ </td>
+ </tr>
+ {{/each}}
+ </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
 
-            <!-- Tab: Planos B2B -->
-            <div id="pane-planos" class="adv-pane hidden">
-                <div class="space-y-8">
-                    <header class="flex justify-between items-end">
-                        <div>
-                            <h2 class="text-3xl font-black text-white tracking-tighter">Planos & <span class="text-orange-500">Recorrência</span></h2>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gestão de assinaturas corporativas e SLAs</p>
-                        </div>
-                        <button class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-orange-500/20" onclick="document.getElementById('newPlanModal').classList.remove('hidden')">Criar Novo Nível</button>
-                    </header>
+ <!-- Tab: Planos B2B -->
+ <div id="pane-planos" class="adv-pane hidden">
+ <div class="space-y-8">
+ <header class="flex justify-between items-end">
+ <div>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Planos & <span class="text-orange-500">RecorrÃªncia</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">GestÃ£o de assinaturas corporativas e SLAs</p>
+ </div>
+ <button class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-orange-500/20" onclick="document.getElementById('newPlanModal').classList.remove('hidden')">Criar Novo NÃ­vel</button>
+ </header>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {{#each plans}}
-                        <div class="glass-card p-10 border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent relative overflow-hidden group">
-                            <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[60px] -mr-16 -mt-16 group-hover:bg-orange-500/20 transition-all"></div>
-                            
-                            <div class="relative z-10">
-                                <h3 class="text-2xl font-black text-white tracking-tighter mb-2 uppercase">{{this.name}}</h3>
-                                <div class="flex items-baseline gap-2 mb-8">
-                                    <span class="text-4xl font-black text-white tracking-tighter">R$ {{numberFormat this.price 0 ',' '.'}}</span>
-                                    <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">/mês</span>
-                                </div>
+ <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+ {{#each plans}}
+ <div class="glass-card p-10 border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent relative overflow-hidden group">
+ <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[60px] -mr-16 -mt-16 group-hover:bg-orange-500/20 transition-all"></div>
+ 
+ <div class="relative z-10">
+ <h3 class="text-2xl font-black text-white tracking-tighter mb-2 uppercase">{{this.name}}</h3>
+ <div class="flex items-baseline gap-2 mb-8">
+ <span class="text-4xl font-black text-white tracking-tighter">R$ {{numberFormat this.price 0 ',' '.'}}</span>
+ <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">/mÃªs</span>
+ </div>
 
-                                <div class="space-y-4 mb-10">
-                                    <div class="flex items-center gap-3">
-                                        <span class="material-symbols-outlined text-orange-500 text-sm">verified</span>
-                                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{this.revisionsLimit}} Revisões Inclusas</span>
-                                    </div>
-                                    <div class="flex items-center gap-3">
-                                        <span class="material-symbols-outlined text-orange-500 text-sm">schedule</span>
-                                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">SLA de {{this.slaDays}} Dias Úteis</span>
-                                    </div>
-                                    <div class="flex items-center gap-3">
-                                        <span class="material-symbols-outlined text-orange-500 text-sm">percent</span>
-                                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{this.extraDiscount}}% Off em Imagens Extras</span>
-                                    </div>
-                                </div>
+ <div class="space-y-4 mb-10">
+ <div class="flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500 text-sm">verified</span>
+ <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{this.revisionsLimit}} RevisÃµes Inclusas</span>
+ </div>
+ <div class="flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500 text-sm">schedule</span>
+ <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">SLA de {{this.slaDays}} Dias Ãšteis</span>
+ </div>
+ <div class="flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500 text-sm">percent</span>
+ <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{this.extraDiscount}}% Off em Imagens Extras</span>
+ </div>
+ </div>
 
-                                <div class="flex items-center gap-3">
-                                    <button class="flex-1 py-4 rounded-xl bg-white/5 text-white font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all" onclick="openEditPlanModal('{{this.id}}', '{{this.name}}', '{{this.price}}', '{{this.revisionsLimit}}', '{{this.slaDays}}', '{{this.extraDiscount}}')">Editar</button>
-                                    <button class="p-4 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all" onclick="deletePlan('{{this.id}}')"><span class="material-symbols-outlined text-sm">delete</span></button>
-                                </div>
-                            </div>
-                        </div>
-                        {{/each}}
-                    </div>
-                </div>
-            </div>
+ <div class="flex items-center gap-3">
+ <button class="flex-1 py-4 rounded-xl bg-white/5 text-white font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all" onclick="openEditPlanModal('{{this.id}}', '{{this.name}}', '{{this.price}}', '{{this.revisionsLimit}}', '{{this.slaDays}}', '{{this.extraDiscount}}')">Editar</button>
+ <button class="p-4 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all" onclick="deletePlan('{{this.id}}')"><span class="material-symbols-outlined text-sm">delete</span></button>
+ </div>
+ </div>
+ </div>
+ {{/each}}
+ </div>
+ </div>
+ </div>
 
-            <!-- Tab: Bancário -->
-            <div id="pane-bancario" class="adv-pane hidden">
-                <div class="space-y-10">
-                    <header>
-                        <h2 class="text-3xl font-black text-white tracking-tighter">Inteligência <span class="text-orange-500">Financeira</span></h2>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gateways de pagamento e regras de faturamento</p>
-                    </header>
+ <!-- Tab: BancÃ¡rio -->
+ <div id="pane-bancario" class="adv-pane hidden">
+ <div class="space-y-10">
+ <header>
+ <h2 class="text-3xl font-black text-white tracking-tighter">InteligÃªncia <span class="text-orange-500">Financeira</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gateways de pagamento e regras de faturamento</p>
+ </header>
 
-                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-10">
-                        <div class="glass-card p-10 border-white/5 bg-white/[0.01] space-y-8">
-                            <h4 class="text-sm font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
-                                <span class="material-symbols-outlined text-orange-500">point_of_sale</span> Gateway Principal
-                            </h4>
-                            <div class="space-y-6">
-                                <div class="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between group hover:border-orange-500/40 transition-all cursor-pointer">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center p-2">
-                                            <img src="https://stripe.com/favicon.ico" class="w-full grayscale group-hover:grayscale-0 transition-all">
-                                        </div>
-                                        <div>
-                                            <p class="text-[11px] font-black text-white uppercase">Stripe Connect</p>
-                                            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Global Payments & Split</p>
-                                        </div>
-                                    </div>
-                                    <span class="material-symbols-outlined text-emerald-500">check_circle</span>
-                                </div>
-                                <div class="p-6 rounded-2xl bg-white/2 border border-white/5 flex items-center justify-between group hover:border-blue-500/40 transition-all cursor-pointer opacity-50">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center p-2 text-blue-600 font-black italic">asaas</div>
-                                        <div>
-                                            <p class="text-[11px] font-black text-white uppercase">Asaas</p>
-                                            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Boletos & Pix Nativo</p>
-                                        </div>
-                                    </div>
-                                    <span class="text-[9px] font-black text-gray-600 uppercase tracking-widest">Desconectado</span>
-                                </div>
-                            </div>
-                        </div>
+ <div class="grid grid-cols-1 xl:grid-cols-2 gap-10">
+ <div class="glass-card p-10 border-white/5 bg-white/[0.01] space-y-8">
+ <h4 class="text-sm font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500">point_of_sale</span> Gateway Principal
+ </h4>
+ <div class="space-y-6">
+ <div class="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between group hover:border-orange-500/40 transition-all cursor-pointer">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center p-2">
+ <img src="https://stripe.com/favicon.ico" class="w-full grayscale group-hover:grayscale-0 transition-all">
+ </div>
+ <div>
+ <p class="text-[11px] font-black text-white uppercase">Stripe Connect</p>
+ <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Global Payments & Split</p>
+ </div>
+ </div>
+ <span class="material-symbols-outlined text-emerald-500">check_circle</span>
+ </div>
+ <div class="p-6 rounded-2xl bg-white/2 border border-white/5 flex items-center justify-between group hover:border-blue-500/40 transition-all cursor-pointer opacity-50">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center p-2 text-blue-600 font-black italic">asaas</div>
+ <div>
+ <p class="text-[11px] font-black text-white uppercase">Asaas</p>
+ <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Boletos & Pix Nativo</p>
+ </div>
+ </div>
+ <span class="text-[9px] font-black text-gray-600 uppercase tracking-widest">Desconectado</span>
+ </div>
+ </div>
+ </div>
 
-                        <div class="glass-card p-10 border-white/5 bg-white/[0.01] space-y-8">
-                            <h4 class="text-sm font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
-                                <span class="material-symbols-outlined text-orange-500">settings_b_roll</span> Regras de Gatilho
-                            </h4>
-                            <div class="space-y-6">
-                                <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
-                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sinal Obrigatório (50%)</span>
-                                    <label class="switch">
-                                        <input type="checkbox" data-setting="banking_require_signal" onchange="updateSystemSetting(this)" {{#if (eq settings.banking_require_signal 'true')}}checked{{/if}}>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                                <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
-                                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Bloquear Download sem Pagamento</span>
-                                    <label class="switch">
-                                        <input type="checkbox" data-setting="banking_block_download" onchange="updateSystemSetting(this)" {{#if (eq settings.banking_block_download 'true')}}checked{{/if}}>
-                                        <span class="slider round"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+ <div class="glass-card p-10 border-white/5 bg-white/[0.01] space-y-8">
+ <h4 class="text-sm font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500">settings_b_roll</span> Regras de Gatilho
+ </h4>
+ <div class="space-y-6">
+ <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
+ <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sinal ObrigatÃ³rio (50%)</span>
+ <label class="switch">
+ <input type="checkbox" data-setting="banking_require_signal" onchange="updateSystemSetting(this)" {{#if (eq settings.banking_require_signal 'true')}}checked{{/if}}>
+ <span class="slider round"></span>
+ </label>
+ </div>
+ <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
+ <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Bloquear Download sem Pagamento</span>
+ <label class="switch">
+ <input type="checkbox" data-setting="banking_block_download" onchange="updateSystemSetting(this)" {{#if (eq settings.banking_block_download 'true')}}checked{{/if}}>
+ <span class="slider round"></span>
+ </label>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 
-            <!-- Tab: Segurança -->
-            <div id="pane-seguranca" class="adv-pane hidden">
-                <div class="space-y-10">
-                    <header class="flex justify-between items-end">
-                        <div>
-                            <h2 class="text-3xl font-black text-white tracking-tighter">Cibersegurança & <span class="text-orange-500">RBAC</span></h2>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Proteção de IP e controle de acesso granular</p>
-                        </div>
-                        <button class="px-6 py-3 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-red-500/20" onclick="terminateAllSessions()">Terminar Todas as Sessões</button>
-                    </header>
+ <!-- Tab: SeguranÃ§a -->
+ <div id="pane-seguranca" class="adv-pane hidden">
+ <div class="space-y-10">
+ <header class="flex justify-between items-end">
+ <div>
+ <h2 class="text-3xl font-black text-white tracking-tighter">CiberseguranÃ§a & <span class="text-orange-500">RBAC</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">ProteÃ§Ã£o de IP e controle de acesso granular</p>
+ </div>
+ <button class="px-6 py-3 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-red-500/20" onclick="terminateAllSessions()">Terminar Todas as SessÃµes</button>
+ </header>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-2 glass-card border-white/5 overflow-hidden">
-                            <div class="p-8 border-b border-white/5 bg-white/5">
-                                <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Matriz de Permissões (Roles)</h4>
-                            </div>
-                            <table class="w-full text-left">
-                                <thead class="bg-black/20">
-                                    <tr>
-                                        <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase">Módulo</th>
-                                        <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase text-center">Admin</th>
-                                        <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase text-center">Artista</th>
-                                        <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase text-center">Cliente</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-white/[0.03] text-[10px] font-bold text-gray-400 uppercase">
-                                    <tr>
-                                        <td class="px-8 py-4 text-white">Financeiro</td>
-                                        <td class="px-8 py-4 text-center text-emerald-500"><span class="material-symbols-outlined text-sm">check</span></td>
-                                        <td class="px-8 py-4 text-center text-red-500"><span class="material-symbols-outlined text-sm">close</span></td>
-                                        <td class="px-8 py-4 text-center text-red-500"><span class="material-symbols-outlined text-sm">close</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-8 py-4 text-white">Projetos (Full)</td>
-                                        <td class="px-8 py-4 text-center text-emerald-500"><span class="material-symbols-outlined text-sm">check</span></td>
-                                        <td class="px-8 py-4 text-center text-emerald-500"><span class="material-symbols-outlined text-sm">check</span></td>
-                                        <td class="px-8 py-4 text-center text-emerald-500 opacity-30"><span class="material-symbols-outlined text-sm">visibility</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+ <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+ <div class="lg:col-span-2 glass-card border-white/5 overflow-hidden">
+ <div class="p-8 border-b border-white/5 bg-white/5">
+ <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Matriz de PermissÃµes (Roles)</h4>
+ </div>
+ <table class="w-full text-left">
+ <thead class="bg-black/20">
+ <tr>
+ <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase">MÃ³dulo</th>
+ <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase text-center">Admin</th>
+ <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase text-center">Artista</th>
+ <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase text-center">Cliente</th>
+ </tr>
+ </thead>
+ <tbody class="divide-y divide-white/[0.03] text-[10px] font-bold text-gray-400 uppercase">
+ <tr>
+ <td class="px-8 py-4 text-white">Financeiro</td>
+ <td class="px-8 py-4 text-center text-emerald-500"><span class="material-symbols-outlined text-sm">check</span></td>
+ <td class="px-8 py-4 text-center text-red-500"><span class="material-symbols-outlined text-sm">close</span></td>
+ <td class="px-8 py-4 text-center text-red-500"><span class="material-symbols-outlined text-sm">close</span></td>
+ </tr>
+ <tr>
+ <td class="px-8 py-4 text-white">Projetos (Full)</td>
+ <td class="px-8 py-4 text-center text-emerald-500"><span class="material-symbols-outlined text-sm">check</span></td>
+ <td class="px-8 py-4 text-center text-emerald-500"><span class="material-symbols-outlined text-sm">check</span></td>
+ <td class="px-8 py-4 text-center text-emerald-500 opacity-30"><span class="material-symbols-outlined text-sm">visibility</span></td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
 
-                        <div class="space-y-8">
-                            <div class="glass-card p-8 border-white/5 bg-white/[0.01]">
-                                <h5 class="text-[11px] font-black text-white uppercase tracking-widest mb-6">IP Whitelisting</h5>
-                                <div class="space-y-4">
-                                    <div class="flex gap-2">
-                                        <input type="text" id="newIpAddress" class="input-premium py-3" placeholder="192.168.1.1">
-                                        <button onclick="addIpWhitelist()" class="px-4 bg-orange-500 rounded-xl text-white"><span class="material-symbols-outlined">add</span></button>
-                                    </div>
-                                    <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center">
-                                        <span class="text-[9px] font-black text-gray-500 tracking-widest uppercase">Escritório Central</span>
-                                        <button class="text-red-500"><span class="material-symbols-outlined text-sm">delete</span></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+ <div class="space-y-8">
+ <div class="glass-card p-8 border-white/5 bg-white/[0.01]">
+ <h5 class="text-[11px] font-black text-white uppercase tracking-widest mb-6">IP Whitelisting</h5>
+ <div class="space-y-4">
+ <div class="flex gap-2">
+ <input type="text" id="newIpAddress" class="input-premium py-3" placeholder="192.168.1.1">
+ <button onclick="addIpWhitelist()" class="px-4 bg-orange-500 rounded-xl text-white"><span class="material-symbols-outlined">add</span></button>
+ </div>
+ <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center">
+ <span class="text-[9px] font-black text-gray-500 tracking-widest uppercase">EscritÃ³rio Central</span>
+ <button class="text-red-500"><span class="material-symbols-outlined text-sm">delete</span></button>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 
-            <!-- Tab: Integrações & API -->
-            <div id="pane-integracoes" class="adv-pane hidden">
-                <div class="space-y-10">
-                    <header>
-                        <h2 class="text-3xl font-black text-white tracking-tighter">Ecosistema de <span class="text-orange-500">APIs</span></h2>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Conectividade n8n, Webhooks e Storage</p>
-                    </header>
+ <!-- Tab: IntegraÃ§Ãµes & API -->
+ <div id="pane-integracoes" class="adv-pane hidden">
+ <div class="space-y-10">
+ <header>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Ecosistema de <span class="text-orange-500">APIs</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Conectividade n8n, Webhooks e Storage</p>
+ </header>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div class="glass-card p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
-                            <div class="w-16 h-16 rounded-2xl bg-[#FF4B2B]/10 flex items-center justify-center text-[#FF4B2B] mb-6">
-                                <span class="material-symbols-outlined text-4xl">webhook</span>
-                            </div>
-                            <h4 class="text-xs font-black text-white uppercase tracking-widest mb-2">Webhooks</h4>
-                            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">Dispare ações para n8n/Zapier</p>
-                            <button onclick="alert('Integração Webhooks v2 em desenvolvimento. Ative o modo Dev para logs detalhados.')" class="w-full py-4 rounded-xl bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Configurar</button>
-                        </div>
-                        <div class="glass-card p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
-                            <div class="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 mb-6">
-                                <span class="material-symbols-outlined text-4xl">database</span>
-                            </div>
-                            <h4 class="text-xs font-black text-white uppercase tracking-widest mb-2">Supabase DB</h4>
-                            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">Conexão direta ao banco neural</p>
-                            <button class="w-full py-4 rounded-xl bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Ver Credentials</button>
-                        </div>
-                        <div class="glass-card p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
-                            <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-6">
-                                <span class="material-symbols-outlined text-4xl">cloud</span>
-                            </div>
-                            <h4 class="text-xs font-black text-white uppercase tracking-widest mb-2">Cloud Storage</h4>
-                            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">Google Drive & Dropbox Auth</p>
-                            <button class="w-full py-4 rounded-xl bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Autorizar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+ <div class="glass-card p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
+ <div class="w-16 h-16 rounded-2xl bg-[#FF4B2B]/10 flex items-center justify-center text-[#FF4B2B] mb-6">
+ <span class="material-symbols-outlined text-4xl">webhook</span>
+ </div>
+ <h4 class="text-xs font-black text-white uppercase tracking-widest mb-2">Webhooks</h4>
+ <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">Dispare aÃ§Ãµes para n8n/Zapier</p>
+ <button onclick="alert('IntegraÃ§Ã£o Webhooks v2 em desenvolvimento. Ative o modo Dev para logs detalhados.')" class="w-full py-4 rounded-xl bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Configurar</button>
+ </div>
+ <div class="glass-card p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
+ <div class="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 mb-6">
+ <span class="material-symbols-outlined text-4xl">database</span>
+ </div>
+ <h4 class="text-xs font-black text-white uppercase tracking-widest mb-2">Supabase DB</h4>
+ <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">ConexÃ£o direta ao banco neural</p>
+ <button class="w-full py-4 rounded-xl bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Ver Credentials</button>
+ </div>
+ <div class="glass-card p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
+ <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-6">
+ <span class="material-symbols-outlined text-4xl">cloud</span>
+ </div>
+ <h4 class="text-xs font-black text-white uppercase tracking-widest mb-2">Cloud Storage</h4>
+ <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">Google Drive & Dropbox Auth</p>
+ <button class="w-full py-4 rounded-xl bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Autorizar</button>
+ </div>
+ </div>
+ </div>
+ </div>
 
-            <!-- Tab: Notificações -->
-            <div id="pane-notificacoes" class="adv-pane hidden">
-                <div class="space-y-10">
-                    <header>
-                        <h2 class="text-3xl font-black text-white tracking-tighter">Central de <span class="text-orange-500">Mensageria</span></h2>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Personalização de templates e fluxos de alerta</p>
-                    </header>
+ <!-- Tab: NotificaÃ§Ãµes -->
+ <div id="pane-notificacoes" class="adv-pane hidden">
+ <div class="space-y-10">
+ <header>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Central de <span class="text-orange-500">Mensageria</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">PersonalizaÃ§Ã£o de templates e fluxos de alerta</p>
+ </header>
 
-                    <div class="glass-card border-white/5 overflow-hidden">
-                        {{#each notifications}}
-                        <div class="p-8 border-b border-white/5 flex items-center justify-between hover:bg-white/[0.02] transition-all">
-                            <div class="flex items-center gap-6">
-                                <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
-                                    <span class="material-symbols-outlined">mail</span>
-                                </div>
-                                <div>
-                                    <h4 class="text-[12px] font-black text-white uppercase tracking-tighter">{{this.name}}</h4>
-                                    <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-1">Disparado em: <span class="text-orange-500/80">{{this.triggerEvent}}</span></p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <button class="px-6 py-2 rounded-xl bg-white/5 text-[9px] font-black uppercase tracking-widest hover:bg-white/10">Editar Template</button>
-                                <label class="switch">
-                                    <input type="checkbox" {{#if this.isActive}}checked{{/if}}>
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                        </div>
-                        {{/each}}
-                        {{#unless notifications.length}}
-                        <div class="p-20 text-center text-gray-600 uppercase font-black text-[10px] tracking-[0.3em]">Nenhum template cadastrado</div>
-                        {{/unless}}
-                    </div>
-                </div>
-            </div>
+ <div class="glass-card border-white/5 overflow-hidden">
+ {{#each notifications}}
+ <div class="p-8 border-b border-white/5 flex items-center justify-between hover:bg-white/[0.02] transition-all">
+ <div class="flex items-center gap-6">
+ <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+ <span class="material-symbols-outlined">mail</span>
+ </div>
+ <div>
+ <h4 class="text-[12px] font-black text-white uppercase tracking-tighter">{{this.name}}</h4>
+ <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-1">Disparado em: <span class="text-orange-500/80">{{this.triggerEvent}}</span></p>
+ </div>
+ </div>
+ <div class="flex items-center gap-4">
+ <button class="px-6 py-2 rounded-xl bg-white/5 text-[9px] font-black uppercase tracking-widest hover:bg-white/10">Editar Template</button>
+ <label class="switch">
+ <input type="checkbox" {{#if this.isActive}}checked{{/if}}>
+ <span class="slider round"></span>
+ </label>
+ </div>
+ </div>
+ {{/each}}
+ {{#unless notifications.length}}
+ <div class="p-20 text-center text-gray-600 uppercase font-black text-[10px] tracking-[0.3em]">Nenhum template cadastrado</div>
+ {{/unless}}
+ </div>
+ </div>
+ </div>
 
-            <!-- Tab: Backup -->
-            <div id="pane-backup" class="adv-pane hidden">
-                <div class="space-y-10">
-                    <header class="flex justify-between items-end">
-                        <div>
-                            <h2 class="text-3xl font-black text-white tracking-tighter">Gestão de <span class="text-orange-500">Storage 3D</span></h2>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Backups, snapshots e cold storage inteligente</p>
-                        </div>
-                        <button class="px-6 py-3 bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all flex items-center gap-3" onclick="generateSnapshot()">
-                            <span class="material-symbols-outlined text-sm">download</span> Gerar Snapshot SQL
-                        </button>
-                    </header>
+ <!-- Tab: Backup -->
+ <div id="pane-backup" class="adv-pane hidden">
+ <div class="space-y-10">
+ <header class="flex justify-between items-end">
+ <div>
+ <h2 class="text-3xl font-black text-white tracking-tighter">GestÃ£o de <span class="text-orange-500">Storage 3D</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Backups, snapshots e cold storage inteligente</p>
+ </div>
+ <button class="px-6 py-3 bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all flex items-center gap-3" onclick="generateSnapshot()">
+ <span class="material-symbols-outlined text-sm">download</span> Gerar Snapshot SQL
+ </button>
+ </header>
 
-                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
-                        <div class="xl:col-span-2 glass-card p-10 border-white/5 bg-white/[0.01]">
-                            <h4 class="text-sm font-black text-white uppercase tracking-[0.2em] mb-8">Cold Storage Automático</h4>
-                            <div class="space-y-8">
-                                <div class="p-8 rounded-[2rem] bg-orange-500/5 border border-orange-500/10">
-                                    <div class="flex justify-between items-center mb-6">
-                                        <p class="text-[11px] font-black text-white uppercase tracking-widest">Regra de Arquivamento</p>
-                                        <span class="px-3 py-1 bg-orange-500 text-white text-[8px] font-black uppercase tracking-widest rounded-lg">Ativo</span>
-                                    </div>
-                                    <p class="text-xs text-gray-500 font-bold uppercase leading-relaxed tracking-wider mb-8">
-                                        Projetos finalizados há mais de <span class="text-orange-500">12 meses</span> serão automaticamente compactados e movidos para a camada de armazenamento de longo prazo (S3 Glacier).
-                                    </p>
-                                    <div class="flex gap-4">
-                                        <button class="flex-1 py-4 rounded-xl bg-orange-500/10 text-orange-500 text-[10px] font-black uppercase tracking-widest">Alterar Limite</button>
-                                        <button class="flex-1 py-4 rounded-xl bg-white/5 text-gray-400 text-[10px] font-black uppercase tracking-widest">Ver Projetos na Fila</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+ <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
+ <div class="xl:col-span-2 glass-card p-10 border-white/5 bg-white/[0.01]">
+ <h4 class="text-sm font-black text-white uppercase tracking-[0.2em] mb-8">Cold Storage AutomÃ¡tico</h4>
+ <div class="space-y-8">
+ <div class="p-8 rounded-[2rem] bg-orange-500/5 border border-orange-500/10">
+ <div class="flex justify-between items-center mb-6">
+ <p class="text-[11px] font-black text-white uppercase tracking-widest">Regra de Arquivamento</p>
+ <span class="px-3 py-1 bg-orange-500 text-white text-[8px] font-black uppercase tracking-widest rounded-lg">Ativo</span>
+ </div>
+ <p class="text-xs text-gray-500 font-bold uppercase leading-relaxed tracking-wider mb-8">
+ Projetos finalizados hÃ¡ mais de <span class="text-orange-500">12 meses</span> serÃ£o automaticamente compactados e movidos para a camada de armazenamento de longo prazo (S3 Glacier).
+ </p>
+ <div class="flex gap-4">
+ <button class="flex-1 py-4 rounded-xl bg-orange-500/10 text-orange-500 text-[10px] font-black uppercase tracking-widest">Alterar Limite</button>
+ <button class="flex-1 py-4 rounded-xl bg-white/5 text-gray-400 text-[10px] font-black uppercase tracking-widest">Ver Projetos na Fila</button>
+ </div>
+ </div>
+ </div>
+ </div>
 
-                        <div class="glass-card p-8 border-white/5 bg-white/[0.01] space-y-8">
-                            <h5 class="text-[11px] font-black text-white uppercase tracking-widest mb-6">Histórico de Snapshots</h5>
-                            <div class="space-y-4">
-                                <div class="p-4 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center">
-                                    <div>
-                                        <p class="text-[10px] font-black text-white uppercase">2026-05-06_12:00.sql</p>
-                                        <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-1">128 MB • Hoje</p>
-                                    </div>
-                                    <button class="text-orange-500"><span class="material-symbols-outlined text-sm">cloud_download</span></button>
-                                </div>
-                                <div class="p-4 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center opacity-50">
-                                    <div>
-                                        <p class="text-[10px] font-black text-white uppercase">2026-05-05_12:00.sql</p>
-                                        <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-1">126 MB • Ontem</p>
-                                    </div>
-                                    <button class="text-gray-600"><span class="material-symbols-outlined text-sm">cloud_download</span></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+ <div class="glass-card p-8 border-white/5 bg-white/[0.01] space-y-8">
+ <h5 class="text-[11px] font-black text-white uppercase tracking-widest mb-6">HistÃ³rico de Snapshots</h5>
+ <div class="space-y-4">
+ <div class="p-4 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center">
+ <div>
+ <p class="text-[10px] font-black text-white uppercase">2026-05-06_12:00.sql</p>
+ <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-1">128 MB â€¢ Hoje</p>
+ </div>
+ <button class="text-orange-500"><span class="material-symbols-outlined text-sm">cloud_download</span></button>
+ </div>
+ <div class="p-4 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center opacity-50">
+ <div>
+ <p class="text-[10px] font-black text-white uppercase">2026-05-05_12:00.sql</p>
+ <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-1">126 MB â€¢ Ontem</p>
+ </div>
+ <button class="text-gray-600"><span class="material-symbols-outlined text-sm">cloud_download</span></button>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 
-            <!-- Tab: Logs -->
-            <div id="pane-logs" class="adv-pane hidden">
-                <div class="space-y-10">
-                    <header class="flex justify-between items-end">
-                        <div>
-                            <h2 class="text-3xl font-black text-white tracking-tighter">Auditoria de <span class="text-orange-500">Eventos</span></h2>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Rastreabilidade inalterável de todas as ações no sistema</p>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="relative">
-                                <input type="text" class="input-premium py-3 pr-10 min-w-[250px]" placeholder="Filtrar por Usuário ou Ação...">
-                                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 text-lg">search</span>
-                            </div>
-                            <button class="p-3 bg-white/5 rounded-xl text-gray-400 hover:text-white transition-all"><span class="material-symbols-outlined">filter_list</span></button>
-                        </div>
-                    </header>
+ <!-- Tab: Logs -->
+ <div id="pane-logs" class="adv-pane hidden">
+ <div class="space-y-10">
+ <header class="flex justify-between items-end">
+ <div>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Auditoria de <span class="text-orange-500">Eventos</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Rastreabilidade inalterÃ¡vel de todas as aÃ§Ãµes no sistema</p>
+ </div>
+ <div class="flex gap-4">
+ <div class="relative">
+ <input type="text" class="input-premium py-3 pr-10 min-w-[250px]" placeholder="Filtrar por UsuÃ¡rio ou AÃ§Ã£o...">
+ <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 text-lg">search</span>
+ </div>
+ <button class="p-3 bg-white/5 rounded-xl text-gray-400 hover:text-white transition-all"><span class="material-symbols-outlined">filter_list</span></button>
+ </div>
+ </header>
 
-                    <div class="glass-card border-white/5 overflow-hidden">
-                        <table class="w-full text-left">
-                            <thead class="bg-white/5 border-b border-white/5">
-                                <tr>
-                                    <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Data / Hora</th>
-                                    <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Usuário</th>
-                                    <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Ação Realizada</th>
-                                    <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Módulo</th>
-                                    <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Origem IP</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-white/[0.03]">
-                                {{#each logs}}
-                                <tr class="hover:bg-white/[0.02] transition-colors">
-                                    <td class="px-8 py-6 text-[10px] font-bold text-gray-500 tracking-wider">{{formatDateShort this.createdAt}}</td>
-                                    <td class="px-8 py-6">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500 text-[10px] font-black uppercase">{{firstLetter this.userName}}</div>
-                                            <span class="text-[11px] font-black text-white uppercase">{{this.userName}}</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-8 py-6 text-[11px] font-bold text-gray-400">{{this.action}}</td>
-                                    <td class="px-8 py-6">
-                                        <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[8px] font-black text-gray-500 uppercase tracking-widest">{{this.module}}</span>
-                                    </td>
-                                    <td class="px-8 py-6 text-[10px] font-mono text-gray-600">{{this.ipAddress}}</td>
-                                </tr>
-                                {{/each}}
-                                {{#unless logs.length}}
-                                <tr>
-                                    <td colspan="5" class="py-20 text-center text-gray-600 uppercase font-black text-[10px] tracking-[0.3em]">Nenhum log registrado nas últimas 24h</td>
-                                </tr>
-                                {{/unless}}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+ <div class="glass-card border-white/5 overflow-hidden">
+ <table class="w-full text-left">
+ <thead class="bg-white/5 border-b border-white/5">
+ <tr>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Data / Hora</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">UsuÃ¡rio</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">AÃ§Ã£o Realizada</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">MÃ³dulo</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Origem IP</th>
+ </tr>
+ </thead>
+ <tbody class="divide-y divide-white/[0.03]">
+ {{#each logs}}
+ <tr class="hover:bg-white/[0.02] transition-colors">
+ <td class="px-8 py-6 text-[10px] font-bold text-gray-500 tracking-wider">{{formatDateShort this.createdAt}}</td>
+ <td class="px-8 py-6">
+ <div class="flex items-center gap-3">
+ <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500 text-[10px] font-black uppercase">{{firstLetter this.userName}}</div>
+ <span class="text-[11px] font-black text-white uppercase">{{this.userName}}</span>
+ </div>
+ </td>
+ <td class="px-8 py-6 text-[11px] font-bold text-gray-400">{{this.action}}</td>
+ <td class="px-8 py-6">
+ <span class="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-[8px] font-black text-gray-500 uppercase tracking-widest">{{this.module}}</span>
+ </td>
+ <td class="px-8 py-6 text-[10px] font-mono text-gray-600">{{this.ipAddress}}</td>
+ </tr>
+ {{/each}}
+ {{#unless logs.length}}
+ <tr>
+ <td colspan="5" class="py-20 text-center text-gray-600 uppercase font-black text-[10px] tracking-[0.3em]">Nenhum log registrado nas Ãºltimas 24h</td>
+ </tr>
+ {{/unless}}
+ </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 </div>
 
 <style>
-    .advanced-tab-btn {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1.25rem 1.5rem;
-        border-radius: 1.25rem;
-        text-align: left;
-        font-size: 11px;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: rgba(255,255,255,0.4);
-        transition: all 0.3s;
-        border: 1px solid transparent;
-    }
-    .advanced-tab-btn span.material-symbols-outlined {
-        transition: all 0.3s;
-    }
-    .advanced-tab-btn:hover {
-        background: rgba(255,255,255,0.03);
-        color: white;
-    }
-    .advanced-tab-btn.active {
-        background: rgba(249, 115, 22, 0.1) !important;
-        color: #f97316 !important;
-        border-color: rgba(249, 115, 22, 0.2) !important;
-        box-shadow: inset 0 0 20px rgba(249, 115, 22, 0.05);
-    }
-    .advanced-tab-btn.active span.material-symbols-outlined {
-        color: #f97316 !important;
-    }
+ .advanced-tab-btn {
+ width: 100%;
+ display: flex;
+ align-items: center;
+ gap: 1rem;
+ padding: 1.25rem 1.5rem;
+ border-radius: 1.25rem;
+ text-align: left;
+ font-size: 11px;
+ font-weight: 900;
+ text-transform: uppercase;
+ letter-spacing: 0.1em;
+ color: rgba(255,255,255,0.4);
+ transition: all 0.3s;
+ border: 1px solid transparent;
+ }
+ .advanced-tab-btn span.material-symbols-outlined {
+ transition: all 0.3s;
+ }
+ .advanced-tab-btn:hover {
+ background: rgba(255,255,255,0.03);
+ color: white;
+ }
+ .advanced-tab-btn.active {
+ background: rgba(249, 115, 22, 0.1) !important;
+ color: #f97316 !important;
+ border-color: rgba(249, 115, 22, 0.2) !important;
+ box-shadow: inset 0 0 20px rgba(249, 115, 22, 0.05);
+ }
+ .advanced-tab-btn.active span.material-symbols-outlined {
+ color: #f97316 !important;
+ }
 
-    .adv-pane.hidden {
-        display: none !important;
-    }
-    .adv-pane.active {
-        display: block !important;
-        animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    @keyframes slideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+ .adv-pane.hidden {
+ display: none !important;
+ }
+ .adv-pane.active {
+ display: block !important;
+ animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+ }
+ @keyframes slideUp {
+ from { opacity: 0; transform: translateY(20px); }
+ to { opacity: 1; transform: translateY(0); }
+ }
 
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 44px;
-        height: 24px;
-    }
-    .switch input { opacity: 0; width: 0; height: 0; }
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background-color: rgba(255,255,255,0.1);
-        transition: .4s;
-        border-radius: 34px;
-    }
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 18px; width: 18px;
-        left: 3px; bottom: 3px;
-        background-color: white;
-        transition: .4s;
-        border-radius: 50%;
-    }
-    input:checked + .slider { background-color: #f97316; }
-    input:checked + .slider:before { transform: translateX(20px); }
+ .switch {
+ position: relative;
+ display: inline-block;
+ width: 44px;
+ height: 24px;
+ }
+ .switch input { opacity: 0; width: 0; height: 0; }
+ .slider {
+ position: absolute;
+ cursor: pointer;
+ top: 0; left: 0; right: 0; bottom: 0;
+ background-color: rgba(255,255,255,0.1);
+ transition: .4s;
+ border-radius: 34px;
+ }
+ .slider:before {
+ position: absolute;
+ content: "";
+ height: 18px; width: 18px;
+ left: 3px; bottom: 3px;
+ background-color: white;
+ transition: .4s;
+ border-radius: 50%;
+ }
+ input:checked + .slider { background-color: #f97316; }
+ input:checked + .slider:before { transform: translateX(20px); }
 </style>
 
 <script>
@@ -723,641 +723,641 @@
  */
 
 function showToast(message, type = 'success') {
-    const container = document.getElementById('toast-container');
-    if (!container) return;
-    
-    const toast = document.createElement('div');
-    toast.className = `flex items-center gap-3 px-6 py-4 rounded-2xl border shadow-2xl animate-in slide-in-from-right duration-300 pointer-events-auto ${
-        type === 'success' 
-        ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' 
-        : 'bg-red-500/10 border-red-500/20 text-red-500'
-    }`;
-    
-    toast.innerHTML = `
-        <span class="material-symbols-outlined text-lg">${type === 'success' ? 'check_circle' : 'error'}</span>
-        <span class="text-[11px] font-black uppercase tracking-widest">${message}</span>
-    `;
-    
-    container.appendChild(toast);
-    setTimeout(() => {
-        toast.classList.add('fade-out');
-        setTimeout(() => toast.remove(), 300);
-    }, 4000);
+ const container = document.getElementById('toast-container');
+ if (!container) return;
+ 
+ const toast = document.createElement('div');
+ toast.className = `flex items-center gap-3 px-6 py-4 rounded-2xl border shadow-2xl animate-in slide-in-from-right duration-300 pointer-events-auto ${
+ type === 'success' 
+ ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' 
+ : 'bg-red-500/10 border-red-500/20 text-red-500'
+ }`;
+ 
+ toast.innerHTML = `
+ <span class="material-symbols-outlined text-lg">${type === 'success' ? 'check_circle' : 'error'}</span>
+ <span class="text-[11px] font-black uppercase tracking-widest">${message}</span>
+ `;
+ 
+ container.appendChild(toast);
+ setTimeout(() => {
+ toast.classList.add('fade-out');
+ setTimeout(() => toast.remove(), 300);
+ }, 4000);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Advanced Admin Stabilization Active');
-    
-    // Aba inicial pelo Hash
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-        const activeBtn = document.querySelector(`.advanced-tab-btn[data-tab="${hash}"]`);
-        if (activeBtn) switchAdvTab(hash, activeBtn);
-    } else {
-        // Default: Usuários
-        switchAdvTab('usuarios', document.querySelector('.advanced-tab-btn[data-tab="usuarios"]'));
-    }
+ console.log('Advanced Admin Stabilization Active');
+ 
+ // Aba inicial pelo Hash
+ const hash = window.location.hash.substring(1);
+ if (hash) {
+ const activeBtn = document.querySelector(`.advanced-tab-btn[data-tab="${hash}"]`);
+ if (activeBtn) switchAdvTab(hash, activeBtn);
+ } else {
+ // Default: UsuÃ¡rios
+ switchAdvTab('usuarios', document.querySelector('.advanced-tab-btn[data-tab="usuarios"]'));
+ }
 
-     const tabButtons = document.querySelectorAll('.advanced-tab-btn');
-     tabButtons.forEach(btn => {
-         btn.addEventListener('click', function() {
-             const tabId = this.getAttribute('data-tab');
-             switchAdvTab(tabId, this);
-             window.location.hash = tabId;
-         });
-     });
+ const tabButtons = document.querySelectorAll('.advanced-tab-btn');
+ tabButtons.forEach(btn => {
+ btn.addEventListener('click', function() {
+ const tabId = this.getAttribute('data-tab');
+ switchAdvTab(tabId, this);
+ window.location.hash = tabId;
+ });
+ });
  
-     // Event Delegation for User Management Pane (moved out of switchAdvTab)
-     const paneUsuarios = document.getElementById('pane-usuarios');
-     if (paneUsuarios) {
-         paneUsuarios.addEventListener('click', function(e) {
-             // Handle Edit User
-             const editBtn = e.target.closest('.btn-edit-user');
-             if (editBtn) {
-                 e.stopPropagation();
-                 const d = editBtn.dataset;
-                 openEditUserModal(d.id, d.name, d.email, d.role, d.parent, d.tenant, d.menus);
-                 return;
-             }
+ // Event Delegation for User Management Pane (moved out of switchAdvTab)
+ const paneUsuarios = document.getElementById('pane-usuarios');
+ if (paneUsuarios) {
+ paneUsuarios.addEventListener('click', function(e) {
+ // Handle Edit User
+ const editBtn = e.target.closest('.btn-edit-user');
+ if (editBtn) {
+ e.stopPropagation();
+ const d = editBtn.dataset;
+ openEditUserModal(d.id, d.name, d.email, d.role, d.parent, d.tenant, d.menus);
+ return;
+ }
  
-             // Handle Reset Password
-             const resetBtn = e.target.closest('.btn-reset-pass');
-             if (resetBtn) {
-                 e.stopPropagation();
-                 const d = resetBtn.dataset;
-                 openResetPasswordModal(d.id, d.name);
-                 return;
-             }
+ // Handle Reset Password
+ const resetBtn = e.target.closest('.btn-reset-pass');
+ if (resetBtn) {
+ e.stopPropagation();
+ const d = resetBtn.dataset;
+ openResetPasswordModal(d.id, d.name);
+ return;
+ }
 
-             // Handle Accordion Toggle
-             const header = e.target.closest('.accordion-header');
-             if (header) {
-                 const item = header.closest('.subscriber-item');
-                 const content = item.querySelector('.accordion-content');
-                 const icon = header.querySelector('.accordion-icon');
-                 
-                 if (content) {
-                     content.classList.toggle('hidden');
-                     if (icon) icon.classList.toggle('rotate-180');
-                 }
-                 return;
-             }
-         });
-     }
+ // Handle Accordion Toggle
+ const header = e.target.closest('.accordion-header');
+ if (header) {
+ const item = header.closest('.subscriber-item');
+ const content = item.querySelector('.accordion-content');
+ const icon = header.querySelector('.accordion-icon');
  
-     const btnOpenNewUser = document.getElementById('btnOpenNewUser');
-     if (btnOpenNewUser) {
-         btnOpenNewUser.addEventListener('click', openNewUserModal);
-     }
+ if (content) {
+ content.classList.toggle('hidden');
+ if (icon) icon.classList.toggle('rotate-180');
+ }
+ return;
+ }
+ });
+ }
+ 
+ const btnOpenNewUser = document.getElementById('btnOpenNewUser');
+ if (btnOpenNewUser) {
+ btnOpenNewUser.addEventListener('click', openNewUserModal);
+ }
  });
 
 function switchAdvTab(tabId, btn) {
-    // Esconder todos os painéis e remover classe active
-    document.querySelectorAll('.adv-pane').forEach(p => {
-        p.classList.add('hidden');
-        p.classList.remove('active');
-    });
+ // Esconder todos os painÃ©is e remover classe active
+ document.querySelectorAll('.adv-pane').forEach(p => {
+ p.classList.add('hidden');
+ p.classList.remove('active');
+ });
 
-    const target = document.getElementById(`pane-${tabId}`);
-    if (target) {
-        target.classList.remove('hidden');
-        target.classList.add('active');
-    }
+ const target = document.getElementById(`pane-${tabId}`);
+ if (target) {
+ target.classList.remove('hidden');
+ target.classList.add('active');
+ }
 
-    // Atualizar botões de navegação
-    document.querySelectorAll('.advanced-tab-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
+ // Atualizar botÃµes de navegaÃ§Ã£o
+ document.querySelectorAll('.advanced-tab-btn').forEach(b => b.classList.remove('active'));
+ if (btn) btn.classList.add('active');
 
-    // Carregar dados específicos se necessário
-    if (tabId === 'usuarios') {
-        const auditView = document.getElementById('users-audit-view');
-        if (auditView) auditView.classList.remove('hidden');
-        loadUsers();
-    } else {
-        const auditView = document.getElementById('users-audit-view');
-        if (auditView) auditView.classList.add('hidden');
-    }
+ // Carregar dados especÃ­ficos se necessÃ¡rio
+ if (tabId === 'usuarios') {
+ const auditView = document.getElementById('users-audit-view');
+ if (auditView) auditView.classList.remove('hidden');
+ loadUsers();
+ } else {
+ const auditView = document.getElementById('users-audit-view');
+ if (auditView) auditView.classList.add('hidden');
+ }
 }
 
 function toggleCollapseCard(cardId, iconId) {
-    const card = document.getElementById(cardId);
-    const icon = document.getElementById(iconId || `icon-${cardId}`);
-    if (card) {
-        card.classList.toggle('hidden');
-        if (icon) {
-            icon.classList.toggle('rotate-180');
-        }
-    }
+ const card = document.getElementById(cardId);
+ const icon = document.getElementById(iconId || `icon-${cardId}`);
+ if (card) {
+ card.classList.toggle('hidden');
+ if (icon) {
+ icon.classList.toggle('rotate-180');
+ }
+ }
 }
 
 // --- USER MANAGEMENT ---
 function openNewUserModal() {
-    const modal = document.getElementById('newUserModal');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
+ const modal = document.getElementById('newUserModal');
+ modal.classList.remove('hidden');
+ modal.classList.add('flex');
 }
 
 function closeNewUserModal() {
-    const modal = document.getElementById('newUserModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
+ const modal = document.getElementById('newUserModal');
+ modal.classList.add('hidden');
+ modal.classList.remove('flex');
 }
 
 async function submitNewUser(e) {
-    e.preventDefault();
-    const form = e.target;
-    const btn = form.querySelector('button[type="submit"]');
-    const originalText = btn.innerText;
-    
-    btn.disabled = true;
-    btn.innerText = 'Processando...';
-    
-    const data = {
-        name: form.name.value,
-        email: form.email.value,
-        password: form.password.value,
-        role: form.role.value,
-        tenantName: form.tenantName.value || null,
-        parentId: form.parentId.value || null,
-        specialty: form.specialty.value || null,
-        mainTool: form.mainTool.value || null,
-        allowed_menus: Array.from(form.querySelectorAll('input[name="allowed_menus"]:checked')).map(cb => cb.value)
-    };
+ e.preventDefault();
+ const form = e.target;
+ const btn = form.querySelector('button[type="submit"]');
+ const originalText = btn.innerText;
+ 
+ btn.disabled = true;
+ btn.innerText = 'Processando...';
+ 
+ const data = {
+ name: form.name.value,
+ email: form.email.value,
+ password: form.password.value,
+ role: form.role.value,
+ tenantName: form.tenantName.value || null,
+ parentId: form.parentId.value || null,
+ specialty: form.specialty.value || null,
+ mainTool: form.mainTool.value || null,
+ allowed_menus: Array.from(form.querySelectorAll('input[name="allowed_menus"]:checked')).map(cb => cb.value)
+ };
 
-    try {
-        const res = await fetch('/admin/api/users', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        const json = await res.json();
-        
-        if (json.success) {
-            showToast('Usuário criado com sucesso!');
-            setTimeout(() => window.location.reload(), 1000);
-        } else {
-            showToast(json.error || 'Erro ao criar usuário', 'error');
-            btn.disabled = false;
-            btn.innerText = originalText;
-        }
-    } catch (err) {
-        showToast('Erro de conexão', 'error');
-        btn.disabled = false;
-        btn.innerText = originalText;
-    }
+ try {
+ const res = await fetch('/admin/api/users', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify(data)
+ });
+ const json = await res.json();
+ 
+ if (json.success) {
+ showToast('UsuÃ¡rio criado com sucesso!');
+ setTimeout(() => window.location.reload(), 1000);
+ } else {
+ showToast(json.error || 'Erro ao criar usuÃ¡rio', 'error');
+ btn.disabled = false;
+ btn.innerText = originalText;
+ }
+ } catch (err) {
+ showToast('Erro de conexÃ£o', 'error');
+ btn.disabled = false;
+ btn.innerText = originalText;
+ }
 }
 
 async function loadUsers() {
-    const container = document.querySelector('.users-grid');
-    if (!container) return;
-    
-    container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500 font-bold uppercase tracking-widest animate-pulse">Carregando usuários do sistema...</div>';
-    
-    try {
-        const response = await fetch('/admin/api/users');
-        const data = await response.json();
-        
-        if (!data.success) throw new Error(data.message || 'Erro ao carregar usuários');
-        if (!Array.isArray(data.users)) throw new Error('Dados de usuários inválidos');
-        
-        if (data.users.length === 0) {
-            container.innerHTML = '<div class="col-span-full text-center py-20 text-gray-500 font-bold uppercase tracking-widest">Nenhum usuário encontrado no sistema.</div>';
-            return;
-        }
+ const container = document.querySelector('.users-grid');
+ if (!container) return;
+ 
+ container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500 font-bold uppercase tracking-widest animate-pulse">Carregando usuÃ¡rios do sistema...</div>';
+ 
+ try {
+ const response = await fetch('/admin/api/users');
+ const data = await response.json();
+ 
+ if (!data.success) throw new Error(data.message || 'Erro ao carregar usuÃ¡rios');
+ if (!Array.isArray(data.users)) throw new Error('Dados de usuÃ¡rios invÃ¡lidos');
+ 
+ if (data.users.length === 0) {
+ container.innerHTML = '<div class="col-span-full text-center py-20 text-gray-500 font-bold uppercase tracking-widest">Nenhum usuÃ¡rio encontrado no sistema.</div>';
+ return;
+ }
 
-        container.innerHTML = data.users.map(u => `
-            <div class="glass-card p-6 flex flex-col gap-4 border border-white/5 hover:border-orange-500/30 transition-all group">
-                <div class="flex justify-between items-start">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-500/20">
-                            ${u.name ? u.name.charAt(0).toUpperCase() : 'U'}
-                        </div>
-                        <div>
-                            <h4 class="text-white font-black uppercase tracking-tighter">${u.name || 'Sem Nome'}</h4>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">${u.email}</p>
-                        </div>
-                    </div>
-                    <div class="flex flex-col items-end gap-1">
-                        <span class="badge ${u.role === 'admin' ? 'bg-red-500/20 text-red-500' : 'bg-orange-500/20 text-orange-500'} border-none uppercase text-[9px] font-black tracking-widest px-3 py-1 rounded-full">
-                            ${u.role}
-                        </span>
-                        ${u.parentId ? `<span class="text-[8px] text-gray-600 font-bold uppercase tracking-widest">Sub-conta</span>` : ''}
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-3 py-4 border-y border-white/5 my-2">
-                    <div>
-                        <p class="text-[8px] text-gray-600 font-bold uppercase tracking-widest mb-1">Status</p>
-                        <div class="flex items-center gap-2">
-                            <div class="w-1.5 h-1.5 rounded-full ${u.isActive ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500'}"></div>
-                            <span class="text-[10px] text-white font-bold uppercase tracking-tight">${u.isActive ? 'Ativo' : 'Inativo'}</span>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="text-[8px] text-gray-600 font-bold uppercase tracking-widest mb-1">Último Acesso</p>
-                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">${u.lastLogin ? new Date(u.lastLogin).toLocaleDateString() : 'Nunca'}</span>
-                    </div>
-                </div>
+ container.innerHTML = data.users.map(u => `
+ <div class="glass-card p-6 flex flex-col gap-4 border border-white/5 hover:border-orange-500/30 transition-all group">
+ <div class="flex justify-between items-start">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-500/20">
+ ${u.name ? u.name.charAt(0).toUpperCase() : 'U'}
+ </div>
+ <div>
+ <h4 class="text-white font-black uppercase tracking-tighter">${u.name || 'Sem Nome'}</h4>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">${u.email}</p>
+ </div>
+ </div>
+ <div class="flex flex-col items-end gap-1">
+ <span class="badge ${u.role === 'admin' ? 'bg-red-500/20 text-red-500' : 'bg-orange-500/20 text-orange-500'} border-none uppercase text-[9px] font-black tracking-widest px-3 py-1 rounded-full">
+ ${u.role}
+ </span>
+ ${u.parentId ? `<span class="text-[8px] text-gray-600 font-bold uppercase tracking-widest">Sub-conta</span>` : ''}
+ </div>
+ </div>
+ 
+ <div class="grid grid-cols-2 gap-3 py-4 border-y border-white/5 my-2">
+ <div>
+ <p class="text-[8px] text-gray-600 font-bold uppercase tracking-widest mb-1">Status</p>
+ <div class="flex items-center gap-2">
+ <div class="w-1.5 h-1.5 rounded-full ${u.isActive ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500'}"></div>
+ <span class="text-[10px] text-white font-bold uppercase tracking-tight">${u.isActive ? 'Ativo' : 'Inativo'}</span>
+ </div>
+ </div>
+ <div>
+ <p class="text-[8px] text-gray-600 font-bold uppercase tracking-widest mb-1">Ãšltimo Acesso</p>
+ <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">${u.lastLogin ? new Date(u.lastLogin).toLocaleDateString() : 'Nunca'}</span>
+ </div>
+ </div>
 
-                <div class="flex gap-2">
-                    <button onclick="openEditUserModal('${u.id}', '${u.name}', '${u.email}', '${u.role}', '${u.parentId || ''}', '${u.tenantName || ''}', '${u.permissions?.allowed_menus ? u.permissions.allowed_menus.join(',') : ''}')" 
-                            class="flex-1 btn-premium text-[9px] py-2 bg-white/5 hover:bg-orange-500 hover:text-white transition-all text-center">
-                        Editar Perfil
-                    </button>
-                    <button onclick="openResetPasswordModal('${u.id}', '${u.name}')" 
-                            class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 transition-all border border-white/5" title="Redefinir Senha">
-                        <span class="material-symbols-outlined text-sm">key</span>
-                    </button>
-                    <button onclick="deleteUser('${u.id}')" 
-                            class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-white/5" title="Excluir Usuário">
-                        <span class="material-symbols-outlined text-sm">delete</span>
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    } catch (err) {
-        console.error('LoadUsers Error:', err);
-        container.innerHTML = `<div class="col-span-full text-center py-20 text-red-500/50 font-bold uppercase tracking-widest">Erro na comunicação com o banco de dados: ${err.message}</div>`;
-    }
+ <div class="flex gap-2">
+ <button onclick="openEditUserModal('${u.id}', '${u.name}', '${u.email}', '${u.role}', '${u.parentId || ''}', '${u.tenantName || ''}', '${u.permissions?.allowed_menus ? u.permissions.allowed_menus.join(',') : ''}')" 
+ class="flex-1 btn-premium text-[9px] py-2 bg-white/5 hover:bg-orange-500 hover:text-white transition-all text-center">
+ Editar Perfil
+ </button>
+ <button onclick="openResetPasswordModal('${u.id}', '${u.name}')" 
+ class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 transition-all border border-white/5" title="Redefinir Senha">
+ <span class="material-symbols-outlined text-sm">key</span>
+ </button>
+ <button onclick="deleteUser('${u.id}')" 
+ class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-white/5" title="Excluir UsuÃ¡rio">
+ <span class="material-symbols-outlined text-sm">delete</span>
+ </button>
+ </div>
+ </div>
+ `).join('');
+ } catch (err) {
+ console.error('LoadUsers Error:', err);
+ container.innerHTML = `<div class="col-span-full text-center py-20 text-red-500/50 font-bold uppercase tracking-widest">Erro na comunicaÃ§Ã£o com o banco de dados: ${err.message}</div>`;
+ }
 }
 
 function openEditUserModal(id, name, email, role, parentId, tenantName, menusStr) {
-    const modal = document.getElementById('editUserModal');
-    if (!modal) return;
-    
-    const form = modal.querySelector('form');
-    form.userId.value = id;
-    form.name.value = name;
-    form.email.value = email;
-    form.role.value = role;
-    form.parentId.value = parentId || '';
-    
-    const allowed = menusStr ? menusStr.split(',') : [];
-    form.querySelectorAll('input[name="allowed_menus"]').forEach(cb => {
-        cb.checked = allowed.includes(cb.value);
-    });
-    
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
+ const modal = document.getElementById('editUserModal');
+ if (!modal) return;
+ 
+ const form = modal.querySelector('form');
+ form.userId.value = id;
+ form.name.value = name;
+ form.email.value = email;
+ form.role.value = role;
+ form.parentId.value = parentId || '';
+ 
+ const allowed = menusStr ? menusStr.split(',') : [];
+ form.querySelectorAll('input[name="allowed_menus"]').forEach(cb => {
+ cb.checked = allowed.includes(cb.value);
+ });
+ 
+ modal.classList.remove('hidden');
+ modal.classList.add('flex');
 }
 
 function closeEditUserModal() {
-    const modal = document.getElementById('editUserModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
+ const modal = document.getElementById('editUserModal');
+ modal.classList.add('hidden');
+ modal.classList.remove('flex');
 }
 
 async function submitEditUser(e) {
-    e.preventDefault();
-    const form = e.target;
-    const userId = form.userId.value;
-    const btn = form.querySelector('button[type="submit"]');
-    const originalText = btn.innerText;
-    
-    btn.disabled = true;
-    btn.innerText = 'Salvando...';
+ e.preventDefault();
+ const form = e.target;
+ const userId = form.userId.value;
+ const btn = form.querySelector('button[type="submit"]');
+ const originalText = btn.innerText;
+ 
+ btn.disabled = true;
+ btn.innerText = 'Salvando...';
 
-    const data = {
-        name: form.name.value,
-        email: form.email.value,
-        role: form.role.value,
-        parentId: form.parentId.value || null,
-        allowed_menus: Array.from(form.querySelectorAll('input[name="allowed_menus"]:checked')).map(cb => cb.value)
-    };
+ const data = {
+ name: form.name.value,
+ email: form.email.value,
+ role: form.role.value,
+ parentId: form.parentId.value || null,
+ allowed_menus: Array.from(form.querySelectorAll('input[name="allowed_menus"]:checked')).map(cb => cb.value)
+ };
 
-    try {
-        const res = await fetch(`/admin/api/users/${userId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        const json = await res.json();
-        if (json.success) {
-            showToast('Usuário atualizado!');
-            closeEditUserModal();
-            loadUsers();
-        } else {
-            showToast(json.message || 'Erro ao atualizar', 'error');
-            btn.disabled = false;
-            btn.innerText = originalText;
-        }
-    } catch (err) {
-        showToast('Erro de conexão', 'error');
-        btn.disabled = false;
-        btn.innerText = originalText;
-    }
+ try {
+ const res = await fetch(`/admin/api/users/${userId}`, {
+ method: 'PUT',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify(data)
+ });
+ const json = await res.json();
+ if (json.success) {
+ showToast('UsuÃ¡rio atualizado!');
+ closeEditUserModal();
+ loadUsers();
+ } else {
+ showToast(json.message || 'Erro ao atualizar', 'error');
+ btn.disabled = false;
+ btn.innerText = originalText;
+ }
+ } catch (err) {
+ showToast('Erro de conexÃ£o', 'error');
+ btn.disabled = false;
+ btn.innerText = originalText;
+ }
 }
 
 async function deleteUser(id) {
-    if (!confirm('Tem certeza que deseja excluir este usuário permanentemente?')) return;
-    try {
-        const res = await fetch(`/admin/api/users/${id}`, { method: 'DELETE' });
-        const json = await res.json();
-        if (json.success) {
-            showToast('Usuário removido!');
-            loadUsers();
-        } else {
-            showToast(json.message, 'error');
-        }
-    } catch (err) {
-        showToast('Erro ao excluir usuário', 'error');
-    }
+ if (!confirm('Tem certeza que deseja excluir este usuÃ¡rio permanentemente?')) return;
+ try {
+ const res = await fetch(`/admin/api/users/${id}`, { method: 'DELETE' });
+ const json = await res.json();
+ if (json.success) {
+ showToast('UsuÃ¡rio removido!');
+ loadUsers();
+ } else {
+ showToast(json.message, 'error');
+ }
+ } catch (err) {
+ showToast('Erro ao excluir usuÃ¡rio', 'error');
+ }
 }
 
 async function generateSnapshot() {
-    try {
-        showToast('Iniciando geração de snapshot...');
-        const res = await fetch('/admin/api/instances/snapshot', { method: 'POST' });
-        const json = await res.json();
-        if (json.success) {
-            showToast(json.message);
-        } else {
-            showToast('Falha ao gerar snapshot: ' + (json.error || 'Erro interno'), 'error');
-        }
-    } catch (err) {
-        showToast('Erro de conexão com o banco', 'error');
-    }
+ try {
+ showToast('Iniciando geraÃ§Ã£o de snapshot...');
+ const res = await fetch('/admin/api/instances/snapshot', { method: 'POST' });
+ const json = await res.json();
+ if (json.success) {
+ showToast(json.message);
+ } else {
+ showToast('Falha ao gerar snapshot: ' + (json.error || 'Erro interno'), 'error');
+ }
+ } catch (err) {
+ showToast('Erro de conexÃ£o com o banco', 'error');
+ }
 }
 
 // Removed duplicate openEditUserModal and closeEditUserModal
 // Removed duplicate submitEditUser and deleteUser
 
 function openResetPasswordModal(id, name) {
-    document.getElementById('resetPasswordUserId').value = id;
-    document.getElementById('resetPasswordUserName').innerText = name;
-    const modal = document.getElementById('resetPasswordModal');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
+ document.getElementById('resetPasswordUserId').value = id;
+ document.getElementById('resetPasswordUserName').innerText = name;
+ const modal = document.getElementById('resetPasswordModal');
+ modal.classList.remove('hidden');
+ modal.classList.add('flex');
 }
 
 function closeResetPasswordModal() {
-    const modal = document.getElementById('resetPasswordModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
+ const modal = document.getElementById('resetPasswordModal');
+ modal.classList.add('hidden');
+ modal.classList.remove('flex');
 }
 
 async function submitResetPassword(e) {
-    e.preventDefault();
-    const form = e.target;
-    const userId = form.userId.value;
-    const newPassword = form.newPassword.value;
+ e.preventDefault();
+ const form = e.target;
+ const userId = form.userId.value;
+ const newPassword = form.newPassword.value;
 
-    try {
-        const res = await fetch(`/admin/api/users/${userId}/reset-password`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ newPassword })
-        });
-        const json = await res.json();
-        if (json.success) {
-            showToast('Senha atualizada com sucesso!');
-            closeResetPasswordModal();
-        } else {
-            showToast(json.error, 'error');
-        }
-    } catch (err) {
-        showToast('Erro de conexão.', 'error');
-    }
+ try {
+ const res = await fetch(`/admin/api/users/${userId}/reset-password`, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ newPassword })
+ });
+ const json = await res.json();
+ if (json.success) {
+ showToast('Senha atualizada com sucesso!');
+ closeResetPasswordModal();
+ } else {
+ showToast(json.error, 'error');
+ }
+ } catch (err) {
+ showToast('Erro de conexÃ£o.', 'error');
+ }
 }
 
 // --- INFRASTRUCTURE & INSTANCES ---
 function openNewInstanceModal() {
-    document.getElementById('newInstanceModal').classList.remove('hidden');
-    document.getElementById('newInstanceModal').classList.add('flex');
+ document.getElementById('newInstanceModal').classList.remove('hidden');
+ document.getElementById('newInstanceModal').classList.add('flex');
 }
 
 function closeInstanceModal() {
-    document.getElementById('newInstanceModal').classList.add('hidden');
-    document.getElementById('newInstanceModal').classList.remove('flex');
-    document.getElementById('newInstanceForm').reset();
+ document.getElementById('newInstanceModal').classList.add('hidden');
+ document.getElementById('newInstanceModal').classList.remove('flex');
+ document.getElementById('newInstanceForm').reset();
 }
 
 async function submitInstance(e) {
-    e.preventDefault();
-    const form = e.target;
-    const submitBtn = form.querySelector('button[type="submit"]');
-    
-    submitBtn.disabled = true;
-    submitBtn.innerText = 'Criando...';
+ e.preventDefault();
+ const form = e.target;
+ const submitBtn = form.querySelector('button[type="submit"]');
+ 
+ submitBtn.disabled = true;
+ submitBtn.innerText = 'Criando...';
 
-    const data = {
-        name: form.name.value,
-        integrationType: form.integrationType.value,
-        token: form.token.value,
-        status: form.status.value
-    };
+ const data = {
+ name: form.name.value,
+ integrationType: form.integrationType.value,
+ token: form.token.value,
+ status: form.status.value
+ };
 
-    try {
-        const res = await fetch('/admin/api/instances', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        const json = await res.json();
-        if (json.success) {
-            showToast('Instância criada!');
-            setTimeout(() => window.location.reload(), 1000);
-        } else {
-            showToast(json.message, 'error');
-            submitBtn.disabled = false;
-            submitBtn.innerText = 'Criar Instância';
-        }
-    } catch (err) {
-        showToast('Erro de rede.', 'error');
-        submitBtn.disabled = false;
-    }
+ try {
+ const res = await fetch('/admin/api/instances', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify(data)
+ });
+ const json = await res.json();
+ if (json.success) {
+ showToast('InstÃ¢ncia criada!');
+ setTimeout(() => window.location.reload(), 1000);
+ } else {
+ showToast(json.message, 'error');
+ submitBtn.disabled = false;
+ submitBtn.innerText = 'Criar InstÃ¢ncia';
+ }
+ } catch (err) {
+ showToast('Erro de rede.', 'error');
+ submitBtn.disabled = false;
+ }
 }
 
 async function syncCluster() {
-    try {
-        showToast('Sincronizando Cluster de Render...', 'success');
-        const res = await fetch('/admin/api/infra/sync-cluster', { method: 'POST' });
-        const json = await res.json();
-        if (json.success) {
-            showToast(json.message);
-        } else {
-            showToast(json.error || 'Erro na sincronização', 'error');
-        }
-    } catch (err) {
-        showToast('Erro de conexão', 'error');
-    }
+ try {
+ showToast('Sincronizando Cluster de Render...', 'success');
+ const res = await fetch('/admin/api/infra/sync-cluster', { method: 'POST' });
+ const json = await res.json();
+ if (json.success) {
+ showToast(json.message);
+ } else {
+ showToast(json.error || 'Erro na sincronizaÃ§Ã£o', 'error');
+ }
+ } catch (err) {
+ showToast('Erro de conexÃ£o', 'error');
+ }
 }
 
 async function instanceAction(id, action) {
-    try {
-        const res = await fetch(`/admin/api/instances/${id}/action`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action })
-        });
-        const json = await res.json();
-        if (json.success) {
-            showToast(json.message);
-            setTimeout(() => window.location.reload(), 1500);
-        } else { showToast(json.error, 'error'); }
-    } catch (error) { showToast('Erro de rede.', 'error'); }
+ try {
+ const res = await fetch(`/admin/api/instances/${id}/action`, {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ action })
+ });
+ const json = await res.json();
+ if (json.success) {
+ showToast(json.message);
+ setTimeout(() => window.location.reload(), 1500);
+ } else { showToast(json.error, 'error'); }
+ } catch (error) { showToast('Erro de rede.', 'error'); }
 }
 
 function viewInstanceLogs(id) {
-    showToast('Consultando logs do nó...', 'success');
-    setTimeout(() => {
-        alert('Logs da Instância ' + id + ':\n[SYSTEM] Node.js process active\n[GPU] Usage 15%\n[OK] Listening on port 3000');
-    }, 500);
+ showToast('Consultando logs do nÃ³...', 'success');
+ setTimeout(() => {
+ alert('Logs da InstÃ¢ncia ' + id + ':\n[SYSTEM] Node.js process active\n[GPU] Usage 15%\n[OK] Listening on port 3000');
+ }, 500);
 }
 
 // --- PLANS B2B ---
 function openEditPlanModal(id, name, price, revisions, sla, discount) {
-    const modal = document.getElementById('newPlanModal');
-    modal.querySelector('h3').innerText = 'Editar Plano B2B';
-    const form = modal.querySelector('form');
-    form.action = `/admin/api/plans/${id}`;
-    form.setAttribute('data-method', 'PATCH');
-    form.name.value = name;
-    form.price.value = price;
-    form.revisionsLimit.value = revisions;
-    form.slaDays.value = sla;
-    form.extraDiscount.value = discount;
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
+ const modal = document.getElementById('newPlanModal');
+ modal.querySelector('h3').innerText = 'Editar Plano B2B';
+ const form = modal.querySelector('form');
+ form.action = `/admin/api/plans/${id}`;
+ form.setAttribute('data-method', 'PATCH');
+ form.name.value = name;
+ form.price.value = price;
+ form.revisionsLimit.value = revisions;
+ form.slaDays.value = sla;
+ form.extraDiscount.value = discount;
+ modal.classList.remove('hidden');
+ modal.classList.add('flex');
 }
 
 function closePlanModal() {
-    const modal = document.getElementById('newPlanModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    const form = modal.querySelector('form');
-    form.reset();
-    form.removeAttribute('data-method');
-    modal.querySelector('h3').innerText = 'Criar Novo Nível de Plano';
+ const modal = document.getElementById('newPlanModal');
+ modal.classList.add('hidden');
+ modal.classList.remove('flex');
+ const form = modal.querySelector('form');
+ form.reset();
+ form.removeAttribute('data-method');
+ modal.querySelector('h3').innerText = 'Criar Novo NÃ­vel de Plano';
 }
 
 async function submitPlan(e) {
-    e.preventDefault();
-    const form = e.target;
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerText;
-    
-    submitBtn.disabled = true;
-    submitBtn.innerText = 'Salvando...';
+ e.preventDefault();
+ const form = e.target;
+ const submitBtn = form.querySelector('button[type="submit"]');
+ const originalText = submitBtn.innerText;
+ 
+ submitBtn.disabled = true;
+ submitBtn.innerText = 'Salvando...';
 
-    const isEdit = form.hasAttribute('data-method');
-    const url = form.action || '/admin/api/plans';
-    const method = isEdit ? 'PATCH' : 'POST';
-    
-    const data = {
-        name: form.name.value,
-        price: parseFloat(form.price.value),
-        revisionsLimit: parseInt(form.revisionsLimit.value),
-        slaDays: parseInt(form.slaDays.value),
-        extraDiscount: parseInt(form.extraDiscount.value),
-        usersLimit: parseInt(form.usersLimit.value),
-        hasProjects: form.hasProjects.checked,
-        hasFinance: form.hasFinance.checked,
-        hasDashboard: form.hasDashboard.checked
-    };
+ const isEdit = form.hasAttribute('data-method');
+ const url = form.action || '/admin/api/plans';
+ const method = isEdit ? 'PATCH' : 'POST';
+ 
+ const data = {
+ name: form.name.value,
+ price: parseFloat(form.price.value),
+ revisionsLimit: parseInt(form.revisionsLimit.value),
+ slaDays: parseInt(form.slaDays.value),
+ extraDiscount: parseInt(form.extraDiscount.value),
+ usersLimit: parseInt(form.usersLimit.value),
+ hasProjects: form.hasProjects.checked,
+ hasFinance: form.hasFinance.checked,
+ hasDashboard: form.hasDashboard.checked
+ };
 
-    try {
-        const res = await fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        const json = await res.json();
-        if (json.success) {
-            showToast('Plano salvo com sucesso');
-            setTimeout(() => window.location.reload(), 1000);
-        } else {
-            showToast(json.message, 'error');
-            submitBtn.disabled = false;
-            submitBtn.innerText = originalText;
-        }
-    } catch (err) {
-        showToast('Erro de rede.', 'error');
-        submitBtn.disabled = false;
-        submitBtn.innerText = originalText;
-    }
+ try {
+ const res = await fetch(url, {
+ method: method,
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify(data)
+ });
+ const json = await res.json();
+ if (json.success) {
+ showToast('Plano salvo com sucesso');
+ setTimeout(() => window.location.reload(), 1000);
+ } else {
+ showToast(json.message, 'error');
+ submitBtn.disabled = false;
+ submitBtn.innerText = originalText;
+ }
+ } catch (err) {
+ showToast('Erro de rede.', 'error');
+ submitBtn.disabled = false;
+ submitBtn.innerText = originalText;
+ }
 }
 
 async function deletePlan(id) {
-    if (!confirm('Tem certeza que deseja excluir este plano?')) return;
-    try {
-        const res = await fetch(`/admin/api/plans/${id}`, { method: 'DELETE' });
-        const json = await res.json();
-        if (json.success) {
-            showToast('Plano excluído');
-            setTimeout(() => window.location.reload(), 1000);
-        } else { showToast('Erro ao excluir plano.', 'error'); }
-    } catch (err) { showToast('Erro de rede.', 'error'); }
+ if (!confirm('Tem certeza que deseja excluir este plano?')) return;
+ try {
+ const res = await fetch(`/admin/api/plans/${id}`, { method: 'DELETE' });
+ const json = await res.json();
+ if (json.success) {
+ showToast('Plano excluÃ­do');
+ setTimeout(() => window.location.reload(), 1000);
+ } else { showToast('Erro ao excluir plano.', 'error'); }
+ } catch (err) { showToast('Erro de rede.', 'error'); }
 }
 
 async function updateSystemSetting(el) {
-    const key = el.getAttribute('data-setting');
-    const value = el.type === 'checkbox' ? el.checked : el.value;
-    
-    try {
-        const res = await fetch('/admin/api/settings/bulk', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ settings: { [key]: value } })
-        });
-        const json = await res.json();
-        if (json.success) {
-            showToast('Configuração salva.');
-        } else { showToast('Erro ao salvar', 'error'); }
-    } catch (err) { showToast('Erro de conexão', 'error'); }
+ const key = el.getAttribute('data-setting');
+ const value = el.type === 'checkbox' ? el.checked : el.value;
+ 
+ try {
+ const res = await fetch('/admin/api/settings/bulk', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ settings: { [key]: value } })
+ });
+ const json = await res.json();
+ if (json.success) {
+ showToast('ConfiguraÃ§Ã£o salva.');
+ } else { showToast('Erro ao salvar', 'error'); }
+ } catch (err) { showToast('Erro de conexÃ£o', 'error'); }
 }
 
 async function terminateAllSessions() {
-    if (!confirm('ATENÇÃO: Isso irá forçar o logout de TODOS os usuários exceto você. Continuar?')) return;
-    try {
-        const res = await fetch('/admin/api/security/terminate-sessions', { method: 'POST' });
-        const json = await res.json();
-        if (json.success) {
-            showToast(json.message);
-        } else { showToast('Erro ao invalidar sessões', 'error'); }
-    } catch (err) { showToast('Erro de conexão', 'error'); }
+ if (!confirm('ATENÃ‡ÃƒO: Isso irÃ¡ forÃ§ar o logout de TODOS os usuÃ¡rios exceto vocÃª. Continuar?')) return;
+ try {
+ const res = await fetch('/admin/api/security/terminate-sessions', { method: 'POST' });
+ const json = await res.json();
+ if (json.success) {
+ showToast(json.message);
+ } else { showToast('Erro ao invalidar sessÃµes', 'error'); }
+ } catch (err) { showToast('Erro de conexÃ£o', 'error'); }
 }
 
 async function addIpWhitelist() {
-    const ip = document.getElementById('newIpAddress').value;
-    if (!ip) return showToast('Insira um IP válido.', 'error');
-    
-    try {
-        const res = await fetch('/admin/api/settings/bulk', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ settings: { [`security_ip_whitelist_${Date.now()}`]: ip } })
-        });
-        const json = await res.json();
-        if (json.success) {
-            showToast('IP adicionado à whitelist!');
-            document.getElementById('newIpAddress').value = '';
-        }
-    } catch (err) { showToast('Erro ao salvar IP.', 'error'); }
+ const ip = document.getElementById('newIpAddress').value;
+ if (!ip) return showToast('Insira um IP vÃ¡lido.', 'error');
+ 
+ try {
+ const res = await fetch('/admin/api/settings/bulk', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ settings: { [`security_ip_whitelist_${Date.now()}`]: ip } })
+ });
+ const json = await res.json();
+ if (json.success) {
+ showToast('IP adicionado Ã  whitelist!');
+ document.getElementById('newIpAddress').value = '';
+ }
+ } catch (err) { showToast('Erro ao salvar IP.', 'error'); }
 }
 
 function closePlanModal() {
-    const modal = document.getElementById('newPlanModal');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    const form = modal.querySelector('form');
-    form.reset();
-    form.removeAttribute('data-method');
-    modal.querySelector('h3').innerText = 'Criar Novo Nível de Plano';
+ const modal = document.getElementById('newPlanModal');
+ modal.classList.add('hidden');
+ modal.classList.remove('flex');
+ const form = modal.querySelector('form');
+ form.reset();
+ form.removeAttribute('data-method');
+ modal.querySelector('h3').innerText = 'Criar Novo NÃ­vel de Plano';
 }
 
 function toggleAccordion(id) {
-    const el = document.getElementById(id);
-    const icon = document.getElementById('icon-' + id);
-    if (!el) return;
-    
-    if (el.classList.contains('hidden')) {
-        el.classList.remove('hidden');
-        if (icon) icon.style.transform = 'rotate(180deg)';
-    } else {
-        el.classList.add('hidden');
-        if (icon) icon.style.transform = 'rotate(0deg)';
-    }
+ const el = document.getElementById(id);
+ const icon = document.getElementById('icon-' + id);
+ if (!el) return;
+ 
+ if (el.classList.contains('hidden')) {
+ el.classList.remove('hidden');
+ if (icon) icon.style.transform = 'rotate(180deg)';
+ } else {
+ el.classList.add('hidden');
+ if (icon) icon.style.transform = 'rotate(0deg)';
+ }
 }
 </script>
 
@@ -1365,350 +1365,348 @@ function toggleAccordion(id) {
 <div id="toast-container" class="fixed top-10 right-10 z-[200] flex flex-col gap-4 pointer-events-none"></div>
 
 <style>
-    .fade-out {
-        opacity: 0;
-        transform: translateX(20px);
-        transition: all 0.3s ease-out;
-    }
+ .fade-out {
+ opacity: 0;
+ transform: translateX(20px);
+ transition: all 0.3s ease-out;
+ }
 </style>
 
 <!-- Modals -->
-<!-- Criar Novo Usuário Modal -->
+<!-- Criar Novo UsuÃ¡rio Modal -->
 <div id="newUserModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm">
-    <div class="glass-card w-full max-w-lg p-8 relative">
-        <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closeNewUserModal()">
-            <span class="material-symbols-outlined">close</span>
-        </button>
-        <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Criar Novo Usuário Manual</h3>
-        
-        <form id="newUserForm" onsubmit="submitNewUser(event)" class="space-y-4">
-            <div>
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome Completo</label>
-                <input type="text" name="name" required class="input-premium w-full">
-            </div>
-            <div>
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">E-mail</label>
-                <input type="email" name="email" required class="input-premium w-full">
-            </div>
-            <div>
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Senha Provisória</label>
-                <input type="password" name="password" required class="input-premium w-full">
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nível de Acesso (Role)</label>
-                    <select name="role" required class="input-premium w-full bg-dark-900 text-white">
-                        <option value="subscriber">Assinante (Dono de Estúdio)</option>
-                        <option value="staff">Staff (Equipe Master)</option>
-                        <option value="collaborator">Colaborador (Sub-conta)</option>
-                        <option value="admin">Super Admin</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Vincular a Assinante</label>
-                    <select name="parentId" class="input-premium w-full bg-dark-900 text-white">
-                        <option value="">Nenhum (Raiz)</option>
-                        {{#each users}}
-                            {{#if (eq this.role 'subscriber')}}
-                            <option value="{{this.id}}">{{this.name}}</option>
-                            {{/if}}
-                        {{/each}}
-                    </select>
-                </div>
-            </div>
-            <div>
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome do Estúdio / Tenant (Opcional)</label>
-                <input type="text" name="tenantName" class="input-premium w-full" placeholder="Ex: Studio 3D Ltda">
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Especialidade (ArchViz)</label>
-                    <select name="specialty" class="input-premium w-full bg-dark-900 text-white">
-                        <option value="">Nenhuma / Gerencial</option>
-                        <option value="Modelagem 3D">Modelagem 3D</option>
-                        <option value="Renderização">Renderização</option>
-                        <option value="Animação">Animação</option>
-                        <option value="Pós-Produção">Pós-Produção</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Ferramenta Principal</label>
-                    <select name="mainTool" class="input-premium w-full bg-dark-900 text-white">
-                        <option value="">Não Aplicável</option>
-                        <option value="D5 Render">D5 Render</option>
-                        <option value="Corona">Corona Renderer</option>
-                        <option value="V-Ray">V-Ray</option>
-                        <option value="3ds Max">3ds Max</option>
-                        <option value="SketchUp">SketchUp</option>
-                        <option value="Revit">Revit</option>
-                    </select>
-                </div>
-            </div>
+ <div class="glass-card w-full max-w-lg p-8 relative">
+ <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closeNewUserModal()">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Criar Novo UsuÃ¡rio Manual</h3>
+ 
+ <form id="newUserForm" onsubmit="submitNewUser(event)" class="space-y-4">
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome Completo</label>
+ <input type="text" name="name" required class="input-premium w-full">
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">E-mail</label>
+ <input type="email" name="email" required class="input-premium w-full">
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Senha ProvisÃ³ria</label>
+ <input type="password" name="password" required class="input-premium w-full">
+ </div>
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">NÃ­vel de Acesso (Role)</label>
+ <select name="role" required class="input-premium w-full bg-dark-900 text-white">
+ <option value="subscriber">Assinante (Dono de EstÃºdio)</option>
+ <option value="staff">Staff (Equipe Master)</option>
+ <option value="collaborator">Colaborador (Sub-conta)</option>
+ <option value="admin">Super Admin</option>
+ </select>
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Vincular a Assinante</label>
+ <select name="parentId" class="input-premium w-full bg-dark-900 text-white">
+ <option value="">Nenhum (Raiz)</option>
+ {{#each users}}
+ {{#if (eq this.role 'subscriber')}}
+ <option value="{{this.id}}">{{this.name}}</option>
+ {{/if}}
+ {{/each}}
+ </select>
+ </div>
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome do EstÃºdio / Tenant (Opcional)</label>
+ <input type="text" name="tenantName" class="input-premium w-full" placeholder="Ex: Studio 3D Ltda">
+ </div>
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Especialidade (ArchViz)</label>
+ <select name="specialty" class="input-premium w-full bg-dark-900 text-white">
+ <option value="">Nenhuma / Gerencial</option>
+ <option value="Modelagem 3D">Modelagem 3D</option>
+ <option value="RenderizaÃ§Ã£o">RenderizaÃ§Ã£o</option>
+ <option value="AnimaÃ§Ã£o">AnimaÃ§Ã£o</option>
+ <option value="PÃ³s-ProduÃ§Ã£o">PÃ³s-ProduÃ§Ã£o</option>
+ </select>
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Ferramenta Principal</label>
+ <select name="mainTool" class="input-premium w-full bg-dark-900 text-white">
+ <option value="">NÃ£o AplicÃ¡vel</option>
+ <option value="D5 Render">D5 Render</option>
+ <option value="Corona">Corona Renderer</option>
+ <option value="V-Ray">V-Ray</option>
+ <option value="3ds Max">3ds Max</option>
+ <option value="SketchUp">SketchUp</option>
+ <option value="Revit">Revit</option>
+ </select>
+ </div>
+ </div>
 
-            <div class="pt-2 border-t border-white/5 mt-4">
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Controle de Acessos (Menus)</label>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="dashboard"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">CRM</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="crm"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Projetos</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="projetos"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Propostas</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="propostas"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Financeiro</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="financeiro"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Configurações</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="configuracoes"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Gestão de Equipe</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="equipe"><span class="slider round"></span></label>
-                    </div>
-                </div>
-            </div>
+ <div class="pt-2 border-t border-white/5 mt-4">
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Controle de Acessos (Menus)</label>
+ <div class="grid grid-cols-2 gap-3">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="dashboard"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">CRM</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="crm"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Projetos</span>\n <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="modelagem"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Propostas</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="propostas"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Financeiro</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="financeiro"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">ConfiguraÃ§Ãµes</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="configuracoes"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">GestÃ£o de Equipe</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="equipe"><span class="slider round"></span></label>
+ </div>
+ </div>
+ </div>
 
-            <div class="pt-4 flex justify-end gap-3">
-                <button type="button" id="btnCancelNewUser" class="btn bg-white/5 text-white">Cancelar</button>
-                <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Criar Conta</button>
-            </div>
-        </form>
-    </div>
+ <div class="pt-4 flex justify-end gap-3">
+ <button type="button" id="btnCancelNewUser" class="btn bg-white/5 text-white">Cancelar</button>
+ <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Criar Conta</button>
+ </div>
+ </form>
+ </div>
 </div>
 
 <!-- Reset Password Modal -->
 <div id="resetPasswordModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm">
-    <div class="glass-card w-full max-w-sm p-8 relative">
-        <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closeResetPasswordModal()">
-            <span class="material-symbols-outlined">close</span>
-        </button>
-        <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-2">Redefinir Senha</h3>
-        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6" id="resetPasswordUserName">Nome do Usuário</p>
-        
-        <form onsubmit="submitResetPassword(event)" class="space-y-4">
-            <input type="hidden" name="userId" id="resetPasswordUserId">
-            <div>
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nova Senha</label>
-                <input type="password" name="newPassword" required class="input-premium w-full">
-            </div>
-            <div class="pt-4 flex justify-end gap-3">
-                <button type="button" class="btn bg-white/5 text-white" onclick="closeResetPasswordModal()">Cancelar</button>
-                <button type="submit" class="btn bg-green-500/10 text-green-500 border border-green-500/20 hover:bg-green-500/20 shadow-lg shadow-green-500/10">Troca</button>
-            </div>
-        </form>
-    </div>
+ <div class="glass-card w-full max-w-sm p-8 relative">
+ <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closeResetPasswordModal()">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-2">Redefinir Senha</h3>
+ <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6" id="resetPasswordUserName">Nome do UsuÃ¡rio</p>
+ 
+ <form onsubmit="submitResetPassword(event)" class="space-y-4">
+ <input type="hidden" name="userId" id="resetPasswordUserId">
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nova Senha</label>
+ <input type="password" name="newPassword" required class="input-premium w-full">
+ </div>
+ <div class="pt-4 flex justify-end gap-3">
+ <button type="button" class="btn bg-white/5 text-white" onclick="closeResetPasswordModal()">Cancelar</button>
+ <button type="submit" class="btn bg-green-500/10 text-green-500 border border-green-500/20 hover:bg-green-500/20 shadow-lg shadow-green-500/10">Troca</button>
+ </div>
+ </form>
+ </div>
 </div>
 
-<!-- Nova Instância Modal -->
+<!-- Nova InstÃ¢ncia Modal -->
 <div id="newInstanceModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm">
-    <div class="glass-card w-full max-w-lg p-8 relative">
-        <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closeInstanceModal()">
-            <span class="material-symbols-outlined">close</span>
-        </button>
-        <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Cadastrar Nova Instância</h3>
-        
-        <form id="newInstanceForm" onsubmit="submitInstance(event)" class="space-y-4">
-            <div>
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome da Instância</label>
-                <input type="text" name="name" required class="input-premium w-full" placeholder="Ex: Render Node 01">
-            </div>
-            <div>
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Tipo de Integração</label>
-                <select name="integrationType" required class="input-premium w-full bg-dark-900 text-white">
-                    <option value="Render Farm API">Render Farm API</option>
-                    <option value="Automação WhatsApp">Automação WhatsApp</option>
-                    <option value="Cloud Storage/AWS">Cloud Storage/AWS</option>
-                    <option value="Webhook">Webhook</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Token / Chave de Autenticação</label>
-                <input type="password" name="token" required class="input-premium w-full" placeholder="••••••••••••••••">
-            </div>
-            <div>
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Status Inicial</label>
-                <select name="status" class="input-premium w-full bg-dark-900 text-white">
-                    <option value="online">Ativo / Online</option>
-                    <option value="offline">Inativo / Offline</option>
-                </select>
-            </div>
-            <div class="pt-4 flex justify-end gap-3">
-                <button type="button" class="btn bg-white/5 text-white" onclick="closeInstanceModal()">Cancelar</button>
-                <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Criar Instância</button>
-            </div>
-        </form>
-    </div>
+ <div class="glass-card w-full max-w-lg p-8 relative">
+ <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closeInstanceModal()">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Cadastrar Nova InstÃ¢ncia</h3>
+ 
+ <form id="newInstanceForm" onsubmit="submitInstance(event)" class="space-y-4">
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome da InstÃ¢ncia</label>
+ <input type="text" name="name" required class="input-premium w-full" placeholder="Ex: Render Node 01">
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Tipo de IntegraÃ§Ã£o</label>
+ <select name="integrationType" required class="input-premium w-full bg-dark-900 text-white">
+ <option value="Render Farm API">Render Farm API</option>
+ <option value="AutomaÃ§Ã£o WhatsApp">AutomaÃ§Ã£o WhatsApp</option>
+ <option value="Cloud Storage/AWS">Cloud Storage/AWS</option>
+ <option value="Webhook">Webhook</option>
+ </select>
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Token / Chave de AutenticaÃ§Ã£o</label>
+ <input type="password" name="token" required class="input-premium w-full" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Status Inicial</label>
+ <select name="status" class="input-premium w-full bg-dark-900 text-white">
+ <option value="online">Ativo / Online</option>
+ <option value="offline">Inativo / Offline</option>
+ </select>
+ </div>
+ <div class="pt-4 flex justify-end gap-3">
+ <button type="button" class="btn bg-white/5 text-white" onclick="closeInstanceModal()">Cancelar</button>
+ <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Criar InstÃ¢ncia</button>
+ </div>
+ </form>
+ </div>
 </div>
 
 <!-- Novo Plano B2B Modal -->
 <div id="newPlanModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm flex">
-    <div class="glass-card w-full max-w-lg p-8 relative">
-        <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closePlanModal()">
-            <span class="material-symbols-outlined">close</span>
-        </button>
-        <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Criar Novo Nível de Plano</h3>
-        
-        <form onsubmit="submitPlan(event)" class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome do Tier</label>
-                    <input type="text" name="name" required class="input-premium w-full" placeholder="Ex: Enterprise">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Valor Mensal (R$)</label>
-                    <input type="number" name="price" step="0.01" required class="input-premium w-full" placeholder="199.90">
-                </div>
-            </div>
-            <div class="grid grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Limite Usuários</label>
-                    <input type="number" name="usersLimit" required class="input-premium w-full" value="5">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Revisões</label>
-                    <input type="number" name="revisionsLimit" required class="input-premium w-full" value="3">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">SLA (Dias)</label>
-                    <input type="number" name="slaDays" required class="input-premium w-full" value="5">
-                </div>
-            </div>
-            <div>
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Desconto Imagens Extras (%)</label>
-                <input type="number" name="extraDiscount" required class="input-premium w-full" value="10">
-            </div>
-            
-            <div class="space-y-3 pt-2">
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Features Ativas</label>
-                <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
-                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Acesso a Projetos</span>
-                    <label class="switch scale-75">
-                        <input type="checkbox" name="hasProjects" checked>
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
-                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Módulo Financeiro</span>
-                    <label class="switch scale-75">
-                        <input type="checkbox" name="hasFinance">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
-                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard Avançado</span>
-                    <label class="switch scale-75">
-                        <input type="checkbox" name="hasDashboard">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-            </div>
+ <div class="glass-card w-full max-w-lg p-8 relative">
+ <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closePlanModal()">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Criar Novo NÃ­vel de Plano</h3>
+ 
+ <form onsubmit="submitPlan(event)" class="space-y-4">
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome do Tier</label>
+ <input type="text" name="name" required class="input-premium w-full" placeholder="Ex: Enterprise">
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Valor Mensal (R$)</label>
+ <input type="number" name="price" step="0.01" required class="input-premium w-full" placeholder="199.90">
+ </div>
+ </div>
+ <div class="grid grid-cols-3 gap-4">
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Limite UsuÃ¡rios</label>
+ <input type="number" name="usersLimit" required class="input-premium w-full" value="5">
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">RevisÃµes</label>
+ <input type="number" name="revisionsLimit" required class="input-premium w-full" value="3">
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">SLA (Dias)</label>
+ <input type="number" name="slaDays" required class="input-premium w-full" value="5">
+ </div>
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Desconto Imagens Extras (%)</label>
+ <input type="number" name="extraDiscount" required class="input-premium w-full" value="10">
+ </div>
+ 
+ <div class="space-y-3 pt-2">
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Features Ativas</label>
+ <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Acesso a Projetos</span>
+ <label class="switch scale-75">
+ <input type="checkbox" name="hasProjects" checked>
+ <span class="slider round"></span>
+ </label>
+ </div>
+ <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">MÃ³dulo Financeiro</span>
+ <label class="switch scale-75">
+ <input type="checkbox" name="hasFinance">
+ <span class="slider round"></span>
+ </label>
+ </div>
+ <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard AvanÃ§ado</span>
+ <label class="switch scale-75">
+ <input type="checkbox" name="hasDashboard">
+ <span class="slider round"></span>
+ </label>
+ </div>
+ </div>
 
-            <div class="pt-4 flex justify-end gap-3">
-                <button type="button" class="btn bg-white/5 text-white" onclick="closePlanModal()">Cancelar</button>
-                <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Salvar Plano</button>
-            </div>
-        </form>
-    </div>
+ <div class="pt-4 flex justify-end gap-3">
+ <button type="button" class="btn bg-white/5 text-white" onclick="closePlanModal()">Cancelar</button>
+ <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Salvar Plano</button>
+ </div>
+ </form>
+ </div>
 </div>
 
-<!-- Modal: Editar Usuário -->
+<!-- Modal: Editar UsuÃ¡rio -->
 <div id="editUserModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm">
-    <div class="bg-slate-900 border border-white/10 w-full max-w-lg rounded-3xl p-8 shadow-2xl">
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h3 class="text-xl font-black text-white uppercase tracking-tight">Editar Usuário</h3>
-                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Modificar permissões e dados</p>
-            </div>
-            <button onclick="closeEditUserModal()" class="text-gray-500 hover:text-white transition-colors">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
+ <div class="bg-slate-900 border border-white/10 w-full max-w-lg rounded-3xl p-8 shadow-2xl">
+ <div class="flex justify-between items-center mb-8">
+ <div>
+ <h3 class="text-xl font-black text-white uppercase tracking-tight">Editar UsuÃ¡rio</h3>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Modificar permissÃµes e dados</p>
+ </div>
+ <button onclick="closeEditUserModal()" class="text-gray-500 hover:text-white transition-colors">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ </div>
 
-        <form id="editUserForm" onsubmit="submitEditUser(event)" class="space-y-6">
-            <input type="hidden" name="userId">
-            <div class="grid grid-cols-2 gap-4">
-                <div class="col-span-2">
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome Completo</label>
-                    <input type="text" name="name" required class="input-premium w-full" placeholder="Ex: João Silva">
-                </div>
-                <div class="col-span-2">
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">E-mail de Acesso</label>
-                    <input type="email" name="email" required class="input-premium w-full" placeholder="joao@estudio.com">
-                </div>
-            </div>
+ <form id="editUserForm" onsubmit="submitEditUser(event)" class="space-y-6">
+ <input type="hidden" name="userId">
+ <div class="grid grid-cols-2 gap-4">
+ <div class="col-span-2">
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome Completo</label>
+ <input type="text" name="name" required class="input-premium w-full" placeholder="Ex: JoÃ£o Silva">
+ </div>
+ <div class="col-span-2">
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">E-mail de Acesso</label>
+ <input type="email" name="email" required class="input-premium w-full" placeholder="joao@estudio.com">
+ </div>
+ </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Cargo / Função</label>
-                    <select name="role" required class="input-premium w-full">
-                        <option value="subscriber">Assinante (Dono)</option>
-                        <option value="staff">Staff (Equipe Master)</option>
-                        <option value="collaborator">Colaborador (Sub-conta)</option>
-                        <option value="admin">Super Admin</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Vincular a Assinante</label>
-                    <select name="parentId" class="input-premium w-full">
-                        <option value="">Nenhum (Orfão/Staff)</option>
-                        {{#each users}}
-                            {{#if (eq this.role 'subscriber')}}
-                            <option value="{{this.id}}">{{this.name}}</option>
-                            {{/if}}
-                        {{/each}}
-                    </select>
-                </div>
-            </div>
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Cargo / FunÃ§Ã£o</label>
+ <select name="role" required class="input-premium w-full">
+ <option value="subscriber">Assinante (Dono)</option>
+ <option value="staff">Staff (Equipe Master)</option>
+ <option value="collaborator">Colaborador (Sub-conta)</option>
+ <option value="admin">Super Admin</option>
+ </select>
+ </div>
+ <div>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Vincular a Assinante</label>
+ <select name="parentId" class="input-premium w-full">
+ <option value="">Nenhum (OrfÃ£o/Staff)</option>
+ {{#each users}}
+ {{#if (eq this.role 'subscriber')}}
+ <option value="{{this.id}}">{{this.name}}</option>
+ {{/if}}
+ {{/each}}
+ </select>
+ </div>
+ </div>
 
-            <div class="pt-2 border-t border-white/5 mt-4">
-                <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Controle de Acessos (Menus)</label>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="dashboard"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">CRM</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="crm"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Projetos</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="projetos"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Propostas</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="propostas"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Financeiro</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="financeiro"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Configurações</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="configuracoes"><span class="slider round"></span></label>
-                    </div>
-                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Gestão de Equipe</span>
-                        <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="equipe"><span class="slider round"></span></label>
-                    </div>
-                </div>
-            </div>
+ <div class="pt-2 border-t border-white/5 mt-4">
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Controle de Acessos (Menus)</label>
+ <div class="grid grid-cols-2 gap-3">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="dashboard"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">CRM</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="crm"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Projetos</span>\n <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="modelagem"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Propostas</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="propostas"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Financeiro</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="financeiro"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">ConfiguraÃ§Ãµes</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="configuracoes"><span class="slider round"></span></label>
+ </div>
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">GestÃ£o de Equipe</span>
+ <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="equipe"><span class="slider round"></span></label>
+ </div>
+ </div>
+ </div>
 
-            <div class="pt-4 flex justify-end gap-3">
-                <button type="button" class="btn bg-white/5 text-white" onclick="closeEditUserModal()">Cancelar</button>
-                <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Salvar Alterações</button>
-            </div>
-        </form>
-    </div>
+ <div class="pt-4 flex justify-end gap-3">
+ <button type="button" class="btn bg-white/5 text-white" onclick="closeEditUserModal()">Cancelar</button>
+ <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Salvar AlteraÃ§Ãµes</button>
+ </div>
+ </form>
+ </div>
 </div>

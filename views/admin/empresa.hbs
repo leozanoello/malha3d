@@ -1,145 +1,145 @@
 <div class="p-8">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-8">
-        <div>
-            <h1 class="text-3xl font-black text-white tracking-tight">Gestão da <span class="text-orange-500">Empresa</span></h1>
-            <p class="text-gray-400 text-sm mt-1">Controle de acessos, permissões e usuários do seu ecossistema 3D.</p>
-        </div>
-        <button class="px-6 py-3 rounded-2xl bg-orange-500 text-white font-bold shadow-lg shadow-orange-500/30 hover:bg-orange-600 transition-all flex items-center gap-2" data-bs-toggle="modal" data-bs-target="#newUserModal">
-            <span class="material-symbols-outlined">person_add</span> Novo Usuário
-        </button>
-    </div>
+ <!-- Header -->
+ <div class="flex justify-between items-center mb-8">
+ <div>
+ <h1 class="text-3xl font-black text-white tracking-tight">Gestão da <span class="text-orange-500">Empresa</span></h1>
+ <p class="text-gray-400 text-sm mt-1">Controle de acessos, permissões e usuários do seu ecossistema 3D.</p>
+ </div>
+ <button class="px-6 py-3 rounded-2xl bg-orange-500 text-white font-bold shadow-lg shadow-orange-500/30 hover:bg-orange-600 transition-all flex items-center gap-2" data-bs-toggle="modal" data-bs-target="#newUserModal">
+ <span class="material-symbols-outlined">person_add</span> Novo Usuário
+ </button>
+ </div>
 
-    <!-- Users List -->
-    <div class="glass-card border-white/5 bg-white/2 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead>
-                    <tr class="bg-white/2">
-                        <th class="px-6 py-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Usuário</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Cargo / Permissão</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Acesso a Módulos</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Status</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-gray-500 uppercase tracking-widest text-right">Ações</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-white/5">
-                    {{#each users}}
-                    <tr class="group hover:bg-white/2 transition-all">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-orange-500 font-bold border border-white/5 group-hover:border-orange-500/30">
-                                    {{firstLetter name}}
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-xs font-black text-white">{{name}}</span>
-                                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{{email}}</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="px-3 py-1 rounded-lg bg-orange-500/10 text-orange-500 text-[9px] font-black uppercase tracking-widest border border-orange-500/20">
-                                {{role}}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex gap-1.5">
-                                {{#if permissions.crm}}<span class="w-2 h-2 rounded-full bg-blue-500" title="CRM"></span>{{/if}}
-                                {{#if permissions.projects}}<span class="w-2 h-2 rounded-full bg-green-500" title="Projetos"></span>{{/if}}
-                                {{#if permissions.finance}}<span class="w-2 h-2 rounded-full bg-yellow-500" title="Financeiro"></span>{{/if}}
-                                {{#if permissions.freelancers}}<span class="w-2 h-2 rounded-full bg-purple-500" title="Freelancers"></span>{{/if}}
-                                {{#if permissions.company}}<span class="w-2 h-2 rounded-full bg-red-500" title="Empresa"></span>{{/if}}
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <div class="w-1.5 h-1.5 rounded-full {{#if isActive}}bg-green-500{{else}}bg-red-500{{/if}}"></div>
-                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{#if isActive}}Ativo{{else}}Inativo{{/if}}</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex justify-end gap-2">
-                                <button class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-orange-500 transition-all"><span class="material-symbols-outlined text-sm">edit</span></button>
-                                <button class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-red-500 transition-all"><span class="material-symbols-outlined text-sm">delete</span></button>
-                            </div>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
-    </div>
+ <!-- Users List -->
+ <div class="glass-card border-white/5 bg-white/2 overflow-hidden">
+ <div class="overflow-x-auto">
+ <table class="w-full text-left">
+ <thead>
+ <tr class="bg-white/2">
+ <th class="px-6 py-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Usuário</th>
+ <th class="px-6 py-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Cargo / Permissão</th>
+ <th class="px-6 py-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Acesso a Módulos</th>
+ <th class="px-6 py-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">Status</th>
+ <th class="px-6 py-4 text-[10px] font-black text-gray-500 uppercase tracking-widest text-right">Ações</th>
+ </tr>
+ </thead>
+ <tbody class="divide-y divide-white/5">
+ {{#each users}}
+ <tr class="group hover:bg-white/2 transition-all">
+ <td class="px-6 py-4">
+ <div class="flex items-center gap-4">
+ <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-orange-500 font-bold border border-white/5 group-hover:border-orange-500/30">
+ {{firstLetter name}}
+ </div>
+ <div class="flex flex-col">
+ <span class="text-xs font-black text-white">{{name}}</span>
+ <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{{email}}</span>
+ </div>
+ </div>
+ </td>
+ <td class="px-6 py-4">
+ <span class="px-3 py-1 rounded-lg bg-orange-500/10 text-orange-500 text-[9px] font-black uppercase tracking-widest border border-orange-500/20">
+ {{role}}
+ </span>
+ </td>
+ <td class="px-6 py-4">
+ <div class="flex gap-1.5">
+ {{#if permissions.crm}}<span class="w-2 h-2 rounded-full bg-blue-500" title="CRM"></span>{{/if}}
+ {{#if permissions.projects}}<span class="w-2 h-2 rounded-full bg-green-500" title="Projetos"></span>{{/if}}
+ {{#if permissions.finance}}<span class="w-2 h-2 rounded-full bg-yellow-500" title="Financeiro"></span>{{/if}}
+ {{#if permissions.freelancers}}<span class="w-2 h-2 rounded-full bg-purple-500" title="Freelancers"></span>{{/if}}
+ {{#if permissions.company}}<span class="w-2 h-2 rounded-full bg-red-500" title="Empresa"></span>{{/if}}
+ </div>
+ </td>
+ <td class="px-6 py-4">
+ <div class="flex items-center gap-2">
+ <div class="w-1.5 h-1.5 rounded-full {{#if isActive}}bg-green-500{{else}}bg-red-500{{/if}}"></div>
+ <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{#if isActive}}Ativo{{else}}Inativo{{/if}}</span>
+ </div>
+ </td>
+ <td class="px-6 py-4 text-right">
+ <div class="flex justify-end gap-2">
+ <button class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-orange-500 transition-all"><span class="material-symbols-outlined text-sm">edit</span></button>
+ <button class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-red-500 transition-all"><span class="material-symbols-outlined text-sm">delete</span></button>
+ </div>
+ </td>
+ </tr>
+ {{/each}}
+ </tbody>
+ </table>
+ </div>
+ </div>
 </div>
 
 <!-- Modal: Novo Usuário -->
 <div class="modal fade" id="newUserModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card p-4 border-white/10 bg-dark-950/95">
-            <div class="flex justify-between items-center mb-6 px-4">
-                <h3 class="text-xl font-black text-white uppercase tracking-tighter">Criar <span class="text-orange-500">Novo Acesso</span></h3>
-                <button type="button" class="text-gray-500 hover:text-white" data-bs-dismiss="modal"><span class="material-symbols-outlined">close</span></button>
-            </div>
-            <form action="/admin/empresa/usuarios" method="POST" class="p-4 space-y-6">
-                <div class="space-y-2">
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Nome do Funcionário</label>
-                    <input type="text" name="name" class="input-premium" placeholder="Ex: Ana Luiza" required>
-                </div>
-                <div class="space-y-2">
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">E-mail Corporativo</label>
-                    <input type="email" name="email" class="input-premium" placeholder="ana@malha3d.com" required>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Senha Provisória</label>
-                        <input type="password" name="password" class="input-premium" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Nível de Acesso</label>
-                        <select name="role" class="input-premium">
-                            <option value="user">Colaborador</option>
-                            <option value="admin">Administrador</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="space-y-4">
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Permissões de Módulo</label>
-                    <div class="grid grid-cols-1 gap-2">
-                        <label class="flex items-center justify-between p-3 rounded-xl bg-white/2 border border-white/5 cursor-pointer hover:bg-white/5 transition-all">
-                            <div class="flex items-center gap-3">
-                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                                <span class="text-xs font-bold text-white">Pipeline de Vendas (CRM)</span>
-                            </div>
-                            <input type="checkbox" name="perm_crm" checked class="w-4 h-4 rounded border-white/10 bg-dark-950 text-orange-500 focus:ring-orange-500/50">
-                        </label>
-                        <label class="flex items-center justify-between p-3 rounded-xl bg-white/2 border border-white/5 cursor-pointer hover:bg-white/5 transition-all">
-                            <div class="flex items-center gap-3">
-                                <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                                <span class="text-xs font-bold text-white">Gestão de Projetos</span>
-                            </div>
-                            <input type="checkbox" name="perm_projects" checked class="w-4 h-4 rounded border-white/10 bg-dark-950 text-orange-500 focus:ring-orange-500/50">
-                        </label>
-                        <label class="flex items-center justify-between p-3 rounded-xl bg-white/2 border border-white/5 cursor-pointer hover:bg-white/5 transition-all">
-                            <div class="flex items-center gap-3">
-                                <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
-                                <span class="text-xs font-bold text-white">Financeiro e Faturamento</span>
-                            </div>
-                            <input type="checkbox" name="perm_finance" class="w-4 h-4 rounded border-white/10 bg-dark-950 text-orange-500 focus:ring-orange-500/50">
-                        </label>
-                        <label class="flex items-center justify-between p-3 rounded-xl bg-white/2 border border-white/5 cursor-pointer hover:bg-white/5 transition-all">
-                            <div class="flex items-center gap-3">
-                                <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-                                <span class="text-xs font-bold text-white">Banco de Freelancers</span>
-                            </div>
-                            <input type="checkbox" name="perm_freelancers" class="w-4 h-4 rounded border-white/10 bg-dark-950 text-orange-500 focus:ring-orange-500/50">
-                        </label>
-                    </div>
-                </div>
+ <div class="modal-dialog modal-dialog-centered">
+ <div class="modal-content glass-card p-4 border-white/10 bg-dark-950/95">
+ <div class="flex justify-between items-center mb-6 px-4">
+ <h3 class="text-xl font-black text-white uppercase tracking-tighter">Criar <span class="text-orange-500">Novo Acesso</span></h3>
+ <button type="button" class="text-gray-500 hover:text-white" data-bs-dismiss="modal"><span class="material-symbols-outlined">close</span></button>
+ </div>
+ <form action="/admin/empresa/usuarios" method="POST" class="p-4 space-y-6">
+ <div class="space-y-2">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Nome do Funcionário</label>
+ <input type="text" name="name" class="input-premium" placeholder="Ex: Ana Luiza" required>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">E-mail Corporativo</label>
+ <input type="email" name="email" class="input-premium" placeholder="ana@malha3d.com" required>
+ </div>
+ <div class="grid grid-cols-2 gap-4">
+ <div class="space-y-2">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Senha Provisória</label>
+ <input type="password" name="password" class="input-premium" required>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Nível de Acesso</label>
+ <select name="role" class="input-premium">
+ <option value="user">Colaborador</option>
+ <option value="admin">Administrador</option>
+ </select>
+ </div>
+ </div>
+ 
+ <div class="space-y-4">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Permissões de Módulo</label>
+ <div class="grid grid-cols-1 gap-2">
+ <label class="flex items-center justify-between p-3 rounded-xl bg-white/2 border border-white/5 cursor-pointer hover:bg-white/5 transition-all">
+ <div class="flex items-center gap-3">
+ <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+ <span class="text-xs font-bold text-white">Pipeline de Vendas (CRM)</span>
+ </div>
+ <input type="checkbox" name="perm_crm" checked class="w-4 h-4 rounded border-white/10 bg-dark-950 text-orange-500 focus:ring-orange-500/50">
+ </label>
+ <label class="flex items-center justify-between p-3 rounded-xl bg-white/2 border border-white/5 cursor-pointer hover:bg-white/5 transition-all">
+ <div class="flex items-center gap-3">
+ <span class="w-2 h-2 rounded-full bg-green-500"></span>
+ <span class="text-xs font-bold text-white">Gestão de Projetos</span>
+ </div>
+ <input type="checkbox" name="perm_projects" checked class="w-4 h-4 rounded border-white/10 bg-dark-950 text-orange-500 focus:ring-orange-500/50">
+ </label>
+ <label class="flex items-center justify-between p-3 rounded-xl bg-white/2 border border-white/5 cursor-pointer hover:bg-white/5 transition-all">
+ <div class="flex items-center gap-3">
+ <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+ <span class="text-xs font-bold text-white">Financeiro e Faturamento</span>
+ </div>
+ <input type="checkbox" name="perm_finance" class="w-4 h-4 rounded border-white/10 bg-dark-950 text-orange-500 focus:ring-orange-500/50">
+ </label>
+ <label class="flex items-center justify-between p-3 rounded-xl bg-white/2 border border-white/5 cursor-pointer hover:bg-white/5 transition-all">
+ <div class="flex items-center gap-3">
+ <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+ <span class="text-xs font-bold text-white">Banco de Freelancers</span>
+ </div>
+ <input type="checkbox" name="perm_freelancers" class="w-4 h-4 rounded border-white/10 bg-dark-950 text-orange-500 focus:ring-orange-500/50">
+ </label>
+ </div>
+ </div>
 
-                <button type="submit" class="w-full py-4 rounded-2xl bg-orange-500 text-white font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                    Finalizar Cadastro
-                </button>
-            </form>
-        </div>
-    </div>
+ <button type="submit" class="w-full py-4 rounded-2xl bg-orange-500 text-white font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 ] ] transition-all">
+ Finalizar Cadastro
+ </button>
+ </form>
+ </div>
+ </div>
 </div>

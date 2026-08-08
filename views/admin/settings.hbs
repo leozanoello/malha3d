@@ -1,643 +1,643 @@
 <div class="mb-10">
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-3xl font-black text-white tracking-tight">Configurações do Sistema</h1>
-            <p class="text-sm text-gray-500 font-medium mt-1">Gerencie as diretrizes, chaves de API e preferências globais da Malha 3D.</p>
-        </div>
-        <button id="btn-nova-chave" class="bg-orange-500 text-white px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 hover:bg-orange-600 shadow-xl shadow-orange-500/20 transition-all active:scale-95">
-            <span class="material-symbols-outlined text-lg">add_circle</span>
-            Nova Chave
-        </button>
-    </div>
+ <div class="flex items-center justify-between">
+ <div>
+ <h1 class="text-3xl font-black text-white tracking-tight">Configurações do Sistema</h1>
+ <p class="text-sm text-gray-500 font-medium mt-1">Gerencie as diretrizes, chaves de API e preferências globais da Malha 3D.</p>
+ </div>
+ <button id="btn-nova-chave" class="bg-orange-500 text-white px-6 py-3 rounded-2xl text-sm font-bold flex items-center gap-2 hover:bg-orange-600 shadow-xl shadow-orange-500/20 transition-all ">
+ <span class="material-symbols-outlined text-lg">add_circle</span>
+ Nova Chave
+ </button>
+ </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-    <!-- Navigation Tabs -->
-    <div class="lg:col-span-3 space-y-2">
-        <button data-tab="general" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
-            <span class="material-symbols-outlined">settings</span>
-            <span class="text-sm">Geral</span>
-        </button>
-        <button data-tab="api" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
-            <span class="material-symbols-outlined">api</span>
-            <span class="text-sm">Integrações & API</span>
-        </button>
-        <button data-tab="security" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
-            <span class="material-symbols-outlined">security</span>
-            <span class="text-sm">Segurança</span>
-        </button>
-        <button data-tab="notifications" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
-            <span class="material-symbols-outlined">notifications</span>
-            <span class="text-sm">Notificações</span>
-        </button>
-        <button data-tab="backup" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
-            <span class="material-symbols-outlined">database</span>
-            <span class="text-sm">Backup & Dados</span>
-        </button>
-        <button data-tab="calculator" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
-            <span class="material-symbols-outlined">calculate</span>
-            <span class="text-sm">Calculadora</span>
-        </button>
-        <button data-tab="cicd" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
-            <span class="material-symbols-outlined">admin_panel_settings</span>
-            <span class="text-sm uppercase tracking-widest text-[10px]">Master: Acessos & CI/CD</span>
-        </button>
-    </div>
+ <!-- Navigation Tabs -->
+ <div class="lg:col-span-3 space-y-2">
+ <button data-tab="general" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
+ <span class="material-symbols-outlined">settings</span>
+ <span class="text-sm">Geral</span>
+ </button>
+ <button data-tab="api" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
+ <span class="material-symbols-outlined">api</span>
+ <span class="text-sm">Integrações & API</span>
+ </button>
+ <button data-tab="security" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
+ <span class="material-symbols-outlined">security</span>
+ <span class="text-sm">Segurança</span>
+ </button>
+ <button data-tab="notifications" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
+ <span class="material-symbols-outlined">notifications</span>
+ <span class="text-sm">Notificações</span>
+ </button>
+ <button data-tab="backup" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
+ <span class="material-symbols-outlined">database</span>
+ <span class="text-sm">Backup & Dados</span>
+ </button>
+ <button data-tab="calculator" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
+ <span class="material-symbols-outlined">calculate</span>
+ <span class="text-sm">Calculadora</span>
+ </button>
+ <button data-tab="cicd" class="tab-btn w-full flex items-center gap-3 p-4 rounded-2xl text-gray-500 hover:bg-white/5 hover:text-gray-300 font-bold transition-all border border-transparent">
+ <span class="material-symbols-outlined">admin_panel_settings</span>
+ <span class="text-sm uppercase tracking-widest text-[10px]">Master: Acessos & CI/CD</span>
+ </button>
+ </div>
 
-    <!-- Settings Content -->
-    <div class="lg:col-span-9">
-        <!-- GENERAL TAB -->
-        <div id="tab-general" class="settings-pane space-y-6">
-            <div class="glass-card p-8">
-                <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
-                    <span class="material-symbols-outlined text-orange-500">tune</span>
-                    Preferências Globais
-                </h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                        <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Idioma Padrão</label>
-                        <select class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all">
-                            <option>Português (Brasil)</option>
-                            <option>English (US)</option>
-                            <option>Español</option>
-                        </select>
-                    </div>
-                    <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                        <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Moeda de Referência</label>
-                        <select class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all">
-                            <option>BRL (R$)</option>
-                            <option>USD ($)</option>
-                            <option>EUR (€)</option>
-                        </select>
-                    </div>
-                </div>
+ <!-- Settings Content -->
+ <div class="lg:col-span-9">
+ <!-- GENERAL TAB -->
+ <div id="tab-general" class="settings-pane space-y-6">
+ <div class="glass-card p-8">
+ <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500">tune</span>
+ Preferências Globais
+ </h3>
+ 
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+ <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Idioma Padrão</label>
+ <select class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all">
+ <option>Português (Brasil)</option>
+ <option>English (US)</option>
+ <option>Español</option>
+ </select>
+ </div>
+ <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+ <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Moeda de Referência</label>
+ <select class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all">
+ <option>BRL (R$)</option>
+ <option>USD ($)</option>
+ <option>EUR (€)</option>
+ </select>
+ </div>
+ </div>
 
-                <div class="mt-8 flex justify-end">
-                    <button class="bg-white/5 hover:bg-white/10 text-white font-bold py-3 px-8 rounded-2xl transition-all active:scale-95 border border-white/10">
-                        Salvar Alterações
-                    </button>
-                </div>
-            </div>
-        </div>
+ <div class="mt-8 flex justify-end">
+ <button class="bg-white/5 hover:bg-white/10 text-white font-bold py-3 px-8 rounded-2xl transition-all border border-white/10">
+ Salvar Alterações
+ </button>
+ </div>
+ </div>
+ </div>
 
-        <!-- API TAB — Stripe-style Key Management -->
-        <div id="tab-api" class="settings-pane hidden space-y-6">
-            <div class="glass-card p-8">
-                <div class="flex items-center justify-between mb-8">
-                    <h3 class="text-xl font-black text-white flex items-center gap-3">
-                        <span class="material-symbols-outlined text-orange-500">key</span>
-                        Chaves de API & Integrações
-                    </h3>
-                    <button id="btn-gerar-chave" class="px-4 py-2 bg-orange-500 text-white text-xs font-black rounded-xl hover:bg-orange-600 transition-all flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">add</span> Gerar Chave
-                    </button>
-                </div>
+ <!-- API TAB — Stripe-style Key Management -->
+ <div id="tab-api" class="settings-pane hidden space-y-6">
+ <div class="glass-card p-8">
+ <div class="flex items-center justify-between mb-8">
+ <h3 class="text-xl font-black text-white flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500">key</span>
+ Chaves de API & Integrações
+ </h3>
+ <button id="btn-gerar-chave" class="px-4 py-2 bg-orange-500 text-white text-xs font-black rounded-xl hover:bg-orange-600 transition-all flex items-center gap-2">
+ <span class="material-symbols-outlined text-sm">add</span> Gerar Chave
+ </button>
+ </div>
 
-                <!-- Tabela de Chaves Ativas -->
-                <div class="mb-8">
-                    <h4 class="text-xs font-black text-gray-500 uppercase tracking-widest mb-4">Chaves de API Ativas</h4>
-                    <div id="api-keys-table" class="space-y-3">
-                        <div class="flex items-center justify-center py-8 text-gray-600">
-                            <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span>
-                            <span class="text-xs">Carregando chaves...</span>
-                        </div>
-                    </div>
-                </div>
+ <!-- Tabela de Chaves Ativas -->
+ <div class="mb-8">
+ <h4 class="text-xs font-black text-gray-500 uppercase tracking-widest mb-4">Chaves de API Ativas</h4>
+ <div id="api-keys-table" class="space-y-3">
+ <div class="flex items-center justify-center py-8 text-gray-600">
+ <span class="material-symbols-outlined animate-spin mr-2">progress_activity</span>
+ <span class="text-xs">Carregando chaves...</span>
+ </div>
+ </div>
+ </div>
 
-                <!-- Integrações Externas -->
-                <div class="space-y-6">
-                    <h4 class="text-xs font-black text-gray-500 uppercase tracking-widest">Conexões Externas</h4>
-                    <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-orange-500/30 transition-colors">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-[#3ecf8e]/10 rounded-xl flex items-center justify-center">
-                                    <img src="https://supabase.com/favicons/favicon-32x32.png" class="w-6 h-6 opacity-80" alt="">
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-white">Supabase Connection</h4>
-                                    <p class="text-xs text-gray-500">Banco de dados principal e autenticação.</p>
-                                </div>
-                            </div>
-                            <span class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-black rounded-lg border border-emerald-500/20">ATIVO</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <input type="password" value="sb_publishable_key_example_12345" readonly class="flex-1 bg-black/20 border border-white/5 rounded-lg px-4 py-2 text-xs text-gray-400 font-mono focus:outline-none">
-                            <button class="p-2 text-gray-500 hover:text-orange-500 transition-colors" onclick="navigator.clipboard.writeText('sb_publishable_key_example_12345')" title="Copiar">
-                                <span class="material-symbols-outlined text-sm">content_copy</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-orange-500/30 transition-colors">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-gray-400">smart_toy</span>
-                                </div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-white">OpenAI Engine (IA)</h4>
-                                    <p class="text-xs text-gray-500">Processamento de relatórios e insights preditivos.</p>
-                                </div>
-                            </div>
-                            <span class="px-2 py-1 bg-gray-500/10 text-gray-400 text-[10px] font-black rounded-lg border border-gray-500/20">NÃO CONFIG.</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <input type="text" placeholder="sk-proj-..." class="flex-1 bg-black/20 border border-white/5 rounded-lg px-4 py-2 text-xs text-gray-400 font-mono focus:outline-none focus:border-orange-500/40">
-                            <button class="px-3 py-2 text-xs font-bold text-orange-500 bg-orange-500/10 rounded-lg hover:bg-orange-500/20 transition-colors">Salvar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+ <!-- Integrações Externas -->
+ <div class="space-y-6">
+ <h4 class="text-xs font-black text-gray-500 uppercase tracking-widest">Conexões Externas</h4>
+ <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-orange-500/30 transition-colors">
+ <div class="flex items-center justify-between mb-4">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 bg-[#3ecf8e]/10 rounded-xl flex items-center justify-center">
+ <img src="https://supabase.com/favicons/favicon-32x32.png" class="w-6 h-6 opacity-80" alt="">
+ </div>
+ <div>
+ <h4 class="text-sm font-bold text-white">Supabase Connection</h4>
+ <p class="text-xs text-gray-500">Banco de dados principal e autenticação.</p>
+ </div>
+ </div>
+ <span class="px-2 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-black rounded-lg border border-emerald-500/20">ATIVO</span>
+ </div>
+ <div class="flex items-center gap-2">
+ <input type="password" value="sb_publishable_key_example_12345" readonly class="flex-1 bg-black/20 border border-white/5 rounded-lg px-4 py-2 text-xs text-gray-400 font-mono focus:outline-none">
+ <button class="p-2 text-gray-500 hover:text-orange-500 transition-colors" onclick="navigator.clipboard.writeText('sb_publishable_key_example_12345')" title="Copiar">
+ <span class="material-symbols-outlined text-sm">content_copy</span>
+ </button>
+ </div>
+ </div>
+ <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-orange-500/30 transition-colors">
+ <div class="flex items-center justify-between mb-4">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+ <span class="material-symbols-outlined text-gray-400">smart_toy</span>
+ </div>
+ <div>
+ <h4 class="text-sm font-bold text-white">OpenAI Engine (IA)</h4>
+ <p class="text-xs text-gray-500">Processamento de relatórios e insights preditivos.</p>
+ </div>
+ </div>
+ <span class="px-2 py-1 bg-gray-500/10 text-gray-400 text-[10px] font-black rounded-lg border border-gray-500/20">NÃO CONFIG.</span>
+ </div>
+ <div class="flex items-center gap-2">
+ <input type="text" placeholder="sk-proj-..." class="flex-1 bg-black/20 border border-white/5 rounded-lg px-4 py-2 text-xs text-gray-400 font-mono focus:outline-none focus:border-orange-500/40">
+ <button class="px-3 py-2 text-xs font-bold text-orange-500 bg-orange-500/10 rounded-lg hover:bg-orange-500/20 transition-colors">Salvar</button>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 
-        <!-- SECURITY TAB -->
-        <div id="tab-security" class="settings-pane hidden space-y-6">
-            <div class="glass-card p-8">
-                <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
-                    <span class="material-symbols-outlined text-orange-500">security</span>
-                    Segurança e Acesso
-                </h3>
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                        <div>
-                            <p class="text-sm font-bold text-white">Autenticação de Dois Fatores (2FA)</p>
-                            <p class="text-xs text-gray-500">Adicione uma camada extra de segurança à sua conta.</p>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" checked>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                        <div>
-                            <p class="text-sm font-bold text-white">Sessões Ativas</p>
-                            <p class="text-xs text-gray-500">Gerencie os dispositivos onde você está logado.</p>
-                        </div>
-                        <button class="text-xs font-bold text-orange-500 hover:underline">Ver Todos</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+ <!-- SECURITY TAB -->
+ <div id="tab-security" class="settings-pane hidden space-y-6">
+ <div class="glass-card p-8">
+ <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500">security</span>
+ Segurança e Acesso
+ </h3>
+ <div class="space-y-4">
+ <div class="flex items-center justify-between p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+ <div>
+ <p class="text-sm font-bold text-white">Autenticação de Dois Fatores (2FA)</p>
+ <p class="text-xs text-gray-500">Adicione uma camada extra de segurança à sua conta.</p>
+ </div>
+ <div class="form-check form-switch">
+ <input class="form-check-input" type="checkbox" checked>
+ </div>
+ </div>
+ <div class="flex items-center justify-between p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+ <div>
+ <p class="text-sm font-bold text-white">Sessões Ativas</p>
+ <p class="text-xs text-gray-500">Gerencie os dispositivos onde você está logado.</p>
+ </div>
+ <button class="text-xs font-bold text-orange-500 hover:underline">Ver Todos</button>
+ </div>
+ </div>
+ </div>
+ </div>
 
-        <!-- NOTIFICATIONS TAB -->
-        <div id="tab-notifications" class="settings-pane hidden space-y-6">
-            <div class="glass-card p-8">
-                <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
-                    <span class="material-symbols-outlined text-orange-500">notifications</span>
-                    Preferências de Notificação
-                </h3>
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                        <div>
-                            <p class="text-sm font-bold text-white">E-mails de Transação</p>
-                            <p class="text-xs text-gray-500">Receba faturas e recibos por e-mail.</p>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" checked>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                        <div>
-                            <p class="text-sm font-bold text-white">Alertas de Projeto</p>
-                            <p class="text-xs text-gray-500">Notificações sobre prazos e novas revisões.</p>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" checked>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+ <!-- NOTIFICATIONS TAB -->
+ <div id="tab-notifications" class="settings-pane hidden space-y-6">
+ <div class="glass-card p-8">
+ <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500">notifications</span>
+ Preferências de Notificação
+ </h3>
+ <div class="space-y-4">
+ <div class="flex items-center justify-between p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+ <div>
+ <p class="text-sm font-bold text-white">E-mails de Transação</p>
+ <p class="text-xs text-gray-500">Receba faturas e recibos por e-mail.</p>
+ </div>
+ <div class="form-check form-switch">
+ <input class="form-check-input" type="checkbox" checked>
+ </div>
+ </div>
+ <div class="flex items-center justify-between p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+ <div>
+ <p class="text-sm font-bold text-white">Alertas de Projeto</p>
+ <p class="text-xs text-gray-500">Notificações sobre prazos e novas revisões.</p>
+ </div>
+ <div class="form-check form-switch">
+ <input class="form-check-input" type="checkbox" checked>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 
-        <!-- BACKUP TAB -->
-        <div id="tab-backup" class="settings-pane hidden space-y-6">
-            <div class="glass-card p-8">
-                <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
-                    <span class="material-symbols-outlined text-orange-500">database</span>
-                    Backup e Exportação de Dados
-                </h3>
-                <div class="p-6 rounded-2xl bg-orange-500/5 border border-orange-500/10 mb-6">
-                    <p class="text-sm text-gray-300 mb-4">Seu último backup automático foi realizado há <b>2 horas</b>.</p>
-                    <button class="bg-orange-500 text-white px-6 py-2 rounded-xl text-xs font-bold hover:bg-orange-600 transition-all">Realizar Backup Agora</button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <button class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 text-left hover:bg-white/5 transition-all">
-                        <span class="material-symbols-outlined text-orange-500 mb-2">download</span>
-                        <p class="text-sm font-bold text-white">Exportar CSV</p>
-                        <p class="text-xs text-gray-500">Dados de projetos e financeiro.</p>
-                    </button>
-                    <button class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 text-left hover:bg-white/5 transition-all">
-                        <span class="material-symbols-outlined text-orange-500 mb-2">history</span>
-                        <p class="text-sm font-bold text-white">Histórico de Exclusão</p>
-                        <p class="text-xs text-gray-500">Recupere itens excluídos recentemente.</p>
-                    </button>
-                </div>
-            </div>
-        </div>
+ <!-- BACKUP TAB -->
+ <div id="tab-backup" class="settings-pane hidden space-y-6">
+ <div class="glass-card p-8">
+ <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500">database</span>
+ Backup e Exportação de Dados
+ </h3>
+ <div class="p-6 rounded-2xl bg-orange-500/5 border border-orange-500/10 mb-6">
+ <p class="text-sm text-gray-300 mb-4">Seu último backup automático foi realizado há <b>2 horas</b>.</p>
+ <button class="bg-orange-500 text-white px-6 py-2 rounded-xl text-xs font-bold hover:bg-orange-600 transition-all">Realizar Backup Agora</button>
+ </div>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+ <button class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 text-left hover:bg-white/5 transition-all">
+ <span class="material-symbols-outlined text-orange-500 mb-2">download</span>
+ <p class="text-sm font-bold text-white">Exportar CSV</p>
+ <p class="text-xs text-gray-500">Dados de projetos e financeiro.</p>
+ </button>
+ <button class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 text-left hover:bg-white/5 transition-all">
+ <span class="material-symbols-outlined text-orange-500 mb-2">history</span>
+ <p class="text-sm font-bold text-white">Histórico de Exclusão</p>
+ <p class="text-xs text-gray-500">Recupere itens excluídos recentemente.</p>
+ </button>
+ </div>
+ </div>
+ </div>
 
-        <!-- CALCULATOR SETTINGS TAB -->
-        <div id="tab-calculator" class="settings-pane hidden space-y-6">
-            <div class="glass-card p-8">
-                <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
-                    <span class="material-symbols-outlined text-orange-500">calculate</span>
-                    Precificação & Calibração Base (ArchViz)
-                </h3>
-                
-                <form id="calculatorSettingsForm" class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por m² (Modelagem)</label>
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-bold text-gray-500">R$</span>
-                                <input type="number" step="0.01" name="calculator_base_price_m2" id="calculator_base_price_m2" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="50.00">
-                            </div>
-                        </div>
+ <!-- CALCULATOR SETTINGS TAB -->
+ <div id="tab-calculator" class="settings-pane hidden space-y-6">
+ <div class="glass-card p-8">
+ <h3 class="text-xl font-black text-white mb-8 flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500">calculate</span>
+ Precificação & Calibração Base (ArchViz)
+ </h3>
+ 
+ <form id="calculatorSettingsForm" class="space-y-6">
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+ <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por m² (Projeto)</label>
+ <div class="flex items-center gap-2">
+ <span class="text-sm font-bold text-gray-500">R$</span>
+ <input type="number" step="0.01" name="calculator_base_price_m2" id="calculator_base_price_m2" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="50.00">
+ </div>
+ </div>
 
-                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por Imagem Estática</label>
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-bold text-gray-500">R$</span>
-                                <input type="number" step="0.01" name="calculator_base_price_image" id="calculator_base_price_image" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="350.00">
-                            </div>
-                        </div>
+ <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+ <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por Imagem Estática</label>
+ <div class="flex items-center gap-2">
+ <span class="text-sm font-bold text-gray-500">R$</span>
+ <input type="number" step="0.01" name="calculator_base_price_image" id="calculator_base_price_image" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="350.00">
+ </div>
+ </div>
 
-                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por Segundo de Animação</label>
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-bold text-gray-500">R$</span>
-                                <input type="number" step="0.01" name="calculator_base_price_animation" id="calculator_base_price_animation" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="120.00">
-                            </div>
-                        </div>
+ <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+ <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por Segundo de Animação</label>
+ <div class="flex items-center gap-2">
+ <span class="text-sm font-bold text-gray-500">R$</span>
+ <input type="number" step="0.01" name="calculator_base_price_animation" id="calculator_base_price_animation" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="120.00">
+ </div>
+ </div>
 
-                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por Tour 360º</label>
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-bold text-gray-500">R$</span>
-                                <input type="number" step="0.01" name="calculator_base_price_tour" id="calculator_base_price_tour" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="800.00">
-                            </div>
-                        </div>
+ <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+ <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Valor Base por Tour 360º</label>
+ <div class="flex items-center gap-2">
+ <span class="text-sm font-bold text-gray-500">R$</span>
+ <input type="number" step="0.01" name="calculator_base_price_tour" id="calculator_base_price_tour" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="800.00">
+ </div>
+ </div>
 
-                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 md:col-span-2">
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Custo Adicional por Ambiente Mapeado</label>
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-bold text-gray-500">R$</span>
-                                <input type="number" step="0.01" name="calculator_base_price_environment" id="calculator_base_price_environment" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="100.00">
-                            </div>
-                            <p class="text-[10px] text-gray-500 mt-2 font-medium">Este valor compensa o esforço incremental de modelagem e detalhamento de cada ambiente adicionado à lista do escopo.</p>
-                        </div>
-                    </div>
+ <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 md:col-span-2">
+ <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Custo Adicional por Ambiente Mapeado</label>
+ <div class="flex items-center gap-2">
+ <span class="text-sm font-bold text-gray-500">R$</span>
+ <input type="number" step="0.01" name="calculator_base_price_environment" id="calculator_base_price_environment" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all" placeholder="100.00">
+ </div>
+ <p class="text-[10px] text-gray-500 mt-2 font-medium">Este valor compensa o esforço incremental de produção e detalhamento de cada ambiente adicionado à lista do escopo.</p>
+ </div>
+ </div>
 
-                    <h3 class="text-lg font-black text-white mt-10 mb-6 flex items-center gap-3">
-                        <span class="material-symbols-outlined text-orange-500">smart_toy</span>
-                        Conexão do Motor de IA (Análise de Risco & Briefing)
-                    </h3>
+ <h3 class="text-lg font-black text-white mt-10 mb-6 flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500">smart_toy</span>
+ Conexão do Motor de IA (Análise de Risco & Briefing)
+ </h3>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 md:col-span-2">
-                            <div class="flex items-center justify-between mb-4">
-                                <div>
-                                    <h4 class="text-sm font-bold text-white">Google Gemini API Key</h4>
-                                    <p class="text-xs text-gray-500">Recomendado para análise de briefing de alta precisão e baixo custo.</p>
-                                </div>
-                            </div>
-                            <input type="password" name="gemini_api_key" id="gemini_api_key" placeholder="AIzaSy..." class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all font-mono">
-                        </div>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+ <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 md:col-span-2">
+ <div class="flex items-center justify-between mb-4">
+ <div>
+ <h4 class="text-sm font-bold text-white">Google Gemini API Key</h4>
+ <p class="text-xs text-gray-500">Recomendado para análise de briefing de alta precisão e baixo custo.</p>
+ </div>
+ </div>
+ <input type="password" name="gemini_api_key" id="gemini_api_key" placeholder="AIzaSy..." class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all font-mono">
+ </div>
 
-                        <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 md:col-span-2">
-                            <div class="flex items-center justify-between mb-4">
-                                <div>
-                                    <h4 class="text-sm font-bold text-white">OpenAI API Key</h4>
-                                    <p class="text-xs text-gray-500">Chave alternativa para fallback utilizando gpt-4o-mini.</p>
-                                </div>
-                            </div>
-                            <input type="password" name="openai_api_key" id="openai_api_key" placeholder="sk-proj-..." class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all font-mono">
-                        </div>
-                    </div>
+ <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/5 md:col-span-2">
+ <div class="flex items-center justify-between mb-4">
+ <div>
+ <h4 class="text-sm font-bold text-white">OpenAI API Key</h4>
+ <p class="text-xs text-gray-500">Chave alternativa para fallback utilizando gpt-4o-mini.</p>
+ </div>
+ </div>
+ <input type="password" name="openai_api_key" id="openai_api_key" placeholder="sk-proj-..." class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-300 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50 transition-all font-mono">
+ </div>
+ </div>
 
-                    <div class="flex justify-end pt-6">
-                        <button type="submit" id="btnSaveCalculatorSettings" class="bg-orange-500 text-white font-bold py-3.5 px-8 rounded-2xl hover:bg-orange-600 transition-all active:scale-95 shadow-xl shadow-orange-500/20 border border-orange-500/20">
-                            Salvar Calibração
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+ <div class="flex justify-end pt-6">
+ <button type="submit" id="btnSaveCalculatorSettings" class="bg-orange-500 text-white font-bold py-3.5 px-8 rounded-2xl hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20 border border-orange-500/20">
+ Salvar Calibração
+ </button>
+ </div>
+ </form>
+ </div>
+ </div>
 
-        <!-- MASTER ADMIN & CI/CD TAB — RBAC Guard wraps the entire panel -->
-        <div id="tab-cicd" class="settings-pane hidden space-y-8 duration-500">
-            {{#if (eq user.role 'admin')}}
-            <!-- HEADER MASTER -->
-            <header class="flex justify-between items-end">
-                <div>
-                    <h2 class="text-3xl font-black text-white tracking-tighter">Painel Master de <span class="text-indigo-500">Acessos</span></h2>
-                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gerenciamento de assinantes, staff e sub-contas (RBAC)</p>
-                </div>
-                <button class="px-6 py-3 bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-indigo-500/20 hover:bg-indigo-400 transition-all" id="btn-open-new-user-modal">Criar Usuário Manual</button>
-            </header>
+ <!-- MASTER ADMIN & CI/CD TAB — RBAC Guard wraps the entire panel -->
+ <div id="tab-cicd" class="settings-pane hidden space-y-8 duration-500">
+ {{#if (eq user.role 'admin')}}
+ <!-- HEADER MASTER -->
+ <header class="flex justify-between items-end">
+ <div>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Painel Master de <span class="text-indigo-500">Acessos</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gerenciamento de assinantes, staff e sub-contas (RBAC)</p>
+ </div>
+ <button class="px-6 py-3 bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-indigo-500/20 hover:bg-indigo-400 transition-all" id="btn-open-new-user-modal">Criar Usuário Manual</button>
+ </header>
 
-            <!-- GESTÃO DE USUÁRIOS (MULTI-TENANT) -->
-            <div class="glass-card border-white/5 overflow-hidden mb-8">
-                <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-subscribers')">
-                    <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Assinantes</h4>
-                    <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-subscribers">expand_more</span>
-                </div>
-                <div id="card-subscribers" class="divide-y divide-white/[0.03]">
-                    {{#if subscriberUsers.length}}
-                        {{#each subscriberUsers}}
-                        <div class="group">
-                            <div class="px-8 py-5 flex items-center justify-between hover:bg-white/[0.02] transition-colors cursor-pointer" onclick="toggleAccordion('subusers-{{this.id}}')">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 font-black">
-                                        {{firstLetter this.name}}
-                                    </div>
-                                    <div>
-                                        <p class="text-[13px] font-black text-white uppercase">{{this.name}}</p>
-                                        <p class="text-[10px] text-gray-400 font-bold tracking-widest">{{this.email}}</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-6">
-                                    <span class="px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 border-emerald-500/20 text-emerald-500">
-                                        {{this.role}}
-                                    </span>
-                                    {{#if this.tenantName}}
-                                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[12px] align-middle mr-1">domain</span>{{this.tenantName}}</span>
-                                    {{/if}}
-                                    <div class="flex items-center gap-2">
-                                        <button class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" onclick="event.stopPropagation(); openResetPasswordModal('{{this.id}}', '{{this.name}}')" title="Redefinir Senha"><span class="material-symbols-outlined text-sm">lock_reset</span></button>
-                                        {{#if this.subUsers.length}}
-                                        <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-subusers-{{this.id}}">expand_more</span>
-                                        {{/if}}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            {{#if this.subUsers.length}}
-                            <div id="subusers-{{this.id}}" class="hidden bg-black/20 border-y border-white/5">
-                                <div class="px-12 py-4 space-y-3">
-                                    {{#each this.subUsers}}
-                                    <div class="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-all">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-[10px] font-black">
-                                                {{firstLetter this.name}}
-                                            </div>
-                                            <div>
-                                                <p class="text-[11px] font-bold text-white">{{this.name}}</p>
-                                                <p class="text-[9px] text-gray-500 font-medium">{{this.email}}</p>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center gap-4">
-                                            <span class="text-[8px] font-black uppercase tracking-widest text-indigo-400 bg-indigo-500/5 px-2 py-1 rounded-md">{{this.role}}</span>
-                                            <button class="p-1.5 rounded-lg text-gray-600 hover:text-white transition-all" onclick="openResetPasswordModal('{{this.id}}', '{{this.name}}')">
-                                                <span class="material-symbols-outlined text-sm">lock_reset</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    {{/each}}
-                                </div>
-                            </div>
-                            {{/if}}
-                        </div>
-                        {{/each}}
-                    {{else}}
-                        <div class="p-20 text-center">
-                            <span class="material-symbols-outlined text-4xl text-gray-700 mb-4">group_off</span>
-                            <p class="text-gray-500 font-bold text-sm">Nenhum assinante cadastrado no sistema.</p>
-                        </div>
-                    {{/if}}
-                </div>
-            </div>
+ <!-- GESTÃO DE USUÁRIOS (MULTI-TENANT) -->
+ <div class="glass-card border-white/5 overflow-hidden mb-8">
+ <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-subscribers')">
+ <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Assinantes</h4>
+ <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-subscribers">expand_more</span>
+ </div>
+ <div id="card-subscribers" class="divide-y divide-white/[0.03]">
+ {{#if subscriberUsers.length}}
+ {{#each subscriberUsers}}
+ <div class="group">
+ <div class="px-8 py-5 flex items-center justify-between hover:bg-white/[0.02] transition-colors cursor-pointer" onclick="toggleAccordion('subusers-{{this.id}}')">
+ <div class="flex items-center gap-4">
+ <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 font-black">
+ {{firstLetter this.name}}
+ </div>
+ <div>
+ <p class="text-[13px] font-black text-white uppercase">{{this.name}}</p>
+ <p class="text-[10px] text-gray-400 font-bold tracking-widest">{{this.email}}</p>
+ </div>
+ </div>
+ <div class="flex items-center gap-6">
+ <span class="px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 border-emerald-500/20 text-emerald-500">
+ {{this.role}}
+ </span>
+ {{#if this.tenantName}}
+ <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest"><span class="material-symbols-outlined text-[12px] align-middle mr-1">domain</span>{{this.tenantName}}</span>
+ {{/if}}
+ <div class="flex items-center gap-2">
+ <button class="p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" onclick="event.stopPropagation(); openResetPasswordModal('{{this.id}}', '{{this.name}}')" title="Redefinir Senha"><span class="material-symbols-outlined text-sm">lock_reset</span></button>
+ {{#if this.subUsers.length}}
+ <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-subusers-{{this.id}}">expand_more</span>
+ {{/if}}
+ </div>
+ </div>
+ </div>
+ 
+ {{#if this.subUsers.length}}
+ <div id="subusers-{{this.id}}" class="hidden bg-black/20 border-y border-white/5">
+ <div class="px-12 py-4 space-y-3">
+ {{#each this.subUsers}}
+ <div class="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-all">
+ <div class="flex items-center gap-3">
+ <div class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 text-[10px] font-black">
+ {{firstLetter this.name}}
+ </div>
+ <div>
+ <p class="text-[11px] font-bold text-white">{{this.name}}</p>
+ <p class="text-[9px] text-gray-500 font-medium">{{this.email}}</p>
+ </div>
+ </div>
+ <div class="flex items-center gap-4">
+ <span class="text-[8px] font-black uppercase tracking-widest text-indigo-400 bg-indigo-500/5 px-2 py-1 rounded-md">{{this.role}}</span>
+ <button class="p-1.5 rounded-lg text-gray-600 hover:text-white transition-all" onclick="openResetPasswordModal('{{this.id}}', '{{this.name}}')">
+ <span class="material-symbols-outlined text-sm">lock_reset</span>
+ </button>
+ </div>
+ </div>
+ {{/each}}
+ </div>
+ </div>
+ {{/if}}
+ </div>
+ {{/each}}
+ {{else}}
+ <div class="p-20 text-center">
+ <span class="material-symbols-outlined text-4xl text-gray-700 mb-4">group_off</span>
+ <p class="text-gray-500 font-bold text-sm">Nenhum assinante cadastrado no sistema.</p>
+ </div>
+ {{/if}}
+ </div>
+ </div>
 
-            <!-- OUTROS USUÁRIOS (STAFF/ADMIN) -->
-            <div class="glass-card border-white/5 overflow-visible">
-                <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-other-users')">
-                    <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Malha 3D</h4>
-                    <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-other-users">expand_more</span>
-                </div>
-                <div id="card-other-users" class="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
-                    {{#each otherUsers}}
-                    <div class="p-6 bg-dark-950/40 hover:bg-white/[0.02] transition-all flex items-center justify-between">
-                        <div class="flex items-center gap-4 cursor-pointer" data-user-id="{{this.id}}" data-user-name="{{this.name}}">
-                            <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 font-black">
-                                {{firstLetter this.name}}
-                            </div>
-                            <div>
-                                <p class="text-[13px] font-black text-white uppercase">{{this.name}}</p>
-                                <p class="text-[10px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
-                                {{#if this.jobTitle}}<p class="text-[9px] text-indigo-400 font-bold mt-0.5">{{this.jobTitle}}</p>{{/if}}
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3 relative">
-                            <span class="px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest {{#if (eq this.role 'admin')}}bg-red-500/10 border-red-500/20 text-red-500{{else}}bg-blue-500/10 border-blue-500/20 text-blue-500{{/if}}">
-                                {{this.role}}
-                            </span>
-                            <!-- Action Dropdown Button -->
-                            <div class="relative" data-dropdown-id="dd-{{this.id}}">
-                                <button class="dropdown-trigger p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all" data-user-id="{{this.id}}">
-                                    <span class="material-symbols-outlined text-sm">more_vert</span>
-                                </button>
-                                <div id="dd-{{this.id}}" class="hidden absolute right-0 top-full mt-1 w-52 glass-card border-white/10 rounded-xl shadow-2xl z-[9999] py-2">
-                                    <button class="w-full px-4 py-2.5 text-left text-xs text-gray-300 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-colors user-action" data-action="analytics" data-user-id="{{this.id}}" data-user-name="{{this.name}}">
-                                        <span class="material-symbols-outlined text-sm text-indigo-400">analytics</span> Ver Relatório
-                                    </button>
-                                    <button class="w-full px-4 py-2.5 text-left text-xs text-gray-300 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-colors user-action" data-action="reset-password" data-user-id="{{this.id}}" data-user-name="{{this.name}}">
-                                        <span class="material-symbols-outlined text-sm text-orange-400">lock_reset</span> Alterar Senha
-                                    </button>
-                                    <button class="w-full px-4 py-2.5 text-left text-xs text-gray-300 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-colors user-action" data-action="force-logout" data-user-id="{{this.id}}" data-user-name="{{this.name}}">
-                                        <span class="material-symbols-outlined text-sm text-yellow-400">logout</span> Forçar Logout
-                                    </button>
-                                    <div class="border-t border-white/5 my-1"></div>
-                                    <button class="w-full px-4 py-2.5 text-left text-xs text-red-400 hover:bg-red-500/5 flex items-center gap-3 transition-colors user-action" data-action="suspend" data-user-id="{{this.id}}" data-user-name="{{this.name}}">
-                                        <span class="material-symbols-outlined text-sm">block</span> Suspender Acesso
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {{/each}}
-                </div>
-            </div>
+ <!-- OUTROS USUÁRIOS (STAFF/ADMIN) -->
+ <div class="glass-card border-white/5 overflow-visible">
+ <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-other-users')">
+ <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Malha 3D</h4>
+ <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-other-users">expand_more</span>
+ </div>
+ <div id="card-other-users" class="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5">
+ {{#each otherUsers}}
+ <div class="p-6 bg-dark-950/40 hover:bg-white/[0.02] transition-all flex items-center justify-between">
+ <div class="flex items-center gap-4 cursor-pointer" data-user-id="{{this.id}}" data-user-name="{{this.name}}">
+ <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 font-black">
+ {{firstLetter this.name}}
+ </div>
+ <div>
+ <p class="text-[13px] font-black text-white uppercase">{{this.name}}</p>
+ <p class="text-[10px] text-gray-500 font-bold tracking-widest">{{this.email}}</p>
+ {{#if this.jobTitle}}<p class="text-[9px] text-indigo-400 font-bold mt-0.5">{{this.jobTitle}}</p>{{/if}}
+ </div>
+ </div>
+ <div class="flex items-center gap-3 relative">
+ <span class="px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest {{#if (eq this.role 'admin')}}bg-red-500/10 border-red-500/20 text-red-500{{else}}bg-blue-500/10 border-blue-500/20 text-blue-500{{/if}}">
+ {{this.role}}
+ </span>
+ <!-- Action Dropdown Button -->
+ <div class="relative" data-dropdown-id="dd-{{this.id}}">
+ <button class="dropdown-trigger p-2 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all" data-user-id="{{this.id}}">
+ <span class="material-symbols-outlined text-sm">more_vert</span>
+ </button>
+ <div id="dd-{{this.id}}" class="hidden absolute right-0 top-full mt-1 w-52 glass-card border-white/10 rounded-xl shadow-2xl z-[9999] py-2">
+ <button class="w-full px-4 py-2.5 text-left text-xs text-gray-300 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-colors user-action" data-action="analytics" data-user-id="{{this.id}}" data-user-name="{{this.name}}">
+ <span class="material-symbols-outlined text-sm text-indigo-400">analytics</span> Ver Relatório
+ </button>
+ <button class="w-full px-4 py-2.5 text-left text-xs text-gray-300 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-colors user-action" data-action="reset-password" data-user-id="{{this.id}}" data-user-name="{{this.name}}">
+ <span class="material-symbols-outlined text-sm text-orange-400">lock_reset</span> Alterar Senha
+ </button>
+ <button class="w-full px-4 py-2.5 text-left text-xs text-gray-300 hover:bg-white/5 hover:text-white flex items-center gap-3 transition-colors user-action" data-action="force-logout" data-user-id="{{this.id}}" data-user-name="{{this.name}}">
+ <span class="material-symbols-outlined text-sm text-yellow-400">logout</span> Forçar Logout
+ </button>
+ <div class="border-t border-white/5 my-1"></div>
+ <button class="w-full px-4 py-2.5 text-left text-xs text-red-400 hover:bg-red-500/5 flex items-center gap-3 transition-colors user-action" data-action="suspend" data-user-id="{{this.id}}" data-user-name="{{this.name}}">
+ <span class="material-symbols-outlined text-sm">block</span> Suspender Acesso
+ </button>
+ </div>
+ </div>
+ </div>
+ </div>
+ {{/each}}
+ </div>
+ </div>
 
-            <!-- PIPELINE DEVOPS -->
-            <div class="pt-8 border-t border-white/5">
-                <h3 class="text-xl font-black text-white tracking-tighter mb-6 flex items-center gap-3">
-                    <span class="material-symbols-outlined text-indigo-400">rocket_launch</span>
-                    Pipeline de <span class="text-indigo-400">CI/CD</span>
-                </h3>
+ <!-- PIPELINE DEVOPS -->
+ <div class="pt-8 border-t border-white/5">
+ <h3 class="text-xl font-black text-white tracking-tighter mb-6 flex items-center gap-3">
+ <span class="material-symbols-outlined text-indigo-400">rocket_launch</span>
+ Pipeline de <span class="text-indigo-400">CI/CD</span>
+ </h3>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="glass-card p-6 border-white/5">
-                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-4">
-                            <i class="fab fa-github text-xl"></i>
-                        </div>
-                        <h4 class="text-sm font-black text-white uppercase tracking-widest">Conexão GitHub</h4>
-                        <div class="mt-4 flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                            <span class="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Sincronizado</span>
-                        </div>
-                    </div>
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+ <div class="glass-card p-6 border-white/5">
+ <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-4">
+ <i class="fab fa-github text-xl"></i>
+ </div>
+ <h4 class="text-sm font-black text-white uppercase tracking-widest">Conexão GitHub</h4>
+ <div class="mt-4 flex items-center gap-2">
+ <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+ <span class="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Sincronizado</span>
+ </div>
+ </div>
 
-                    <div class="glass-card p-6 border-white/5">
-                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-4">
-                            <span class="material-symbols-outlined">account_tree</span>
-                        </div>
-                        <h4 class="text-sm font-black text-white uppercase tracking-widest">Branch Principal</h4>
-                        <div class="mt-4 flex items-center gap-2">
-                            <span class="px-2 py-1 bg-white/5 rounded text-[8px] font-black text-white">main</span>
-                        </div>
-                    </div>
+ <div class="glass-card p-6 border-white/5">
+ <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-4">
+ <span class="material-symbols-outlined">account_tree</span>
+ </div>
+ <h4 class="text-sm font-black text-white uppercase tracking-widest">Branch Principal</h4>
+ <div class="mt-4 flex items-center gap-2">
+ <span class="px-2 py-1 bg-white/5 rounded text-[8px] font-black text-white">main</span>
+ </div>
+ </div>
 
-                    <div class="glass-card p-6 border-indigo-500/20 bg-indigo-500/5">
-                        <h4 class="text-sm font-black text-white uppercase tracking-widest mb-1">Deploy Manual</h4>
-                        <p class="text-[9px] text-gray-600 mb-4">Dispara o webhook de CI/CD para o servidor de produção.</p>
-                        <button id="btnDeploy" class="w-full py-3 bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-indigo-400 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <span class="material-symbols-outlined text-sm">publish</span>
-                            <span id="btnDeployText">Publicar Agora</span>
-                        </button>
-                        <p id="deploy-last" class="text-[9px] text-gray-600 mt-2 text-center">Nenhum deploy registrado nesta sessão.</p>
-                    </div>
-                </div>
-            </div>
-            {{else}}
-            <!-- RBAC: Acesso negado — não-admins veem esta mensagem em vez de não carregar nada -->
-            <div class="flex flex-col items-center justify-center py-24 text-center">
-                <div class="w-20 h-20 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-4xl text-red-500">lock</span>
-                </div>
-                <h3 class="text-xl font-black text-white mb-2">Acesso Restrito</h3>
-                <p class="text-sm text-gray-500 font-medium max-w-sm">Esta área requer nível de acesso <span class="text-red-400 font-bold">Master Admin</span>. Contacte o administrador do sistema para obter permissão.</p>
-            </div>
-            {{/if}}
-        </div>
-    </div>
+ <div class="glass-card p-6 border-indigo-500/20 bg-indigo-500/5">
+ <h4 class="text-sm font-black text-white uppercase tracking-widest mb-1">Deploy Manual</h4>
+ <p class="text-[9px] text-gray-600 mb-4">Dispara o webhook de CI/CD para o servidor de produção.</p>
+ <button id="btnDeploy" class="w-full py-3 bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-indigo-400 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+ <span class="material-symbols-outlined text-sm">publish</span>
+ <span id="btnDeployText">Publicar Agora</span>
+ </button>
+ <p id="deploy-last" class="text-[9px] text-gray-600 mt-2 text-center">Nenhum deploy registrado nesta sessão.</p>
+ </div>
+ </div>
+ </div>
+ {{else}}
+ <!-- RBAC: Acesso negado — não-admins veem esta mensagem em vez de não carregar nada -->
+ <div class="flex flex-col items-center justify-center py-24 text-center">
+ <div class="w-20 h-20 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-6">
+ <span class="material-symbols-outlined text-4xl text-red-500">lock</span>
+ </div>
+ <h3 class="text-xl font-black text-white mb-2">Acesso Restrito</h3>
+ <p class="text-sm text-gray-500 font-medium max-w-sm">Esta área requer nível de acesso <span class="text-red-400 font-bold">Master Admin</span>. Contacte o administrador do sistema para obter permissão.</p>
+ </div>
+ {{/if}}
+ </div>
+ </div>
 </div>
 
 <!-- MODALS -->
 <div id="newUserModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[2000] hidden flex items-center justify-center p-4">
-    <div class="glass-card w-full max-w-2xl border-white/10 max-h-[90vh] overflow-y-auto">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center sticky top-0 bg-[#0f0f0f] z-10">
-            <h3 class="text-xl font-black text-white tracking-tighter">Criar <span class="text-indigo-400">Membro da Equipe</span></h3>
-            <button id="closeNewUserModal" class="text-gray-500 hover:text-white"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <form id="newUserForm" class="p-6 space-y-5">
-            <!-- Dados Pessoais -->
-            <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest border-b border-white/5 pb-2">Dados Pessoais</p>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-1">
-                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Nome Completo *</label>
-                    <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">E-mail *</label>
-                    <input type="email" name="email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
-                </div>
-                <div class="space-y-1 relative">
-                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Senha Provisória *</label>
-                    <div class="relative">
-                        <input type="password" id="newUserPassword" name="password" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all pr-10">
-                        <button type="button" id="btn-toggle-password-visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
-                            <span class="material-symbols-outlined text-sm">visibility</span>
-                        </button>
-                    </div>
-                    <p class="text-[8px] text-gray-500 mt-1">Copie a senha antes de salvar para enviar ao membro.</p>
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Telefone / WhatsApp</label>
-                    <input type="text" name="phoneWhatsapp" placeholder="+55 11 99999-9999" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
-                </div>
-            </div>
-            <!-- Cargo & Função -->
-            <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest border-b border-white/5 pb-2">Cargo & Função</p>
-            <div class="grid grid-cols-3 gap-4">
-                <div class="space-y-1">
-                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Cargo / Role *</label>
-                    <select name="role" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
-                        <option value="admin">Administrador (Master)</option>
-                        <option value="staff" selected>Staff Interno</option>
-                        <option value="subscriber">Assinante (Dono Estúdio)</option>
-                        <option value="collaborator">Colaborador (Equipe)</option>
-                    </select>
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Especialidade / Título</label>
-                    <input type="text" name="jobTitle" placeholder="Ex: Artista 3D Sênior" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Custo/Hora (R$)</label>
-                    <input type="number" step="0.01" name="costHour" placeholder="Ex: 50.00" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
-                </div>
-            </div>
-            <!-- Stack & Custo -->
-            <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest border-b border-white/5 pb-2">Stack Tecnológica & Custo</p>
-            <div class="space-y-2">
-                <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Stack (selecione múltiplos)</label>
-                <div class="grid grid-cols-3 gap-2">
-                    <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
-                        <input type="checkbox" name="techStackItems" value="D5 Render" class="accent-indigo-500">
-                        <span class="text-[10px] font-bold text-gray-400">D5 Render</span>
-                    </label>
-                    <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
-                        <input type="checkbox" name="techStackItems" value="3ds Max" class="accent-indigo-500">
-                        <span class="text-[10px] font-bold text-gray-400">3ds Max</span>
-                    </label>
-                    <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
-                        <input type="checkbox" name="techStackItems" value="Revit" class="accent-indigo-500">
-                        <span class="text-[10px] font-bold text-gray-400">Revit</span>
-                    </label>
-                    <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
-                        <input type="checkbox" name="techStackItems" value="Unreal Engine" class="accent-indigo-500">
-                        <span class="text-[10px] font-bold text-gray-400">Unreal Engine</span>
-                    </label>
-                    <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
-                        <input type="checkbox" name="techStackItems" value="Photoshop" class="accent-indigo-500">
-                        <span class="text-[10px] font-bold text-gray-400">Photoshop</span>
-                    </label>
-                    <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
-                        <input type="checkbox" name="techStackItems" value="Lumion" class="accent-indigo-500">
-                        <span class="text-[10px] font-bold text-gray-400">Lumion</span>
-                    </label>
-                    <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
-                        <input type="checkbox" name="techStackItems" value="V-Ray" class="accent-indigo-500">
-                        <span class="text-[10px] font-bold text-gray-400">V-Ray</span>
-                    </label>
-                    <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
-                        <input type="checkbox" name="techStackItems" value="Blender" class="accent-indigo-500">
-                        <span class="text-[10px] font-bold text-gray-400">Blender</span>
-                    </label>
-                    <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
-                        <input type="checkbox" name="techStackItems" value="AutoCAD" class="accent-indigo-500">
-                        <span class="text-[10px] font-bold text-gray-400">AutoCAD</span>
-                    </label>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-1">
-                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Custo Hora (R$)</label>
-                    <input type="number" name="costHour" step="0.01" placeholder="0.00" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Horas Semanais Disponíveis</label>
-                    <input type="number" name="weeklyHours" value="40" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
-                </div>
-            </div>
-            <!-- Permissões -->
-            <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest border-b border-white/5 pb-2">Permissões de Acesso</p>
-            <div class="space-y-3">
-                <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer">
-                    <span class="text-xs font-bold text-gray-300">Pode ver financeiro?</span>
-                    <input type="checkbox" name="perm_canSeeFinance" class="accent-indigo-500 w-4 h-4">
-                </label>
-                <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer">
-                    <span class="text-xs font-bold text-gray-300">Pode aprovar orçamentos?</span>
-                    <input type="checkbox" name="perm_canApproveBudgets" class="accent-indigo-500 w-4 h-4">
-                </label>
-                <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer">
-                    <span class="text-xs font-bold text-gray-300">Acesso apenas aos próprios projetos?</span>
-                    <input type="checkbox" name="perm_ownProjectsOnly" class="accent-indigo-500 w-4 h-4">
-                </label>
-            </div>
-            <input type="hidden" name="techStack" id="techStackJson" value="[]">
-            <button type="submit" id="submitNewUser" class="w-full py-4 bg-indigo-500 text-white font-black uppercase text-[10px] tracking-widest rounded-xl hover:bg-indigo-400 transition-all mt-2">Criar Membro da Equipe</button>
-        </form>
-    </div>
+ <div class="glass-card w-full max-w-2xl border-white/10 max-h-[90vh] overflow-y-auto">
+ <div class="p-6 border-b border-white/5 flex justify-between items-center sticky top-0 bg-[#0f0f0f] z-10">
+ <h3 class="text-xl font-black text-white tracking-tighter">Criar <span class="text-indigo-400">Membro da Equipe</span></h3>
+ <button id="closeNewUserModal" class="text-gray-500 hover:text-white"><span class="material-symbols-outlined">close</span></button>
+ </div>
+ <form id="newUserForm" class="p-6 space-y-5">
+ <!-- Dados Pessoais -->
+ <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest border-b border-white/5 pb-2">Dados Pessoais</p>
+ <div class="grid grid-cols-2 gap-4">
+ <div class="space-y-1">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Nome Completo *</label>
+ <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
+ </div>
+ <div class="space-y-1">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">E-mail *</label>
+ <input type="email" name="email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
+ </div>
+ <div class="space-y-1 relative">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Senha Provisória *</label>
+ <div class="relative">
+ <input type="password" id="newUserPassword" name="password" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all pr-10">
+ <button type="button" id="btn-toggle-password-visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+ <span class="material-symbols-outlined text-sm">visibility</span>
+ </button>
+ </div>
+ <p class="text-[8px] text-gray-500 mt-1">Copie a senha antes de salvar para enviar ao membro.</p>
+ </div>
+ <div class="space-y-1">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Telefone / WhatsApp</label>
+ <input type="text" name="phoneWhatsapp" placeholder="+55 11 99999-9999" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
+ </div>
+ </div>
+ <!-- Cargo & Função -->
+ <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest border-b border-white/5 pb-2">Cargo & Função</p>
+ <div class="grid grid-cols-3 gap-4">
+ <div class="space-y-1">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Cargo / Role *</label>
+ <select name="role" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
+ <option value="admin">Administrador (Master)</option>
+ <option value="staff" selected>Staff Interno</option>
+ <option value="subscriber">Assinante (Dono Estúdio)</option>
+ <option value="collaborator">Colaborador (Equipe)</option>
+ </select>
+ </div>
+ <div class="space-y-1">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Especialidade / Título</label>
+ <input type="text" name="jobTitle" placeholder="Ex: Artista 3D Sênior" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
+ </div>
+ <div class="space-y-1">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Custo/Hora (R$)</label>
+ <input type="number" step="0.01" name="costHour" placeholder="Ex: 50.00" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
+ </div>
+ </div>
+ <!-- Stack & Custo -->
+ <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest border-b border-white/5 pb-2">Stack Tecnológica & Custo</p>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Stack (selecione múltiplos)</label>
+ <div class="grid grid-cols-3 gap-2">
+ <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
+ <input type="checkbox" name="techStackItems" value="D5 Render" class="accent-indigo-500">
+ <span class="text-[10px] font-bold text-gray-400">D5 Render</span>
+ </label>
+ <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
+ <input type="checkbox" name="techStackItems" value="3ds Max" class="accent-indigo-500">
+ <span class="text-[10px] font-bold text-gray-400">3ds Max</span>
+ </label>
+ <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
+ <input type="checkbox" name="techStackItems" value="Revit" class="accent-indigo-500">
+ <span class="text-[10px] font-bold text-gray-400">Revit</span>
+ </label>
+ <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
+ <input type="checkbox" name="techStackItems" value="Unreal Engine" class="accent-indigo-500">
+ <span class="text-[10px] font-bold text-gray-400">Unreal Engine</span>
+ </label>
+ <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
+ <input type="checkbox" name="techStackItems" value="Photoshop" class="accent-indigo-500">
+ <span class="text-[10px] font-bold text-gray-400">Photoshop</span>
+ </label>
+ <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
+ <input type="checkbox" name="techStackItems" value="Lumion" class="accent-indigo-500">
+ <span class="text-[10px] font-bold text-gray-400">Lumion</span>
+ </label>
+ <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
+ <input type="checkbox" name="techStackItems" value="V-Ray" class="accent-indigo-500">
+ <span class="text-[10px] font-bold text-gray-400">V-Ray</span>
+ </label>
+ <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
+ <input type="checkbox" name="techStackItems" value="Blender" class="accent-indigo-500">
+ <span class="text-[10px] font-bold text-gray-400">Blender</span>
+ </label>
+ <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/5 hover:border-indigo-500/30 cursor-pointer transition-all">
+ <input type="checkbox" name="techStackItems" value="AutoCAD" class="accent-indigo-500">
+ <span class="text-[10px] font-bold text-gray-400">AutoCAD</span>
+ </label>
+ </div>
+ </div>
+ <div class="grid grid-cols-2 gap-4">
+ <div class="space-y-1">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Custo Hora (R$)</label>
+ <input type="number" name="costHour" step="0.01" placeholder="0.00" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
+ </div>
+ <div class="space-y-1">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Horas Semanais Disponíveis</label>
+ <input type="number" name="weeklyHours" value="40" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:border-indigo-500 focus:outline-none transition-all">
+ </div>
+ </div>
+ <!-- Permissões -->
+ <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest border-b border-white/5 pb-2">Permissões de Acesso</p>
+ <div class="space-y-3">
+ <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer">
+ <span class="text-xs font-bold text-gray-300">Pode ver financeiro?</span>
+ <input type="checkbox" name="perm_canSeeFinance" class="accent-indigo-500 w-4 h-4">
+ </label>
+ <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer">
+ <span class="text-xs font-bold text-gray-300">Pode aprovar orçamentos?</span>
+ <input type="checkbox" name="perm_canApproveBudgets" class="accent-indigo-500 w-4 h-4">
+ </label>
+ <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 cursor-pointer">
+ <span class="text-xs font-bold text-gray-300">Acesso apenas aos próprios projetos?</span>
+ <input type="checkbox" name="perm_ownProjectsOnly" class="accent-indigo-500 w-4 h-4">
+ </label>
+ </div>
+ <input type="hidden" name="techStack" id="techStackJson" value="[]">
+ <button type="submit" id="submitNewUser" class="w-full py-4 bg-indigo-500 text-white font-black uppercase text-[10px] tracking-widest rounded-xl hover:bg-indigo-400 transition-all mt-2">Criar Membro da Equipe</button>
+ </form>
+ </div>
 </div>
 
 <script>
@@ -648,434 +648,434 @@
 
 // ── Toast Notification System ─────────────────────────────
 function showToast(message, type = 'success') {
-    const existing = document.getElementById('erp-toast');
-    if (existing) existing.remove();
-    const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-indigo-500', warn: 'bg-yellow-500' };
-    const icons  = { success: 'check_circle', error: 'error', info: 'info', warn: 'warning' };
-    const t = document.createElement('div');
-    t.id = 'erp-toast';
-    t.className = `fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-5 py-4 rounded-2xl ${colors[type]} text-white text-sm font-bold shadow-2xl transition-all`;
-    t.innerHTML = `<span class="material-symbols-outlined text-lg">${icons[type]}</span><span>${message}</span>`;
-    document.body.appendChild(t);
-    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 4000);
+ const existing = document.getElementById('erp-toast');
+ if (existing) existing.remove();
+ const colors = { success: 'bg-emerald-500', error: 'bg-red-500', info: 'bg-indigo-500', warn: 'bg-yellow-500' };
+ const icons = { success: 'check_circle', error: 'error', info: 'info', warn: 'warning' };
+ const t = document.createElement('div');
+ t.id = 'erp-toast';
+ t.className = `fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-5 py-4 rounded-2xl ${colors[type]} text-white text-sm font-bold shadow-2xl transition-all`;
+ t.innerHTML = `<span class="material-symbols-outlined text-lg">${icons[type]}</span><span>${message}</span>`;
+ document.body.appendChild(t);
+ setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 4000);
 }
 
 // ── Tab Switch Engine ─────────────────────────────────────
 function switchSettingsTab(tabId, el) {
-    document.querySelectorAll('.settings-pane').forEach(p => p.classList.add('hidden'));
-    const pane = document.getElementById('tab-' + tabId);
-    if (pane) { 
-        pane.classList.remove('hidden');
-        pane.classList.add('animate-in', 'fade-in', 'duration-300');
-    }
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; btn.style.boxShadow = '';
-        btn.setAttribute('data-active', 'false');
-    });
-    el.setAttribute('data-active', 'true');
-    
-    // Visual indicators for active state
-    if (tabId === 'cicd') {
-        el.style.background = 'rgba(99,102,241,0.15)'; el.style.color = '#818cf8';
-        el.style.borderColor = 'rgba(99,102,241,0.3)';
-    } else {
-        el.style.background = 'rgba(249,115,22,0.12)'; el.style.color = '#f97316';
-        el.style.borderColor = 'rgba(249,115,22,0.25)';
-    }
-    
-    if (tabId === 'api') loadApiKeys();
+ document.querySelectorAll('.settings-pane').forEach(p => p.classList.add('hidden'));
+ const pane = document.getElementById('tab-' + tabId);
+ if (pane) { 
+ pane.classList.remove('hidden');
+ pane.classList.add('animate-in', 'fade-in', 'duration-300');
+ }
+ document.querySelectorAll('.tab-btn').forEach(btn => {
+ btn.style.background = ''; btn.style.color = ''; btn.style.borderColor = ''; btn.style.boxShadow = '';
+ btn.setAttribute('data-active', 'false');
+ });
+ el.setAttribute('data-active', 'true');
+ 
+ // Visual indicators for active state
+ if (tabId === 'cicd') {
+ el.style.background = 'rgba(99,102,241,0.15)'; el.style.color = '#818cf8';
+ el.style.borderColor = 'rgba(99,102,241,0.3)';
+ } else {
+ el.style.background = 'rgba(249,115,22,0.12)'; el.style.color = '#f97316';
+ el.style.borderColor = 'rgba(249,115,22,0.25)';
+ }
+ 
+ if (tabId === 'api') loadApiKeys();
 }
 
 // ── Accordion Toggle ──────────────────────────────────────
 function toggleAccordion(id) {
-    const el = document.getElementById(id);
-    const icon = document.getElementById('icon-' + id);
-    if (!el) return;
-    if (el.classList.contains('hidden')) { el.classList.remove('hidden'); icon?.classList.add('rotate-180'); }
-    else { el.classList.add('hidden'); icon?.classList.remove('rotate-180'); }
+ const el = document.getElementById(id);
+ const icon = document.getElementById('icon-' + id);
+ if (!el) return;
+ if (el.classList.contains('hidden')) { el.classList.remove('hidden'); icon?.classList.add('rotate-180'); }
+ else { el.classList.add('hidden'); icon?.classList.remove('rotate-180'); }
 }
 
 // ── API Keys — Stripe-style ───────────────────────────────
 async function loadApiKeys() {
-    const container = document.getElementById('api-keys-table');
-    if (!container) return;
-    try {
-        const r = await fetch('/admin/api/keys');
-        const data = await r.json();
-        if (!data.success || !data.keys.length) {
-            container.innerHTML = '<p class="text-center text-gray-600 text-xs py-6">Nenhuma chave cadastrada. Clique em "Gerar Chave" para criar.</p>';
-            return;
-        }
-        container.innerHTML = data.keys.map(k => `
-            <div class="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/5">
-                <div class="flex items-center gap-4">
-                    <div class="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-sm text-orange-400">key</span>
-                    </div>
-                    <div>
-                        <p class="text-sm font-bold text-white">${k.name}</p>
-                        <p class="text-xs text-gray-500 font-mono">${k.keyMasked}</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="px-2 py-1 rounded-md text-[9px] font-black ${k.isActive ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${k.isActive ? 'ATIVA' : 'REVOGADA'}</span>
-                    ${k.isActive ? `<button class="revoke-key text-xs text-gray-500 hover:text-red-400 transition-colors" data-key-id="${k.id}">Revogar</button>` : ''}
-                </div>
-            </div>`).join('');
-        // Revogar listeners
-        container.querySelectorAll('.revoke-key').forEach(btn => {
-            btn.addEventListener('click', async function() {
-                if (!confirm('Revogar esta chave? Esta ação é irreversível.')) return;
-                const r = await fetch(`/admin/api/keys/${this.dataset.keyId}`, { method: 'DELETE' });
-                const d = await r.json();
-                showToast(d.success ? 'Chave revogada com sucesso.' : d.error, d.success ? 'warn' : 'error');
-                if (d.success) loadApiKeys();
-            });
-        });
-    } catch (e) {
-        container.innerHTML = '<p class="text-center text-red-500 text-xs py-6">Erro ao carregar chaves.</p>';
-    }
+ const container = document.getElementById('api-keys-table');
+ if (!container) return;
+ try {
+ const r = await fetch('/admin/api/keys');
+ const data = await r.json();
+ if (!data.success || !data.keys.length) {
+ container.innerHTML = '<p class="text-center text-gray-600 text-xs py-6">Nenhuma chave cadastrada. Clique em "Gerar Chave" para criar.</p>';
+ return;
+ }
+ container.innerHTML = data.keys.map(k => `
+ <div class="flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/5">
+ <div class="flex items-center gap-4">
+ <div class="w-8 h-8 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+ <span class="material-symbols-outlined text-sm text-orange-400">key</span>
+ </div>
+ <div>
+ <p class="text-sm font-bold text-white">${k.name}</p>
+ <p class="text-xs text-gray-500 font-mono">${k.keyMasked}</p>
+ </div>
+ </div>
+ <div class="flex items-center gap-3">
+ <span class="px-2 py-1 rounded-md text-[9px] font-black ${k.isActive ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">${k.isActive ? 'ATIVA' : 'REVOGADA'}</span>
+ ${k.isActive ? `<button class="revoke-key text-xs text-gray-500 hover:text-red-400 transition-colors" data-key-id="${k.id}">Revogar</button>` : ''}
+ </div>
+ </div>`).join('');
+ // Revogar listeners
+ container.querySelectorAll('.revoke-key').forEach(btn => {
+ btn.addEventListener('click', async function() {
+ if (!confirm('Revogar esta chave? Esta ação é irreversível.')) return;
+ const r = await fetch(`/admin/api/keys/${this.dataset.keyId}`, { method: 'DELETE' });
+ const d = await r.json();
+ showToast(d.success ? 'Chave revogada com sucesso.' : d.error, d.success ? 'warn' : 'error');
+ if (d.success) loadApiKeys();
+ });
+ });
+ } catch (e) {
+ container.innerHTML = '<p class="text-center text-red-500 text-xs py-6">Erro ao carregar chaves.</p>';
+ }
 }
 
 function showGeneratedKey(fullKey, name) {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black/90 backdrop-blur-sm z-[3000] flex items-center justify-center p-4';
-    modal.innerHTML = `
-        <div class="glass-card w-full max-w-lg border-orange-500/20 p-8">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-orange-400">key</span>
-                </div>
-                <div>
-                    <h3 class="text-lg font-black text-white">Chave Gerada: ${name}</h3>
-                    <p class="text-xs text-red-400 font-bold">⚠ Copie agora — não será exibida novamente!</p>
-                </div>
-            </div>
-            <div class="bg-black/40 border border-orange-500/20 rounded-xl p-4 flex items-center gap-3 mb-6">
-                <code class="flex-1 text-orange-300 text-xs font-mono break-all" id="generated-key-display">${fullKey}</code>
-                <button id="copy-gen-key" class="p-2 bg-orange-500/10 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-colors">
-                    <span class="material-symbols-outlined text-sm">content_copy</span>
-                </button>
-            </div>
-            <button id="close-gen-modal" class="w-full py-3 bg-orange-500 text-white text-xs font-black rounded-xl hover:bg-orange-400 transition-all">Confirmei — fechar</button>
-        </div>`;
-    document.body.appendChild(modal);
-    modal.querySelector('#copy-gen-key').addEventListener('click', () => {
-        navigator.clipboard.writeText(fullKey).then(() => showToast('Chave copiada!', 'success'));
-    });
-    modal.querySelector('#close-gen-modal').addEventListener('click', () => { modal.remove(); loadApiKeys(); });
+ const modal = document.createElement('div');
+ modal.className = 'fixed inset-0 bg-black/90 backdrop-blur-sm z-[3000] flex items-center justify-center p-4';
+ modal.innerHTML = `
+ <div class="glass-card w-full max-w-lg border-orange-500/20 p-8">
+ <div class="flex items-center gap-3 mb-6">
+ <div class="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+ <span class="material-symbols-outlined text-orange-400">key</span>
+ </div>
+ <div>
+ <h3 class="text-lg font-black text-white">Chave Gerada: ${name}</h3>
+ <p class="text-xs text-red-400 font-bold">⚠ Copie agora — não será exibida novamente!</p>
+ </div>
+ </div>
+ <div class="bg-black/40 border border-orange-500/20 rounded-xl p-4 flex items-center gap-3 mb-6">
+ <code class="flex-1 text-orange-300 text-xs font-mono break-all" id="generated-key-display">${fullKey}</code>
+ <button id="copy-gen-key" class="p-2 bg-orange-500/10 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-colors">
+ <span class="material-symbols-outlined text-sm">content_copy</span>
+ </button>
+ </div>
+ <button id="close-gen-modal" class="w-full py-3 bg-orange-500 text-white text-xs font-black rounded-xl hover:bg-orange-400 transition-all">Confirmei — fechar</button>
+ </div>`;
+ document.body.appendChild(modal);
+ modal.querySelector('#copy-gen-key').addEventListener('click', () => {
+ navigator.clipboard.writeText(fullKey).then(() => showToast('Chave copiada!', 'success'));
+ });
+ modal.querySelector('#close-gen-modal').addEventListener('click', () => { modal.remove(); loadApiKeys(); });
 }
 
 // ── Deploy CI/CD ──────────────────────────────────────────
 async function triggerDeploy() {
-    const btn = document.getElementById('btnDeploy');
-    const txt = document.getElementById('btnDeployText');
-    const info = document.getElementById('deploy-last');
-    if (!btn || btn.disabled) return;
-    if (!confirm('Confirmar deploy em produção?')) return;
-    btn.disabled = true;
-    txt.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span> Construindo...';
-    showToast('Pipeline iniciada. Aguardando resposta do servidor...', 'info');
-    try {
-        const r = await fetch('/admin/api/deploy', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
-        const data = await r.json();
-        if (data.success) {
-            showToast(data.message, 'success');
-            if (info) info.textContent = 'Último deploy: ' + new Date().toLocaleString('pt-BR');
-        } else {
-            showToast(data.message || 'Falha no deploy.', 'error');
-        }
-    } catch (e) {
-        showToast('Erro de conexão com o servidor de deploy.', 'error');
-    } finally {
-        btn.disabled = false;
-        txt.innerHTML = 'Publicar Agora';
-    }
+ const btn = document.getElementById('btnDeploy');
+ const txt = document.getElementById('btnDeployText');
+ const info = document.getElementById('deploy-last');
+ if (!btn || btn.disabled) return;
+ if (!confirm('Confirmar deploy em produção?')) return;
+ btn.disabled = true;
+ txt.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span> Construindo...';
+ showToast('Pipeline iniciada. Aguardando resposta do servidor...', 'info');
+ try {
+ const r = await fetch('/admin/api/deploy', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+ const data = await r.json();
+ if (data.success) {
+ showToast(data.message, 'success');
+ if (info) info.textContent = 'Último deploy: ' + new Date().toLocaleString('pt-BR');
+ } else {
+ showToast(data.message || 'Falha no deploy.', 'error');
+ }
+ } catch (e) {
+ showToast('Erro de conexão com o servidor de deploy.', 'error');
+ } finally {
+ btn.disabled = false;
+ txt.innerHTML = 'Publicar Agora';
+ }
 }
 
 // ── DOMContentLoaded: Wire everything up ─────────────────
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Tab buttons
-    document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
-        btn.addEventListener('click', function() { switchSettingsTab(this.dataset.tab, this); });
-    });
-    const firstBtn = document.querySelector('.tab-btn[data-tab="general"]');
-    if (firstBtn) switchSettingsTab('general', firstBtn);
+ // Tab buttons
+ document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
+ btn.addEventListener('click', function() { switchSettingsTab(this.dataset.tab, this); });
+ });
+ const firstBtn = document.querySelector('.tab-btn[data-tab="general"]');
+ if (firstBtn) switchSettingsTab('general', firstBtn);
 
-    // Nova Chave (header button) → go to API tab and open generator
-    const btnNovaChave = document.getElementById('btn-nova-chave');
-    if (btnNovaChave) {
-        btnNovaChave.addEventListener('click', () => {
-            const apiBtn = document.querySelector('.tab-btn[data-tab="api"]');
-            if (apiBtn) switchSettingsTab('api', apiBtn);
-            setTimeout(() => document.getElementById('btn-gerar-chave')?.click(), 300);
-        });
-    }
+ // Nova Chave (header button) → go to API tab and open generator
+ const btnNovaChave = document.getElementById('btn-nova-chave');
+ if (btnNovaChave) {
+ btnNovaChave.addEventListener('click', () => {
+ const apiBtn = document.querySelector('.tab-btn[data-tab="api"]');
+ if (apiBtn) switchSettingsTab('api', apiBtn);
+ setTimeout(() => document.getElementById('btn-gerar-chave')?.click(), 300);
+ });
+ }
 
-    // Gerar Chave button (inside API tab)
-    const btnGerarChave = document.getElementById('btn-gerar-chave');
-    if (btnGerarChave) {
-        btnGerarChave.addEventListener('click', () => {
-            const name = prompt('Nome para a chave (ex: Zapier, N8N, Supabase):');
-            if (!name) return;
-            fetch('/admin/api/keys', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name })
-            }).then(r => r.json()).then(data => {
-                if (data.success) { showGeneratedKey(data.key.fullKey, data.key.name); }
-                else { showToast(data.error || 'Erro ao gerar chave.', 'error'); }
-            }).catch(() => showToast('Erro de conexão.', 'error'));
-        });
-    }
+ // Gerar Chave button (inside API tab)
+ const btnGerarChave = document.getElementById('btn-gerar-chave');
+ if (btnGerarChave) {
+ btnGerarChave.addEventListener('click', () => {
+ const name = prompt('Nome para a chave (ex: Zapier, N8N, Supabase):');
+ if (!name) return;
+ fetch('/admin/api/keys', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ name })
+ }).then(r => r.json()).then(data => {
+ if (data.success) { showGeneratedKey(data.key.fullKey, data.key.name); }
+ else { showToast(data.error || 'Erro ao gerar chave.', 'error'); }
+ }).catch(() => showToast('Erro de conexão.', 'error'));
+ });
+ }
 
-    // Deploy button
-    const btnDeploy = document.getElementById('btnDeploy');
-    if (btnDeploy) btnDeploy.addEventListener('click', triggerDeploy);
+ // Deploy button
+ const btnDeploy = document.getElementById('btnDeploy');
+ if (btnDeploy) btnDeploy.addEventListener('click', triggerDeploy);
 
-    // Criar Usuário Manual button (header + CI/CD tab)
-    const setupUserModalTriggers = () => {
-        const btnOpenModal = document.getElementById('btn-open-new-user-modal');
-        if (btnOpenModal) {
-            btnOpenModal.addEventListener('click', () => {
-                document.getElementById('newUserModal').classList.remove('hidden');
-            });
-        }
-    };
-    setupUserModalTriggers();
+ // Criar Usuário Manual button (header + CI/CD tab)
+ const setupUserModalTriggers = () => {
+ const btnOpenModal = document.getElementById('btn-open-new-user-modal');
+ if (btnOpenModal) {
+ btnOpenModal.addEventListener('click', () => {
+ document.getElementById('newUserModal').classList.remove('hidden');
+ });
+ }
+ };
+ setupUserModalTriggers();
 
-    // Close new user modal
-    document.getElementById('closeNewUserModal')?.addEventListener('click', () => {
-        document.getElementById('newUserModal').classList.add('hidden');
-    });
+ // Close new user modal
+ document.getElementById('closeNewUserModal')?.addEventListener('click', () => {
+ document.getElementById('newUserModal').classList.add('hidden');
+ });
 
-    // Password visibility toggle
-    document.getElementById('btn-toggle-password-visibility')?.addEventListener('click', function() {
-        const p = document.getElementById('newUserPassword');
-        if (p) p.type = p.type === 'password' ? 'text' : 'password';
-    });
+ // Password visibility toggle
+ document.getElementById('btn-toggle-password-visibility')?.addEventListener('click', function() {
+ const p = document.getElementById('newUserPassword');
+ if (p) p.type = p.type === 'password' ? 'text' : 'password';
+ });
 
-    // New user form submit
-    document.getElementById('newUserForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const submitBtn = document.getElementById('submitNewUser');
-        // Serialize tech stack checkboxes
-        const checked = [...document.querySelectorAll('input[name="techStackItems"]:checked')].map(c => c.value);
-        document.getElementById('techStackJson').value = JSON.stringify(checked);
+ // New user form submit
+ document.getElementById('newUserForm')?.addEventListener('submit', async (e) => {
+ e.preventDefault();
+ const submitBtn = document.getElementById('submitNewUser');
+ // Serialize tech stack checkboxes
+ const checked = [...document.querySelectorAll('input[name="techStackItems"]:checked')].map(c => c.value);
+ document.getElementById('techStackJson').value = JSON.stringify(checked);
 
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-        // Map permission checkboxes
-        data.permissions = JSON.stringify({
-            canSeeFinance: !!formData.get('perm_canSeeFinance'),
-            canApproveBudgets: !!formData.get('perm_canApproveBudgets'),
-            ownProjectsOnly: !!formData.get('perm_ownProjectsOnly')
-        });
+ const formData = new FormData(e.target);
+ const data = Object.fromEntries(formData.entries());
+ // Map permission checkboxes
+ data.permissions = JSON.stringify({
+ canSeeFinance: !!formData.get('perm_canSeeFinance'),
+ canApproveBudgets: !!formData.get('perm_canApproveBudgets'),
+ ownProjectsOnly: !!formData.get('perm_ownProjectsOnly')
+ });
 
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Criando...';
-        try {
-            const r = await fetch('/admin/api/users', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            const res = await r.json();
-            if (res.success) {
-                showToast(`Usuário "${res.user.name}" criado com sucesso!`, 'success');
-                document.getElementById('newUserModal').classList.add('hidden');
-                setTimeout(() => window.location.reload(), 1500);
-            } else {
-                showToast('Erro: ' + (res.error || 'Falha'), 'error');
-            }
-        } catch (err) {
-            showToast('Erro de conexão.', 'error');
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Criar Membro da Equipe';
-        }
-    });
+ submitBtn.disabled = true;
+ submitBtn.textContent = 'Criando...';
+ try {
+ const r = await fetch('/admin/api/users', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify(data)
+ });
+ const res = await r.json();
+ if (res.success) {
+ showToast(`Usuário "${res.user.name}" criado com sucesso!`, 'success');
+ document.getElementById('newUserModal').classList.add('hidden');
+ setTimeout(() => window.location.reload(), 1500);
+ } else {
+ showToast('Erro: ' + (res.error || 'Falha'), 'error');
+ }
+ } catch (err) {
+ showToast('Erro de conexão.', 'error');
+ } finally {
+ submitBtn.disabled = false;
+ submitBtn.textContent = 'Criar Membro da Equipe';
+ }
+ });
 
-    // Dropdown triggers (more_vert buttons on team members)
-    document.addEventListener('click', function(e) {
-        const trigger = e.target.closest('.dropdown-trigger');
-        if (trigger) {
-            e.stopPropagation();
-            const userId = trigger.dataset.userId;
-            const dd = document.getElementById('dd-' + userId);
-            // Close all others
-            document.querySelectorAll('[id^="dd-"]').forEach(d => { if (d !== dd) d.classList.add('hidden'); });
-            dd?.classList.toggle('hidden');
-            return;
-        }
-        // Close all dropdowns on outside click
-        document.querySelectorAll('[id^="dd-"]').forEach(d => d.classList.add('hidden'));
-    });
+ // Dropdown triggers (more_vert buttons on team members)
+ document.addEventListener('click', function(e) {
+ const trigger = e.target.closest('.dropdown-trigger');
+ if (trigger) {
+ e.stopPropagation();
+ const userId = trigger.dataset.userId;
+ const dd = document.getElementById('dd-' + userId);
+ // Close all others
+ document.querySelectorAll('[id^="dd-"]').forEach(d => { if (d !== dd) d.classList.add('hidden'); });
+ dd?.classList.toggle('hidden');
+ return;
+ }
+ // Close all dropdowns on outside click
+ document.querySelectorAll('[id^="dd-"]').forEach(d => d.classList.add('hidden'));
+ });
 
-    // User action buttons inside dropdown
-    document.addEventListener('click', async function(e) {
-        const actionBtn = e.target.closest('.user-action');
-        if (!actionBtn) return;
-        const { action, userId, userName } = actionBtn.dataset;
-        document.querySelectorAll('[id^="dd-"]').forEach(d => d.classList.add('hidden'));
+ // User action buttons inside dropdown
+ document.addEventListener('click', async function(e) {
+ const actionBtn = e.target.closest('.user-action');
+ if (!actionBtn) return;
+ const { action, userId, userName } = actionBtn.dataset;
+ document.querySelectorAll('[id^="dd-"]').forEach(d => d.classList.add('hidden'));
 
-        if (action === 'analytics') {
-            openAnalyticsDrawer(userId, userName);
-        } else if (action === 'reset-password') {
-            const pw = prompt(`Nova senha para ${userName}:`);
-            if (!pw) return;
-            const r = await fetch(`/admin/api/users/${userId}/reset-password`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ newPassword: pw })
-            });
-            const d = await r.json();
-            showToast(d.success ? 'Senha atualizada!' : (d.error || 'Erro'), d.success ? 'success' : 'error');
-        } else if (action === 'force-logout') {
-            if (!confirm(`Forçar logout de ${userName}?`)) return;
-            const r = await fetch(`/admin/api/users/${userId}/action`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'force-logout' })
-            });
-            const d = await r.json();
-            showToast(d.success ? d.message : d.error, d.success ? 'warn' : 'error');
-        } else if (action === 'suspend') {
-            const reason = prompt(`Motivo da suspensão de ${userName}:`);
-            if (reason === null) return;
-            const r = await fetch(`/admin/api/users/${userId}/action`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'suspend', reason })
-            });
-            const d = await r.json();
-            showToast(d.success ? d.message : d.error, d.success ? 'warn' : 'error');
-        }
-    });
+ if (action === 'analytics') {
+ openAnalyticsDrawer(userId, userName);
+ } else if (action === 'reset-password') {
+ const pw = prompt(`Nova senha para ${userName}:`);
+ if (!pw) return;
+ const r = await fetch(`/admin/api/users/${userId}/reset-password`, {
+ method: 'POST', headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ newPassword: pw })
+ });
+ const d = await r.json();
+ showToast(d.success ? 'Senha atualizada!' : (d.error || 'Erro'), d.success ? 'success' : 'error');
+ } else if (action === 'force-logout') {
+ if (!confirm(`Forçar logout de ${userName}?`)) return;
+ const r = await fetch(`/admin/api/users/${userId}/action`, {
+ method: 'POST', headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ action: 'force-logout' })
+ });
+ const d = await r.json();
+ showToast(d.success ? d.message : d.error, d.success ? 'warn' : 'error');
+ } else if (action === 'suspend') {
+ const reason = prompt(`Motivo da suspensão de ${userName}:`);
+ if (reason === null) return;
+ const r = await fetch(`/admin/api/users/${userId}/action`, {
+ method: 'POST', headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ action: 'suspend', reason })
+ });
+ const d = await r.json();
+ showToast(d.success ? d.message : d.error, d.success ? 'warn' : 'error');
+ }
+ });
 
-    // ── Load Calculator settings from database ─────────────────
-    const loadCalculatorSettings = async () => {
-        try {
-            const r = await fetch('/api/calculator-settings');
-            if (r.ok) {
-                const settings = await r.json();
-                const fields = [
-                    'calculator_base_price_m2',
-                    'calculator_base_price_image',
-                    'calculator_base_price_animation',
-                    'calculator_base_price_tour',
-                    'calculator_base_price_environment',
-                    'gemini_api_key',
-                    'openai_api_key'
-                ];
-                fields.forEach(f => {
-                    const input = document.getElementById(f);
-                    if (input && settings[f] !== undefined) {
-                        input.value = settings[f];
-                    }
-                });
-            }
-        } catch (err) {
-            console.error('Erro ao carregar calibração da calculadora:', err);
-        }
-    };
-    loadCalculatorSettings();
+ // ── Load Calculator settings from database ─────────────────
+ const loadCalculatorSettings = async () => {
+ try {
+ const r = await fetch('/api/calculator-settings');
+ if (r.ok) {
+ const settings = await r.json();
+ const fields = [
+ 'calculator_base_price_m2',
+ 'calculator_base_price_image',
+ 'calculator_base_price_animation',
+ 'calculator_base_price_tour',
+ 'calculator_base_price_environment',
+ 'gemini_api_key',
+ 'openai_api_key'
+ ];
+ fields.forEach(f => {
+ const input = document.getElementById(f);
+ if (input && settings[f] !== undefined) {
+ input.value = settings[f];
+ }
+ });
+ }
+ } catch (err) {
+ console.error('Erro ao carregar calibração da calculadora:', err);
+ }
+ };
+ loadCalculatorSettings();
 
-    // ── Save Calculator settings to database ─────────────────
-    document.getElementById('calculatorSettingsForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btnSave = document.getElementById('btnSaveCalculatorSettings');
-        btnSave.disabled = true;
-        btnSave.textContent = 'Salvando calibração...';
+ // ── Save Calculator settings to database ─────────────────
+ document.getElementById('calculatorSettingsForm')?.addEventListener('submit', async (e) => {
+ e.preventDefault();
+ const btnSave = document.getElementById('btnSaveCalculatorSettings');
+ btnSave.disabled = true;
+ btnSave.textContent = 'Salvando calibração...';
 
-        const formData = new FormData(e.target);
-        const settings = {};
-        for (const [key, value] of formData.entries()) {
-            settings[key] = value.trim();
-        }
+ const formData = new FormData(e.target);
+ const settings = {};
+ for (const [key, value] of formData.entries()) {
+ settings[key] = value.trim();
+ }
 
-        try {
-            const r = await fetch('/admin/api/settings/bulk', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ settings })
-            });
-            const data = await r.json();
-            if (data.success) {
-                showToast('Calibração da Calculadora salva com sucesso!', 'success');
-            } else {
-                showToast(data.error || 'Erro ao salvar calibração.', 'error');
-            }
-        } catch (err) {
-            showToast('Erro de conexão ao salvar calibração.', 'error');
-        } finally {
-            btnSave.disabled = false;
-            btnSave.textContent = 'Salvar Calibração';
-        }
-    });
+ try {
+ const r = await fetch('/admin/api/settings/bulk', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify({ settings })
+ });
+ const data = await r.json();
+ if (data.success) {
+ showToast('Calibração da Calculadora salva com sucesso!', 'success');
+ } else {
+ showToast(data.error || 'Erro ao salvar calibração.', 'error');
+ }
+ } catch (err) {
+ showToast('Erro de conexão ao salvar calibração.', 'error');
+ } finally {
+ btnSave.disabled = false;
+ btnSave.textContent = 'Salvar Calibração';
+ }
+ });
 });
 
 // ── Analytics Drawer ──────────────────────────────────────
 async function openAnalyticsDrawer(userId, userName) {
-    const existing = document.getElementById('analytics-drawer');
-    if (existing) existing.remove();
+ const existing = document.getElementById('analytics-drawer');
+ if (existing) existing.remove();
 
-    const drawer = document.createElement('div');
-    drawer.id = 'analytics-drawer';
-    drawer.className = 'fixed inset-y-0 right-0 w-full max-w-lg bg-[#0f0f0f] border-l border-white/10 z-[2500] shadow-2xl flex flex-col';
-    drawer.innerHTML = `
-        <div class="p-6 border-b border-white/10 flex justify-between items-center">
-            <div>
-                <h3 class="text-lg font-black text-white">Relatório: ${userName}</h3>
-                <p class="text-xs text-gray-500">Análise de desempenho e carga de trabalho</p>
-            </div>
-            <button id="close-drawer" class="text-gray-500 hover:text-white"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <div id="drawer-content" class="flex-1 overflow-y-auto p-6 space-y-6">
-            <div class="flex items-center justify-center py-16"><span class="material-symbols-outlined animate-spin text-4xl text-indigo-400">progress_activity</span></div>
-        </div>`;
-    document.body.appendChild(drawer);
-    document.getElementById('close-drawer').addEventListener('click', () => drawer.remove());
+ const drawer = document.createElement('div');
+ drawer.id = 'analytics-drawer';
+ drawer.className = 'fixed inset-y-0 right-0 w-full max-w-lg bg-[#0f0f0f] border-l border-white/10 z-[2500] shadow-2xl flex flex-col';
+ drawer.innerHTML = `
+ <div class="p-6 border-b border-white/10 flex justify-between items-center">
+ <div>
+ <h3 class="text-lg font-black text-white">Relatório: ${userName}</h3>
+ <p class="text-xs text-gray-500">Análise de desempenho e carga de trabalho</p>
+ </div>
+ <button id="close-drawer" class="text-gray-500 hover:text-white"><span class="material-symbols-outlined">close</span></button>
+ </div>
+ <div id="drawer-content" class="flex-1 overflow-y-auto p-6 space-y-6">
+ <div class="flex items-center justify-center py-16"><span class="material-symbols-outlined animate-spin text-4xl text-indigo-400">progress_activity</span></div>
+ </div>`;
+ document.body.appendChild(drawer);
+ document.getElementById('close-drawer').addEventListener('click', () => drawer.remove());
 
-    try {
-        const r = await fetch(`/admin/api/users/${userId}/analytics`);
-        const data = await r.json();
-        const a = data.analytics;
-        document.getElementById('drawer-content').innerHTML = `
-            <div class="grid grid-cols-3 gap-4">
-                <div class="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-center">
-                    <p class="text-2xl font-black text-indigo-400">${a.activeProjectsCount}</p>
-                    <p class="text-[9px] text-gray-500 uppercase font-black tracking-widest mt-1">Projetos Ativos</p>
-                </div>
-                <div class="p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-center">
-                    <p class="text-2xl font-black text-orange-400">${a.totalHoursLogged}h</p>
-                    <p class="text-[9px] text-gray-500 uppercase font-black tracking-widest mt-1">Horas Logadas</p>
-                </div>
-                <div class="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-center">
-                    <p class="text-2xl font-black text-red-400">${a.avgRevisionsPerProject}</p>
-                    <p class="text-[9px] text-gray-500 uppercase font-black tracking-widest mt-1">Revisões/Proj.</p>
-                </div>
-            </div>
-            <div>
-                <h4 class="text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Projetos em Andamento</h4>
-                ${a.projects.length ? a.projects.map(p => `
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 mb-2">
-                        <p class="text-xs font-bold text-white">${p.title}</p>
-                        <span class="px-2 py-1 rounded text-[8px] font-black uppercase text-indigo-400 bg-indigo-500/10">${p.status}</span>
-                    </div>`).join('') : '<p class="text-xs text-gray-600 py-4 text-center">Sem projetos ativos.</p>'}
-            </div>`;
-    } catch (e) {
-        document.getElementById('drawer-content').innerHTML = '<p class="text-center text-red-400 text-xs py-8">Erro ao carregar analytics.</p>';
-    }
+ try {
+ const r = await fetch(`/admin/api/users/${userId}/analytics`);
+ const data = await r.json();
+ const a = data.analytics;
+ document.getElementById('drawer-content').innerHTML = `
+ <div class="grid grid-cols-3 gap-4">
+ <div class="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-center">
+ <p class="text-2xl font-black text-indigo-400">${a.activeProjectsCount}</p>
+ <p class="text-[9px] text-gray-500 uppercase font-black tracking-widest mt-1">Projetos Ativos</p>
+ </div>
+ <div class="p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-center">
+ <p class="text-2xl font-black text-orange-400">${a.totalHoursLogged}h</p>
+ <p class="text-[9px] text-gray-500 uppercase font-black tracking-widest mt-1">Horas Logadas</p>
+ </div>
+ <div class="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-center">
+ <p class="text-2xl font-black text-red-400">${a.avgRevisionsPerProject}</p>
+ <p class="text-[9px] text-gray-500 uppercase font-black tracking-widest mt-1">Revisões/Proj.</p>
+ </div>
+ </div>
+ <div>
+ <h4 class="text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Projetos em Andamento</h4>
+ ${a.projects.length ? a.projects.map(p => `
+ <div class="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 mb-2">
+ <p class="text-xs font-bold text-white">${p.title}</p>
+ <span class="px-2 py-1 rounded text-[8px] font-black uppercase text-indigo-400 bg-indigo-500/10">${p.status}</span>
+ </div>`).join('') : '<p class="text-xs text-gray-600 py-4 text-center">Sem projetos ativos.</p>'}
+ </div>`;
+ } catch (e) {
+ document.getElementById('drawer-content').innerHTML = '<p class="text-center text-red-400 text-xs py-8">Erro ao carregar analytics.</p>';
+ }
 }
 
 function toggleCollapseCard(cardId, iconId) {
-    const card = document.getElementById(cardId);
-    const icon = document.getElementById(iconId || `icon-${cardId}`);
-    if (card) {
-        card.classList.toggle('hidden');
-        if (icon) {
-            icon.classList.toggle('rotate-180');
-        }
-    }
+ const card = document.getElementById(cardId);
+ const icon = document.getElementById(iconId || `icon-${cardId}`);
+ if (card) {
+ card.classList.toggle('hidden');
+ if (icon) {
+ icon.classList.toggle('rotate-180');
+ }
+ }
 }
 </script>
 

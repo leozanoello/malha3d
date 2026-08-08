@@ -1,29 +1,29 @@
 <!-- Error View -->
 <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
-    <div class="glass-card p-12 border-white/5 bg-white/[0.01] max-w-lg w-full">
-        <div class="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center text-red-500 mx-auto mb-8 border border-red-500/20 shadow-lg shadow-red-500/10">
-            <span class="material-symbols-outlined text-4xl">error_outline</span>
-        </div>
-        <h1 class="text-3xl font-black text-white tracking-tight mb-4">
-            Ops! <span class="text-gradient">Algo deu errado</span>
-        </h1>
-        <p class="text-gray-400 font-medium mb-8 leading-relaxed">
-            {{#if message}}
-                {{message}}
-            {{else}}
-                Ocorreu um erro inesperado ao processar sua solicitação. Tente novamente ou entre em contato com o suporte.
-            {{/if}}
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/admin" class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center justify-center gap-3">
-                <span class="material-symbols-outlined text-xl">home</span>
-                Voltar ao Dashboard
-            </a>
-            <button onclick="history.back()" class="bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white font-black py-4 px-8 rounded-2xl transition-all flex items-center justify-center gap-3">
-                <span class="material-symbols-outlined text-xl">arrow_back</span>
-                Página Anterior
-            </button>
-        </div>
-    </div>
-    <p class="text-[10px] font-black text-gray-700 uppercase tracking-[0.3em] mt-10">Malha 3D // Error Handler</p>
+ <div class="glass-card p-12 border-white/5 bg-white/[0.01] max-w-lg w-full">
+ <div class="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center text-red-500 mx-auto mb-8 border border-red-500/20 shadow-lg shadow-red-500/10">
+ <span class="material-symbols-outlined text-4xl">error_outline</span>
+ </div>
+ <h1 class="text-3xl font-black text-white tracking-tight mb-4">
+ Ops! <span class="text-gradient">Algo deu errado</span>
+ </h1>
+ <p class="text-gray-400 font-medium mb-8 leading-relaxed">
+ {{#if message}}
+ {{message}}
+ {{else}}
+ Ocorreu um erro inesperado ao processar sua solicitação. Tente novamente ou entre em contato com o suporte.
+ {{/if}}
+ </p>
+ <div class="flex flex-col sm:flex-row gap-4 justify-center">
+ <a href="/admin" class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center justify-center gap-3">
+ <span class="material-symbols-outlined text-xl">home</span>
+ Voltar ao Dashboard
+ </a>
+ <button onclick="history.back()" class="bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white font-black py-4 px-8 rounded-2xl transition-all flex items-center justify-center gap-3">
+ <span class="material-symbols-outlined text-xl">arrow_back</span>
+ Página Anterior
+ </button>
+ </div>
+ </div>
+ <p class="text-[10px] font-black text-gray-700 uppercase tracking-[0.3em] mt-10">Malha 3D // Error Handler</p>
 </div>

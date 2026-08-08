@@ -1,132 +1,132 @@
 <div class="space-y-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-2xl font-black text-white tracking-tight">Documentos & Contratos</h1>
-            <p class="text-sm text-gray-500 mt-1">Gerencie propostas, contratos e documentos do estúdio</p>
-        </div>
-        <button onclick="document.getElementById('uploadModal').style.display='flex'" class="flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-orange-500/20">
-            <span class="material-symbols-outlined text-sm">upload_file</span>
-            Novo Documento
-        </button>
-    </div>
+ <!-- Header -->
+ <div class="flex items-center justify-between">
+ <div>
+ <h1 class="text-2xl font-black text-white tracking-tight">Documentos & Contratos</h1>
+ <p class="text-sm text-gray-500 mt-1">Gerencie propostas, contratos e documentos do estúdio</p>
+ </div>
+ <button onclick="document.getElementById('uploadModal').style.display='flex'" class="flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-orange-500/20">
+ <span class="material-symbols-outlined text-sm">upload_file</span>
+ Novo Documento
+ </button>
+ </div>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="glass-card p-5">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-blue-400">description</span>
-                </div>
-                <div>
-                    <p class="text-2xl font-black text-white">0</p>
-                    <p class="text-xs text-gray-500 font-medium">Total de Docs</p>
-                </div>
-            </div>
-        </div>
-        <div class="glass-card p-5">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-green-400">task</span>
-                </div>
-                <div>
-                    <p class="text-2xl font-black text-white">0</p>
-                    <p class="text-xs text-gray-500 font-medium">Contratos Ativos</p>
-                </div>
-            </div>
-        </div>
-        <div class="glass-card p-5">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-yellow-400">pending</span>
-                </div>
-                <div>
-                    <p class="text-2xl font-black text-white">0</p>
-                    <p class="text-xs text-gray-500 font-medium">Aguardando Assinatura</p>
-                </div>
-            </div>
-        </div>
-        <div class="glass-card p-5">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-purple-400">folder</span>
-                </div>
-                <div>
-                    <p class="text-2xl font-black text-white">0</p>
-                    <p class="text-xs text-gray-500 font-medium">Categorias</p>
-                </div>
-            </div>
-        </div>
-    </div>
+ <!-- Stats -->
+ <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+ <div class="glass-card p-5">
+ <div class="flex items-center gap-3">
+ <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
+ <span class="material-symbols-outlined text-blue-400">description</span>
+ </div>
+ <div>
+ <p class="text-2xl font-black text-white">0</p>
+ <p class="text-xs text-gray-500 font-medium">Total de Docs</p>
+ </div>
+ </div>
+ </div>
+ <div class="glass-card p-5">
+ <div class="flex items-center gap-3">
+ <div class="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center">
+ <span class="material-symbols-outlined text-green-400">task</span>
+ </div>
+ <div>
+ <p class="text-2xl font-black text-white">0</p>
+ <p class="text-xs text-gray-500 font-medium">Contratos Ativos</p>
+ </div>
+ </div>
+ </div>
+ <div class="glass-card p-5">
+ <div class="flex items-center gap-3">
+ <div class="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center">
+ <span class="material-symbols-outlined text-yellow-400">pending</span>
+ </div>
+ <div>
+ <p class="text-2xl font-black text-white">0</p>
+ <p class="text-xs text-gray-500 font-medium">Aguardando Assinatura</p>
+ </div>
+ </div>
+ </div>
+ <div class="glass-card p-5">
+ <div class="flex items-center gap-3">
+ <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+ <span class="material-symbols-outlined text-purple-400">folder</span>
+ </div>
+ <div>
+ <p class="text-2xl font-black text-white">0</p>
+ <p class="text-xs text-gray-500 font-medium">Categorias</p>
+ </div>
+ </div>
+ </div>
+ </div>
 
-    <!-- Documents List -->
-    <div class="glass-card p-6">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-lg font-bold text-white">Documentos Recentes</h2>
-            <div class="flex items-center gap-2">
-                <select class="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-gray-300 focus:outline-none focus:border-orange-500/50">
-                    <option>Todos os Tipos</option>
-                    <option>Contratos</option>
-                    <option>Propostas</option>
-                    <option>NF-e</option>
-                    <option>Outros</option>
-                </select>
-            </div>
-        </div>
+ <!-- Documents List -->
+ <div class="glass-card p-6">
+ <div class="flex items-center justify-between mb-6">
+ <h2 class="text-lg font-bold text-white">Documentos Recentes</h2>
+ <div class="flex items-center gap-2">
+ <select class="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-gray-300 focus:outline-none focus:border-orange-500/50">
+ <option>Todos os Tipos</option>
+ <option>Contratos</option>
+ <option>Propostas</option>
+ <option>NF-e</option>
+ <option>Outros</option>
+ </select>
+ </div>
+ </div>
 
-        <!-- Empty State -->
-        <div class="text-center py-16">
-            <div class="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4">
-                <span class="material-symbols-outlined text-4xl text-gray-600">folder_open</span>
-            </div>
-            <h3 class="text-lg font-bold text-gray-400 mb-2">Nenhum documento cadastrado</h3>
-            <p class="text-sm text-gray-600 max-w-md mx-auto">Clique em "Novo Documento" para fazer upload do primeiro arquivo. Organize contratos, propostas e notas fiscais em um só lugar.</p>
-        </div>
-    </div>
+ <!-- Empty State -->
+ <div class="text-center py-16">
+ <div class="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4">
+ <span class="material-symbols-outlined text-4xl text-gray-600">folder_open</span>
+ </div>
+ <h3 class="text-lg font-bold text-gray-400 mb-2">Nenhum documento cadastrado</h3>
+ <p class="text-sm text-gray-600 max-w-md mx-auto">Clique em "Novo Documento" para fazer upload do primeiro arquivo. Organize contratos, propostas e notas fiscais em um só lugar.</p>
+ </div>
+ </div>
 </div>
 
 <!-- Upload Modal -->
 <div id="uploadModal" style="display:none" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onclick="if(event.target===this)this.style.display='none'">
-    <div class="glass-card p-8 w-full max-w-lg mx-4">
-        <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-white">Upload de Documento</h3>
-            <button onclick="document.getElementById('uploadModal').style.display='none'" class="text-gray-500 hover:text-white">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
-        <form>
-            <div class="space-y-4">
-                <div>
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Nome do Documento</label>
-                    <input type="text" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500/50" placeholder="Ex: Contrato Projeto X">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Tipo</label>
-                    <select class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-gray-300 text-sm focus:outline-none focus:border-orange-500/50">
-                        <option>Contrato</option>
-                        <option>Proposta Comercial</option>
-                        <option>Nota Fiscal</option>
-                        <option>Briefing</option>
-                        <option>Outro</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Arquivo</label>
-                    <div class="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-orange-500/30 transition-colors cursor-pointer">
-                        <span class="material-symbols-outlined text-3xl text-gray-600 mb-2">cloud_upload</span>
-                        <p class="text-sm text-gray-500">Arraste um arquivo ou clique para selecionar</p>
-                        <p class="text-xs text-gray-600 mt-1">PDF, DOC, DOCX, XLS até 10MB</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flex justify-end gap-3 mt-6">
-                <button type="button" onclick="document.getElementById('uploadModal').style.display='none'" class="px-4 py-2.5 bg-white/5 hover:bg-white/10 text-gray-300 text-sm font-bold rounded-xl transition-all">
-                    Cancelar
-                </button>
-                <button type="button" onclick="showNotification('Funcionalidade em desenvolvimento', 'info'); document.getElementById('uploadModal').style.display='none'" class="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-orange-500/20">
-                    Enviar
-                </button>
-            </div>
-        </form>
-    </div>
+ <div class="glass-card p-8 w-full max-w-lg mx-4">
+ <div class="flex items-center justify-between mb-6">
+ <h3 class="text-lg font-bold text-white">Upload de Documento</h3>
+ <button onclick="document.getElementById('uploadModal').style.display='none'" class="text-gray-500 hover:text-white">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ </div>
+ <form>
+ <div class="space-y-4">
+ <div>
+ <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Nome do Documento</label>
+ <input type="text" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-orange-500/50" placeholder="Ex: Contrato Projeto X">
+ </div>
+ <div>
+ <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Tipo</label>
+ <select class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-gray-300 text-sm focus:outline-none focus:border-orange-500/50">
+ <option>Contrato</option>
+ <option>Proposta Comercial</option>
+ <option>Nota Fiscal</option>
+ <option>Briefing</option>
+ <option>Outro</option>
+ </select>
+ </div>
+ <div>
+ <label class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 block">Arquivo</label>
+ <div class="border-2 border-dashed border-white/10 rounded-xl p-8 text-center hover:border-orange-500/30 transition-colors cursor-pointer">
+ <span class="material-symbols-outlined text-3xl text-gray-600 mb-2">cloud_upload</span>
+ <p class="text-sm text-gray-500">Arraste um arquivo ou clique para selecionar</p>
+ <p class="text-xs text-gray-600 mt-1">PDF, DOC, DOCX, XLS até 10MB</p>
+ </div>
+ </div>
+ </div>
+ <div class="flex justify-end gap-3 mt-6">
+ <button type="button" onclick="document.getElementById('uploadModal').style.display='none'" class="px-4 py-2.5 bg-white/5 hover:bg-white/10 text-gray-300 text-sm font-bold rounded-xl transition-all">
+ Cancelar
+ </button>
+ <button type="button" onclick="showNotification('Funcionalidade em desenvolvimento', 'info'); document.getElementById('uploadModal').style.display='none'" class="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-orange-500/20">
+ Enviar
+ </button>
+ </div>
+ </form>
+ </div>
 </div>

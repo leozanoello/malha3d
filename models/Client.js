@@ -31,7 +31,7 @@ const Client = sequelize.define('Client', {
     allowNull: true
   },
   category: {
-    type: DataTypes.ENUM('Lead', 'Cliente', 'Parceiro', 'Colaborador', 'Fornecedor', 'Prestador'),
+    type: DataTypes.STRING,
     defaultValue: 'Lead'
   },
   source: {
@@ -58,7 +58,21 @@ const Client = sequelize.define('Client', {
     type: DataTypes.JSONB,
     defaultValue: []
   },
+
+  telegram: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  address: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  hasContract: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
   status: {
+
     type: DataTypes.STRING,
     defaultValue: 'active'
   }

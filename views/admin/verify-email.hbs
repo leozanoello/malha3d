@@ -1,117 +1,117 @@
 <div class="min-h-screen bg-[#0a0a0a] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-['Plus_Jakarta_Sans']">
-    <!-- Abstract Background Decor -->
-    <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-orange-500/5 via-transparent to-transparent -z-10"></div>
-    <div class="absolute -top-48 -right-48 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[150px] animate-pulse -z-10"></div>
-    <div class="absolute -bottom-48 -left-48 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[150px] animate-pulse -z-10"></div>
+ <!-- Abstract Background Decor -->
+ <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-orange-500/5 via-transparent to-transparent -z-10"></div>
+ <div class="absolute -top-48 -right-48 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[150px] animate-pulse -z-10"></div>
+ <div class="absolute -bottom-48 -left-48 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[150px] animate-pulse -z-10"></div>
 
-    <div class="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-6">
-        <!-- Logo -->
-        <div class="flex justify-center mb-10">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center shadow-[0_0_40px_rgba(249,115,22,0.4)] ring-1 ring-white/20">
-                    <span class="font-black text-2xl text-white">M</span>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-3xl font-black tracking-tighter text-white">MALHA<span class="text-orange-500">3D</span></span>
-                    <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.4em] -mt-1">Neural Dashboard</span>
-                </div>
-            </div>
-        </div>
-        <div class="text-center">
-            <h2 class="text-2xl font-black text-white tracking-tight">Verificação de Identidade</h2>
-            <p class="mt-2 text-sm text-gray-500 font-medium tracking-wide">
-                Enviamos um código de 6 dígitos para <br>
-                <span class="text-orange-500 font-bold">{{email}}</span>
-            </p>
-        </div>
-    </div>
+ <div class="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-6">
+ <!-- Logo -->
+ <div class="flex justify-center mb-10">
+ <div class="flex items-center gap-4">
+ <div class="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center shadow-[0_0_40px_rgba(249,115,22,0.4)] ring-1 ring-white/20">
+ <span class="font-black text-2xl text-white">M</span>
+ </div>
+ <div class="flex flex-col">
+ <span class="text-3xl font-black tracking-tighter text-white">MALHA<span class="text-orange-500">3D</span></span>
+ <span class="text-[9px] font-black text-gray-500 uppercase tracking-[0.4em] -mt-1">Neural Dashboard</span>
+ </div>
+ </div>
+ </div>
+ <div class="text-center">
+ <h2 class="text-2xl font-black text-white tracking-tight">Verificação de Identidade</h2>
+ <p class="mt-2 text-sm text-gray-500 font-medium tracking-wide">
+ Enviamos um código de 6 dígitos para <br>
+ <span class="text-orange-500 font-bold">{{email}}</span>
+ </p>
+ </div>
+ </div>
 
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
-        <div class="glass-card p-10 border-white/5 bg-white/[0.01] shadow-2xl backdrop-blur-2xl relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 opacity-50"></div>
-            
-            {{#if error}}
-            <div class="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-4 animate-shake">
-                <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined text-red-500 text-xl">gpp_maybe</span>
-                </div>
-                <div>
-                    <p class="text-xs font-black text-red-500 uppercase tracking-widest">Código Inválido</p>
-                    <p class="text-[11px] font-bold text-red-400/80">{{error}}</p>
-                </div>
-            </div>
-            {{/if}}
+ <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
+ <div class="glass-card p-10 border-white/5 bg-white/[0.01] shadow-2xl backdrop-blur-2xl relative overflow-hidden">
+ <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 opacity-50"></div>
+ 
+ {{#if error}}
+ <div class="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-4 animate-shake">
+ <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0">
+ <span class="material-symbols-outlined text-red-500 text-xl">gpp_maybe</span>
+ </div>
+ <div>
+ <p class="text-xs font-black text-red-500 uppercase tracking-widest">Código Inválido</p>
+ <p class="text-[11px] font-bold text-red-400/80">{{error}}</p>
+ </div>
+ </div>
+ {{/if}}
 
-            <form class="space-y-8" action="/admin/verify-email" method="POST" id="verifyForm">
-                <div class="space-y-4">
-                    <label for="code" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-1 block text-center">Código de Verificação</label>
-                    <div class="flex justify-center gap-2">
-                        <input id="code" name="code" type="text" maxlength="6" required 
-                            class="block w-full max-w-[240px] text-center tracking-[0.5em] px-5 py-5 bg-white/[0.03] border border-white/5 text-white text-2xl font-black rounded-2xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500/50 focus:bg-white/[0.05] transition-all outline-none placeholder:text-gray-800"
-                            placeholder="000000">
-                    </div>
-                </div>
+ <form class="space-y-8" action="/admin/verify-email" method="POST" id="verifyForm">
+ <div class="space-y-4">
+ <label for="code" class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] ml-1 block text-center">Código de Verificação</label>
+ <div class="flex justify-center gap-2">
+ <input id="code" name="code" type="text" maxlength="6" required 
+ class="block w-full max-w-[240px] text-center tracking-[0.5em] px-5 py-5 bg-white/[0.03] border border-white/5 text-white text-2xl font-black rounded-2xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500/50 focus:bg-white/[0.05] transition-all outline-none placeholder:text-gray-800"
+ placeholder="000000">
+ </div>
+ </div>
 
-                <div class="pt-2">
-                    <button type="submit" id="submitBtn" class="w-full flex justify-center items-center py-5 px-6 border border-transparent rounded-2xl shadow-2xl shadow-orange-500/40 text-sm font-black text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-500/20 transition-all transform active:scale-[0.98] group">
-                        <span id="btnText" class="flex items-center gap-3 tracking-[0.2em] uppercase">
-                            Validar Código
-                            <span class="material-symbols-outlined group-hover:rotate-12 transition-transform">verified</span>
-                        </span>
-                        <div id="btnLoader" class="hidden">
-                            <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        </div>
-                    </button>
-                </div>
-            </form>
+ <div class="pt-2">
+ <button type="submit" id="submitBtn" class="w-full flex justify-center items-center py-5 px-6 border border-transparent rounded-2xl shadow-2xl shadow-orange-500/40 text-sm font-black text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-orange-500/20 transition-all transform ] group">
+ <span id="btnText" class="flex items-center gap-3 tracking-[0.2em] uppercase">
+ Validar Código
+ <span class="material-symbols-outlined group-hover:rotate-12 transition-transform">verified</span>
+ </span>
+ <div id="btnLoader" class="hidden">
+ <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+ <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+ <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+ </svg>
+ </div>
+ </button>
+ </div>
+ </form>
 
-            <div class="mt-12 pt-8 border-t border-white/5 flex flex-col items-center gap-6">
-                <div class="text-center">
-                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Não recebeu o código?</p>
-                    <button type="button" class="mt-2 text-xs font-black text-orange-500 hover:text-orange-400 transition-colors uppercase tracking-[0.2em] flex items-center justify-center gap-2 group">
-                        Reenviar E-mail
-                        <span class="material-symbols-outlined text-sm group-hover:rotate-180 transition-transform">sync</span>
-                    </button>
-                </div>
-                
-                <a href="/admin/register" class="text-[10px] font-black text-gray-500 hover:text-white flex items-center gap-3 transition-colors uppercase tracking-[0.2em] group">
-                    <span class="material-symbols-outlined text-base group-hover:-translate-x-1 transition-transform">arrow_back</span>
-                    Voltar ao Cadastro
-                </a>
-            </div>
-        </div>
-    </div>
+ <div class="mt-12 pt-8 border-t border-white/5 flex flex-col items-center gap-6">
+ <div class="text-center">
+ <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest">Não recebeu o código?</p>
+ <button type="button" class="mt-2 text-xs font-black text-orange-500 hover:text-orange-400 transition-colors uppercase tracking-[0.2em] flex items-center justify-center gap-2 group">
+ Reenviar E-mail
+ <span class="material-symbols-outlined text-sm group-hover:rotate-180 transition-transform">sync</span>
+ </button>
+ </div>
+ 
+ <a href="/admin/register" class="text-[10px] font-black text-gray-500 hover:text-white flex items-center gap-3 transition-colors uppercase tracking-[0.2em] group">
+ <span class="material-symbols-outlined text-base group-hover:-translate-x-1 transition-transform">arrow_back</span>
+ Voltar ao Cadastro
+ </a>
+ </div>
+ </div>
+ </div>
 </div>
 
 <style>
-    .glass-card {
-        backdrop-filter: blur(40px);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    }
+ .glass-card {
+ backdrop-filter: blur(40px);
+ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+ }
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('verifyForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = document.getElementById('btnText');
-        const btnLoader = document.getElementById('btnLoader');
-        const codeInput = document.getElementById('code');
+ document.addEventListener('DOMContentLoaded', () => {
+ const form = document.getElementById('verifyForm');
+ const submitBtn = document.getElementById('submitBtn');
+ const btnText = document.getElementById('btnText');
+ const btnLoader = document.getElementById('btnLoader');
+ const codeInput = document.getElementById('code');
 
-        // Form Submission
-        form.addEventListener('submit', () => {
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-70');
-            btnText.classList.add('hidden');
-            btnLoader.classList.remove('hidden');
-        });
+ // Form Submission
+ form.addEventListener('submit', () => {
+ submitBtn.disabled = true;
+ submitBtn.classList.add('opacity-70');
+ btnText.classList.add('hidden');
+ btnLoader.classList.remove('hidden');
+ });
 
-        // Numeric only input
-        codeInput.addEventListener('input', (e) => {
-            e.target.value = e.target.value.replace(/[^0-9]/g, '');
-        });
-    });
+ // Numeric only input
+ codeInput.addEventListener('input', (e) => {
+ e.target.value = e.target.value.replace(/[^0-9]/g, '');
+ });
+ });
 </script>

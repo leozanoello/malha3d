@@ -1,762 +1,762 @@
-<!-- Header -->
+﻿<!-- Header -->
 <div class="mb-10 p-8 glass-card border-none bg-gradient-to-br from-white/5 to-white/[0.02]">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-            <div class="flex items-center gap-3 mb-2">
-                <span class="material-symbols-outlined text-orange-500">payments</span>
-                <h1 class="text-4xl font-black text-white tracking-tight">
-                    Orçamento <span class="text-gradient">#{{budget.id}}</span>
-                </h1>
-            </div>
-            <nav aria-label="breadcrumb">
-                <ol class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500">
-                    <li class="hover:text-orange-500 transition-colors"><a href="/admin">Dashboard</a></li>
-                    <li>/</li>
-                    <li class="hover:text-orange-500 transition-colors"><a href="/admin/orcamentos">Orçamentos</a></li>
-                    <li>/</li>
-                    <li class="text-white">#{{budget.id}}</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="flex flex-wrap gap-4">
-            <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all" onclick="printBudget()">
-                <span class="material-symbols-outlined text-lg text-blue-400">print</span> Imprimir
-            </button>
-            <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all" onclick="exportBudget()">
-                <span class="material-symbols-outlined text-lg text-emerald-400">picture_as_pdf</span> PDF
-            </button>
-            <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all" onclick="sendEmail()">
-                <span class="material-symbols-outlined text-lg text-orange-400">mail</span> Email
-            </button>
-            <button type="button" class="bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-500 px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all" onclick="deleteBudget()">
-                <span class="material-symbols-outlined text-lg">delete</span> Excluir
-            </button>
-        </div>
-    </div>
+ <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+ <div>
+ <div class="flex items-center gap-3 mb-2">
+ <span class="material-symbols-outlined text-orange-500">payments</span>
+ <h1 class="text-4xl font-black text-white tracking-tight">
+ OrÃ§amento <span class="text-gradient">#{{budget.id}}</span>
+ </h1>
+ </div>
+ <nav aria-label="breadcrumb">
+ <ol class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500">
+ <li class="hover:text-orange-500 transition-colors"><a href="/admin">Dashboard</a></li>
+ <li>/</li>
+ <li class="hover:text-orange-500 transition-colors"><a href="/admin/orcamentos">OrÃ§amentos</a></li>
+ <li>/</li>
+ <li class="text-white">#{{budget.id}}</li>
+ </ol>
+ </nav>
+ </div>
+ <div class="flex flex-wrap gap-4">
+ <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all" onclick="printBudget()">
+ <span class="material-symbols-outlined text-lg text-blue-400">print</span> Imprimir
+ </button>
+ <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all" onclick="exportBudget()">
+ <span class="material-symbols-outlined text-lg text-emerald-400">picture_as_pdf</span> PDF
+ </button>
+ <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all" onclick="sendEmail()">
+ <span class="material-symbols-outlined text-lg text-orange-400">mail</span> Email
+ </button>
+ <button type="button" class="bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-500 px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all" onclick="deleteBudget()">
+ <span class="material-symbols-outlined text-lg">delete</span> Excluir
+ </button>
+ </div>
+ </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Budget Information -->
-    <div class="lg:col-span-2 space-y-8">
-        <div class="glass-card p-10 border-white/5 bg-white/[0.01]">
-            <div class="flex items-center gap-4 mb-10 pb-6 border-b border-white/5">
-                <div class="w-12 h-12 bg-orange-500/10 border border-orange-500/20 rounded-2xl flex items-center justify-center shadow-2xl">
-                    <span class="material-symbols-outlined text-orange-500">info</span>
-                </div>
-                <h3 class="text-xl font-black text-white tracking-tight">Informações do Orçamento</h3>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
-                <div class="space-y-6">
-                    <div class="group">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Nome do Cliente</label>
-                        <p class="text-lg font-bold text-white group-hover:text-orange-500 transition-colors">{{budget.name}}</p>
-                    </div>
-                    <div class="group">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Email</label>
-                        <p class="text-lg font-bold text-white group-hover:text-orange-500 transition-colors">
-                            <a href="mailto:{{budget.email}}" class="hover:underline">{{budget.email}}</a>
-                        </p>
-                    </div>
-                    <div class="group">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Telefone</label>
-                        <p class="text-lg font-bold text-white group-hover:text-emerald-500 transition-colors">
-                            <a href="https://wa.me/55{{budget.phone}}" target="_blank" class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-emerald-500">phone</span> {{budget.phone}}
-                            </a>
-                        </p>
-                    </div>
-                </div>
-                <div class="space-y-6">
-                    <div class="group">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Tipo de Projeto</label>
-                        <span class="bg-blue-500/10 text-blue-400 px-4 py-1.5 rounded-lg border border-blue-500/20 text-xs font-black uppercase tracking-widest">{{budget.projectType}}</span>
-                    </div>
-                    <div class="group">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Valor Estimado</label>
-                        {{#if budget.estimatedValue}}
-                        <p class="text-2xl font-black text-emerald-500 tracking-tight">R$ {{formatCurrency budget.estimatedValue}}</p>
-                        {{else}}
-                        <p class="text-lg font-bold text-gray-500">Não informado</p>
-                        {{/if}}
-                    </div>
-                    <div class="group">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Prazo</label>
-                        {{#if budget.deadline}}
-                        <span class="px-4 py-1.5 rounded-lg border text-xs font-black uppercase tracking-widest {{#if (isPast budget.deadline)}}bg-red-500/10 border-red-500/20 text-red-500{{else}}bg-blue-500/10 border-blue-500/20 text-blue-400{{/if}}">
-                            {{dateFormat budget.deadline "DD/MM/YYYY"}}
-                        </span>
-                        {{else}}
-                        <span class="bg-white/5 border border-white/10 text-gray-500 px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest">Não definido</span>
-                        {{/if}}
-                    </div>
-                </div>
-            </div>
-            
-            <div class="space-y-8 pt-6 border-t border-white/5">
-                <div class="group">
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Descrição do Projeto</label>
-                    <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-gray-300 font-medium leading-relaxed">
-                        {{budget.description}}
-                    </div>
-                </div>
-                <div class="group">
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Observações</label>
-                    <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-gray-300 font-medium leading-relaxed italic">
-                        {{budget.notes}}
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-10 pt-10 border-t border-white/5">
-                <div>
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 block">Status Atual</label>
-                    <div class="flex items-center gap-4">
-                        {{#if (eq budget.status 'pending')}}
-                        <span class="bg-orange-500/10 text-orange-500 px-5 py-2 rounded-xl border border-orange-500/20 text-xs font-black uppercase tracking-widest flex items-center gap-2">
-                            <span class="material-symbols-outlined text-lg">history</span> Pendente
-                        </span>
-                        {{else if (eq budget.status 'approved')}}
-                        <span class="bg-emerald-500/10 text-emerald-500 px-5 py-2 rounded-xl border border-emerald-500/20 text-xs font-black uppercase tracking-widest flex items-center gap-2">
-                            <span class="material-symbols-outlined text-lg">check_circle</span> Aprovado
-                        </span>
-                        {{else if (eq budget.status 'rejected')}}
-                        <span class="bg-red-500/10 text-red-500 px-5 py-2 rounded-xl border border-red-500/20 text-xs font-black uppercase tracking-widest flex items-center gap-2">
-                            <span class="material-symbols-outlined text-lg">cancel</span> Rejeitado
-                        </span>
-                        {{/if}}
-                        
-                        <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all" onclick="changeStatus()">
-                            Alterar
-                        </button>
-                    </div>
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 block">Prioridade</label>
-                    {{#if (eq budget.priority 'high')}}
-                    <span class="bg-red-500/10 text-red-500 px-5 py-2 rounded-xl border border-red-500/20 text-xs font-black uppercase tracking-widest inline-flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">priority_high</span> Alta
-                    </span>
-                    {{else if (eq budget.priority 'medium')}}
-                    <span class="bg-orange-500/10 text-orange-500 px-5 py-2 rounded-xl border border-orange-500/20 text-xs font-black uppercase tracking-widest inline-flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">warning</span> Média
-                    </span>
-                    {{else if (eq budget.priority 'low')}}
-                    <span class="bg-blue-500/10 text-blue-400 px-5 py-2 rounded-xl border border-blue-500/20 text-xs font-black uppercase tracking-widest inline-flex items-center gap-2">
-                        <span class="material-symbols-outlined text-lg">info</span> Baixa
-                    </span>
-                    {{else}}
-                    <span class="bg-white/5 border border-white/10 text-gray-500 px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest inline-flex">Não definida</span>
-                    {{/if}}
-                </div>
-            </div>
-        </div>
-        
-        <!-- CRM Notes -->
-        <div class="glass-card p-10 border-white/5 bg-white/[0.01]">
-            <div class="flex items-center justify-between mb-12">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-purple-500/10 border border-purple-500/20 rounded-2xl flex items-center justify-center shadow-2xl">
-                        <span class="material-symbols-outlined text-purple-500">sticky_note</span>
-                    </div>
-                    <h3 class="text-xl font-black text-white tracking-tight">Notas CRM</h3>
-                </div>
-                <button type="button" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all" onclick="addNote()">
-                    <span class="material-symbols-outlined text-lg">add</span> Adicionar Nota
-                </button>
-            </div>
-            
-            <div class="space-y-8">
-                {{#if notes.length}}
-                {{#each notes}}
-                <div class="flex gap-6 group">
-                    <div class="flex flex-col items-center">
-                        <div class="w-10 h-10 rounded-xl bg-{{getNoteTypeColor this.type}}/10 border border-{{getNoteTypeColor this.type}}/20 flex items-center justify-center">
-                            <span class="material-symbols-outlined text-{{getNoteTypeColor this.type}} text-xl">{{getNoteTypeIcon this.type}}</span>
-                        </div>
-                        <div class="w-px flex-1 bg-white/5 my-4"></div>
-                    </div>
-                    <div class="flex-1 glass-card p-6 border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h4 class="text-white font-black tracking-tight mb-1">{{this.title}}</h4>
-                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-                                    {{this.createdBy}} • {{dateFormat this.createdAt "DD/MM/YYYY HH:mm"}}
-                                </p>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                {{#if this.reminderDate}}
-                                <span class="bg-orange-500/10 text-orange-500 px-3 py-1 rounded-lg border border-orange-500/20 text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm">notifications</span> {{dateFormat this.reminderDate "DD/MM/YYYY HH:mm"}}
-                                </span>
-                                {{/if}}
-                                <button type="button" class="text-gray-500 hover:text-red-500 transition-colors" onclick="deleteNote({{this.id}})">
-                                    <span class="material-symbols-outlined text-lg">delete</span>
-                                </button>
-                            </div>
-                        </div>
-                        <p class="text-gray-400 text-sm leading-relaxed mb-4">{{this.content}}</p>
-                        {{#if this.tags}}
-                        <div class="flex flex-wrap gap-2">
-                            {{#each this.tags}}
-                            <span class="bg-white/5 border border-white/10 text-gray-500 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest">{{this}}</span>
-                            {{/each}}
-                        </div>
-                        {{/if}}
-                    </div>
-                </div>
-                {{/each}}
-                {{else}}
-                <div class="text-center py-20 bg-white/[0.01] rounded-3xl border border-dashed border-white/10">
-                    <span class="material-symbols-outlined text-6xl text-gray-700 mb-6 block">notes</span>
-                    <h5 class="text-white font-black tracking-tight mb-2">Nenhuma nota encontrada</h5>
-                    <p class="text-gray-500 font-medium">Adicione a primeira nota para acompanhar este orçamento.</p>
-                </div>
-                {{/if}}
-            </div>
-        </div>
-    </div>
-    
-    <!-- Sidebar -->
-    <div class="space-y-8">
-        <!-- Quick Actions -->
-        <div class="glass-card p-8 border-white/5 bg-white/[0.01]">
-            <div class="flex items-center gap-3 mb-8">
-                <span class="material-symbols-outlined text-orange-500">bolt</span>
-                <h3 class="text-lg font-black text-white tracking-tight uppercase">Ações Rápidas</h3>
-            </div>
-            <div class="space-y-4">
-                <button type="button" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-3" onclick="approveBudget()">
-                    <span class="material-symbols-outlined text-lg">check_circle</span> Aprovar
-                </button>
-                <button type="button" class="w-full bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-500 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3" onclick="rejectBudget()">
-                    <span class="material-symbols-outlined text-lg">cancel</span> Rejeitar
-                </button>
-                <div class="grid grid-cols-2 gap-4">
-                    <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex flex-col items-center gap-2" onclick="addNote()">
-                        <span class="material-symbols-outlined text-orange-500">sticky_note</span> Notas
-                    </button>
-                    <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex flex-col items-center gap-2" onclick="sendEmail()">
-                        <span class="material-symbols-outlined text-blue-400">mail</span> Email
-                    </button>
-                </div>
-                <button type="button" class="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3" onclick="scheduleFollowUp()">
-                    <span class="material-symbols-outlined text-lg text-purple-400">calendar_month</span> Agendar Follow-up
-                </button>
-                <button type="button" class="w-full bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20 text-orange-500 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3" data-bs-toggle="modal" data-bs-target="#newProjectModal">
-                    <span class="material-symbols-outlined text-lg">rocket_launch</span> Criar Projeto
-                </button>
-            </div>
-        </div>
-        
-        <!-- Status History -->
-        <div class="glass-card p-8 border-white/5 bg-white/[0.01]">
-            <div class="flex items-center gap-3 mb-8">
-                <span class="material-symbols-outlined text-orange-500">history</span>
-                <h3 class="text-lg font-black text-white tracking-tight uppercase">Histórico</h3>
-            </div>
-            <div class="space-y-6">
-                {{#if statusHistory.length}}
-                {{#each statusHistory}}
-                <div class="flex gap-4 group">
-                    <div class="flex flex-col items-center">
-                        <div class="w-2.5 h-2.5 rounded-full bg-{{getStatusColor this.status}} shadow-[0_0_10px_rgba(var(--tw-color-{{getStatusColor this.status}}-500),0.5)]"></div>
-                        <div class="w-px flex-1 bg-white/5 my-2"></div>
-                    </div>
-                    <div class="flex-1 pb-4">
-                        <div class="flex justify-between items-start mb-1">
-                            <span class="text-[10px] font-black text-{{getStatusColor this.status}} uppercase tracking-widest">{{getStatusLabel this.status}}</span>
-                            <span class="text-[9px] text-gray-600 font-bold">{{dateFormat this.createdAt "DD/MM"}}</span>
-                        </div>
-                        {{#if this.notes}}
-                        <p class="text-[11px] text-gray-500 leading-relaxed">{{this.notes}}</p>
-                        {{/if}}
-                    </div>
-                </div>
-                {{/each}}
-                {{else}}
-                <p class="text-gray-600 text-xs font-bold text-center italic py-4">Sem registros.</p>
-                {{/if}}
-            </div>
-        </div>
-        
-        <!-- Technical Info -->
-        <div class="glass-card p-8 border-white/5 bg-white/[0.01]">
-            <div class="flex items-center gap-3 mb-8">
-                <span class="material-symbols-outlined text-orange-500">terminal</span>
-                <h3 class="text-lg font-black text-white tracking-tight uppercase">Dados Técnicos</h3>
-            </div>
-            <div class="space-y-4">
-                <div>
-                    <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-1 block">Origem</label>
-                    <span class="text-white font-bold text-sm">{{budget.source}}</span>
-                </div>
-                <div>
-                    <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-1 block">IP Address</label>
-                    <code class="text-orange-500/70 font-mono text-[10px] bg-white/[0.03] px-2 py-1 rounded-md">{{budget.ipAddress}}</code>
-                </div>
-                <div>
-                    <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-1 block">Data de Entrada</label>
-                    <span class="text-gray-400 font-bold text-[11px]">{{dateFormat budget.createdAt "DD/MM/YYYY HH:mm:ss"}}</span>
-                </div>
-            </div>
-        </div>
-    </div>
+ <!-- Budget Information -->
+ <div class="lg:col-span-2 space-y-8">
+ <div class="glass-card p-10 border-white/5 bg-white/[0.01]">
+ <div class="flex items-center gap-4 mb-10 pb-6 border-b border-white/5">
+ <div class="w-12 h-12 bg-orange-500/10 border border-orange-500/20 rounded-2xl flex items-center justify-center shadow-2xl">
+ <span class="material-symbols-outlined text-orange-500">info</span>
+ </div>
+ <h3 class="text-xl font-black text-white tracking-tight">InformaÃ§Ãµes do OrÃ§amento</h3>
+ </div>
+ 
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
+ <div class="space-y-6">
+ <div class="group">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Nome do Cliente</label>
+ <p class="text-lg font-bold text-white group-hover:text-orange-500 transition-colors">{{budget.name}}</p>
+ </div>
+ <div class="group">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Email</label>
+ <p class="text-lg font-bold text-white group-hover:text-orange-500 transition-colors">
+ <a href="mailto:{{budget.email}}" class="hover:underline">{{budget.email}}</a>
+ </p>
+ </div>
+ <div class="group">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Telefone</label>
+ <p class="text-lg font-bold text-white group-hover:text-emerald-500 transition-colors">
+ <a href="https://wa.me/55{{budget.phone}}" target="_blank" class="flex items-center gap-2">
+ <span class="material-symbols-outlined text-emerald-500">phone</span> {{budget.phone}}
+ </a>
+ </p>
+ </div>
+ </div>
+ <div class="space-y-6">
+ <div class="group">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Tipo de Projeto</label>
+ <span class="bg-blue-500/10 text-blue-400 px-4 py-1.5 rounded-lg border border-blue-500/20 text-xs font-black uppercase tracking-widest">{{budget.projectType}}</span>
+ </div>
+ <div class="group">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Valor Estimado</label>
+ {{#if budget.estimatedValue}}
+ <p class="text-2xl font-black text-emerald-500 tracking-tight">R$ {{formatCurrency budget.estimatedValue}}</p>
+ {{else}}
+ <p class="text-lg font-bold text-gray-500">NÃ£o informado</p>
+ {{/if}}
+ </div>
+ <div class="group">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Prazo</label>
+ {{#if budget.deadline}}
+ <span class="px-4 py-1.5 rounded-lg border text-xs font-black uppercase tracking-widest {{#if (isPast budget.deadline)}}bg-red-500/10 border-red-500/20 text-red-500{{else}}bg-blue-500/10 border-blue-500/20 text-blue-400{{/if}}">
+ {{dateFormat budget.deadline "DD/MM/YYYY"}}
+ </span>
+ {{else}}
+ <span class="bg-white/5 border border-white/10 text-gray-500 px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest">NÃ£o definido</span>
+ {{/if}}
+ </div>
+ </div>
+ </div>
+ 
+ <div class="space-y-8 pt-6 border-t border-white/5">
+ <div class="group">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">DescriÃ§Ã£o do Projeto</label>
+ <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-gray-300 font-medium leading-relaxed">
+ {{budget.description}}
+ </div>
+ </div>
+ <div class="group">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">ObservaÃ§Ãµes</label>
+ <div class="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-gray-300 font-medium leading-relaxed italic">
+ {{budget.notes}}
+ </div>
+ </div>
+ </div>
+ 
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mt-10 pt-10 border-t border-white/5">
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 block">Status Atual</label>
+ <div class="flex items-center gap-4">
+ {{#if (eq budget.status 'pending')}}
+ <span class="bg-orange-500/10 text-orange-500 px-5 py-2 rounded-xl border border-orange-500/20 text-xs font-black uppercase tracking-widest flex items-center gap-2">
+ <span class="material-symbols-outlined text-lg">history</span> Pendente
+ </span>
+ {{else if (eq budget.status 'approved')}}
+ <span class="bg-emerald-500/10 text-emerald-500 px-5 py-2 rounded-xl border border-emerald-500/20 text-xs font-black uppercase tracking-widest flex items-center gap-2">
+ <span class="material-symbols-outlined text-lg">check_circle</span> Aprovado
+ </span>
+ {{else if (eq budget.status 'rejected')}}
+ <span class="bg-red-500/10 text-red-500 px-5 py-2 rounded-xl border border-red-500/20 text-xs font-black uppercase tracking-widest flex items-center gap-2">
+ <span class="material-symbols-outlined text-lg">cancel</span> Rejeitado
+ </span>
+ {{/if}}
+ 
+ <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all" onclick="changeStatus()">
+ Alterar
+ </button>
+ </div>
+ </div>
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 block">Prioridade</label>
+ {{#if (eq budget.priority 'high')}}
+ <span class="bg-red-500/10 text-red-500 px-5 py-2 rounded-xl border border-red-500/20 text-xs font-black uppercase tracking-widest inline-flex items-center gap-2">
+ <span class="material-symbols-outlined text-lg">priority_high</span> Alta
+ </span>
+ {{else if (eq budget.priority 'medium')}}
+ <span class="bg-orange-500/10 text-orange-500 px-5 py-2 rounded-xl border border-orange-500/20 text-xs font-black uppercase tracking-widest inline-flex items-center gap-2">
+ <span class="material-symbols-outlined text-lg">warning</span> MÃ©dia
+ </span>
+ {{else if (eq budget.priority 'low')}}
+ <span class="bg-blue-500/10 text-blue-400 px-5 py-2 rounded-xl border border-blue-500/20 text-xs font-black uppercase tracking-widest inline-flex items-center gap-2">
+ <span class="material-symbols-outlined text-lg">info</span> Baixa
+ </span>
+ {{else}}
+ <span class="bg-white/5 border border-white/10 text-gray-500 px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest inline-flex">NÃ£o definida</span>
+ {{/if}}
+ </div>
+ </div>
+ </div>
+ 
+ <!-- CRM Notes -->
+ <div class="glass-card p-10 border-white/5 bg-white/[0.01]">
+ <div class="flex items-center justify-between mb-12">
+ <div class="flex items-center gap-4">
+ <div class="w-12 h-12 bg-purple-500/10 border border-purple-500/20 rounded-2xl flex items-center justify-center shadow-2xl">
+ <span class="material-symbols-outlined text-purple-500">sticky_note</span>
+ </div>
+ <h3 class="text-xl font-black text-white tracking-tight">Notas CRM</h3>
+ </div>
+ <button type="button" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-3 transition-all" onclick="addNote()">
+ <span class="material-symbols-outlined text-lg">add</span> Adicionar Nota
+ </button>
+ </div>
+ 
+ <div class="space-y-8">
+ {{#if notes.length}}
+ {{#each notes}}
+ <div class="flex gap-6 group">
+ <div class="flex flex-col items-center">
+ <div class="w-10 h-10 rounded-xl bg-{{getNoteTypeColor this.type}}/10 border border-{{getNoteTypeColor this.type}}/20 flex items-center justify-center">
+ <span class="material-symbols-outlined text-{{getNoteTypeColor this.type}} text-xl">{{getNoteTypeIcon this.type}}</span>
+ </div>
+ <div class="w-px flex-1 bg-white/5 my-4"></div>
+ </div>
+ <div class="flex-1 glass-card p-6 border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all">
+ <div class="flex justify-between items-start mb-4">
+ <div>
+ <h4 class="text-white font-black tracking-tight mb-1">{{this.title}}</h4>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+ {{this.createdBy}} â€¢ {{dateFormat this.createdAt "DD/MM/YYYY HH:mm"}}
+ </p>
+ </div>
+ <div class="flex items-center gap-2">
+ {{#if this.reminderDate}}
+ <span class="bg-orange-500/10 text-orange-500 px-3 py-1 rounded-lg border border-orange-500/20 text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
+ <span class="material-symbols-outlined text-sm">notifications</span> {{dateFormat this.reminderDate "DD/MM/YYYY HH:mm"}}
+ </span>
+ {{/if}}
+ <button type="button" class="text-gray-500 hover:text-red-500 transition-colors" onclick="deleteNote({{this.id}})">
+ <span class="material-symbols-outlined text-lg">delete</span>
+ </button>
+ </div>
+ </div>
+ <p class="text-gray-400 text-sm leading-relaxed mb-4">{{this.content}}</p>
+ {{#if this.tags}}
+ <div class="flex flex-wrap gap-2">
+ {{#each this.tags}}
+ <span class="bg-white/5 border border-white/10 text-gray-500 px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest">{{this}}</span>
+ {{/each}}
+ </div>
+ {{/if}}
+ </div>
+ </div>
+ {{/each}}
+ {{else}}
+ <div class="text-center py-20 bg-white/[0.01] rounded-3xl border border-dashed border-white/10">
+ <span class="material-symbols-outlined text-6xl text-gray-700 mb-6 block">notes</span>
+ <h5 class="text-white font-black tracking-tight mb-2">Nenhuma nota encontrada</h5>
+ <p class="text-gray-500 font-medium">Adicione a primeira nota para acompanhar este orÃ§amento.</p>
+ </div>
+ {{/if}}
+ </div>
+ </div>
+ </div>
+ 
+ <!-- Sidebar -->
+ <div class="space-y-8">
+ <!-- Quick Actions -->
+ <div class="glass-card p-8 border-white/5 bg-white/[0.01]">
+ <div class="flex items-center gap-3 mb-8">
+ <span class="material-symbols-outlined text-orange-500">bolt</span>
+ <h3 class="text-lg font-black text-white tracking-tight uppercase">AÃ§Ãµes RÃ¡pidas</h3>
+ </div>
+ <div class="space-y-4">
+ <button type="button" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-3" onclick="approveBudget()">
+ <span class="material-symbols-outlined text-lg">check_circle</span> Aprovar
+ </button>
+ <button type="button" class="w-full bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-500 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3" onclick="rejectBudget()">
+ <span class="material-symbols-outlined text-lg">cancel</span> Rejeitar
+ </button>
+ <div class="grid grid-cols-2 gap-4">
+ <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex flex-col items-center gap-2" onclick="addNote()">
+ <span class="material-symbols-outlined text-orange-500">sticky_note</span> Notas
+ </button>
+ <button type="button" class="bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex flex-col items-center gap-2" onclick="sendEmail()">
+ <span class="material-symbols-outlined text-blue-400">mail</span> Email
+ </button>
+ </div>
+ <button type="button" class="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3" onclick="scheduleFollowUp()">
+ <span class="material-symbols-outlined text-lg text-purple-400">calendar_month</span> Agendar Follow-up
+ </button>
+ <button type="button" class="w-full bg-orange-500/10 border border-orange-500/20 hover:bg-orange-500/20 text-orange-500 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3" data-bs-toggle="modal" data-bs-target="#newProjectModal">
+ <span class="material-symbols-outlined text-lg">rocket_launch</span> Criar Projeto
+ </button>
+ </div>
+ </div>
+ 
+ <!-- Status History -->
+ <div class="glass-card p-8 border-white/5 bg-white/[0.01]">
+ <div class="flex items-center gap-3 mb-8">
+ <span class="material-symbols-outlined text-orange-500">history</span>
+ <h3 class="text-lg font-black text-white tracking-tight uppercase">HistÃ³rico</h3>
+ </div>
+ <div class="space-y-6">
+ {{#if statusHistory.length}}
+ {{#each statusHistory}}
+ <div class="flex gap-4 group">
+ <div class="flex flex-col items-center">
+ <div class="w-2.5 h-2.5 rounded-full bg-{{getStatusColor this.status}} shadow-[0_0_10px_rgba(var(--tw-color-{{getStatusColor this.status}}-500),0.5)]"></div>
+ <div class="w-px flex-1 bg-white/5 my-2"></div>
+ </div>
+ <div class="flex-1 pb-4">
+ <div class="flex justify-between items-start mb-1">
+ <span class="text-[10px] font-black text-{{getStatusColor this.status}} uppercase tracking-widest">{{getStatusLabel this.status}}</span>
+ <span class="text-[9px] text-gray-600 font-bold">{{dateFormat this.createdAt "DD/MM"}}</span>
+ </div>
+ {{#if this.notes}}
+ <p class="text-[11px] text-gray-500 leading-relaxed">{{this.notes}}</p>
+ {{/if}}
+ </div>
+ </div>
+ {{/each}}
+ {{else}}
+ <p class="text-gray-600 text-xs font-bold text-center italic py-4">Sem registros.</p>
+ {{/if}}
+ </div>
+ </div>
+ 
+ <!-- Technical Info -->
+ <div class="glass-card p-8 border-white/5 bg-white/[0.01]">
+ <div class="flex items-center gap-3 mb-8">
+ <span class="material-symbols-outlined text-orange-500">terminal</span>
+ <h3 class="text-lg font-black text-white tracking-tight uppercase">Dados TÃ©cnicos</h3>
+ </div>
+ <div class="space-y-4">
+ <div>
+ <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-1 block">Origem</label>
+ <span class="text-white font-bold text-sm">{{budget.source}}</span>
+ </div>
+ <div>
+ <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-1 block">IP Address</label>
+ <code class="text-orange-500/70 font-mono text-[10px] bg-white/[0.03] px-2 py-1 rounded-md">{{budget.ipAddress}}</code>
+ </div>
+ <div>
+ <label class="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-1 block">Data de Entrada</label>
+ <span class="text-gray-400 font-bold text-[11px]">{{dateFormat budget.createdAt "DD/MM/YYYY HH:mm:ss"}}</span>
+ </div>
+ </div>
+ </div>
+ </div>
 </div>
 
 <!-- Modals (Modernized for Dark Glass) -->
 <!-- Standard Modal Template for reuse -->
 <style>
-    .modal-content.glass-card {
-        background: rgba(15, 15, 15, 0.95) !important;
-        backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    }
-    .modal-backdrop.show { opacity: 0.8; background-color: #000; }
-    .form-control-glass {
-        background: rgba(255, 255, 255, 0.03) !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        color: white !important;
-        border-radius: 12px !important;
-        padding: 12px 16px !important;
-        font-size: 0.875rem !important;
-    }
-    .form-control-glass:focus {
-        background: rgba(255, 255, 255, 0.05) !important;
-        border-color: rgba(249, 115, 22, 0.5) !important;
-        box-shadow: 0 0 20px rgba(249, 115, 22, 0.1) !important;
-    }
+ .modal-content.glass-card {
+ background: rgba(15, 15, 15, 0.95) !important;
+ backdrop-filter: blur(20px) !important;
+ border: 1px solid rgba(255, 255, 255, 0.1) !important;
+ }
+ .modal-backdrop.show { opacity: 0.8; background-color: #000; }
+ .form-control-glass {
+ background: rgba(255, 255, 255, 0.03) !important;
+ border: 1px solid rgba(255, 255, 255, 0.05) !important;
+ color: white !important;
+ border-radius: 12px !important;
+ padding: 12px 16px !important;
+ font-size: 0.875rem !important;
+ }
+ .form-control-glass:focus {
+ background: rgba(255, 255, 255, 0.05) !important;
+ border-color: rgba(249, 115, 22, 0.5) !important;
+ box-shadow: 0 0 20px rgba(249, 115, 22, 0.1) !important;
+ }
 </style>
 
 <!-- Status Change Modal -->
 <div class="modal fade" id="statusModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card p-8 rounded-[2rem]">
-            <div class="flex items-center justify-between mb-8">
-                <h5 class="text-2xl font-black text-white tracking-tight">Alterar Status</h5>
-                <button type="button" class="text-gray-500 hover:text-white transition-colors" data-bs-dismiss="modal">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <form id="statusForm" class="space-y-6">
-                <input type="hidden" id="budgetId" value="{{budget.id}}">
-                <div>
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Novo Status</label>
-                    <select class="w-full form-control-glass outline-none cursor-pointer" id="newStatus" required>
-                        <option value="">Selecione um status</option>
-                        <option value="pending">Pendente</option>
-                        <option value="approved">Aprovado</option>
-                        <option value="rejected">Rejeitado</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Observações</label>
-                    <textarea class="w-full form-control-glass min-h-[120px] outline-none" id="statusNotes" placeholder="Adicione observações sobre esta mudança..."></textarea>
-                </div>
-                <div class="flex gap-4 pt-4">
-                    <button type="button" class="flex-1 bg-white/5 border border-white/10 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 transition-all" onclick="updateStatus()">Confirmar</button>
-                </div>
-            </form>
-        </div>
-    </div>
+ <div class="modal-dialog modal-dialog-centered">
+ <div class="modal-content glass-card p-8 rounded-[2rem]">
+ <div class="flex items-center justify-between mb-8">
+ <h5 class="text-2xl font-black text-white tracking-tight">Alterar Status</h5>
+ <button type="button" class="text-gray-500 hover:text-white transition-colors" data-bs-dismiss="modal">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ </div>
+ <form id="statusForm" class="space-y-6">
+ <input type="hidden" id="budgetId" value="{{budget.id}}">
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Novo Status</label>
+ <select class="w-full form-control-glass outline-none cursor-pointer" id="newStatus" required>
+ <option value="">Selecione um status</option>
+ <option value="pending">Pendente</option>
+ <option value="approved">Aprovado</option>
+ <option value="rejected">Rejeitado</option>
+ </select>
+ </div>
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">ObservaÃ§Ãµes</label>
+ <textarea class="w-full form-control-glass min-h-[120px] outline-none" id="statusNotes" placeholder="Adicione observaÃ§Ãµes sobre esta mudanÃ§a..."></textarea>
+ </div>
+ <div class="flex gap-4 pt-4">
+ <button type="button" class="flex-1 bg-white/5 border border-white/10 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all" data-bs-dismiss="modal">Cancelar</button>
+ <button type="button" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 transition-all" onclick="updateStatus()">Confirmar</button>
+ </div>
+ </form>
+ </div>
+ </div>
 </div>
 
 <!-- Similar refactoring for other modals -->
 <!-- Note Modal -->
 <div class="modal fade" id="noteModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card p-8 rounded-[2rem]">
-            <div class="flex items-center justify-between mb-8">
-                <h5 class="text-2xl font-black text-white tracking-tight">Nova Nota</h5>
-                <button type="button" class="text-gray-500 hover:text-white transition-colors" data-bs-dismiss="modal">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <form id="noteForm" class="space-y-6">
-                <input type="hidden" id="noteBudgetId" value="{{budget.id}}">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Tipo</label>
-                        <select class="w-full form-control-glass outline-none" id="noteType">
-                            <option value="note">Nota</option>
-                            <option value="call">Ligação</option>
-                            <option value="email">Email</option>
-                            <option value="meeting">Reunião</option>
-                            <option value="reminder">Lembrete</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Lembrete</label>
-                        <input type="datetime-local" class="w-full form-control-glass outline-none" id="noteReminder">
-                    </div>
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Título</label>
-                    <input type="text" class="w-full form-control-glass outline-none" id="noteTitle" placeholder="Título da nota" required>
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Conteúdo</label>
-                    <textarea class="w-full form-control-glass min-h-[150px] outline-none" id="noteContent" placeholder="Conteúdo detalhado..." required></textarea>
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Tags (vírgula)</label>
-                    <input type="text" class="w-full form-control-glass outline-none" id="noteTags" placeholder="urgente, follow-up...">
-                </div>
-                <div class="flex gap-4 pt-4">
-                    <button type="button" class="flex-1 bg-white/5 border border-white/10 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 transition-all" onclick="saveNote()">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
+ <div class="modal-dialog modal-dialog-centered">
+ <div class="modal-content glass-card p-8 rounded-[2rem]">
+ <div class="flex items-center justify-between mb-8">
+ <h5 class="text-2xl font-black text-white tracking-tight">Nova Nota</h5>
+ <button type="button" class="text-gray-500 hover:text-white transition-colors" data-bs-dismiss="modal">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ </div>
+ <form id="noteForm" class="space-y-6">
+ <input type="hidden" id="noteBudgetId" value="{{budget.id}}">
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Tipo</label>
+ <select class="w-full form-control-glass outline-none" id="noteType">
+ <option value="note">Nota</option>
+ <option value="call">LigaÃ§Ã£o</option>
+ <option value="email">Email</option>
+ <option value="meeting">ReuniÃ£o</option>
+ <option value="reminder">Lembrete</option>
+ </select>
+ </div>
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Lembrete</label>
+ <input type="datetime-local" class="w-full form-control-glass outline-none" id="noteReminder">
+ </div>
+ </div>
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">TÃ­tulo</label>
+ <input type="text" class="w-full form-control-glass outline-none" id="noteTitle" placeholder="TÃ­tulo da nota" required>
+ </div>
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">ConteÃºdo</label>
+ <textarea class="w-full form-control-glass min-h-[150px] outline-none" id="noteContent" placeholder="ConteÃºdo detalhado..." required></textarea>
+ </div>
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Tags (vÃ­rgula)</label>
+ <input type="text" class="w-full form-control-glass outline-none" id="noteTags" placeholder="urgente, follow-up...">
+ </div>
+ <div class="flex gap-4 pt-4">
+ <button type="button" class="flex-1 bg-white/5 border border-white/10 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all" data-bs-dismiss="modal">Cancelar</button>
+ <button type="button" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 transition-all" onclick="saveNote()">Salvar</button>
+ </div>
+ </form>
+ </div>
+ </div>
 </div>
 
 <!-- Email Modal -->
 <div class="modal fade" id="emailModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content glass-card p-10 rounded-[2rem]">
-            <div class="flex items-center justify-between mb-8">
-                <h5 class="text-2xl font-black text-white tracking-tight">Enviar Comunicação</h5>
-                <button type="button" class="text-gray-500 hover:text-white transition-colors" data-bs-dismiss="modal">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <form id="emailForm" class="space-y-6">
-                <input type="hidden" id="emailBudgetId" value="{{budget.id}}">
-                <div>
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Template</label>
-                    <select class="w-full form-control-glass outline-none" id="emailTemplate" onchange="loadEmailTemplate()">
-                        <option value="">Selecione um template</option>
-                        <option value="confirmation">Confirmação de Recebimento</option>
-                        <option value="approval">Orçamento Aprovado</option>
-                        <option value="rejection">Orçamento Rejeitado</option>
-                        <option value="followup">Acompanhamento</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-6">
-                    <div>
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Para</label>
-                        <input type="email" class="w-full form-control-glass outline-none" id="emailTo" value="{{budget.email}}" required>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Assunto</label>
-                        <input type="text" class="w-full form-control-glass outline-none" id="emailSubject" required>
-                    </div>
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Mensagem</label>
-                    <textarea class="w-full form-control-glass min-h-[300px] outline-none" id="emailBody" required></textarea>
-                </div>
-                <div class="flex justify-end gap-4 pt-4">
-                    <button type="button" class="bg-white/5 border border-white/10 text-white px-10 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="bg-orange-500 hover:bg-orange-600 text-white px-12 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 transition-all" onclick="sendEmailNow()">Enviar Agora</button>
-                </div>
-            </form>
-        </div>
-    </div>
+ <div class="modal-dialog modal-lg modal-dialog-centered">
+ <div class="modal-content glass-card p-10 rounded-[2rem]">
+ <div class="flex items-center justify-between mb-8">
+ <h5 class="text-2xl font-black text-white tracking-tight">Enviar ComunicaÃ§Ã£o</h5>
+ <button type="button" class="text-gray-500 hover:text-white transition-colors" data-bs-dismiss="modal">
+ <span class="material-symbols-outlined">close</span>
+ </button>
+ </div>
+ <form id="emailForm" class="space-y-6">
+ <input type="hidden" id="emailBudgetId" value="{{budget.id}}">
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Template</label>
+ <select class="w-full form-control-glass outline-none" id="emailTemplate" onchange="loadEmailTemplate()">
+ <option value="">Selecione um template</option>
+ <option value="confirmation">ConfirmaÃ§Ã£o de Recebimento</option>
+ <option value="approval">OrÃ§amento Aprovado</option>
+ <option value="rejection">OrÃ§amento Rejeitado</option>
+ <option value="followup">Acompanhamento</option>
+ </select>
+ </div>
+ <div class="grid grid-cols-2 gap-6">
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Para</label>
+ <input type="email" class="w-full form-control-glass outline-none" id="emailTo" value="{{budget.email}}" required>
+ </div>
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Assunto</label>
+ <input type="text" class="w-full form-control-glass outline-none" id="emailSubject" required>
+ </div>
+ </div>
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 block">Mensagem</label>
+ <textarea class="w-full form-control-glass min-h-[300px] outline-none" id="emailBody" required></textarea>
+ </div>
+ <div class="flex justify-end gap-4 pt-4">
+ <button type="button" class="bg-white/5 border border-white/10 text-white px-10 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all" data-bs-dismiss="modal">Cancelar</button>
+ <button type="button" class="bg-orange-500 hover:bg-orange-600 text-white px-12 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 transition-all" onclick="sendEmailNow()">Enviar Agora</button>
+ </div>
+ </form>
+ </div>
+ </div>
 </div>
 
 <script>
 // Logic remains unchanged, only UI updated
 // Quick actions
 function approveBudget() {
-    if (confirm('Tem certeza que deseja aprovar este orçamento?')) {
-        updateBudgetStatus('approved', 'Orçamento aprovado via painel administrativo');
-    }
+ if (confirm('Tem certeza que deseja aprovar este orÃ§amento?')) {
+ updateBudgetStatus('approved', 'OrÃ§amento aprovado via painel administrativo');
+ }
 }
 
 function rejectBudget() {
-    if (confirm('Tem certeza que deseja rejeitar este orçamento?')) {
-        updateBudgetStatus('rejected', 'Orçamento rejeitado via painel administrativo');
-    }
+ if (confirm('Tem certeza que deseja rejeitar este orÃ§amento?')) {
+ updateBudgetStatus('rejected', 'OrÃ§amento rejeitado via painel administrativo');
+ }
 }
 
 function changeStatus() {
-    const modal = new bootstrap.Modal(document.getElementById('statusModal'));
-    modal.show();
+ const modal = new bootstrap.Modal(document.getElementById('statusModal'));
+ modal.show();
 }
 
 // Update status
 async function updateStatus() {
-    const budgetId = document.getElementById('budgetId').value;
-    const newStatus = document.getElementById('newStatus').value;
-    const notes = document.getElementById('statusNotes').value;
-    
-    if (!newStatus) {
-        showNotification('Por favor, selecione um status', 'warning');
-        return;
-    }
-    
-    await updateBudgetStatus(newStatus, notes);
+ const budgetId = document.getElementById('budgetId').value;
+ const newStatus = document.getElementById('newStatus').value;
+ const notes = document.getElementById('statusNotes').value;
+ 
+ if (!newStatus) {
+ showNotification('Por favor, selecione um status', 'warning');
+ return;
+ }
+ 
+ await updateBudgetStatus(newStatus, notes);
 }
 
 async function updateBudgetStatus(status, notes = '') {
-    const button = event.target;
-    const restoreButton = addLoadingState(button);
-    
-    try {
-        const response = await fetch(`/admin/orcamentos/{{budget.id}}/status`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ status, notes })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            showNotification(data.message, 'success');
-            
-            // Close modal if open
-            const modal = bootstrap.Modal.getInstance(document.getElementById('statusModal'));
-            if (modal) modal.hide();
-            
-            // Reload after a short delay
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
-        } else {
-            showNotification(data.message, 'error');
-        }
-    } catch (error) {
-        console.error('Error updating status:', error);
-        showNotification('Erro ao atualizar status', 'error');
-    } finally {
-        restoreButton();
-    }
+ const button = event.target;
+ const restoreButton = addLoadingState(button);
+ 
+ try {
+ const response = await fetch(`/admin/orcamentos/{{budget.id}}/status`, {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ },
+ body: JSON.stringify({ status, notes })
+ });
+ 
+ const data = await response.json();
+ 
+ if (data.success) {
+ showNotification(data.message, 'success');
+ 
+ // Close modal if open
+ const modal = bootstrap.Modal.getInstance(document.getElementById('statusModal'));
+ if (modal) modal.hide();
+ 
+ // Reload after a short delay
+ setTimeout(() => {
+ location.reload();
+ }, 1000);
+ } else {
+ showNotification(data.message, 'error');
+ }
+ } catch (error) {
+ console.error('Error updating status:', error);
+ showNotification('Erro ao atualizar status', 'error');
+ } finally {
+ restoreButton();
+ }
 }
 
 // Add note
 function addNote() {
-    document.getElementById('noteForm').reset();
-    const modal = new bootstrap.Modal(document.getElementById('noteModal'));
-    modal.show();
+ document.getElementById('noteForm').reset();
+ const modal = new bootstrap.Modal(document.getElementById('noteModal'));
+ modal.show();
 }
 
 // Save note
 async function saveNote() {
-    const budgetId = document.getElementById('noteBudgetId').value;
-    const type = document.getElementById('noteType').value;
-    const title = document.getElementById('noteTitle').value;
-    const content = document.getElementById('noteContent').value;
-    const reminder = document.getElementById('noteReminder').value;
-    const tags = document.getElementById('noteTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-    
-    if (!title || !content) {
-        showNotification('Por favor, preencha o título e o conteúdo', 'warning');
-        return;
-    }
-    
-    const button = event.target;
-    const restoreButton = addLoadingState(button);
-    
-    try {
-        const response = await fetch(`/admin/orcamentos/{{budget.id}}/notas`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ type, title, content, reminder, tags })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            showNotification(data.message, 'success');
-            
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('noteModal'));
-            modal.hide();
-            
-            // Reload after a short delay
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
-        } else {
-            showNotification(data.message, 'error');
-        }
-    } catch (error) {
-        console.error('Error saving note:', error);
-        showNotification('Erro ao salvar nota', 'error');
-    } finally {
-        restoreButton();
-    }
+ const budgetId = document.getElementById('noteBudgetId').value;
+ const type = document.getElementById('noteType').value;
+ const title = document.getElementById('noteTitle').value;
+ const content = document.getElementById('noteContent').value;
+ const reminder = document.getElementById('noteReminder').value;
+ const tags = document.getElementById('noteTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+ 
+ if (!title || !content) {
+ showNotification('Por favor, preencha o tÃ­tulo e o conteÃºdo', 'warning');
+ return;
+ }
+ 
+ const button = event.target;
+ const restoreButton = addLoadingState(button);
+ 
+ try {
+ const response = await fetch(`/admin/orcamentos/{{budget.id}}/notas`, {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ },
+ body: JSON.stringify({ type, title, content, reminder, tags })
+ });
+ 
+ const data = await response.json();
+ 
+ if (data.success) {
+ showNotification(data.message, 'success');
+ 
+ // Close modal
+ const modal = bootstrap.Modal.getInstance(document.getElementById('noteModal'));
+ modal.hide();
+ 
+ // Reload after a short delay
+ setTimeout(() => {
+ location.reload();
+ }, 1000);
+ } else {
+ showNotification(data.message, 'error');
+ }
+ } catch (error) {
+ console.error('Error saving note:', error);
+ showNotification('Erro ao salvar nota', 'error');
+ } finally {
+ restoreButton();
+ }
 }
 
 // Delete note
 async function deleteNote(noteId) {
-    if (!confirm('Tem certeza que deseja excluir esta nota?')) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(`/admin/orcamentos/{{budget.id}}/notas/${noteId}`, {
-            method: 'DELETE'
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            showNotification(data.message, 'success');
-            setTimeout(() => location.reload(), 1000);
-        } else {
-            showNotification(data.message, 'error');
-        }
-    } catch (error) {
-        console.error('Error deleting note:', error);
-        showNotification('Erro ao excluir nota', 'error');
-    }
+ if (!confirm('Tem certeza que deseja excluir esta nota?')) {
+ return;
+ }
+ 
+ try {
+ const response = await fetch(`/admin/orcamentos/{{budget.id}}/notas/${noteId}`, {
+ method: 'DELETE'
+ });
+ 
+ const data = await response.json();
+ 
+ if (data.success) {
+ showNotification(data.message, 'success');
+ setTimeout(() => location.reload(), 1000);
+ } else {
+ showNotification(data.message, 'error');
+ }
+ } catch (error) {
+ console.error('Error deleting note:', error);
+ showNotification('Erro ao excluir nota', 'error');
+ }
 }
 
 // Send email
 function sendEmail() {
-    document.getElementById('emailForm').reset();
-    document.getElementById('emailTo').value = '{{budget.email}}';
-    
-    const modal = new bootstrap.Modal(document.getElementById('emailModal'));
-    modal.show();
+ document.getElementById('emailForm').reset();
+ document.getElementById('emailTo').value = '{{budget.email}}';
+ 
+ const modal = new bootstrap.Modal(document.getElementById('emailModal'));
+ modal.show();
 }
 
 // Load email template
 async function loadEmailTemplate() {
-    const template = document.getElementById('emailTemplate').value;
-    if (!template) return;
-    
-    try {
-        const response = await fetch(`/admin/email-templates/${template}?budgetId={{budget.id}}`);
-        const data = await response.json();
-        
-        if (data.success) {
-            document.getElementById('emailSubject').value = data.data.subject;
-            document.getElementById('emailBody').value = data.data.body;
-        }
-    } catch (error) {
-        console.error('Error loading email template:', error);
-    }
+ const template = document.getElementById('emailTemplate').value;
+ if (!template) return;
+ 
+ try {
+ const response = await fetch(`/admin/email-templates/${template}?budgetId={{budget.id}}`);
+ const data = await response.json();
+ 
+ if (data.success) {
+ document.getElementById('emailSubject').value = data.data.subject;
+ document.getElementById('emailBody').value = data.data.body;
+ }
+ } catch (error) {
+ console.error('Error loading email template:', error);
+ }
 }
 
 // Send email now
 async function sendEmailNow() {
-    const budgetId = document.getElementById('emailBudgetId').value;
-    const to = document.getElementById('emailTo').value;
-    const subject = document.getElementById('emailSubject').value;
-    const body = document.getElementById('emailBody').value;
-    
-    if (!to || !subject || !body) {
-        showNotification('Por favor, preencha todos os campos', 'warning');
-        return;
-    }
-    
-    const button = event.target;
-    const restoreButton = addLoadingState(button);
-    
-    try {
-        const response = await fetch(`/admin/orcamentos/${budgetId}/email`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ to, subject, body })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            showNotification(data.message, 'success');
-            
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('emailModal'));
-            modal.hide();
-            
-            // Add note about sent email
-            setTimeout(() => {
-                addEmailNote(to, subject);
-            }, 1000);
-        } else {
-            showNotification(data.message, 'error');
-        }
-    } catch (error) {
-        console.error('Error sending email:', error);
-        showNotification('Erro ao enviar email', 'error');
-    } finally {
-        restoreButton();
-    }
+ const budgetId = document.getElementById('emailBudgetId').value;
+ const to = document.getElementById('emailTo').value;
+ const subject = document.getElementById('emailSubject').value;
+ const body = document.getElementById('emailBody').value;
+ 
+ if (!to || !subject || !body) {
+ showNotification('Por favor, preencha todos os campos', 'warning');
+ return;
+ }
+ 
+ const button = event.target;
+ const restoreButton = addLoadingState(button);
+ 
+ try {
+ const response = await fetch(`/admin/orcamentos/${budgetId}/email`, {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ },
+ body: JSON.stringify({ to, subject, body })
+ });
+ 
+ const data = await response.json();
+ 
+ if (data.success) {
+ showNotification(data.message, 'success');
+ 
+ // Close modal
+ const modal = bootstrap.Modal.getInstance(document.getElementById('emailModal'));
+ modal.hide();
+ 
+ // Add note about sent email
+ setTimeout(() => {
+ addEmailNote(to, subject);
+ }, 1000);
+ } else {
+ showNotification(data.message, 'error');
+ }
+ } catch (error) {
+ console.error('Error sending email:', error);
+ showNotification('Erro ao enviar email', 'error');
+ } finally {
+ restoreButton();
+ }
 }
 
 // Add email note
 async function addEmailNote(to, subject) {
-    try {
-        await fetch(`/admin/orcamentos/{{budget.id}}/notas`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                type: 'email',
-                title: `Email enviado para ${to}`,
-                content: `Assunto: ${subject}`,
-                tags: ['email', 'enviado']
-            })
-        });
-    } catch (error) {
-        console.error('Error adding email note:', error);
-    }
+ try {
+ await fetch(`/admin/orcamentos/{{budget.id}}/notas`, {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ },
+ body: JSON.stringify({
+ type: 'email',
+ title: `Email enviado para ${to}`,
+ content: `Assunto: ${subject}`,
+ tags: ['email', 'enviado']
+ })
+ });
+ } catch (error) {
+ console.error('Error adding email note:', error);
+ }
 }
 
 // Schedule follow up
 function scheduleFollowUp() {
-    const title = prompt('Título do lembrete:');
-    if (!title) return;
-    
-    const date = prompt('Data e hora (DD/MM/YYYY HH:mm):');
-    if (!date) return;
-    
-    // Parse date
-    const [datePart, timePart] = date.split(' ');
-    const [day, month, year] = datePart.split('/');
-    const [hour, minute] = timePart.split(':');
-    
-    const reminderDate = new Date(year, month - 1, day, hour, minute);
-    
-    if (isNaN(reminderDate.getTime())) {
-        showNotification('Data inválida. Use o formato DD/MM/YYYY HH:mm', 'error');
-        return;
-    }
-    
-    // Add note with reminder
-    addFollowUpNote(title, reminderDate);
+ const title = prompt('TÃ­tulo do lembrete:');
+ if (!title) return;
+ 
+ const date = prompt('Data e hora (DD/MM/YYYY HH:mm):');
+ if (!date) return;
+ 
+ // Parse date
+ const [datePart, timePart] = date.split(' ');
+ const [day, month, year] = datePart.split('/');
+ const [hour, minute] = timePart.split(':');
+ 
+ const reminderDate = new Date(year, month - 1, day, hour, minute);
+ 
+ if (isNaN(reminderDate.getTime())) {
+ showNotification('Data invÃ¡lida. Use o formato DD/MM/YYYY HH:mm', 'error');
+ return;
+ }
+ 
+ // Add note with reminder
+ addFollowUpNote(title, reminderDate);
 }
 
 async function addFollowUpNote(title, reminderDate) {
-    try {
-        const response = await fetch(`/admin/orcamentos/{{budget.id}}/notas`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                type: 'reminder',
-                title: title,
-                content: 'Lembrete agendado para acompanhamento',
-                reminder: reminderDate.toISOString(),
-                tags: ['follow-up', 'lembrete']
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            showNotification('Acompanhamento agendado com sucesso!', 'success');
-            setTimeout(() => location.reload(), 1000);
-        } else {
-            showNotification(data.message, 'error');
-        }
-    } catch (error) {
-        console.error('Error scheduling follow up:', error);
-        showNotification('Erro ao agendar acompanhamento', 'error');
-    }
+ try {
+ const response = await fetch(`/admin/orcamentos/{{budget.id}}/notas`, {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/json',
+ },
+ body: JSON.stringify({
+ type: 'reminder',
+ title: title,
+ content: 'Lembrete agendado para acompanhamento',
+ reminder: reminderDate.toISOString(),
+ tags: ['follow-up', 'lembrete']
+ })
+ });
+ 
+ const data = await response.json();
+ 
+ if (data.success) {
+ showNotification('Acompanhamento agendado com sucesso!', 'success');
+ setTimeout(() => location.reload(), 1000);
+ } else {
+ showNotification(data.message, 'error');
+ }
+ } catch (error) {
+ console.error('Error scheduling follow up:', error);
+ showNotification('Erro ao agendar acompanhamento', 'error');
+ }
 }
 
 // Create project
@@ -765,237 +765,237 @@ async function addFollowUpNote(title, reminderDate) {
 
 <!-- Modal: Novo Projeto (Compacto / Liquid Glass) -->
 <div class="modal fade" id="newProjectModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] bg-[#0a0c10]/95 backdrop-blur-3xl overflow-hidden">
-            <div class="modal-header border-white/5 p-4">
-                <h2 class="text-sm font-black text-white tracking-tight flex items-center gap-2">
-                    <span class="material-symbols-outlined text-orange-500 text-base">rocket_launch</span>
-                    Criar Projeto
-                </h2>
-                <button type="button" class="btn-close btn-close-white scale-75 opacity-30" data-bs-dismiss="modal"></button>
-            </div>
-            <form id="newProjectForm" enctype="multipart/form-data">
-                <input type="hidden" name="budgetId" value="{{budget.id}}">
-                <div class="modal-body p-5 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
-                    <div class="space-y-1.5">
-                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Título do Projeto</label>
-                        <input type="text" name="title" value="{{budget.title}}" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
-                    </div>
+ <div class="modal-dialog modal-dialog-centered modal-sm">
+ <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] bg-[#0a0c10]/95 backdrop-blur-3xl overflow-hidden">
+ <div class="modal-header border-white/5 p-4">
+ <h2 class="text-sm font-black text-white tracking-tight flex items-center gap-2">
+ <span class="material-symbols-outlined text-orange-500 text-base">rocket_launch</span>
+ Criar Projeto
+ </h2>
+ <button type="button" class="btn-close btn-close-white scale-75 opacity-30" data-bs-dismiss="modal"></button>
+ </div>
+ <form id="newProjectForm" enctype="multipart/form-data">
+ <input type="hidden" name="budgetId" value="{{budget.id}}">
+ <div class="modal-body p-5 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">TÃ­tulo do Projeto</label>
+ <input type="text" name="title" value="{{budget.title}}" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+ </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Categoria</label>
-                            <select name="category" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
-                                <option value="render" class="bg-[#0f0f0f]">Render</option>
-                                <option value="3d" class="bg-[#0f0f0f]">3D</option>
-                                <option value="animation" class="bg-[#0f0f0f]">Animação</option>
-                                <option value="product" class="bg-[#0f0f0f]">Produto</option>
-                            </select>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Ano</label>
-                            <input type="number" name="year" value="2026" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
-                        </div>
-                    </div>
+ <div class="grid grid-cols-2 gap-3">
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Categoria</label>
+ <select name="category" required class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+ <option value="render" class="bg-[#0f0f0f]">Render</option>
+ <option value="3d" class="bg-[#0f0f0f]">3D</option>
+ <option value="animation" class="bg-[#0f0f0f]">AnimaÃ§Ã£o</option>
+ <option value="product" class="bg-[#0f0f0f]">Produto</option>
+ </select>
+ </div>
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Ano</label>
+ <input type="number" name="year" value="2026" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+ </div>
+ </div>
 
-                    <div class="space-y-1.5">
-                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Cliente</label>
-                        <input type="text" name="client" value="{{budget.clientName}}" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
-                    </div>
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Cliente</label>
+ <input type="text" name="client" value="{{budget.clientName}}" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+ </div>
 
-                    <div class="space-y-1.5">
-                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Descrição Curta</label>
-                        <textarea name="description" rows="2" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all resize-none">{{budget.description}}</textarea>
-                    </div>
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">DescriÃ§Ã£o Curta</label>
+ <textarea name="description" rows="2" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all resize-none">{{budget.description}}</textarea>
+ </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Imagem Principal</label>
-                            <input type="file" name="image" accept="image/*" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Miniatura</label>
-                            <input type="file" name="thumbnail" accept="image/*" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
-                        </div>
-                    </div>
+ <div class="grid grid-cols-2 gap-3">
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Imagem Principal</label>
+ <input type="file" name="image" accept="image/*" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+ </div>
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Miniatura</label>
+ <input type="file" name="thumbnail" accept="image/*" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+ </div>
+ </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Slug (URL)</label>
-                            <input type="text" name="slug" placeholder="Opcional" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Tags (vírgula)</label>
-                            <input type="text" name="tags" placeholder="Ex: 3D, Render" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
-                        </div>
-                    </div>
+ <div class="grid grid-cols-2 gap-3">
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Slug (URL)</label>
+ <input type="text" name="slug" placeholder="Opcional" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+ </div>
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Tags (vÃ­rgula)</label>
+ <input type="text" name="tags" placeholder="Ex: 3D, Render" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-4 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+ </div>
+ </div>
 
-                    <div class="grid grid-cols-3 gap-3">
-                        <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Ordem</label>
-                            <input type="number" name="order" value="0" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Layout</label>
-                            <select name="layout" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
-                                <option value="standard" class="bg-[#0f0f0f]">Padrão</option>
-                                <option value="wide" class="bg-[#0f0f0f]">Largo</option>
-                                <option value="compact" class="bg-[#0f0f0f]">Compacto</option>
-                            </select>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Cores</label>
-                            <select name="colorScheme" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
-                                <option value="default" class="bg-[#0f0f0f]">Padrão</option>
-                                <option value="dark" class="bg-[#0f0f0f]">Escuro</option>
-                                <option value="light" class="bg-[#0f0f0f]">Claro</option>
-                            </select>
-                        </div>
-                    </div>
+ <div class="grid grid-cols-3 gap-3">
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Ordem</label>
+ <input type="number" name="order" value="0" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+ </div>
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Layout</label>
+ <select name="layout" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+ <option value="standard" class="bg-[#0f0f0f]">PadrÃ£o</option>
+ <option value="wide" class="bg-[#0f0f0f]">Largo</option>
+ <option value="compact" class="bg-[#0f0f0f]">Compacto</option>
+ </select>
+ </div>
+ <div class="space-y-1.5">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Cores</label>
+ <select name="colorScheme" class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 px-3 text-[11px] text-white focus:outline-none focus:ring-2 focus:ring-orange-500/30 transition-all">
+ <option value="default" class="bg-[#0f0f0f]">PadrÃ£o</option>
+ <option value="dark" class="bg-[#0f0f0f]">Escuro</option>
+ <option value="light" class="bg-[#0f0f0f]">Claro</option>
+ </select>
+ </div>
+ </div>
 
-                    <div class="flex items-center gap-4 pt-2">
-                        <label class="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" name="isActive" checked class="w-3.5 h-3.5 rounded bg-white/5 border-white/20 text-orange-500 focus:ring-orange-500/30">
-                            <span class="text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors">Ativar</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" name="isFeatured" class="w-3.5 h-3.5 rounded bg-white/5 border-white/20 text-orange-500 focus:ring-orange-500/30">
-                            <span class="text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors">Destaque</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="p-5 bg-black/20 border-t border-white/5 flex gap-3">
-                    <button type="button" class="flex-1 px-4 py-3 text-[9px] font-black text-gray-500 uppercase tracking-widest hover:text-white transition-all" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="flex-2 bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-6 rounded-xl shadow-lg shadow-orange-500/20 transition-all text-[9px] uppercase tracking-widest">
-                        Lançar Projeto
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+ <div class="flex items-center gap-4 pt-2">
+ <label class="flex items-center gap-2 cursor-pointer group">
+ <input type="checkbox" name="isActive" checked class="w-3.5 h-3.5 rounded bg-white/5 border-white/20 text-orange-500 focus:ring-orange-500/30">
+ <span class="text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors">Ativar</span>
+ </label>
+ <label class="flex items-center gap-2 cursor-pointer group">
+ <input type="checkbox" name="isFeatured" class="w-3.5 h-3.5 rounded bg-white/5 border-white/20 text-orange-500 focus:ring-orange-500/30">
+ <span class="text-[9px] font-bold text-gray-500 group-hover:text-white transition-colors">Destaque</span>
+ </label>
+ </div>
+ </div>
+ <div class="p-5 bg-black/20 border-t border-white/5 flex gap-3">
+ <button type="button" class="flex-1 px-4 py-3 text-[9px] font-black text-gray-500 uppercase tracking-widest hover:text-white transition-all" data-bs-dismiss="modal">Cancelar</button>
+ <button type="submit" class="flex-2 bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-6 rounded-xl shadow-lg shadow-orange-500/20 transition-all text-[9px] uppercase tracking-widest">
+ LanÃ§ar Projeto
+ </button>
+ </div>
+ </form>
+ </div>
+ </div>
 </div>
 
 <script>
 document.getElementById('newProjectForm')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    
-    // Convert checkboxes to boolean since FormData only sends them if checked
-    formData.set('isActive', formData.has('isActive') ? 'true' : 'false');
-    formData.set('isFeatured', formData.has('isFeatured') ? 'true' : 'false');
-    
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Lançando...';
-    submitBtn.disabled = true;
-    
-    try {
-        const response = await fetch('/admin/api/projects', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const result = await response.json();
-        if (result.success) {
-            window.location.href = '/admin/projetos/kanban';
-        } else {
-            alert('Erro: ' + (result.message || 'Erro desconhecido ao criar projeto'));
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }
-    } catch (error) {
-        console.error('Error creating project:', error);
-        alert('Erro ao criar projeto');
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-    }
+ e.preventDefault();
+ const formData = new FormData(this);
+ 
+ // Convert checkboxes to boolean since FormData only sends them if checked
+ formData.set('isActive', formData.has('isActive') ? 'true' : 'false');
+ formData.set('isFeatured', formData.has('isFeatured') ? 'true' : 'false');
+ 
+ const submitBtn = this.querySelector('button[type="submit"]');
+ const originalText = submitBtn.innerHTML;
+ submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> LanÃ§ando...';
+ submitBtn.disabled = true;
+ 
+ try {
+ const response = await fetch('/admin/api/projects', {
+ method: 'POST',
+ body: formData
+ });
+ 
+ const result = await response.json();
+ if (result.success) {
+ window.location.href = '/admin/projetos';
+ } else {
+ alert('Erro: ' + (result.message || 'Erro desconhecido ao criar projeto'));
+ submitBtn.innerHTML = originalText;
+ submitBtn.disabled = false;
+ }
+ } catch (error) {
+ console.error('Error creating project:', error);
+ alert('Erro ao criar projeto');
+ submitBtn.innerHTML = originalText;
+ submitBtn.disabled = false;
+ }
 });
 </script>
 
 // Print budget
 function printBudget() {
-    window.print();
+ window.print();
 }
 
 // Export budget
 function exportBudget() {
-    window.open(`/admin/orcamentos/{{budget.id}}/exportar`, '_blank');
+ window.open(`/admin/orcamentos/{{budget.id}}/exportar`, '_blank');
 }
 
 // Delete budget
 function deleteBudget() {
-    if (confirm('Tem certeza que deseja excluir este orçamento? Esta ação não pode ser desfeita.')) {
-        fetch(`/admin/orcamentos/{{budget.id}}`, {
-            method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showNotification(data.message, 'success');
-                setTimeout(() => {
-                    window.location.href = '/admin/orcamentos';
-                }, 1000);
-            } else {
-                showNotification(data.message, 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error deleting budget:', error);
-            showNotification('Erro ao excluir orçamento', 'error');
-        });
-    }
+ if (confirm('Tem certeza que deseja excluir este orÃ§amento? Esta aÃ§Ã£o nÃ£o pode ser desfeita.')) {
+ fetch(`/admin/orcamentos/{{budget.id}}`, {
+ method: 'DELETE'
+ })
+ .then(response => response.json())
+ .then(data => {
+ if (data.success) {
+ showNotification(data.message, 'success');
+ setTimeout(() => {
+ window.location.href = '/admin/orcamentos';
+ }, 1000);
+ } else {
+ showNotification(data.message, 'error');
+ }
+ })
+ .catch(error => {
+ console.error('Error deleting budget:', error);
+ showNotification('Erro ao excluir orÃ§amento', 'error');
+ });
+ }
 }
 
 // Add loading states to all buttons
 function addLoadingState(button) {
-    const originalText = button.innerHTML;
-    button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
-    
-    return function() {
-        button.disabled = false;
-        button.innerHTML = originalText;
-    };
+ const originalText = button.innerHTML;
+ button.disabled = true;
+ button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+ 
+ return function() {
+ button.disabled = false;
+ button.innerHTML = originalText;
+ };
 }
 
 // Helper functions for Handlebars
 window.getNoteTypeColor = function(type) {
-    const colors = {
-        note: 'primary',
-        call: 'info',
-        email: 'success',
-        meeting: 'warning',
-        reminder: 'danger'
-    };
-    return colors[type] || 'secondary';
+ const colors = {
+ note: 'primary',
+ call: 'info',
+ email: 'success',
+ meeting: 'warning',
+ reminder: 'danger'
+ };
+ return colors[type] || 'secondary';
 };
 
 window.getNoteTypeIcon = function(type) {
-    const icons = {
-        note: 'fa-sticky-note',
-        call: 'fa-phone',
-        email: 'fa-envelope',
-        meeting: 'fa-users',
-        reminder: 'fa-bell'
-    };
-    return icons[type] || 'fa-circle';
+ const icons = {
+ note: 'fa-sticky-note',
+ call: 'fa-phone',
+ email: 'fa-envelope',
+ meeting: 'fa-users',
+ reminder: 'fa-bell'
+ };
+ return icons[type] || 'fa-circle';
 };
 
 window.getStatusColor = function(status) {
-    const colors = {
-        pending: 'warning',
-        approved: 'success',
-        rejected: 'danger'
-    };
-    return colors[status] || 'secondary';
+ const colors = {
+ pending: 'warning',
+ approved: 'success',
+ rejected: 'danger'
+ };
+ return colors[status] || 'secondary';
 };
 
 window.getStatusLabel = function(status) {
-    const labels = {
-        pending: 'Pendente',
-        approved: 'Aprovado',
-        rejected: 'Rejeitado'
-    };
-    return labels[status] || status;
+ const labels = {
+ pending: 'Pendente',
+ approved: 'Aprovado',
+ rejected: 'Rejeitado'
+ };
+ return labels[status] || status;
 };
 </script>

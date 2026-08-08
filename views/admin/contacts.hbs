@@ -1,113 +1,272 @@
 <!-- Header Section -->
 <div class="mb-10 p-8 glass-card border-none bg-gradient-to-br from-white/5 to-white/[0.02]">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-            <h1 class="text-4xl font-black text-white tracking-tight mb-2">
-                Ecossistema de <span class="text-gradient">Contatos</span>
-            </h1>
-            <p class="text-gray-400 font-medium">
-                Gestão centralizada de <span class="text-orange-500">Clientes, Leads e Parceiros</span>.
-            </p>
-        </div>
-        <div class="flex items-center gap-4">
-            <div class="relative group">
-                <span class="absolute inset-y-0 left-4 flex items-center text-gray-500">
-                    <span class="material-symbols-outlined text-lg">search</span>
-                </span>
-                <input type="text" placeholder="Buscar no ecossistema..." class="bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-6 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all w-64">
-            </div>
-            <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center gap-3" data-bs-toggle="modal" data-bs-target="#newRegistryModal">
-                <span class="material-symbols-outlined">person_add</span>
-                Novo Contato
-            </button>
-        </div>
-    </div>
+ <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+ <div>
+ <h1 class="text-4xl font-black text-white tracking-tight mb-2">
+ Ecossistema de <span class="text-gradient">Contatos</span>
+ </h1>
+ <p class="text-gray-400 font-medium">
+ Gestão centralizada de <span class="text-orange-500">Clientes, Leads e Parceiros</span>.
+ </p>
+ </div>
+ <div class="flex items-center gap-4">
+ <div class="relative group">
+ <span class="absolute inset-y-0 left-4 flex items-center text-gray-500">
+ <span class="material-symbols-outlined text-lg">search</span>
+ </span>
+ <input type="text" id="contactSearchInput" placeholder="Buscar no ecossistema..." class="bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-6 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all w-64" oninput="filterContacts()">
+ </div>
+ <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-2xl shadow-2xl shadow-orange-500/40 transition-all flex items-center gap-3" data-bs-toggle="modal" data-bs-target="#newRegistryModal">
+ <span class="material-symbols-outlined">person_add</span>
+ Novo Contato
+ </button>
+ </div>
+ </div>
 </div>
 
-<!-- Filters & Actions -->
-<div class="flex flex-wrap items-center gap-4 mb-8">
-    <button class="px-6 py-2 rounded-xl bg-orange-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-orange-500/20">Todos</button>
-    <button class="px-6 py-2 rounded-xl bg-white/5 text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all">Clientes</button>
-    <button class="px-6 py-2 rounded-xl bg-white/5 text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all">Leads</button>
-    <button class="px-6 py-2 rounded-xl bg-white/5 text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all">Parceiros</button>
-    <div class="h-6 w-[1px] bg-white/10 mx-2"></div>
-    <button class="p-2 rounded-xl bg-white/5 text-gray-400 hover:text-white transition-all">
-        <span class="material-symbols-outlined">filter_list</span>
-    </button>
+<!-- Filters & View Mode Selector -->
+<div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+ <div class="flex flex-wrap items-center gap-2" id="contactFilterGroup">
+ <button onclick="setCategoryFilter('all', this)" class="filter-btn px-6 py-2 rounded-xl bg-orange-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-orange-500/20">Todos</button>
+ <button onclick="setCategoryFilter('Cliente', this)" class="filter-btn px-6 py-2 rounded-xl bg-white/5 text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all">Clientes</button>
+ <button onclick="setCategoryFilter('Lead', this)" class="filter-btn px-6 py-2 rounded-xl bg-white/5 text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all">Leads</button>
+ <button onclick="setCategoryFilter('Parceiro', this)" class="filter-btn px-6 py-2 rounded-xl bg-white/5 text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all">Parceiros</button>
+ <button onclick="addCustomCategory()" class="px-3 py-2 rounded-xl bg-white/5 text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-white/10 hover:text-orange-500 transition-all flex items-center gap-1 border border-dashed border-white/20">
+ <span class="material-symbols-outlined text-sm">add</span> Categoria
+ </button>
+ </div>
+
+ <div class="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10">
+ <button onclick="setViewMode('grid')" id="viewBtnGrid" class="p-2 rounded-xl bg-white/10 text-white transition-all" title="Modo Cards (Compacto)">
+ <span class="material-symbols-outlined text-sm">grid_view</span>
+ </button>
+ <button onclick="setViewMode('block')" id="viewBtnBlock" class="p-2 rounded-xl text-gray-400 hover:text-white transition-all" title="Modo Bloco (Ampliado)">
+ <span class="material-symbols-outlined text-sm">view_module</span>
+ </button>
+ <button onclick="setViewMode('list')" id="viewBtnList" class="p-2 rounded-xl text-gray-400 hover:text-white transition-all" title="Modo Lista (Tabela)">
+ <span class="material-symbols-outlined text-sm">view_list</span>
+ </button>
+ <button onclick="setViewMode('search')" id="viewBtnSearch" class="p-2 rounded-xl text-gray-400 hover:text-white transition-all bg-orange-500/10 text-orange-400" title="Modo Pesquisa">
+ <span class="material-symbols-outlined text-sm">search</span>
+ </button>
+ </div>
 </div>
 
-<!-- Contacts Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-    {{#each clients}}
-    <div class="glass-card p-6 border-white/5 hover:border-orange-500/30 group transition-all duration-300 relative overflow-hidden">
-        <!-- Floating Accent -->
-        <div class="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full blur-2xl -mr-12 -mt-12 group-hover:bg-orange-500/10 transition-all"></div>
-        
-        <div class="flex items-start justify-between mb-6 relative z-10">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center text-orange-500 font-black text-xl border border-orange-500/20 group-hover:scale-110 transition-transform">
-                    {{firstLetter this.name}}
-                </div>
-                <div>
-                    <h3 class="text-base font-black text-white leading-tight mb-1">{{this.name}}</h3>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{{this.company}}</span>
-                        <span class="w-1 h-1 bg-gray-700 rounded-full"></span>
-                        <span class="text-[9px] font-black {{#if (eq this.type 'PJ')}}text-blue-400{{else}}text-purple-400{{/if}} uppercase">{{this.type}}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="flex flex-col items-end gap-2">
-                {{#if (eq this.category 'Lead')}}
-                <span class="text-[8px] font-black text-orange-500 bg-orange-500/10 px-2 py-0.5 rounded-full uppercase tracking-tighter ring-1 ring-orange-500/30">Lead</span>
-                {{else if (eq this.category 'Cliente')}}
-                <span class="text-[8px] font-black text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full uppercase tracking-tighter ring-1 ring-emerald-500/30">Cliente</span>
-                {{else}}
-                <span class="text-[8px] font-black text-sky-400 bg-sky-400/10 px-2 py-0.5 rounded-full uppercase tracking-tighter ring-1 ring-sky-400/30">{{this.category}}</span>
-                {{/if}}
-            </div>
-        </div>
+<!-- Contacts Container -->
+<div id="contactsMasterContainer">
+ 
+ <!-- GRID & BLOCK VIEWS -->
+ <div id="contactsGridContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+ {{#each clients}}
+ <div class="contact-card contact-item glass-card p-5 border-white/5 hover:border-orange-500/30 group transition-all duration-300 relative overflow-hidden" data-category="{{this.category}}" data-name="{{this.name}}" data-company="{{this.company}}" data-email="{{this.email}}">
+ <div class="absolute top-0 right-0 w-20 h-20 bg-orange-500/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-orange-500/10 transition-all"></div>
+ <div class="flex items-start justify-between mb-4 relative z-10">
+ <div class="flex items-center gap-3">
+ <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center text-orange-500 font-black text-lg border border-orange-500/20 shrink-0">
+ {{firstLetter this.name}}
+ </div>
+ <div>
+ <h3 class="text-sm font-black text-white leading-tight mb-1 truncate max-w-[150px]">{{this.name}}</h3>
+ <div class="flex items-center gap-1.5">
+ <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest truncate max-w-[100px]">{{this.company}}</span>
+ <span class="w-1 h-1 bg-gray-700 rounded-full"></span>
+ <span class="text-[8px] font-black {{#if (eq this.type 'PJ')}}text-blue-400{{else}}text-purple-400{{/if}} uppercase">{{this.type}}</span>
+ </div>
+ </div>
+ </div>
+ <div class="flex flex-col items-end shrink-0">
+ <span class="text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter ring-1 {{#if (eq this.category 'Lead')}}text-orange-500 bg-orange-500/10 ring-orange-500/30{{else if (eq this.category 'Cliente')}}text-emerald-500 bg-emerald-500/10 ring-emerald-500/30{{else}}text-sky-400 bg-sky-400/10 ring-sky-400/30{{/if}}">{{this.category}}</span>
+ </div>
+ </div>
 
-        <div class="space-y-3 mb-6 relative z-10">
-            <div class="flex items-center gap-3 text-gray-400 hover:text-white transition-colors cursor-pointer">
-                <span class="material-symbols-outlined text-sm opacity-50">mail</span>
-                <span class="text-xs font-medium truncate">{{this.email}}</span>
-            </div>
-            <div class="flex items-center justify-between gap-3 text-gray-400">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-sm opacity-50">call</span>
-                    <span class="text-xs font-medium">{{formatPhone this.phone}}</span>
-                </div>
-                <a href="{{formatWhatsappLink this.phone this.name 'lead'}}" target="_blank" class="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 transition-all flex items-center justify-center">
-                    <i class="fab fa-whatsapp text-xs"></i>
-                </a>
-            </div>
-            <div class="flex items-center gap-3 text-gray-400">
-                <span class="material-symbols-outlined text-sm opacity-50">lan</span>
-                <span class="text-xs font-medium">Origem: {{this.source}}</span>
-            </div>
-        </div>
+ <div class="space-y-2 mb-4 relative z-10">
+ <div class="flex items-center gap-2 text-gray-400">
+ <span class="material-symbols-outlined text-xs opacity-50">mail</span>
+ <span class="text-[10px] font-medium truncate">{{this.email}}</span>
+ </div>
+ <div class="flex items-center justify-between gap-2 text-gray-400">
+ <div class="flex items-center gap-2">
+ <span class="material-symbols-outlined text-xs opacity-50">call</span>
+ <span class="text-[10px] font-medium">{{formatPhone this.phone}}</span>
+ </div>
+ <a href="{{formatWhatsappLink this.phone this.name 'lead'}}" target="_blank" class="w-6 h-6 rounded bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 flex items-center justify-center">
+ <i class="fab fa-whatsapp text-[10px]"></i>
+ </a>
+ </div>
+ </div>
 
-        <div class="flex items-center gap-2 pt-4 border-t border-white/5 relative z-10">
-            <button class="flex-1 bg-white/5 hover:bg-white/10 text-white text-[10px] font-black uppercase tracking-widest py-2 rounded-xl transition-all">Ver Detalhes</button>
-            <button class="p-2 rounded-xl bg-white/5 text-gray-500 hover:text-orange-500 transition-all">
-                <span class="material-symbols-outlined text-sm">edit</span>
-            </button>
-            <button class="p-2 rounded-xl bg-white/5 text-gray-500 hover:text-red-500 transition-all">
-                <span class="material-symbols-outlined text-sm">delete</span>
-            </button>
-        </div>
-    </div>
-    {{else}}
-    <div class="col-span-full py-20 flex flex-col items-center justify-center glass-card border-dashed border-white/10">
-        <div class="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-6">
-            <span class="material-symbols-outlined text-4xl text-gray-600">person_off</span>
-        </div>
-        <h3 class="text-xl font-black text-white mb-2">Nenhum contato encontrado</h3>
-        <p class="text-gray-500 font-medium mb-8">Comece adicionando seu primeiro lead ou cliente ao ecossistema.</p>
-        <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-8 rounded-2xl shadow-xl shadow-orange-500/20 transition-all" data-bs-toggle="modal" data-bs-target="#newRegistryModal">
-            Adicionar Contato
-        </button>
-    </div>
-    {{/each}}
+ <div class="flex items-center gap-2 pt-3 border-t border-white/5 relative z-10">
+ <button class="flex-1 bg-white/5 hover:bg-white/10 text-white text-[9px] font-black uppercase tracking-widest py-1.5 rounded-lg transition-all">Detalhes</button>
+ <button class="w-7 h-7 rounded-lg bg-white/5 text-gray-500 hover:text-orange-500 transition-all flex items-center justify-center"><span class="material-symbols-outlined text-xs">edit</span></button>
+ </div>
+ </div>
+ {{/each}}
+ </div>
+
+ <!-- LIST VIEW (Table Format) -->
+ <div id="contactsListContainer" class="hidden glass-card rounded-2xl overflow-hidden border border-white/5">
+ <div class="overflow-x-auto custom-scrollbar max-h-[600px]">
+ <table class="w-full text-left border-collapse">
+ <thead class="sticky top-0 bg-[#0a0b0e] z-20">
+ <tr>
+ <th class="py-4 px-6 text-[10px] font-black uppercase tracking-widest text-gray-500 border-b border-white/5">Contato</th>
+ <th class="py-4 px-6 text-[10px] font-black uppercase tracking-widest text-gray-500 border-b border-white/5">Empresa / Tipo</th>
+ <th class="py-4 px-6 text-[10px] font-black uppercase tracking-widest text-gray-500 border-b border-white/5">Categoria</th>
+ <th class="py-4 px-6 text-[10px] font-black uppercase tracking-widest text-gray-500 border-b border-white/5">Contato (Email/Tel)</th>
+ <th class="py-4 px-6 text-[10px] font-black uppercase tracking-widest text-gray-500 border-b border-white/5 text-right">Ações</th>
+ </tr>
+ </thead>
+ <tbody class="divide-y divide-white/5">
+ {{#each clients}}
+ <tr class="hover:bg-white/5 transition-colors contact-list-item contact-item" data-category="{{this.category}}" data-name="{{this.name}}" data-company="{{this.company}}" data-email="{{this.email}}">
+ <td class="py-3 px-6">
+ <div class="flex items-center gap-3">
+ <div class="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-500 font-black text-xs">{{firstLetter this.name}}</div>
+ <span class="text-sm font-bold text-white">{{this.name}}</span>
+ </div>
+ </td>
+ <td class="py-3 px-6">
+ <div class="flex flex-col">
+ <span class="text-xs font-bold text-gray-300">{{this.company}}</span>
+ <span class="text-[9px] font-black uppercase text-gray-500">{{this.type}}</span>
+ </div>
+ </td>
+ <td class="py-3 px-6">
+ <span class="text-[9px] font-black px-2 py-1 rounded uppercase {{#if (eq this.category 'Lead')}}text-orange-400 bg-orange-500/10{{else if (eq this.category 'Cliente')}}text-emerald-400 bg-emerald-500/10{{else}}text-sky-400 bg-sky-400/10{{/if}}">{{this.category}}</span>
+ </td>
+ <td class="py-3 px-6">
+ <div class="flex flex-col gap-1">
+ <span class="text-xs text-gray-400 flex items-center gap-2"><span class="material-symbols-outlined text-[10px]">mail</span> {{this.email}}</span>
+ <span class="text-xs text-gray-400 flex items-center gap-2"><span class="material-symbols-outlined text-[10px]">call</span> {{formatPhone this.phone}}</span>
+ </div>
+ </td>
+ <td class="py-3 px-6 text-right">
+ <div class="flex items-center justify-end gap-2">
+ <a href="{{formatWhatsappLink this.phone this.name 'lead'}}" target="_blank" class="p-1.5 rounded bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20"><i class="fab fa-whatsapp text-xs"></i></a>
+ <button class="p-1.5 rounded bg-white/5 text-gray-400 hover:text-white"><span class="material-symbols-outlined text-xs">edit</span></button>
+ <button class="p-1.5 rounded bg-white/5 text-gray-400 hover:text-red-400"><span class="material-symbols-outlined text-xs">delete</span></button>
+ </div>
+ </td>
+ </tr>
+ {{/each}}
+ </tbody>
+ </table>
+ </div>
+ </div>
+
+ <!-- SEARCH VIEW (Ultra Compact) -->
+ <div id="contactsSearchContainer" class="hidden flex-col gap-2">
+ {{#each clients}}
+ <div class="contact-search-item contact-item flex items-center justify-between p-3 rounded-xl bg-white/[0.02] hover:bg-white/5 border border-white/5 transition-colors" data-category="{{this.category}}" data-name="{{this.name}}" data-company="{{this.company}}" data-email="{{this.email}}">
+ <div class="flex items-center gap-4 flex-1">
+ <span class="text-[9px] font-black px-2 py-0.5 w-16 text-center rounded uppercase {{#if (eq this.category 'Lead')}}text-orange-400 bg-orange-500/10{{else if (eq this.category 'Cliente')}}text-emerald-400 bg-emerald-500/10{{else}}text-sky-400 bg-sky-400/10{{/if}}">{{this.category}}</span>
+ <span class="text-xs font-bold text-white w-48 truncate">{{this.name}}</span>
+ <span class="text-[10px] text-gray-400 w-32 truncate"><i class="material-symbols-outlined text-[10px] align-middle mr-1">business</i>{{this.company}}</span>
+ <span class="text-[10px] text-gray-400 w-48 truncate"><i class="material-symbols-outlined text-[10px] align-middle mr-1">mail</i>{{this.email}}</span>
+ <span class="text-[10px] text-gray-400 w-32"><i class="material-symbols-outlined text-[10px] align-middle mr-1">call</i>{{formatPhone this.phone}}</span>
+ </div>
+ <div class="flex items-center gap-2">
+ <button class="px-3 py-1 rounded bg-white/5 hover:bg-white/10 text-white text-[9px] font-black uppercase tracking-widest transition-all">Ver</button>
+ </div>
+ </div>
+ {{/each}}
+ </div>
+
+ {{#unless clients.length}}
+ <div class="col-span-full py-20 flex flex-col items-center justify-center glass-card border-dashed border-white/10">
+ <div class="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-6">
+ <span class="material-symbols-outlined text-4xl text-gray-600">person_off</span>
+ </div>
+ <h3 class="text-xl font-black text-white mb-2">Nenhum contato encontrado</h3>
+ <p class="text-gray-500 font-medium mb-8">Comece adicionando seu primeiro lead ou cliente ao ecossistema.</p>
+ <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-8 rounded-2xl shadow-xl shadow-orange-500/20 transition-all" data-bs-toggle="modal" data-bs-target="#newRegistryModal">
+ Adicionar Contato
+ </button>
+ </div>
+ {{/unless}}
 </div>
+
+<script>
+let currentCategory = 'all';
+
+function addCustomCategory() {
+ const newCat = prompt("Digite o nome da nova categoria para filtrar:");
+ if (newCat && newCat.trim() !== '') {
+ const group = document.getElementById('contactFilterGroup');
+ const btn = document.createElement('button');
+ btn.onclick = function() { setCategoryFilter(newCat.trim(), this); };
+ btn.className = "filter-btn px-6 py-2 rounded-xl bg-white/5 text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all";
+ btn.textContent = newCat.trim();
+ // Insert before the Add button
+ group.insertBefore(btn, group.lastElementChild);
+ setCategoryFilter(newCat.trim(), btn);
+ }
+}
+
+function setCategoryFilter(cat, btn) {
+ currentCategory = cat;
+ document.querySelectorAll('.filter-btn').forEach(b => {
+ b.className = "filter-btn px-6 py-2 rounded-xl bg-white/5 text-gray-400 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all";
+ });
+ btn.className = "filter-btn px-6 py-2 rounded-xl bg-orange-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-orange-500/20";
+ filterContacts();
+}
+
+function filterContacts() {
+ const query = (document.getElementById('contactSearchInput')?.value || '').toLowerCase();
+ const allItems = document.querySelectorAll('.contact-item');
+
+ allItems.forEach(item => {
+ const category = item.getAttribute('data-category') || '';
+ const name = (item.getAttribute('data-name') || '').toLowerCase();
+ const company = (item.getAttribute('data-company') || '').toLowerCase();
+ const email = (item.getAttribute('data-email') || '').toLowerCase();
+
+ const matchesCat = (currentCategory === 'all' || category.toLowerCase() === currentCategory.toLowerCase());
+ const matchesSearch = name.includes(query) || company.includes(query) || email.includes(query);
+
+ if (matchesCat && matchesSearch) {
+ item.style.display = '';
+ } else {
+ item.style.display = 'none';
+ }
+ });
+}
+
+function setViewMode(mode) {
+ const gridContainer = document.getElementById('contactsGridContainer');
+ const listContainer = document.getElementById('contactsListContainer');
+ const searchContainer = document.getElementById('contactsSearchContainer');
+ 
+ const btnGrid = document.getElementById('viewBtnGrid');
+ const btnList = document.getElementById('viewBtnList');
+ const btnBlock = document.getElementById('viewBtnBlock');
+ const btnSearch = document.getElementById('viewBtnSearch');
+
+ [btnGrid, btnList, btnBlock, btnSearch].forEach(btn => {
+ btn.className = 'p-2 rounded-xl text-gray-400 hover:text-white transition-all';
+ });
+
+ gridContainer.classList.add('hidden');
+ listContainer.classList.add('hidden');
+ searchContainer.classList.add('hidden');
+
+ if (mode === 'grid') {
+ gridContainer.classList.remove('hidden');
+ gridContainer.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4';
+ btnGrid.className = 'p-2 rounded-xl bg-white/10 text-white transition-all';
+ } else if (mode === 'block') {
+ gridContainer.classList.remove('hidden');
+ gridContainer.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-8';
+ btnBlock.className = 'p-2 rounded-xl bg-white/10 text-white transition-all';
+ } else if (mode === 'list') {
+ listContainer.classList.remove('hidden');
+ btnList.className = 'p-2 rounded-xl bg-white/10 text-white transition-all';
+ } else if (mode === 'search') {
+ searchContainer.classList.remove('hidden');
+ // keep search flex structure
+ searchContainer.className = 'flex flex-col gap-2';
+ btnSearch.className = 'p-2 rounded-xl bg-orange-500/20 text-orange-400 transition-all';
+ }
+}
+</script>

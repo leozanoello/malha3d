@@ -20,15 +20,31 @@ function injectTenantFilter(options, tenantId) {
       options.where = {};
     }
 
-    // Support object-based where clauses
+    const tenantCondition = {
+      [Op.or]: [
+        { userId: tenantId },
+        { userId: null }
+      ]
+    };
+
     if (typeof options.where === 'object' && !Array.isArray(options.where) && !(options.where instanceof Date)) {
-      // Overwrite/ensure tenant isolation
-      options.where.userId = tenantId;
+      if (Object.keys(options.where).length === 0) {
+        options.where = tenantCondition;
+      } else {
+        const existingWhere = { ...options.where };
+        delete existingWhere.userId;
+        options.where = {
+          [Op.and]: [
+            existingWhere,
+            tenantCondition
+          ]
+        };
+      }
     } else {
       options.where = {
         [Op.and]: [
           options.where,
-          { userId: tenantId }
+          tenantCondition
         ]
       };
     }
@@ -38,7 +54,6 @@ function injectTenantFilter(options, tenantId) {
   if (options.include && Array.isArray(options.include)) {
     options.include.forEach((inc, index) => {
       if (inc && inc.prototype && inc.prototype instanceof require('sequelize').Model) {
-        // Shorthand: normalize to object
         const normalized = { model: inc };
         injectTenantFilter(normalized, tenantId);
         options.include[index] = normalized;

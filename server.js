@@ -23,7 +23,7 @@ app.set('trust proxy', 1);
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 app.set('io', io);
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3005;
 
 // Configuração de segurança
 app.use(helmet({
@@ -49,7 +49,7 @@ app.use(compression());
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 1000, // aumentado de 100 para 1000 para evitar bloqueios em desenvolvimento
+  max: 100000, // aumentado massivamente para evitar bloqueios em desenvolvimento e carregamento de assets
   message: 'Muitas requisições deste IP, tente novamente mais tarde.'
 });
 app.use(limiter);
@@ -239,8 +239,19 @@ const hbs = exphbs.create({
       return divisor === 0 ? 0 : (parseFloat(a) || 0) / divisor;
     },
     round: (val) => Math.round(parseFloat(val) || 0),
+    abs: (val) => Math.abs(parseFloat(val) || 0),
+    formatCurrencyAbs: (value) => {
+      if (value === null || value === undefined) {return 'R$ 0,00';}
+      const num = Math.abs(parseFloat(value));
+      if (isNaN(num)) {return 'R$ 0,00';}
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(num);
+    },
 
     // === UTILITY & ARRAY HELPERS ===
+    cardFields: () => {
+      const { getCardFields } = require('./utils/cardFieldSync');
+      return JSON.stringify(getCardFields());
+    },
     array: (...args) => args.slice(0, -1),
     length: (arr) => (arr && arr.length) ? arr.length : 0,
     list: (...args) => args.slice(0, -1),
@@ -286,6 +297,28 @@ const hbs = exphbs.create({
       };
       const message = messages[context] || messages.default;
       return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+    },
+    archvizBanner: (leadId) => {
+      const banners = [
+        '0e36b4cd-1981-46d7-8e91-d4183a39f14a_3840w.webp',
+        '30104e3c-5eea-4b93-93e9-5313698a7156_1600w.webp',
+        '461d6fd4-8774-41dc-a180-80147d86443d_3840w.webp',
+        '5bab247f-35d9-400d-a82b-fd87cfe913d2_1600w.webp',
+        '76f2442d-8a92-481f-bc04-36aed4707d00_3840w.webp',
+        'c4b1c00e-873c-45a6-a351-b6b876982dcb_3840w.webp',
+        'c8355bfd-b4cf-4e82-a0a9-4899168c6eb8_3840w.webp',
+        'd91cfab1-9249-46f6-987b-264eafc85edb_3840w.webp',
+        'e71e0aaf-f809-4930-bf94-3ba0f1467b95_3840w.webp',
+        'e78406f4-7926-4adb-be74-591ab7a9bd35_3840w.webp'
+      ];
+      if (!leadId) return banners[0];
+      let hash = 0;
+      const str = String(leadId);
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return banners[Math.abs(hash) % banners.length];
     }
   }
 });
@@ -306,6 +339,9 @@ app.use((req, res, next) => {
   res.locals.error = req.flash('error');
   res.locals.user = req.user || req.session.user || null;
   res.locals.isAdmin = (req.user && req.user.role === 'admin') || (req.session.user && req.session.user.role === 'admin');
+  // isDev: true para usuários internos (admin, staff, collaborator) — exibe menus avançados
+  const userRole = (req.user && req.user.role) || (req.session.user && req.session.user.role) || '';
+  res.locals.isDev = ['admin', 'staff', 'collaborator'].includes(userRole);
   res.locals.query = req.query;
   next();
 });
@@ -365,55 +401,53 @@ app.use((err, req, res, _next) => {
   });
 });
 
-// Iniciar servidor
-if (require.main === module) {
-  // Socket.io connection handling
-  io.on('connection', (socket) => {
-    console.log('New client connected:', socket.id);
+// Socket.io connection handling
+io.on('connection', (socket) => {
+  console.log('New client connected:', socket.id);
 
-    socket.on('join_chat', (room) => {
-      socket.join(room);
-      console.log(`User joined room: ${room}`);
-    });
+  socket.on('join_chat', (room) => {
+    socket.join(room);
+    console.log(`User joined room: ${room}`);
+  });
 
-    socket.on('send_message', (data) => {
-      // In a real app, we would save to DB here
-      io.emit('receive_message', {
-        user: data.user,
-        text: data.text,
-        timestamp: new Date()
-      });
-    });
-
-    socket.on('disconnect', () => {
-      console.log('Client disconnected');
+  socket.on('send_message', (data) => {
+    // In a real app, we would save to DB here
+    io.emit('receive_message', {
+      user: data.user,
+      text: data.text,
+      timestamp: new Date()
     });
   });
 
-  // Inicialização do servidor
-  const startServer = async () => {
-    try {
-      await sequelize.authenticate();
-      const isConnected = true;
-      if (isConnected) {
-        // Sync schema to apply ProjectLog and new columns
-        // await sequelize.sync({ alter: true });
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+});
 
-        server.listen(PORT, () => {
-          console.log(`🚀 Malha3D Admin rodando em http://localhost:${PORT}`);
-          console.log(`📡 WebSocket ativo para Chat Interno`);
-        });
-      } else {
-        console.error('Falha ao iniciar o servidor: Erro na conexão com o banco de dados.');
-        process.exit(1);
-      }
-    } catch (error) {
-      console.error('Erro crítico ao iniciar o servidor:', error);
-      process.exit(1);
+const startServer = async () => {
+  try {
+    await sequelize.authenticate();
+    const isConnected = true;
+    if (isConnected) {
+      // Sync schema with alter: true to automatically add any missing columns
+      await sequelize.sync();
+
+      return server.listen(PORT, () => {
+        console.log(`🚀 Malha3D Admin rodando em http://localhost:${PORT}`);
+        console.log('📡 WebSocket ativo para Chat Interno');
+      });
     }
-  };
 
+    console.error('Falha ao iniciar o servidor: Erro na conexão com o banco de dados.');
+    process.exit(1);
+  } catch (error) {
+    console.error('Erro crítico ao iniciar o servidor:', error);
+    process.exit(1);
+  }
+};
+
+if (require.main === module) {
   startServer();
 }
 
-module.exports = app;
+module.exports = { app, startServer };

@@ -1,0 +1,177 @@
+<div class="container-fluid py-4 h-screen flex flex-col overflow-hidden">
+ <div class="flex items-center justify-between mb-4 px-4">
+ <div>
+ <h1 class="text-2xl font-black text-white uppercase tracking-tight">Gestão de <span class="text-gradient">Tabelas</span></h1>
+ <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-1">Visualize, edite e organize os dados do sistema</p>
+ </div>
+ </div>
+
+ <div class="flex flex-1 gap-4 px-4 min-h-0">
+ <!-- Lista de Tabelas (Sidebar) -->
+ <div class="w-64 shrink-0 glass-card rounded-2xl border-white/5 p-3 overflow-y-auto custom-scrollbar">
+ <h3 class="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-2 px-2">Tabelas ({{tables.length}})</h3>
+ <div class="space-y-1">
+ {{#each tables}}
+ <button onclick="window.loadTable('{{this.name}}')" class="table-btn w-full text-left px-3 py-2 rounded-lg text-[9px] font-bold text-gray-400 hover:bg-white/5 hover:text-white flex items-center justify-between">
+ <span class="truncate">{{this.name}}</span>
+ <span class="text-[8px] bg-white/10 px-1.5 py-0.5 rounded-full text-gray-500">{{this.count}}</span>
+ </button>
+ {{/each}}
+ </div>
+ </div>
+
+ <!-- Conteúdo da Tabela -->
+ <div class="flex-1 glass-card rounded-2xl border-white/5 flex flex-col overflow-hidden">
+ <div class="p-3 border-b border-white/5 flex items-center justify-between shrink-0">
+ <h3 id="tableTitle" class="text-xs font-black text-white uppercase tracking-widest">Selecione uma tabela</h3>
+ <div class="flex items-center gap-2">
+ <span id="tableCount" class="text-[9px] font-bold text-gray-500"></span>
+ <button id="btnAddRow" onclick="window.addRowToTable()" class="hidden px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white flex items-center gap-1">
+ <span class="material-symbols-outlined text-[12px]">add</span> Adicionar
+ </button>
+ </div>
+ </div>
+ <div class="flex-1 overflow-auto custom-scrollbar" id="tableContent">
+ <div class="flex items-center justify-center h-full opacity-30">
+ <div class="text-center">
+ <span class="material-symbols-outlined text-5xl text-gray-600 mb-2">table_chart</span>
+ <p class="text-xs font-black text-gray-500 uppercase">Clique em uma tabela à esquerda</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+</div>
+
+<script>
+let _currentTableName = '';
+let _currentTableColumns = [];
+
+window.loadTable = async function(name) {
+ _currentTableName = name;
+ // Marcar ativo
+ document.querySelectorAll('.table-btn').forEach(b => b.classList.remove('bg-orange-500/10', 'text-orange-400'));
+ event.currentTarget.classList.add('bg-orange-500/10', 'text-orange-400');
+ // Mostrar botão Adicionar
+ document.getElementById('btnAddRow').classList.remove('hidden');
+
+ document.getElementById('tableTitle').textContent = name;
+ document.getElementById('tableContent').innerHTML = '<div class="p-4 text-center text-[10px] text-gray-500">Carregando...</div>';
+
+ try {
+  const res = await fetch('/admin/api/tabelas/' + name);
+  const data = await res.json();
+  if (!data.success) { document.getElementById('tableContent').innerHTML = '<p class="p-4 text-red-400">Erro</p>'; return; }
+
+  document.getElementById('tableCount').textContent = data.total + ' registros';
+
+  if (data.rows.length === 0) {
+   document.getElementById('tableContent').innerHTML = '<div class="flex items-center justify-center h-full opacity-30"><p class="text-xs text-gray-500">Tabela vazia</p></div>';
+   return;
+  }
+
+  const cols = data.columns;
+  _currentTableColumns = cols;
+  let html = '<table class="w-full text-left text-[9px]"><thead><tr class="bg-white/[0.02] sticky top-0">';
+  cols.forEach(c => { html += '<th class="px-3 py-2 font-black text-gray-500 uppercase tracking-widest whitespace-nowrap">' + c + '</th>'; });
+  html += '<th class="px-3 py-2 font-black text-gray-500 uppercase text-right">Ações</th></tr></thead><tbody class="divide-y divide-white/5">';
+
+  data.rows.forEach(row => {
+   html += '<tr class="hover:bg-white/[0.03]">';
+   cols.forEach(c => {
+    let val = row[c];
+    if (val === null) val = '<span class="text-gray-600">null</span>';
+    else if (typeof val === 'string' && val.length > 40) val = val.substring(0, 40) + '...';
+    html += '<td class="px-3 py-2 text-gray-300 whitespace-nowrap max-w-[150px] truncate" title="' + (row[c]||'').toString().replace(/"/g,'&quot;') + '">' + val + '</td>';
+   });
+   html += '<td class="px-3 py-2 text-right"><button onclick="window.editRow(\'' + name + '\',\'' + row.id + '\')" class="px-1.5 py-0.5 bg-white/5 rounded text-gray-400 hover:text-orange-400 text-[8px] font-bold mr-1">Editar</button><button onclick="window.deleteRow(\'' + name + '\',\'' + row.id + '\')" class="px-1.5 py-0.5 bg-red-500/10 rounded text-red-400 hover:text-red-300 text-[8px] font-bold">Excluir</button></td>';
+   html += '</tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('tableContent').innerHTML = html;
+ } catch (e) {
+  document.getElementById('tableContent').innerHTML = '<p class="p-4 text-red-400">Erro ao carregar</p>';
+ }
+};
+
+window.editRow = function(table, id) {
+ const field = prompt('Campo a editar (nome da coluna):');
+ if (!field) return;
+ const value = prompt('Novo valor para "' + field + '":');
+ if (value === null) return;
+ fetch('/admin/api/tabelas/' + table + '/' + id, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ field, value })
+ }).then(r => r.json()).then(d => {
+  if (d.success) { if (window.showToast) window.showToast('Atualizado!', 'success'); window.loadTable(table); }
+  else alert(d.error || 'Erro');
+ });
+};
+
+window.deleteRow = function(table, id) {
+ if (!confirm('Excluir este registro permanentemente?')) return;
+ fetch('/admin/api/tabelas/' + table + '/' + id, { method: 'DELETE' })
+ .then(r => r.json()).then(d => {
+  if (d.success) { if (window.showToast) window.showToast('Excluído!', 'info'); window.loadTable(table); }
+  else alert(d.error || 'Erro');
+ });
+};
+
+// === ADICIONAR REGISTRO NA TABELA ===
+window.addRowToTable = function() {
+ if (!_currentTableName || !_currentTableColumns.length) return;
+ const existing = document.getElementById('addRowModal');
+ if (existing) existing.remove();
+
+ // Filtrar colunas editáveis (excluir id, created_at, updated_at)
+ const editableCols = _currentTableColumns.filter(c => !['id','created_at','updated_at','createdAt','updatedAt'].includes(c));
+
+ const fields = editableCols.map(col => `
+  <div>
+   <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">${col}</label>
+   <input type="text" id="newrow_${col}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="${col}">
+  </div>
+ `).join('');
+
+ const modal = `
+  <div id="addRowModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm" style="display:flex;">
+   <div class="bg-[#0a0c10] border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden flex flex-col max-h-[85vh]">
+    <header class="p-3 border-b border-white/5 flex items-center justify-between shrink-0">
+     <h3 class="text-sm font-black text-white">Adicionar em: ${_currentTableName}</h3>
+     <button onclick="document.getElementById('addRowModal').remove()" class="w-7 h-7 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center"><span class="material-symbols-outlined text-sm">close</span></button>
+    </header>
+    <div class="p-4 overflow-y-auto custom-scrollbar space-y-2 flex-1">
+     ${fields}
+    </div>
+    <footer class="p-3 border-t border-white/5 flex gap-2 shrink-0">
+     <button onclick="document.getElementById('addRowModal').remove()" class="flex-1 py-2 rounded-lg bg-white/5 text-white text-[9px] font-black uppercase border border-white/10">Cancelar</button>
+     <button onclick="window.saveNewRow()" class="flex-[2] py-2 rounded-lg bg-emerald-500 text-white text-[9px] font-black uppercase shadow-lg">Salvar</button>
+    </footer>
+   </div>
+  </div>
+ `;
+ document.body.insertAdjacentHTML('beforeend', modal);
+};
+
+window.saveNewRow = function() {
+ const editableCols = _currentTableColumns.filter(c => !['id','created_at','updated_at','createdAt','updatedAt'].includes(c));
+ const data = {};
+ editableCols.forEach(col => {
+  const val = document.getElementById('newrow_' + col)?.value;
+  if (val && val.trim()) data[col] = val.trim();
+ });
+ if (Object.keys(data).length === 0) { alert('Preencha ao menos um campo'); return; }
+ fetch('/admin/api/tabelas/' + _currentTableName + '/insert', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(data)
+ }).then(r => r.json()).then(d => {
+  if (d.success) {
+   document.getElementById('addRowModal').remove();
+   if (window.showToast) window.showToast('Registro adicionado!', 'success');
+   window.loadTable(_currentTableName);
+  } else alert(d.error || 'Erro');
+ }).catch(() => alert('Erro de rede'));
+};
+</script>

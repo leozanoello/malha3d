@@ -1,7 +1,7 @@
 <!-- Global Modals for Malha 3D Dashboard -->
 
 <!-- <!-- 1. Modal: Criar Novo Projeto (Archviz High-Density Compact) -->
-<div class="modal fade" id="newProjectModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="newProjectModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] bg-[#0a0c10]/98 backdrop-blur-3xl overflow-hidden scale-95">
             <div class="modal-header border-white/5 p-5 bg-white/[0.02]">
@@ -130,18 +130,18 @@
         </div>
     </div>
 </div>rm>
-        </div>
-    </div>
-</div>
+        
+    
+
 
 <!-- 2. Modal: Novo Cadastro (Stakeholders / CRM Compact) -->
-<div class="modal fade" id="newRegistryModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="newRegistryModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] bg-[#0a0c10]/98 backdrop-blur-3xl overflow-hidden scale-90">
             <div class="modal-header border-white/5 p-6">
                 <h2 class="text-lg font-black text-white tracking-tight flex items-center gap-3">
                     <span class="material-symbols-outlined text-orange-500">person_add</span>
-                    Identificar Stakeholder
+                    Criar Contato
                 </h2>
                 <button type="button" class="btn-close btn-close-white scale-75 opacity-30" data-bs-dismiss="modal"></button>
             </div>
@@ -234,9 +234,14 @@
                         <textarea name="notes" class="input-premium-compact py-2 h-16 no-scrollbar resize-none" placeholder="Observações importantes..."></textarea>
                     </div>
 
-                    <button type="submit" class="w-full bg-white/10 hover:bg-white/20 text-white font-black py-4 rounded-xl transition-all text-[10px] uppercase tracking-widest border border-white/10 mt-4">
-                        CONFIRMAR CADASTRO
-                    </button>
+                    <div class="grid grid-cols-2 gap-2 mt-4">
+                        <button type="button" class="bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white font-black py-4 rounded-xl transition-all text-[10px] uppercase tracking-widest border border-white/10" data-bs-dismiss="modal">
+                            CANCELAR
+                        </button>
+                        <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-xl shadow-lg shadow-orange-500/20 transition-all text-[10px] uppercase tracking-widest border border-orange-500/20">
+                            CONFIRMAR CADASTRO
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -244,7 +249,7 @@
 </div>
 
 <!-- 3. Modal: Nova Transação Financeira -->
-<div class="modal fade" id="newTransactionModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="newTransactionModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2.5rem] bg-[#0a0c10]/95 backdrop-blur-3xl overflow-hidden">
             <div class="modal-header border-white/5 p-8 flex flex-col items-start gap-4">
@@ -378,7 +383,7 @@
 </style>
 
 <!-- Modal Perfil do Usuário -->
-<div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+<div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content glass-card">
       <div class="modal-header border-bottom border-white/5 p-4 flex justify-between items-center">
@@ -412,7 +417,7 @@
               <!-- Upload Avatar Section -->
               <div class="flex flex-col items-center justify-center mb-6">
                 <div class="relative w-28 h-28 rounded-full overflow-hidden group border-2 border-orange-500 cursor-pointer" id="avatar-upload-zone">
-                  <img id="avatar-preview" src="{{#if user.avatar}}{{user.avatar}}{{else}}/public/images/default-avatar.png{{/if}}" class="w-full h-full object-cover transition-transform group-hover:scale-105" alt="Avatar">
+                  <img id="avatar-preview" src="{{#if user.avatar}}{{user.avatar}}{{else}}/images/default-avatar.png{{/if}}" class="w-full h-full object-cover transition-transform group-hover:scale-105" alt="Avatar">
                   <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-opacity">
                     <span class="material-symbols-outlined text-orange-500 text-2xl">photo_camera</span>
                     <span class="text-[8px] font-black text-white uppercase tracking-widest mt-1">Alterar Foto</span>
@@ -568,7 +573,8 @@
 </div>
 
 <!-- Modal: Detalhes da Tarefa 360º -->
-<div class="modal fade" id="taskDetailsModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+</div>
+<div class="modal fade" id="taskDetailsModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content glass-card border-white/10 shadow-2xl rounded-[2rem] bg-[#0a0c10]/98 backdrop-blur-3xl overflow-hidden">
       
@@ -1127,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (user.avatar) {
                     document.getElementById('avatar-preview').src = user.avatar;
                 } else {
-                    document.getElementById('avatar-preview').src = '/public/images/default-avatar.png';
+                    document.getElementById('avatar-preview').src = '/images/default-avatar.png';
                 }
                 
                 // Tema do sistema

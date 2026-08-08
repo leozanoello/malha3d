@@ -1,9 +1,201 @@
 const { Setting } = require('../models');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+
+// Curated ArchViz stock renders used as an instant fallback banner whenever no
+// image-generation API key is configured, or the AI call fails.
+// Usa Picsum (lorem picsum) com baixíssima resolução para servir imagens
+// realmente aleatórias que mudam a cada chamada — não a mesma imagem para
+// todos os cards. O parâmetro ?random=N garante aleatoriedade total.
+function buildRandomArchVizBanner() {
+  const randomId = Math.floor(Math.random() * 1000);
+  // Resolução baixíssima (64x64) mas com qualidade visual aceitável via blur
+  // CSS no front-end. Picsum entrega uma imagem JPEG bem leve (~5KB).
+  return `https://picsum.photos/seed/archviz${randomId}/64/64.jpg?blur=1&random=${Date.now()}`;
+}
+function pickRandomArchVizBanner() {
+  // Pega URL aleatória da Picsum — cada lead recebe uma imagem ÚNICA e diferente.
+  return buildRandomArchVizBanner();
+}
 
 /**
  * AI Service for ArchViz Subjectivity & Risk Analysis
  */
 class AIService {
+  /**
+   * Deterministically picks a fallback banner for a lead (stable across reloads).
+   * @param {string} seed Any stable identifier (usually the lead id)
+   */
+  pickFallbackBanner(seed) {
+    // Sempre aleatório: cada chamada gera uma nova imagem única via Picsum
+    return pickRandomArchVizBanner();
+  }
+
+  /**
+   * Generates an AI architecture visualization banner for a CRM lead/card.
+   * Tries OpenAI's image generation API (DALL-E 3) using the same
+   * Settings-table-or-env credential lookup as analyzeBriefingComplexity.
+   * Falls back to a curated stock ArchViz render when no key is configured
+   * or the request fails, so the card always ends up with a real image.
+   * @param {object} lead Plain lead/budget object (id, projectType, visualStyle, etc.)
+   * @returns {Promise<{ imageUrl: string, source: 'ai' | 'fallback' }>}
+   */
+  async generateArchVizImage(lead) {
+    try {
+      const openAiKeySetting = await Setting.findOne({ where: { key: 'openai_api_key' } });
+      const openAiKey = openAiKeySetting?.value || process.env.OPENAI_API_KEY;
+
+      if (openAiKey && openAiKey.trim() !== '') {
+        const styleParts = [
+          lead.projectCategory,
+          lead.projectType,
+          lead.predominantStyle || lead.visualStyle,
+          lead.desiredAtmosphere
+        ].filter(Boolean).join(', ');
+
+        const prompt = `Professional architecture visualization (ArchViz) render, photorealistic, ` +
+          `${styleParts || 'contemporary residential building'}, golden hour lighting, ` +
+          `high-end real estate marketing photo, ultra detailed, 8k, no text, no watermark, no people.`;
+
+        const response = await fetch('https://api.openai.com/v1/images/generations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openAiKey.trim()}`
+          },
+          body: JSON.stringify({
+            model: 'dall-e-3',
+            prompt,
+            n: 1,
+            size: '1024x1024',
+            response_format: 'url'
+          })
+        });
+
+        if (response.ok) {
+          const resData = await response.json();
+          const remoteUrl = resData.data?.[0]?.url;
+          if (remoteUrl) {
+            const imageRes = await fetch(remoteUrl);
+            if (imageRes.ok) {
+              const buffer = Buffer.from(await imageRes.arrayBuffer());
+              const dir = path.join(__dirname, '..', 'public', 'uploads', 'leads');
+              fs.mkdirSync(dir, { recursive: true });
+              const filename = `${lead.id}-${Date.now()}.webp`;
+              // Comprimir com Sharp para WebP (max 1200px, 75% quality)
+              try {
+                const sharp = require('sharp');
+                await sharp(buffer)
+                  .resize({ width: 1200, withoutEnlargement: true })
+                  .webp({ quality: 75 })
+                  .toFile(path.join(dir, filename));
+              } catch (sharpErr) {
+                fs.writeFileSync(path.join(dir, filename.replace('.webp', '.png')), buffer);
+                return { imageUrl: `/uploads/leads/${filename.replace('.webp', '.png')}`, source: 'ai' };
+              }
+              return { imageUrl: `/uploads/leads/${filename}`, source: 'ai' };
+            }
+          }
+        } else {
+          const errBody = await response.text().catch(() => '');
+          console.error('[AI Service] OpenAI image generation failed:', response.status, errBody);
+        }
+      }
+    } catch (error) {
+      console.error('[AI Service] Erro ao gerar imagem ArchViz, ativando fallback:', error.message);
+    }
+
+    return { imageUrl: this.pickFallbackBanner(lead.id), source: 'fallback' };
+  }
+
+  /**
+   * Reads a receipt/invoice photo and extracts structured transaction data
+   * using OpenAI's vision-capable chat completions endpoint (gpt-4o-mini).
+   * @param {string} imagePath Absolute path to the uploaded image on disk
+   * @returns {Promise<{ success: boolean, data?: object, message?: string }>}
+   */
+  async extractReceiptData(imagePath) {
+    const openAiKeySetting = await Setting.findOne({ where: { key: 'openai_api_key' } });
+    const openAiKey = openAiKeySetting?.value || process.env.OPENAI_API_KEY;
+
+    if (!openAiKey || openAiKey.trim() === '') {
+      return {
+        success: false,
+        message: 'Nenhuma chave de API de IA configurada. Adicione uma chave OpenAI em Configurações para usar o upload inteligente.'
+      };
+    }
+
+    const imageBuffer = fs.readFileSync(imagePath);
+    const ext = path.extname(imagePath).replace('.', '') || 'jpeg';
+    const mimeType = ext === 'png' ? 'image/png' : 'image/jpeg';
+    const base64Image = imageBuffer.toString('base64');
+
+    const prompt = `Você é um assistente financeiro. Analise a imagem de um comprovante, recibo, nota fiscal ou print de pagamento e extraia as informações da transação.
+
+Retorne APENAS um objeto JSON no formato abaixo, sem blocos de código markdown ou texto extra:
+{
+  "description": "Nome do estabelecimento ou descrição curta da transação",
+  "amount": 123.45,
+  "type": "despesa ou receita",
+  "paymentMethod": "pix, boleto, cartao, ted ou dinheiro (o que mais se aproximar do comprovante)",
+  "date": "YYYY-MM-DD se identificável, senão null"
+}
+
+Se não conseguir identificar algum campo com confiança, use null para ele (exceto "type", que deve ser sempre "despesa" ou "receita", assumindo "despesa" em caso de dúvida).`;
+
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${openAiKey.trim()}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          response_format: { type: 'json_object' },
+          messages: [
+            {
+              role: 'user',
+              content: [
+                { type: 'text', text: prompt },
+                { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Image}` } }
+              ]
+            }
+          ],
+          temperature: 0.1
+        })
+      });
+
+      if (!response.ok) {
+        const errBody = await response.text().catch(() => '');
+        console.error('[AI Service] Receipt extraction failed:', response.status, errBody);
+        return { success: false, message: 'Não foi possível analisar a imagem. Tente novamente ou preencha manualmente.' };
+      }
+
+      const resData = await response.json();
+      const content = resData.choices?.[0]?.message?.content;
+      if (!content) {
+        return { success: false, message: 'A IA não retornou dados legíveis para essa imagem.' };
+      }
+
+      const parsed = JSON.parse(content.trim());
+      return {
+        success: true,
+        data: {
+          description: parsed.description || null,
+          amount: typeof parsed.amount === 'number' ? parsed.amount : parseFloat(parsed.amount) || null,
+          type: parsed.type === 'receita' ? 'receita' : 'despesa',
+          paymentMethod: parsed.paymentMethod || null,
+          date: parsed.date || null
+        }
+      };
+    } catch (error) {
+      console.error('[AI Service] Erro ao extrair dados do comprovante:', error.message);
+      return { success: false, message: 'Erro de conexão ao analisar a imagem.' };
+    }
+  }
+
   /**
    * Analyzes an ArchViz project briefing and environment list to return a risk multiplier
    * @param {string} briefing Textual description of the project

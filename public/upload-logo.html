@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Logo Malha3D</title>
+    <style>
+        body { font-family: sans-serif; background: #1a1a2e; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 20px; }
+        .upload-box { background: #16213e; border: 2px dashed #f97316; border-radius: 16px; padding: 40px; text-align: center; max-width: 400px; }
+        input[type="file"] { margin: 10px 0; }
+        button { background: #f97316; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px; }
+        button:hover { background: #ea580c; }
+        .status { margin-top: 10px; font-size: 12px; color: #4ade80; }
+        h2 { color: #f97316; }
+        .preview { max-height: 80px; margin: 10px auto; border-radius: 8px; border: 1px solid #333; }
+    </style>
+</head>
+<body>
+    <div class="upload-box">
+        <h2>☀️ Logo Modo CLARO</h2>
+        <p style="font-size:12px; color:#aaa;">Imagem com texto PRETO/escuro para fundo branco</p>
+        <input type="file" id="logoLight" accept="image/*" onchange="previewImg(this,'prevLight')">
+        <img id="prevLight" class="preview" style="display:none">
+        <br><button onclick="upload('light')">Enviar Logo Claro</button>
+        <div class="status" id="statusLight"></div>
+    </div>
+    <div class="upload-box">
+        <h2>🌙 Logo Modo ESCURO</h2>
+        <p style="font-size:12px; color:#aaa;">Imagem com texto BRANCO para fundo escuro</p>
+        <input type="file" id="logoDark" accept="image/*" onchange="previewImg(this,'prevDark')">
+        <img id="prevDark" class="preview" style="display:none">
+        <br><button onclick="upload('dark')">Enviar Logo Escuro</button>
+        <div class="status" id="statusDark"></div>
+    </div>
+
+    <script>
+    function previewImg(input, imgId) {
+        const file = input.files[0];
+        if (file) {
+            document.getElementById(imgId).src = URL.createObjectURL(file);
+            document.getElementById(imgId).style.display = 'block';
+        }
+    }
+    async function upload(mode) {
+        const input = document.getElementById('logo' + (mode === 'light' ? 'Light' : 'Dark'));
+        const status = document.getElementById('status' + (mode === 'light' ? 'Light' : 'Dark'));
+        if (!input.files[0]) { status.textContent = 'Selecione um arquivo primeiro'; return; }
+
+        const formData = new FormData();
+        formData.append('logo', input.files[0]);
+        formData.append('mode', mode);
+
+        status.textContent = 'Enviando...';
+        try {
+            const res = await fetch('/admin/api/upload-logo', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.success) {
+                status.textContent = '✅ Salvo! → ' + data.path;
+                status.style.color = '#4ade80';
+            } else {
+                status.textContent = '❌ Erro: ' + data.error;
+                status.style.color = '#f87171';
+            }
+        } catch(e) {
+            status.textContent = '❌ Erro de rede';
+            status.style.color = '#f87171';
+        }
+    }
+    </script>
+</body>
+</html>

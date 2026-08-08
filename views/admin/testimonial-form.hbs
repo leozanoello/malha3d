@@ -1,325 +1,325 @@
 <div class="page-header">
-    <div>
-        <h1 class="page-title">
-            <i class="fas fa-comments"></i> {{#if isEdit}}Editar Depoimento{{else}}Novo Depoimento{{/if}}
-        </h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="/admin/depoimentos">Depoimentos</a></li>
-                <li class="breadcrumb-item active">{{#if isEdit}}Editar{{else}}Criar{{/if}}</li>
-            </ol>
-        </nav>
-    </div>
-    <div class="page-actions">
-        <a href="/admin/depoimentos" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left"></i> Voltar
-        </a>
-    </div>
+ <div>
+ <h1 class="page-title">
+ <i class="fas fa-comments"></i> {{#if isEdit}}Editar Depoimento{{else}}Novo Depoimento{{/if}}
+ </h1>
+ <nav aria-label="breadcrumb">
+ <ol class="breadcrumb">
+ <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+ <li class="breadcrumb-item"><a href="/admin/depoimentos">Depoimentos</a></li>
+ <li class="breadcrumb-item active">{{#if isEdit}}Editar{{else}}Criar{{/if}}</li>
+ </ol>
+ </nav>
+ </div>
+ <div class="page-actions">
+ <a href="/admin/depoimentos" class="btn btn-outline-secondary">
+ <i class="fas fa-arrow-left"></i> Voltar
+ </a>
+ </div>
 </div>
 
 <div class="row">
-    <div class="col-lg-8">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-user"></i> Informações do Cliente
-                </h5>
-            </div>
-            <div class="card-body">
-                <form id="testimonialForm" enctype="multipart/form-data">
-                    <input type="hidden" name="id" value="{{testimonial.id}}">
-                    
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="mb-3">
-                                <label for="name" class="form-label">
-                                    Nome do Cliente <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="name" name="name" 
-                                       value="{{testimonial.name}}" required>
-                                <div class="invalid-feedback">Por favor, insira o nome do cliente</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="order" class="form-label">
-                                    Ordem de Exibição <span class="text-danger">*</span>
-                                </label>
-                                <input type="number" class="form-control" id="order" name="order" 
-                                       value="{{#if testimonial.order}}{{testimonial.order}}{{else}}0{{/if}}" required>
-                                <div class="invalid-feedback">Por favor, insira a ordem de exibição</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="company" class="form-label">
-                                    Empresa <span class="text-danger">*</span>
-                                </label>
-                                <input type="text" class="form-control" id="company" name="company" 
-                                       value="{{testimonial.company}}" required>
-                                <div class="invalid-feedback">Por favor, insira o nome da empresa</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="role" class="form-label">Cargo/Função</label>
-                                <input type="text" class="form-control" id="role" name="role" 
-                                       value="{{testimonial.role}}" placeholder="Ex: Diretor, Gerente, CEO">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="rating" class="form-label">
-                            Avaliação <span class="text-danger">*</span>
-                        </label>
-                        <div class="rating-input">
-                            <input type="range" class="form-range" id="rating" name="rating" 
-                                   min="1" max="5" value="{{#if testimonial.rating}}{{testimonial.rating}}{{else}}5{{/if}}" 
-                                   oninput="updateRatingDisplay(this.value)">
-                            <div class="rating-display mt-2">
-                                <span id="ratingValue">{{#if testimonial.rating}}{{testimonial.rating}}{{else}}5{{/if}}</span>/5
-                                <div class="rating-stars" id="ratingStars">
-                                    <!-- Stars will be updated by JavaScript -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="content" class="form-label">
-                            Depoimento <span class="text-danger">*</span>
-                        </label>
-                        <textarea class="form-control" id="content" name="content" 
-                                  rows="4" required placeholder="Escreva o depoimento do cliente...">{{testimonial.content}}</textarea>
-                        <div class="invalid-feedback">Por favor, insira o depoimento</div>
-                        <small class="form-text text-muted">
-                            <span id="contentCounter">0</span>/500 caracteres
-                        </small>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="avatar" class="form-label">
-                                    Avatar/Foto
-                                    {{#if testimonial.avatar}}
-                                    <small class="text-muted">(Deixe em branco para manter atual)</small>
-                                    {{/if}}
-                                </label>
-                                <input type="file" class="form-control" id="avatar" name="avatar" 
-                                       accept="image/*" onchange="previewImage(this, 'avatarPreview')">
-                                <small class="form-text text-muted">
-                                    Tamanho recomendado: 400x400px, máximo 2MB
-                                </small>
-                                <div id="avatarPreview" class="preview-container">
-                                    {{#if testimonial.avatar}}
-                                    <img src="{{testimonial.avatar}}" alt="Avatar atual" class="img-thumbnail">
-                                    {{/if}}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="project" class="form-label">Projeto Relacionado</label>
-                                <select class="form-select" id="project" name="project">
-                                    <option value="">Selecione um projeto (opcional)</option>
-                                    {{#each projects}}
-                                    <option value="{{this.id}}" {{#eq ../testimonial.projectId this.id}}selected{{/eq}}>
-                                        {{this.title}}
-                                    </option>
-                                    {{/each}}
-                                </select>
-                                <small class="form-text text-muted">
-                                    Associar este depoimento a um projeto específico
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-lg-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-cog"></i> Configurações
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="isActive" name="isActive" 
-                               {{#if testimonial.isActive}}checked{{/if}}>
-                        <label class="form-check-label" for="isActive">
-                            <i class="fas fa-eye"></i> Depoimento Ativo
-                        </label>
-                    </div>
-                    <small class="form-text text-muted">
-                        Depoimentos inativos não aparecem no site
-                    </small>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="date" class="form-label">Data do Depoimento</label>
-                    <input type="date" class="form-control" id="date" name="date" 
-                           value="{{#if testimonial.date}}{{dateFormat testimonial.date "YYYY-MM-DD"}}{{else}}{{dateFormat (now) "YYYY-MM-DD"}}{{/if}}">
-                    <small class="form-text text-muted">
-                        Data em que o depoimento foi dado
-                    </small>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="source" class="form-label">Fonte/Origem</label>
-                    <select class="form-select" id="source" name="source">
-                        <option value="direct" {{#eq testimonial.source "direct"}}selected{{/eq}}>Direto do Cliente</option>
-                        <option value="email" {{#eq testimonial.source "email"}}selected{{/eq}}>E-mail</option>
-                        <option value="whatsapp" {{#eq testimonial.source "whatsapp"}}selected{{/eq}}>WhatsApp</option>
-                        <option value="social" {{#eq testimonial.source "social"}}selected{{/eq}}>Redes Sociais</option>
-                        <option value="website" {{#eq testimonial.source "website"}}selected{{/eq}}>Site</option>
-                        <option value="other" {{#eq testimonial.source "other"}}selected{{/eq}}>Outro</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card mt-3">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="fas fa-star"></i> Preview
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="testimonial-preview">
-                    <div class="d-flex align-items-center mb-3">
-                        <div id="previewAvatar" class="me-3">
-                            {{#if testimonial.avatar}}
-                            <img src="{{testimonial.avatar}}" alt="Preview" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
-                            {{else}}
-                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                <i class="fas fa-user fa-2x text-muted"></i>
-                            </div>
-                            {{/if}}
-                        </div>
-                        <div>
-                            <h6 id="previewName" class="mb-0">{{#if testimonial.name}}{{testimonial.name}}{{else}}Nome do Cliente{{/if}}</h6>
-                            <p id="previewRole" class="text-muted mb-0">{{#if testimonial.role}}{{testimonial.role}}{{/if}}</p>
-                            <p id="previewCompany" class="text-muted mb-0">{{#if testimonial.company}}{{testimonial.company}}{{/if}}</p>
-                        </div>
-                    </div>
-                    <div id="previewContent" class="testimonial-text">
-                        {{#if testimonial.content}}"{{testimonial.content}}"{{else}}Depoimento do cliente aparecerá aqui...{{/if}}
-                    </div>
-                    <div class="rating-stars mt-2" id="previewRating">
-                        <!-- Will be updated by JavaScript -->
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card mt-3">
-            <div class="card-body">
-                <button type="submit" form="testimonialForm" class="btn btn-primary w-100 mb-2">
-                    <i class="fas fa-save"></i> {{#if isEdit}}Atualizar Depoimento{{else}}Criar Depoimento{{/if}}
-                </button>
-                
-                {{#if isEdit}}
-                <div class="d-grid gap-2">
-                    <button type="button" class="btn btn-outline-danger" onclick="deleteTestimonial({{testimonial.id}})">
-                        <i class="fas fa-trash"></i> Excluir Depoimento
-                    </button>
-                </div>
-                {{/if}}
-            </div>
-        </div>
-    </div>
+ <div class="col-lg-8">
+ <div class="card">
+ <div class="card-header">
+ <h5 class="mb-0">
+ <i class="fas fa-user"></i> Informações do Cliente
+ </h5>
+ </div>
+ <div class="card-body">
+ <form id="testimonialForm" enctype="multipart/form-data">
+ <input type="hidden" name="id" value="{{testimonial.id}}">
+ 
+ <div class="row">
+ <div class="col-md-8">
+ <div class="mb-3">
+ <label for="name" class="form-label">
+ Nome do Cliente <span class="text-danger">*</span>
+ </label>
+ <input type="text" class="form-control" id="name" name="name" 
+ value="{{testimonial.name}}" required>
+ <div class="invalid-feedback">Por favor, insira o nome do cliente</div>
+ </div>
+ </div>
+ <div class="col-md-4">
+ <div class="mb-3">
+ <label for="order" class="form-label">
+ Ordem de Exibição <span class="text-danger">*</span>
+ </label>
+ <input type="number" class="form-control" id="order" name="order" 
+ value="{{#if testimonial.order}}{{testimonial.order}}{{else}}0{{/if}}" required>
+ <div class="invalid-feedback">Por favor, insira a ordem de exibição</div>
+ </div>
+ </div>
+ </div>
+ 
+ <div class="row">
+ <div class="col-md-6">
+ <div class="mb-3">
+ <label for="company" class="form-label">
+ Empresa <span class="text-danger">*</span>
+ </label>
+ <input type="text" class="form-control" id="company" name="company" 
+ value="{{testimonial.company}}" required>
+ <div class="invalid-feedback">Por favor, insira o nome da empresa</div>
+ </div>
+ </div>
+ <div class="col-md-6">
+ <div class="mb-3">
+ <label for="role" class="form-label">Cargo/Função</label>
+ <input type="text" class="form-control" id="role" name="role" 
+ value="{{testimonial.role}}" placeholder="Ex: Diretor, Gerente, CEO">
+ </div>
+ </div>
+ </div>
+ 
+ <div class="mb-3">
+ <label for="rating" class="form-label">
+ Avaliação <span class="text-danger">*</span>
+ </label>
+ <div class="rating-input">
+ <input type="range" class="form-range" id="rating" name="rating" 
+ min="1" max="5" value="{{#if testimonial.rating}}{{testimonial.rating}}{{else}}5{{/if}}" 
+ oninput="updateRatingDisplay(this.value)">
+ <div class="rating-display mt-2">
+ <span id="ratingValue">{{#if testimonial.rating}}{{testimonial.rating}}{{else}}5{{/if}}</span>/5
+ <div class="rating-stars" id="ratingStars">
+ <!-- Stars will be updated by JavaScript -->
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <div class="mb-3">
+ <label for="content" class="form-label">
+ Depoimento <span class="text-danger">*</span>
+ </label>
+ <textarea class="form-control" id="content" name="content" 
+ rows="4" required placeholder="Escreva o depoimento do cliente...">{{testimonial.content}}</textarea>
+ <div class="invalid-feedback">Por favor, insira o depoimento</div>
+ <small class="form-text text-muted">
+ <span id="contentCounter">0</span>/500 caracteres
+ </small>
+ </div>
+ 
+ <div class="row">
+ <div class="col-md-6">
+ <div class="mb-3">
+ <label for="avatar" class="form-label">
+ Avatar/Foto
+ {{#if testimonial.avatar}}
+ <small class="text-muted">(Deixe em branco para manter atual)</small>
+ {{/if}}
+ </label>
+ <input type="file" class="form-control" id="avatar" name="avatar" 
+ accept="image/*" onchange="previewImage(this, 'avatarPreview')">
+ <small class="form-text text-muted">
+ Tamanho recomendado: 400x400px, máximo 2MB
+ </small>
+ <div id="avatarPreview" class="preview-container">
+ {{#if testimonial.avatar}}
+ <img src="{{testimonial.avatar}}" alt="Avatar atual" class="img-thumbnail">
+ {{/if}}
+ </div>
+ </div>
+ </div>
+ <div class="col-md-6">
+ <div class="mb-3">
+ <label for="project" class="form-label">Projeto Relacionado</label>
+ <select class="form-select" id="project" name="project">
+ <option value="">Selecione um projeto (opcional)</option>
+ {{#each projects}}
+ <option value="{{this.id}}" {{#eq ../testimonial.projectId this.id}}selected{{/eq}}>
+ {{this.title}}
+ </option>
+ {{/each}}
+ </select>
+ <small class="form-text text-muted">
+ Associar este depoimento a um projeto específico
+ </small>
+ </div>
+ </div>
+ </div>
+ </form>
+ </div>
+ </div>
+ </div>
+ 
+ <div class="col-lg-4">
+ <div class="card">
+ <div class="card-header">
+ <h5 class="mb-0">
+ <i class="fas fa-cog"></i> Configurações
+ </h5>
+ </div>
+ <div class="card-body">
+ <div class="mb-3">
+ <div class="form-check form-switch">
+ <input class="form-check-input" type="checkbox" id="isActive" name="isActive" 
+ {{#if testimonial.isActive}}checked{{/if}}>
+ <label class="form-check-label" for="isActive">
+ <i class="fas fa-eye"></i> Depoimento Ativo
+ </label>
+ </div>
+ <small class="form-text text-muted">
+ Depoimentos inativos não aparecem no site
+ </small>
+ </div>
+ 
+ <div class="mb-3">
+ <label for="date" class="form-label">Data do Depoimento</label>
+ <input type="date" class="form-control" id="date" name="date" 
+ value="{{#if testimonial.date}}{{dateFormat testimonial.date "YYYY-MM-DD"}}{{else}}{{dateFormat (now) "YYYY-MM-DD"}}{{/if}}">
+ <small class="form-text text-muted">
+ Data em que o depoimento foi dado
+ </small>
+ </div>
+ 
+ <div class="mb-3">
+ <label for="source" class="form-label">Fonte/Origem</label>
+ <select class="form-select" id="source" name="source">
+ <option value="direct" {{#eq testimonial.source "direct"}}selected{{/eq}}>Direto do Cliente</option>
+ <option value="email" {{#eq testimonial.source "email"}}selected{{/eq}}>E-mail</option>
+ <option value="whatsapp" {{#eq testimonial.source "whatsapp"}}selected{{/eq}}>WhatsApp</option>
+ <option value="social" {{#eq testimonial.source "social"}}selected{{/eq}}>Redes Sociais</option>
+ <option value="website" {{#eq testimonial.source "website"}}selected{{/eq}}>Site</option>
+ <option value="other" {{#eq testimonial.source "other"}}selected{{/eq}}>Outro</option>
+ </select>
+ </div>
+ </div>
+ </div>
+ 
+ <div class="card mt-3">
+ <div class="card-header">
+ <h5 class="mb-0">
+ <i class="fas fa-star"></i> Preview
+ </h5>
+ </div>
+ <div class="card-body">
+ <div class="testimonial-preview">
+ <div class="d-flex align-items-center mb-3">
+ <div id="previewAvatar" class="me-3">
+ {{#if testimonial.avatar}}
+ <img src="{{testimonial.avatar}}" alt="Preview" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+ {{else}}
+ <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+ <i class="fas fa-user fa-2x text-muted"></i>
+ </div>
+ {{/if}}
+ </div>
+ <div>
+ <h6 id="previewName" class="mb-0">{{#if testimonial.name}}{{testimonial.name}}{{else}}Nome do Cliente{{/if}}</h6>
+ <p id="previewRole" class="text-muted mb-0">{{#if testimonial.role}}{{testimonial.role}}{{/if}}</p>
+ <p id="previewCompany" class="text-muted mb-0">{{#if testimonial.company}}{{testimonial.company}}{{/if}}</p>
+ </div>
+ </div>
+ <div id="previewContent" class="testimonial-text">
+ {{#if testimonial.content}}"{{testimonial.content}}"{{else}}Depoimento do cliente aparecerá aqui...{{/if}}
+ </div>
+ <div class="rating-stars mt-2" id="previewRating">
+ <!-- Will be updated by JavaScript -->
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <div class="card mt-3">
+ <div class="card-body">
+ <button type="submit" form="testimonialForm" class="btn btn-primary w-100 mb-2">
+ <i class="fas fa-save"></i> {{#if isEdit}}Atualizar Depoimento{{else}}Criar Depoimento{{/if}}
+ </button>
+ 
+ {{#if isEdit}}
+ <div class="d-grid gap-2">
+ <button type="button" class="btn btn-outline-danger" onclick="deleteTestimonial({{testimonial.id}})">
+ <i class="fas fa-trash"></i> Excluir Depoimento
+ </button>
+ </div>
+ {{/if}}
+ </div>
+ </div>
+ </div>
 </div>
 
 <style>
 .preview-container {
-    margin-top: 1rem;
-    text-align: center;
+ margin-top: 1rem;
+ text-align: center;
 }
 
 .preview-container img {
-    max-width: 100%;
-    max-height: 200px;
-    object-fit: contain;
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
-    padding: 0.25rem;
+ max-width: 100%;
+ max-height: 200px;
+ object-fit: contain;
+ border: 1px solid #dee2e6;
+ border-radius: 0.25rem;
+ padding: 0.25rem;
 }
 
 .rating-input {
-    text-align: center;
+ text-align: center;
 }
 
 .rating-display {
-    font-size: 1.2rem;
-    font-weight: bold;
+ font-size: 1.2rem;
+ font-weight: bold;
 }
 
 .rating-stars {
-    font-size: 1rem;
-    margin-top: 0.5rem;
+ font-size: 1rem;
+ margin-top: 0.5rem;
 }
 
 .rating-stars i {
-    margin-right: 2px;
+ margin-right: 2px;
 }
 
 .testimonial-preview {
-    background: #f8f9fa;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    border-left: 4px solid #007bff;
+ background: #f8f9fa;
+ padding: 1rem;
+ border-radius: 0.5rem;
+ border-left: 4px solid #007bff;
 }
 
 .testimonial-text {
-    font-style: italic;
-    color: #495057;
-    line-height: 1.6;
+ font-style: italic;
+ color: #495057;
+ line-height: 1.6;
 }
 
 .form-check-input:checked {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+ background-color: #0d6efd;
+ border-color: #0d6efd;
 }
 
 .form-range::-webkit-slider-thumb {
-    background: #007bff;
+ background: #007bff;
 }
 
 .form-range::-moz-range-thumb {
-    background: #007bff;
+ background: #007bff;
 }
 </style>
 
 <script>
 // Update rating display
 function updateRatingDisplay(rating) {
-    document.getElementById('ratingValue').textContent = rating;
-    
-    const starsContainer = document.getElementById('ratingStars');
-    const previewStars = document.getElementById('previewRating');
-    
-    let starsHtml = '';
-    for (let i = 1; i <= 5; i++) {
-        if (i <= rating) {
-            starsHtml += '<i class="fas fa-star text-warning"></i>';
-        } else {
-            starsHtml += '<i class="far fa-star text-muted"></i>';
-        }
-    }
-    
-    starsContainer.innerHTML = starsHtml;
-    previewStars.innerHTML = starsHtml;
+ document.getElementById('ratingValue').textContent = rating;
+ 
+ const starsContainer = document.getElementById('ratingStars');
+ const previewStars = document.getElementById('previewRating');
+ 
+ let starsHtml = '';
+ for (let i = 1; i <= 5; i++) {
+ if (i <= rating) {
+ starsHtml += '<i class="fas fa-star text-warning"></i>';
+ } else {
+ starsHtml += '<i class="far fa-star text-muted"></i>';
+ }
+ }
+ 
+ starsContainer.innerHTML = starsHtml;
+ previewStars.innerHTML = starsHtml;
 }
 
 // Initialize rating display
@@ -327,155 +327,155 @@ updateRatingDisplay({{#if testimonial.rating}}{{testimonial.rating}}{{else}}5{{/
 
 // Preview image
 function previewImage(input, previewId) {
-    const preview = document.getElementById(previewId);
-    
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-            
-            // Update preview avatar
-            document.getElementById('previewAvatar').innerHTML = 
-                `<img src="${e.target.result}" alt="Preview" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">`;
-        };
-        
-        reader.readAsDataURL(input.files[0]);
-    }
+ const preview = document.getElementById(previewId);
+ 
+ if (input.files && input.files[0]) {
+ const reader = new FileReader();
+ 
+ reader.onload = function(e) {
+ preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+ 
+ // Update preview avatar
+ document.getElementById('previewAvatar').innerHTML = 
+ `<img src="${e.target.result}" alt="Preview" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">`;
+ };
+ 
+ reader.readAsDataURL(input.files[0]);
+ }
 }
 
 // Live preview updates
 document.getElementById('name').addEventListener('input', function() {
-    document.getElementById('previewName').textContent = this.value || 'Nome do Cliente';
+ document.getElementById('previewName').textContent = this.value || 'Nome do Cliente';
 });
 
 document.getElementById('role').addEventListener('input', function() {
-    const previewRole = document.getElementById('previewRole');
-    if (this.value) {
-        previewRole.textContent = this.value;
-        previewRole.style.display = 'block';
-    } else {
-        previewRole.style.display = 'none';
-    }
+ const previewRole = document.getElementById('previewRole');
+ if (this.value) {
+ previewRole.textContent = this.value;
+ previewRole.style.display = 'block';
+ } else {
+ previewRole.style.display = 'none';
+ }
 });
 
 document.getElementById('company').addEventListener('input', function() {
-    const previewCompany = document.getElementById('previewCompany');
-    if (this.value) {
-        previewCompany.textContent = this.value;
-        previewCompany.style.display = 'block';
-    } else {
-        previewCompany.style.display = 'none';
-    }
+ const previewCompany = document.getElementById('previewCompany');
+ if (this.value) {
+ previewCompany.textContent = this.value;
+ previewCompany.style.display = 'block';
+ } else {
+ previewCompany.style.display = 'none';
+ }
 });
 
 document.getElementById('content').addEventListener('input', function() {
-    const content = this.value;
-    const previewContent = document.getElementById('previewContent');
-    const counter = document.getElementById('contentCounter');
-    
-    counter.textContent = content.length;
-    
-    if (content) {
-        previewContent.innerHTML = `"${content}"`;
-    } else {
-        previewContent.innerHTML = 'Depoimento do cliente aparecerá aqui...';
-    }
-    
-    // Character limit
-    if (content.length > 500) {
-        this.value = content.substring(0, 500);
-        counter.textContent = '500';
-        showNotification('Limite de 500 caracteres atingido', 'warning');
-    }
+ const content = this.value;
+ const previewContent = document.getElementById('previewContent');
+ const counter = document.getElementById('contentCounter');
+ 
+ counter.textContent = content.length;
+ 
+ if (content) {
+ previewContent.innerHTML = `"${content}"`;
+ } else {
+ previewContent.innerHTML = 'Depoimento do cliente aparecerá aqui...';
+ }
+ 
+ // Character limit
+ if (content.length > 500) {
+ this.value = content.substring(0, 500);
+ counter.textContent = '500';
+ showNotification('Limite de 500 caracteres atingido', 'warning');
+ }
 });
 
 // Form validation and submission
 document.getElementById('testimonialForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    // Validate form
-    if (!this.checkValidity()) {
-        e.stopPropagation();
-        this.classList.add('was-validated');
-        return;
-    }
-    
-    // Show loading
-    const submitButton = e.target.querySelector('button[type="submit"]');
-    const originalText = submitButton.innerHTML;
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
-    submitButton.disabled = true;
-    
-    try {
-        const formData = new FormData(this);
-        
-        // Add settings
-        formData.append('isActive', document.getElementById('isActive').checked);
-        
-        const url = '{{#if isEdit}}/admin/depoimentos/{{testimonial.id}}/editar{{else}}/admin/depoimentos/criar{{/if}}';
-        const method = '{{#if isEdit}}PUT{{else}}POST{{/if}}';
-        
-        const response = await fetch(url, {
-            method: method,
-            body: formData
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            showNotification(data.message, 'success');
-            
-            if (!'{{isEdit}}') {
-                // Redirect to edit page for new testimonials
-                setTimeout(() => {
-                    window.location.href = `/admin/depoimentos/${data.testimonial.id}/editar`;
-                }, 1500);
-            } else {
-                // Show success message for edits
-                setTimeout(() => {
-                    location.reload();
-                }, 1500);
-            }
-        } else {
-            showNotification(data.message, 'error');
-            submitButton.innerHTML = originalText;
-            submitButton.disabled = false;
-        }
-        
-    } catch (error) {
-        console.error('Error saving testimonial:', error);
-        showNotification('Erro ao salvar depoimento', 'error');
-        submitButton.innerHTML = originalText;
-        submitButton.disabled = false;
-    }
+ e.preventDefault();
+ 
+ // Validate form
+ if (!this.checkValidity()) {
+ e.stopPropagation();
+ this.classList.add('was-validated');
+ return;
+ }
+ 
+ // Show loading
+ const submitButton = e.target.querySelector('button[type="submit"]');
+ const originalText = submitButton.innerHTML;
+ submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+ submitButton.disabled = true;
+ 
+ try {
+ const formData = new FormData(this);
+ 
+ // Add settings
+ formData.append('isActive', document.getElementById('isActive').checked);
+ 
+ const url = '{{#if isEdit}}/admin/depoimentos/{{testimonial.id}}/editar{{else}}/admin/depoimentos/criar{{/if}}';
+ const method = '{{#if isEdit}}PUT{{else}}POST{{/if}}';
+ 
+ const response = await fetch(url, {
+ method: method,
+ body: formData
+ });
+ 
+ const data = await response.json();
+ 
+ if (data.success) {
+ showNotification(data.message, 'success');
+ 
+ if (!'{{isEdit}}') {
+ // Redirect to edit page for new testimonials
+ setTimeout(() => {
+ window.location.href = `/admin/depoimentos/${data.testimonial.id}/editar`;
+ }, 1500);
+ } else {
+ // Show success message for edits
+ setTimeout(() => {
+ location.reload();
+ }, 1500);
+ }
+ } else {
+ showNotification(data.message, 'error');
+ submitButton.innerHTML = originalText;
+ submitButton.disabled = false;
+ }
+ 
+ } catch (error) {
+ console.error('Error saving testimonial:', error);
+ showNotification('Erro ao salvar depoimento', 'error');
+ submitButton.innerHTML = originalText;
+ submitButton.disabled = false;
+ }
 });
 
 // Delete testimonial
 async function deleteTestimonial(testimonialId) {
-    if (!confirm('Tem certeza que deseja excluir este depoimento?')) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(`/admin/depoimentos/${testimonialId}`, {
-            method: 'DELETE'
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            showNotification(data.message, 'success');
-            setTimeout(() => {
-                window.location.href = '/admin/depoimentos';
-            }, 1500);
-        } else {
-            showNotification(data.message, 'error');
-        }
-    } catch (error) {
-        console.error('Error deleting testimonial:', error);
-        showNotification('Erro ao excluir depoimento', 'error');
-    }
+ if (!confirm('Tem certeza que deseja excluir este depoimento?')) {
+ return;
+ }
+ 
+ try {
+ const response = await fetch(`/admin/depoimentos/${testimonialId}`, {
+ method: 'DELETE'
+ });
+ 
+ const data = await response.json();
+ 
+ if (data.success) {
+ showNotification(data.message, 'success');
+ setTimeout(() => {
+ window.location.href = '/admin/depoimentos';
+ }, 1500);
+ } else {
+ showNotification(data.message, 'error');
+ }
+ } catch (error) {
+ console.error('Error deleting testimonial:', error);
+ showNotification('Erro ao excluir depoimento', 'error');
+ }
 }
 
 // Initialize character counter

@@ -1,0 +1,513 @@
+<!-- ==========================================
+ MODAL: DETALHES DA NEGOCIAÇÃO / PROPOSTA (Liquid Glass ArchViz)
+ ========================================== -->
+<div class="modal fade" id="dealDetailModal" tabindex="-1">
+ <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+ <div class="modal-content bg-dark-950 border border-white/10 glass-blur rounded-[2.5rem] overflow-hidden shadow-2xl">
+ <div class="modal-header p-8 border-b border-white/5 flex flex-col items-start gap-4">
+ <div class="flex items-center justify-between w-full">
+ <div class="flex flex-col">
+ <div class="flex items-center gap-2 mb-1">
+ <span class="bg-orange-500/10 text-orange-500 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest" id="drawer-id-label">#DEAL-0000</span>
+ <span class="bg-white/5 text-gray-400 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest" id="drawer-status-label">STAGE</span>
+ </div>
+ <h2 class="modal-title text-2xl font-black text-white tracking-tight" id="drawer-name">Nome da Negociação</h2>
+ </div>
+ <div class="flex items-center gap-3">
+ <button type="button" id="btn-edit-toggle" class="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-2">
+ <span class="material-symbols-outlined text-sm">edit</span> Editar Campos
+ </button>
+ 
+ <!-- Botões de Ação em Edição -->
+ <div id="header-edit-actions" class="hidden flex items-center gap-3">
+ <button type="button" id="btn-save-header" class="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-orange-500/20 flex items-center gap-2">
+ <span class="material-symbols-outlined text-sm">save</span> Salvar Alterações
+ </button>
+ <button type="button" id="btn-cancel-header" class="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all flex items-center gap-2">
+ <span class="material-symbols-outlined text-sm">close</span> Cancelar
+ </button>
+ </div>
+
+ <button type="button" id="btn-mark-won-header" onclick="if(typeof markAsWon === 'function') markAsWon()" class="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-black text-[9px] uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2">
+ <span class="material-symbols-outlined text-sm">check_circle</span> Confirmar Proposta
+ </button>
+ <button type="button" class="btn-close btn-close-white opacity-40 hover:opacity-100 transition-opacity" data-bs-dismiss="modal"></button>
+ </div>
+ </div>
+
+ <!-- Tab Navigation -->
+ <ul class="nav nav-tabs border-0 flex gap-8 w-full mt-2" id="dealTabs" role="tablist">
+ <li class="nav-item" role="presentation">
+ <button class="nav-link active border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-white py-2 px-0 relative group" id="project-tab" data-bs-toggle="tab" data-bs-target="#project-content" type="button" role="tab">
+ Detalhes da Proposta
+ <div class="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 transition-all"></div>
+ </button>
+ </li>
+ <li class="nav-item" role="presentation">
+ <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts-content" type="button" role="tab">
+ Contatos
+ <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 group-hover:w-full transition-all"></div>
+ </button>
+ </li>
+ <li class="nav-item" role="presentation">
+ <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasks-content" type="button" role="tab">
+ Tarefas
+ <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 group-hover:w-full transition-all"></div>
+ </button>
+ </li>
+ <li class="nav-item" role="presentation">
+ <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-gray-500 py-2 px-0 hover:text-white transition-all relative group" id="log-tab" data-bs-toggle="tab" data-bs-target="#log-content" type="button" role="tab">
+ Chat & Histórico
+ <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 group-hover:w-full transition-all"></div>
+ </button>
+ </li>
+ <li class="nav-item" role="presentation">
+ <button class="nav-link border-0 bg-transparent text-[10px] font-black uppercase tracking-widest text-orange-500/70 py-2 px-0 hover:text-orange-500 transition-all relative group" id="ai-tab" data-bs-toggle="tab" data-bs-target="#ai-content" type="button" role="tab">
+ <span class="flex items-center gap-2"><span class="material-symbols-outlined text-xs">auto_awesome</span> Estratégia AI</span>
+ <div class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 group-hover:w-full transition-all"></div>
+ </button>
+ </li>
+ </ul>
+ </div>
+
+ <div class="modal-body p-8 scrollbar-hide max-h-[80vh] overflow-y-auto">
+ <div class="tab-content h-full" id="dealTabsContent">
+ <!-- TAB 1: DETALHES DA PROPOSTA -->
+ <div class="tab-pane fade show active h-full" id="project-content" role="tabpanel">
+ <form id="dealForm" class="space-y-8 pb-10">
+ <input type="hidden" name="id" id="deal-id-input">
+
+ <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+ <!-- Coluna Esquerda: Dados Comerciais & Financeiro -->
+ <section class="glass-card p-8 border-white/5 space-y-6 bg-white/[0.01] rounded-3xl">
+ <h3 class="text-[10px] font-black text-orange-500 uppercase tracking-widest flex items-center gap-2">
+ <span class="material-symbols-outlined text-sm">payments</span> Dados da Proposta
+ </h3>
+ <div class="grid grid-cols-2 gap-6">
+ <div class="col-span-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Nome da Proposta / Lead</label>
+ <input type="text" name="name" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" required disabled>
+ </div>
+ <div>
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Valor Total (R$)</label>
+ <div class="relative flex items-center">
+ <input type="number" step="0.01" name="estimatedValue" id="deal-estimated-value" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white font-bold" disabled>
+ <button type="button" id="btn-calc-orcamento-detail" class="absolute right-2 px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-black text-[8px] uppercase tracking-wider transition-all flex items-center gap-1 shadow-md hidden">
+ <span class="material-symbols-outlined text-[10px]">auto_awesome</span> Calcular
+ </button>
+ </div>
+ </div>
+ <div>
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Probabilidade (%)</label>
+ <input type="number" name="probability" min="0" max="100" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white font-bold" disabled>
+ </div>
+ <div>
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Etapa do Funil</label>
+ <select name="status" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ {{#each columns}}
+ <option value="{{this.statusKey}}">{{this.title}}</option>
+ {{/each}}
+ </select>
+ </div>
+ <div>
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Responsável</label>
+ <select name="assignedUserId" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ <option value="">Não atribuído</option>
+ {{#each teamMembers}}
+ <option value="{{this.id}}">{{this.name}}</option>
+ {{/each}}
+ </select>
+ </div>
+ <div>
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Prioridade</label>
+ <select name="priority" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ <option value="baixa">Baixa</option>
+ <option value="media">Média</option>
+ <option value="alta">Alta</option>
+ </select>
+ </div>
+ <div>
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Agendar Próxima Ação</label>
+ <input type="datetime-local" name="nextActionDate" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ </div>
+ <div class="col-span-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Diretrizes / Notas de Ação</label>
+ <textarea name="nextActionNote" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white resize-none" rows="2" disabled placeholder="Instruções para a próxima ação..."></textarea>
+ </div>
+ </div>
+
+ <div class="pt-6 border-t border-white/5 space-y-4">
+ <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Financeiro & Prazos</h4>
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Parcelamento</label>
+ <input type="number" name="installments" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ </div>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Data 1ª Prévia</label>
+ <input type="date" name="firstPreviewDate" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ </div>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Prazo de Entrega (Dias)</label>
+ <input type="number" name="productionDays" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="Ex: 10" disabled>
+ </div>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Revisões Inclusas</label>
+ <select name="revisionsIncluded" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ <option value="1">1 Ciclo</option>
+ <option value="2">2 Ciclos</option>
+ <option value="3">3 Ciclos</option>
+ <option value="Ilimitadas">Ilimitadas (Premium)</option>
+ </select>
+ </div>
+ </div>
+
+ <div class="glass-card p-4 border border-white/5 rounded-2xl bg-white/[0.02] flex items-center justify-between">
+ <div class="flex items-center gap-3">
+ <label class="relative inline-flex items-center cursor-pointer">
+ <input type="checkbox" name="hasUrgency" class="sr-only peer" disabled id="check-urgency-edit">
+ <div class="w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange-500"></div>
+ </label>
+ <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Taxa de Urgência</span>
+ </div>
+ <div id="urgency-percentage-edit" class="hidden">
+ <input type="number" name="urgencyFee" class="bg-transparent text-white font-black text-right w-12 focus:outline-none text-[10px]" disabled>
+ <span class="text-[10px] text-gray-500">%</span>
+ </div>
+ </div>
+
+ <!-- Plano de Pagamento (Parcelas) -->
+ <div class="glass-card p-4 border border-emerald-500/20 bg-emerald-500/5 rounded-2xl space-y-4 mt-2">
+ <div class="flex items-center justify-between mb-2">
+ <div class="flex items-center gap-2">
+ <span class="material-symbols-outlined text-emerald-400 text-sm">payments</span>
+ <span class="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Plano de Pagamento</span>
+ </div>
+ <div class="flex items-center gap-2 bg-black/40 p-1 rounded-lg border border-white/5">
+ <button type="button" class="px-3 py-1 text-[8px] font-black uppercase rounded bg-emerald-500/20 text-emerald-400" id="btn-pay-auto-edit" disabled>AUTO</button>
+ <button type="button" class="px-3 py-1 text-[8px] font-black uppercase rounded text-gray-500 hover:text-white" id="btn-pay-manual-edit" disabled>MANUAL</button>
+ </div>
+ </div>
+
+ <!-- Auto Mode Controls -->
+ <div id="pay-auto-controls-edit" class="grid grid-cols-2 gap-2 p-3 bg-black/40 rounded-xl border border-white/5">
+ <div>
+ <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">Data Inicial</label>
+ <input type="date" id="pay-initial-date-edit" class="input-premium w-full bg-black/40 border border-white/10 rounded-lg p-2 text-[9px] text-white" disabled>
+ </div>
+ <div class="flex items-end gap-2">
+ <div class="flex-1">
+ <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">Intervalo</label>
+ <select id="pay-interval-edit" class="input-premium w-full bg-black/40 border border-white/10 rounded-lg p-2 text-[9px] text-white" disabled>
+ <option value="30">Mensal</option>
+ <option value="15">Quinzenal</option>
+ <option value="7">Semanal</option>
+ </select>
+ </div>
+ <button type="button" id="btn-generate-edit" class="h-[34px] px-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-black text-[8px] uppercase tracking-wider transition-all flex items-center justify-center shadow-md disabled:opacity-50" disabled>
+ GERAR
+ </button>
+ </div>
+ </div>
+
+ <!-- Manual Mode Controls -->
+ <div id="pay-manual-controls-edit" class="hidden text-right">
+ <button type="button" id="btn-add-manual-edit" class="px-3 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg border border-white/10 font-black text-[8px] uppercase tracking-wider transition-all inline-flex items-center gap-1 disabled:opacity-50" disabled>
+ <span class="material-symbols-outlined text-[10px]">add</span> Adicionar Parcela
+ </button>
+ </div>
+
+ <!-- Installments List -->
+ <div id="installments-list-edit" class="space-y-2 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
+ <!-- Parcelas injetadas via JS -->
+ </div>
+
+ <div class="flex justify-between items-center pt-2 border-t border-white/5">
+ <span class="text-[8px] font-black text-gray-500 uppercase">Soma Total:</span>
+ <span id="installments-sum-edit" class="text-[10px] font-black text-white">R$ 0,00</span>
+ </div>
+
+ <input type="hidden" name="installmentsData" id="installments-data-edit">
+ </div>
+
+ <!-- Cidade / Estado -->
+ <div class="grid grid-cols-2 gap-4 pt-2">
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase block mb-1">Estado</label>
+ <input type="text" name="state" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="Ex: PR" disabled>
+ </div>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase block mb-1">Cidade</label>
+ <input type="text" name="city" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="Ex: Apucarana" disabled>
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <!-- Coluna Direita: Especificações ArchViz & Direção de Arte -->
+ <section class="glass-card p-8 border-white/5 space-y-6 bg-white/[0.01] rounded-3xl">
+ <h3 class="text-[10px] font-black text-orange-500 uppercase tracking-widest flex items-center gap-2">
+ <span class="material-symbols-outlined text-sm">architecture</span> Especificações ArchViz
+ </h3>
+ 
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Perfil Cliente</label>
+ <select name="profileType" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ <option value="Arquiteto">Arquiteto</option>
+ <option value="Design de Interiores">Design de Interiores</option>
+ <option value="Construtora">Construtora</option>
+ <option value="Imobiliária">Imobiliária</option>
+ <option value="Cliente Final">Cliente Final</option>
+ </select>
+ </div>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Categoria</label>
+ <select name="projectCategory" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ <option value="Residencial">Residencial</option>
+ <option value="Comercial">Comercial</option>
+ <option value="Corporativo">Corporativo</option>
+ </select>
+ </div>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Workflow Base</label>
+ <select name="receivedFormat" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ <option value="BIM/Revit Limpo">BIM/Revit Limpo</option>
+ <option value="Sketchup Sujo">Sketchup Sujo</option>
+ <option value="AutoCAD 2D">AutoCAD 2D</option>
+ <option value="Do Zero">Do Zero</option>
+ </select>
+ </div>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Qualidade Arquivo</label>
+ <select name="fileQuality" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ <option value="Limpo/Organizado">Limpo / Organizado</option>
+ <option value="Médio">Médio</option>
+ <option value="Desorganizado">Desorganizado</option>
+ <option value="Precisa Modelar Zero">Precisa Modelar Zero</option>
+ </select>
+ </div>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Estilo Predominante</label>
+ <select name="predominantStyle" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ <option value="Minimalista">Minimalista</option>
+ <option value="Moderno" selected>Moderno</option>
+ <option value="Clássico/Neoclássico">Clássico/Neoclássico</option>
+ <option value="Industrial">Industrial</option>
+ </select>
+ </div>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">Metragem Total (m²)</label>
+ <input type="number" name="totalArea" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="150.00" min="0" step="0.01" disabled>
+ </div>
+ </div>
+
+ <!-- Software Stack Buttons -->
+ <div class="space-y-3">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest block">Software Stack</label>
+ <div class="grid grid-cols-4 gap-2" id="software-stack-container">
+ <button type="button" class="btn-stack-pill p-3 rounded-2xl bg-white/5 border border-white/10 text-center cursor-pointer text-gray-400 hover:text-white transition-all text-[9px] font-black uppercase" data-val="3ds Max" disabled>3DS MAX</button>
+ <button type="button" class="btn-stack-pill p-3 rounded-2xl bg-white/5 border border-white/10 text-center cursor-pointer text-gray-400 hover:text-white transition-all text-[9px] font-black uppercase" data-val="Corona" disabled>CORONA</button>
+ <button type="button" class="btn-stack-pill p-3 rounded-2xl bg-white/5 border border-white/10 text-center cursor-pointer text-gray-400 hover:text-white transition-all text-[9px] font-black uppercase" data-val="V-Ray" disabled>V-RAY</button>
+ <button type="button" class="btn-stack-pill p-3 rounded-2xl bg-white/5 border border-white/10 text-center cursor-pointer text-gray-400 hover:text-white transition-all text-[9px] font-black uppercase" data-val="D5 Render" disabled>D5 RENDER</button>
+ <button type="button" class="btn-stack-pill p-3 rounded-2xl bg-white/5 border border-white/10 text-center cursor-pointer text-gray-400 hover:text-white transition-all text-[9px] font-black uppercase" data-val="Unreal Engine" disabled>UNREAL ENGINE</button>
+ <button type="button" class="btn-stack-pill p-3 rounded-2xl bg-white/5 border border-white/10 text-center cursor-pointer text-gray-400 hover:text-white transition-all text-[9px] font-black uppercase" data-val="Photoshop" disabled>PHOTOSHOP</button>
+ <button type="button" class="btn-stack-pill p-3 rounded-2xl bg-white/5 border border-white/10 text-center cursor-pointer text-gray-400 hover:text-white transition-all text-[9px] font-black uppercase" data-val="Revit" disabled>REVIT</button>
+ </div>
+ <input type="hidden" name="softwareStack" id="software-stack-hidden" value="[]">
+ </div>
+
+ <!-- Contadores de Imagens e Mídias -->
+ <div class="pt-4 border-t border-white/5 space-y-3">
+ <div class="flex items-center justify-between">
+ <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Imagens</span>
+ <div class="flex items-center gap-1.5">
+ <span class="text-[7px] text-gray-500">Total:</span>
+ <span class="total-images-display text-orange-500 font-mono font-black text-xs">0</span>
+ <input type="number" name="imagesCount" class="sr-only" value="0" disabled readonly>
+ </div>
+ </div>
+ <div class="grid grid-cols-3 gap-2">
+ <div class="text-center bg-black/20 p-2 rounded-xl border border-white/5">
+ <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">FACHADA</label>
+ <div class="flex items-center justify-center gap-2 mt-1">
+ <button type="button" class="btn-qty-dec w-6 h-6 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white flex items-center justify-center font-bold text-xs" data-target="imagesFachadaCount" disabled>-</button>
+ <input type="number" name="imagesFachadaCount" class="bg-transparent text-white font-black text-center w-6 focus:outline-none text-xs" value="0" min="0" disabled>
+ <button type="button" class="btn-qty-inc w-6 h-6 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white flex items-center justify-center font-bold text-xs" data-target="imagesFachadaCount" disabled>+</button>
+ </div>
+ </div>
+ <div class="text-center bg-black/20 p-2 rounded-xl border border-white/5">
+ <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">INTERIORES</label>
+ <div class="flex items-center justify-center gap-2 mt-1">
+ <button type="button" class="btn-qty-dec w-6 h-6 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white flex items-center justify-center font-bold text-xs" data-target="imagesInterioresCount" disabled>-</button>
+ <input type="number" name="imagesInterioresCount" class="bg-transparent text-white font-black text-center w-6 focus:outline-none text-xs" value="0" min="0" disabled>
+ <button type="button" class="btn-qty-inc w-6 h-6 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white flex items-center justify-center font-bold text-xs" data-target="imagesInterioresCount" disabled>+</button>
+ </div>
+ </div>
+ <div class="text-center bg-black/20 p-2 rounded-xl border border-white/5">
+ <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">PLANTA 3D</label>
+ <div class="flex items-center justify-center gap-2 mt-1">
+ <button type="button" class="btn-qty-dec w-6 h-6 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white flex items-center justify-center font-bold text-xs" data-target="imagesPlantaCount" disabled>-</button>
+ <input type="number" name="imagesPlantaCount" class="bg-transparent text-white font-black text-center w-6 focus:outline-none text-xs" value="0" min="0" disabled>
+ <button type="button" class="btn-qty-inc w-6 h-6 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white flex items-center justify-center font-bold text-xs" data-target="imagesPlantaCount" disabled>+</button>
+ </div>
+ </div>
+ </div>
+
+ <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/5">
+ <div class="text-center bg-black/20 p-2 rounded-xl border border-white/5">
+ <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">ANIM. (S)</label>
+ <input type="number" name="animationSeconds" class="bg-transparent text-white font-black text-center w-full focus:outline-none text-xs" value="0" min="0" disabled>
+ </div>
+ <div class="text-center bg-black/20 p-2 rounded-xl border border-white/5">
+ <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">VID. FACH.</label>
+ <input type="number" name="videoFachadaCount" class="bg-transparent text-white font-black text-center w-full focus:outline-none text-xs" value="0" min="0" disabled>
+ </div>
+ <div class="text-center bg-black/20 p-2 rounded-xl border border-white/5">
+ <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">360°</label>
+ <input type="number" name="videoPanoramasCount" class="bg-transparent text-white font-black text-center w-full focus:outline-none text-xs" value="0" min="0" disabled>
+ </div>
+ </div>
+
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">FORMATO IMG</label>
+ <input type="text" name="imageFormat" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="Ex: 16:9" disabled>
+ </div>
+ <div>
+ <label class="text-[7px] font-black text-gray-500 uppercase block mb-1">FORMATO VÍDEO</label>
+ <input type="text" name="videoFormat" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" placeholder="Ex: 16:9" disabled>
+ </div>
+ </div>
+ </div>
+ 
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">ENGINE DE RENDER</label>
+ <select name="renderEngine" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ <option value="D5 Render">D5 Render</option>
+ <option value="3ds Max/Corona">3ds Max/Corona</option>
+ <option value="V-Ray">V-Ray</option>
+ <option value="Unreal Engine">Unreal Engine</option>
+ </select>
+ </div>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">ATMOSFERA DESEJADA</label>
+ <input type="text" name="desiredAtmosphere" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ </div>
+ </div>
+
+ <div class="pt-4 border-t border-white/5 space-y-4">
+ <h4 class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Direção de Arte & Mood</h4>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">AMBIENTES / CENAS</label>
+ <textarea name="environments" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white resize-none" rows="2" disabled></textarea>
+ </div>
+ <div class="grid grid-cols-2 gap-4">
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">HUMANIZAÇÃO</label>
+ <select name="humanizationLevel" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ <option value="Baixo">Baixo</option>
+ <option value="Médio">Médio</option>
+ <option value="Alto">Alto</option>
+ </select>
+ </div>
+ <div>
+ <label class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1 block">MOODBOARD URL</label>
+ <input type="url" name="moodboardUrl" class="input-premium w-full bg-black/40 border border-white/10 rounded-xl p-3 text-xs text-white" disabled>
+ </div>
+ </div>
+ <div>
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest block mb-2">MOOD DE ILUMINAÇÃO</label>
+ <div class="grid grid-cols-4 gap-2" id="lighting-mood-container">
+ <button type="button" class="btn-mood-pill p-3 rounded-2xl bg-white/5 border border-white/10 text-center cursor-pointer text-gray-400 hover:text-white transition-all text-[8px] font-black uppercase" data-val="Golden Hour" disabled>GOLDEN HOUR</button>
+ <button type="button" class="btn-mood-pill p-3 rounded-2xl bg-white/5 border border-white/10 text-center cursor-pointer text-gray-400 hover:text-white transition-all text-[8px] font-black uppercase" data-val="Nocturnal" disabled>NOCTURNAL</button>
+ <button type="button" class="btn-mood-pill p-3 rounded-2xl bg-white/5 border border-white/10 text-center cursor-pointer text-gray-400 hover:text-white transition-all text-[8px] font-black uppercase" data-val="Overcast" disabled>OVERCAST</button>
+ <button type="button" class="btn-mood-pill p-3 rounded-2xl bg-white/5 border border-white/10 text-center cursor-pointer text-gray-400 hover:text-white transition-all text-[8px] font-black uppercase" data-val="High Noon" disabled>HIGH NOON</button>
+ </div>
+ <input type="hidden" name="lightingMood" id="lighting-mood-hidden" value="[]">
+ </div>
+ </div>
+ </section>
+ </div>
+
+ <div id="edit-actions" class="hidden flex gap-4 pt-6 border-t border-white/5">
+ <button type="submit" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] transition-all shadow-lg shadow-orange-500/20">Salvar Alterações</button>
+ <button type="button" id="btn-cancel-edit" class="px-10 bg-white/5 text-white py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest border border-white/10 transition-all">Cancelar</button>
+ </div>
+ </form>
+ </div>
+
+ <!-- TAB 2: CONTATOS -->
+ <div class="tab-pane fade h-full" id="contacts-content" role="tabpanel">
+ <div class="space-y-6">
+ <div class="flex items-center justify-between">
+ <h3 class="text-xs font-black text-white uppercase tracking-widest">Contatos Vinculados</h3>
+ <button class="bg-white/5 hover:bg-white/10 text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2" id="btn-add-contact-deal">
+ <span class="material-symbols-outlined text-xs">person_add</span> Vincular Contato
+ </button>
+ </div>
+ <div id="deal-contacts-list" class="space-y-3">
+ <p class="text-xs text-gray-500">Nenhum contato adicional vinculado.</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- TAB 3: TAREFAS -->
+ <div class="tab-pane fade h-full" id="tasks-content" role="tabpanel">
+ <div class="flex flex-col h-full space-y-4">
+ <div class="flex items-center justify-between">
+ <h3 class="text-xs font-black text-white uppercase tracking-widest">To-Do List Archviz</h3>
+ <button class="bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all" id="btn-add-task-deal">Nova Tarefa</button>
+ </div>
+ <div id="deal-tasks-list" class="flex-1 space-y-3 overflow-y-auto pr-2 scrollbar-hide">
+ <p class="text-xs text-gray-500">Sem tarefas registradas.</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- TAB 4: CHAT & HISTÓRICO -->
+ <div class="tab-pane fade h-full" id="log-content" role="tabpanel">
+ <div class="flex flex-col h-full">
+ <div id="deal-notes-timeline" class="flex-1 space-y-6 overflow-y-auto pr-2 scrollbar-hide mb-6 min-h-[150px]">
+ <p class="text-xs text-gray-500">Sem histórico de observações.</p>
+ </div>
+ <div class="glass-card p-4 border border-white/10 bg-white/5 rounded-2xl">
+ <textarea id="deal-note-input" class="bg-transparent border-0 w-full text-xs text-white focus:outline-none resize-none" rows="3" placeholder="Escreva um comentário ou log de interação..."></textarea>
+ <div class="flex items-center justify-between mt-2 pt-2 border-t border-white/5">
+ <div class="flex gap-2">
+ <button class="p-2 text-gray-400 hover:text-white"><span class="material-symbols-outlined text-sm">attach_file</span></button>
+ <button class="p-2 text-gray-400 hover:text-white"><span class="material-symbols-outlined text-sm">alternate_email</span></button>
+ </div>
+ <button id="btn-save-note" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-colors">Enviar</button>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- TAB 5: AI STRATEGY -->
+ <div class="tab-pane fade h-full" id="ai-content" role="tabpanel">
+ <div class="glass-card p-8 border border-orange-500/20 bg-orange-500/5 rounded-3xl h-full flex flex-col items-center justify-center text-center">
+ <div class="w-20 h-20 rounded-full bg-orange-500/10 flex items-center justify-center mb-6 animate-pulse">
+ <span class="material-symbols-outlined text-4xl text-orange-500">auto_awesome</span>
+ </div>
+ <h3 class="text-xl font-black text-white mb-2 tracking-tight">Consultoria <span class="text-orange-500">AI Ativa</span></h3>
+ <p class="text-xs text-gray-400 max-w-xs mb-8">Estratégias avançadas para fechamento e análise de leads.</p>
+ 
+ <div class="w-full space-y-4 max-w-md">
+ <button class="w-full glass-card p-4 border border-white/10 text-left hover:bg-white/5 transition-all rounded-2xl">
+ <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-1">Análise de Risco</p>
+ <p class="text-[11px] text-gray-300">Verificar saúde financeira e probabilidade real de fechamento.</p>
+ </button>
+ <button class="w-full glass-card p-4 border border-white/10 text-left hover:bg-white/5 transition-all rounded-2xl">
+ <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-1">Pitch Personalizado</p>
+ <p class="text-[11px] text-gray-300">Gerar argumentos técnicos baseados no workflow do cliente.</p>
+ </button>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+</div>

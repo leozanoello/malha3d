@@ -1,187 +1,215 @@
 <!-- Header -->
 <div class="mb-6 p-5 glass-card border-none bg-gradient-to-br from-white/5 to-white/[0.02]">
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-white tracking-tight mb-1">
-                Agenda <span class="text-gradient">Inteligente</span>
-            </h1>
-            <p class="text-xs text-gray-400 font-medium">
-                Visão unificada de prazos, entregas e compromissos táticos da equipe <span class="text-orange-500">Malha3D</span>.
-            </p>
-        </div>
-        <div class="flex flex-col sm:flex-row gap-3">
-            <button class="bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white text-xs font-black py-3 px-5 rounded-xl transition-all flex items-center justify-center gap-2 group">
-                <span class="material-symbols-outlined text-lg group-hover:rotate-180 transition-transform duration-500">sync</span>
-                Google Calendar
-            </button>
-            <button class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-black py-3 px-5 rounded-xl shadow-lg shadow-orange-500/40 transition-all flex items-center justify-center gap-2" data-bs-toggle="modal" data-bs-target="#newEventModal">
-                <span class="material-symbols-outlined text-lg">add_circle</span>
-                Novo Evento
-            </button>
-        </div>
-    </div>
+ <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+ <div>
+ <h1 class="text-2xl font-black text-white tracking-tight mb-1">
+ Agenda <span class="text-gradient">Inteligente</span>
+ </h1>
+ <p class="text-xs text-gray-400 font-medium">
+ Visão unificada de prazos, entregas e compromissos táticos da equipe <span class="text-orange-500">Malha3D</span>.
+ </p>
+ </div>
+ <div class="flex flex-col sm:flex-row gap-3 items-center">
+ <div class="relative flex items-center">
+ <span class="material-symbols-outlined absolute left-3 text-gray-400 text-[15px] pointer-events-none">search</span>
+ <input type="text" id="eventSearchInput" placeholder="Buscar evento..." class="bg-black/40 border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-xs font-bold text-white placeholder-gray-400 focus:outline-none focus:border-orange-500/50 transition-colors w-48 sm:w-64" oninput="filterCalendarEvents(this.value)">
+ </div>
+
+ <button class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-black py-3 px-5 rounded-xl shadow-lg shadow-orange-500/40 transition-all flex items-center justify-center gap-2" data-bs-toggle="modal" data-bs-target="#newEventModal">
+ <span class="material-symbols-outlined text-lg">add_circle</span>
+ Novo Evento
+ </button>
+ </div>
+ </div>
 </div>
 
 <div class="glass-card p-6 border-white/5 bg-white/[0.01]">
-    <div class="flex justify-between items-center mb-6">
-        <div class="flex items-center gap-4">
-            <button class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-gray-500 hover:text-orange-500 hover:border-orange-500/50 transition-all group">
-                <span class="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform">chevron_left</span>
-            </button>
-            <h4 class="text-lg font-black text-white tracking-tight">Maio de <span class="text-orange-500">2026</span></h4>
-            <button class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-gray-500 hover:text-orange-500 hover:border-orange-500/50 transition-all group">
-                <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">chevron_right</span>
-            </button>
-        </div>
-        <button class="px-5 py-2 rounded-lg bg-white/5 text-gray-500 text-[9px] font-black uppercase tracking-[0.3em] hover:bg-white/10 hover:text-white transition-all border border-white/5">Hoje</button>
-    </div>
+ <div class="flex justify-between items-center mb-6">
+ <div class="flex items-center gap-4">
+ <a href="/admin/agenda?month={{prevMonth}}&year={{prevYear}}" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-gray-500 hover:text-orange-500 hover:border-orange-500/50 transition-all group">
+ <span class="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform">chevron_left</span>
+ </a>
+ <h4 class="text-lg font-black text-white tracking-tight">{{monthLabel}} de <span class="text-orange-500">{{year}}</span></h4>
+ <a href="/admin/agenda?month={{nextMonth}}&year={{nextYear}}" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-gray-500 hover:text-orange-500 hover:border-orange-500/50 transition-all group">
+ <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">chevron_right</span>
+ </a>
+ </div>
+ <a href="/admin/agenda?month={{todayMonth}}&year={{todayYear}}" class="px-5 py-2 rounded-lg bg-white/5 text-gray-500 text-[9px] font-black uppercase tracking-[0.3em] hover:bg-white/10 hover:text-white transition-all border border-white/5">Hoje</a>
+ </div>
 
-    <div class="grid grid-cols-7 gap-px bg-white/5 border border-white/10 rounded-2xl overflow-hidden shadow-xl">
-        <!-- Weekdays -->
-        <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Dom</div>
-        <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Seg</div>
-        <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Ter</div>
-        <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Qua</div>
-        <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Qui</div>
-        <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Sex</div>
-        <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Sáb</div>
+ <div class="grid grid-cols-7 gap-px bg-white/5 border border-white/10 rounded-2xl overflow-hidden shadow-xl">
+ <!-- Weekdays -->
+ <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Dom</div>
+ <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Seg</div>
+ <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Ter</div>
+ <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Qua</div>
+ <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Qui</div>
+ <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Sex</div>
+ <div class="bg-white/[0.02] py-4 text-center text-[9px] font-black text-gray-600 uppercase tracking-[0.2em] border-b border-white/5">Sáb</div>
 
-        <!-- Days -->
-        <!-- Prev Month -->
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-800 uppercase tracking-widest opacity-20 hover:bg-white/[0.01] transition-colors">26</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-800 uppercase tracking-widest opacity-20 hover:bg-white/[0.01] transition-colors">27</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-800 uppercase tracking-widest opacity-20 hover:bg-white/[0.01] transition-colors">28</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-800 uppercase tracking-widest opacity-20 hover:bg-white/[0.01] transition-colors">29</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-800 uppercase tracking-widest opacity-20 hover:bg-white/[0.01] transition-colors">30</div>
-        
-        <!-- Current Month -->
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">1</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">2</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">3</div>
-        
-        <!-- Active Day -->
-        <div class="bg-orange-500/5 min-h-[90px] p-4 text-[10px] font-black text-orange-500 border-l border-white/5 relative group">
-            <div class="absolute inset-0 border-2 border-orange-500/30 rounded pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            4
-            <div class="mt-2 space-y-1">
-                <div class="bg-orange-500 text-[8px] font-black text-white p-1.5 rounded truncate shadow-md shadow-orange-500/20 uppercase tracking-widest ring-1 ring-white/20">Reunião Malha3D</div>
-            </div>
-        </div>
-        
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">5</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">6</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">7</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">
-            8
-            <div class="mt-2 space-y-1">
-                <div class="bg-blue-500 text-[8px] font-black text-white p-1.5 rounded truncate shadow-md shadow-blue-500/20 uppercase tracking-widest ring-1 ring-white/20">Entrega: Logo 3D</div>
-            </div>
-        </div>
-        
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">9</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">10</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">11</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">12</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">13</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">14</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">15</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">16</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">17</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">18</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">19</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">20</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">21</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">22</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">23</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">24</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">25</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">26</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">27</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">28</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">29</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">30</div>
-        <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-500 hover:bg-white/[0.01] transition-colors border-l border-white/5">31</div>
-    </div>
+ <!-- Days -->
+ {{#each weeks}}
+ {{#each this}}
+ {{#if this.inMonth}}
+ <div class="{{#if this.isToday}}bg-orange-500/5{{else}}bg-transparent{{/if}} min-h-[90px] p-4 text-[10px] font-black {{#if this.isToday}}text-orange-500{{else}}text-gray-500{{/if}} hover:bg-white/[0.01] transition-colors border-l border-white/5 relative group calendar-day-cell">
+ {{#if this.isToday}}<div class="absolute inset-0 border-2 border-orange-500/30 rounded pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>{{/if}}
+ {{this.day}}
+ {{#if (length this.events)}}
+ <div class="mt-2 space-y-1">
+ {{#each this.events}}
+ <div class="{{this.badgeClass}} text-[8px] font-black text-white p-1.5 rounded truncate shadow-md uppercase tracking-widest ring-1 ring-white/20 calendar-event-badge" title="{{this.title}}">{{this.title}}</div>
+ {{/each}}
+ </div>
+ {{/if}}
+ </div>
+ {{else}}
+ <div class="bg-transparent min-h-[90px] p-4 text-[10px] font-black text-gray-800 uppercase tracking-widest opacity-20 hover:bg-white/[0.01] transition-colors">{{this.day}}</div>
+ {{/if}}
+ {{/each}}
+ {{/each}}
+ </div>
 </div>
 
 <!-- New Event Modal -->
 <div class="modal fade" id="newEventModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card border-white/10 bg-[#0f0f0f]/95 backdrop-blur-2xl">
-            <div class="modal-header border-white/5 p-8">
-                <h5 class="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                    <span class="material-symbols-outlined text-orange-500">event_available</span>
-                    Agendar Compromisso
-                </h5>
-                <button type="button" class="btn-close btn-close-white opacity-50 hover:opacity-100 transition-opacity" data-bs-dismiss="modal"></button>
-            </div>
-            <form id="newEventForm">
-                <div class="modal-body p-8 space-y-6">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Título do Evento</label>
-                        <input type="text" name="title" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all" placeholder="Ex: Reunião de Briefing">
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Início</label>
-                            <input type="datetime-local" name="startTime" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Término</label>
-                            <input type="datetime-local" name="endTime" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
-                        </div>
-                    </div>
+ <div class="modal-dialog modal-dialog-centered">
+ <div class="modal-content glass-card border-white/10 bg-[#0f0f0f]/95 backdrop-blur-2xl">
+ <div class="modal-header border-white/5 p-8">
+ <h5 class="text-xl font-black text-white tracking-tight flex items-center gap-3">
+ <span class="material-symbols-outlined text-orange-500">event_available</span>
+ Agendar Compromisso
+ </h5>
+ <button type="button" class="btn-close btn-close-white opacity-50 hover:opacity-100 transition-opacity" data-bs-dismiss="modal"></button>
+ </div>
+ <form id="newEventForm">
+ <div class="modal-body p-8 space-y-6">
+ <div class="space-y-2">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Título do Evento</label>
+ <input type="text" name="title" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all" placeholder="Ex: Reunião de Briefing">
+ </div>
+ 
+ <div class="grid grid-cols-2 gap-4">
+ <div class="space-y-2">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Início</label>
+ <input type="datetime-local" name="startTime" required class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
+ </div>
+ <div class="space-y-2">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Término</label>
+ <input type="datetime-local" name="endTime" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
+ </div>
+ </div>
 
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Tipo de Evento</label>
-                        <select name="type" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
-                            <option value="reuniao" class="bg-[#0f0f0f]">Reunião</option>
-                            <option value="entrega" class="bg-[#0f0f0f]">Entrega de Projeto</option>
-                            <option value="followup" class="bg-[#0f0f0f]">Follow-up</option>
-                            <option value="interno" class="bg-[#0f0f0f]">Compromisso Interno</option>
-                        </select>
-                    </div>
+ <div class="space-y-2">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Tipo de Evento</label>
+ <select name="type" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all">
+ <option value="reuniao" class="bg-[#0f0f0f]">Reunião</option>
+ <option value="entrega" class="bg-[#0f0f0f]">Entrega de Projeto</option>
+ <option value="followup" class="bg-[#0f0f0f]">Follow-up</option>
+ <option value="interno" class="bg-[#0f0f0f]">Compromisso Interno</option>
+ </select>
+ </div>
 
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Descrição</label>
-                        <textarea name="description" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all resize-none"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer border-white/5 p-8">
-                    <button type="button" class="px-6 py-3 text-xs font-black text-gray-500 uppercase tracking-widest hover:text-white transition-all" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-8 rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">calendar_month</span>
-                        Agendar
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+ <div class="space-y-2">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Vincular a (Opcional)</label>
+ <div class="flex gap-2">
+ <div class="relative flex-1">
+ <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+ <span class="material-symbols-outlined text-sm text-gray-500">link</span>
+ </span>
+ <input type="text" name="linkedEntity" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all placeholder-gray-600" placeholder="Buscar CRM, Cliente ou Projeto...">
+ </div>
+ <button type="button" class="bg-white/5 border border-white/10 rounded-xl px-4 flex items-center justify-center hover:bg-white/10 transition-all dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="material-symbols-outlined text-gray-300">add</span>
+ </button>
+ <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end border border-white/10 bg-[#0a0c10]/95 backdrop-blur-xl rounded-xl shadow-2xl p-2">
+ <li><a class="dropdown-item rounded-lg py-2 text-xs font-bold flex items-center gap-2 hover:bg-white/5" href="#" onclick="openCalendarQuickAdd('crm')"><span class="material-symbols-outlined text-sm text-cyber-500">point_of_sale</span> Criar Lead CRM</a></li>
+ <li><a class="dropdown-item rounded-lg py-2 text-xs font-bold flex items-center gap-2 hover:bg-white/5" href="#" onclick="openCalendarQuickAdd('project')"><span class="material-symbols-outlined text-sm text-indigo-400">architecture</span> Criar Projeto</a></li>
+ </ul>
+ </div>
+ </div>
+
+ <!-- Avisos e Notificações -->
+ <div class="grid grid-cols-2 gap-4 mt-4">
+ <label class="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/5 cursor-pointer hover:bg-white/10 transition-all">
+ <input type="checkbox" name="notifyEmail" class="form-checkbox bg-dark-900 border-white/20 text-orange-500 rounded focus:ring-orange-500/50 w-4 h-4">
+ <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Avisar via E-mail</span>
+ </label>
+ <label class="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/5 cursor-pointer hover:bg-white/10 transition-all">
+ <input type="checkbox" name="notifySystem" class="form-checkbox bg-dark-900 border-white/20 text-orange-500 rounded focus:ring-orange-500/50 w-4 h-4" checked>
+ <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Notificação no App</span>
+ </label>
+ </div>
+
+ <div class="space-y-2">
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">Descrição</label>
+ <textarea name="description" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all resize-none"></textarea>
+ </div>
+ </div>
+ <div class="modal-footer border-white/5 p-8">
+ <button type="button" class="px-6 py-3 text-xs font-black text-gray-500 uppercase tracking-widest hover:text-white transition-all" data-bs-dismiss="modal">Cancelar</button>
+ <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-black py-3 px-8 rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2">
+ <span class="material-symbols-outlined text-sm">calendar_month</span>
+ Agendar
+ </button>
+ </div>
+ </form>
+ </div>
+ </div>
 </div>
 
 <script>
+function filterCalendarEvents(query) {
+ const q = (query || '').toLowerCase().trim();
+ const eventBadges = document.querySelectorAll('.calendar-event-badge');
+ eventBadges.forEach(badge => {
+ const text = badge.textContent.toLowerCase();
+ if (!q || text.includes(q)) {
+ badge.style.display = 'block';
+ } else {
+ badge.style.display = 'none';
+ }
+ });
+}
+
 document.getElementById('newEventForm')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
-    
-    try {
-        const response = await fetch('/admin/api/agenda', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        
-        const result = await response.json();
-        if (result.success) {
-            window.location.reload();
-        } else {
-            alert('Erro: ' + result.message);
-        }
-    } catch (error) {
-        console.error('Error creating event:', error);
-        alert('Erro ao processar solicitação');
-    }
+ e.preventDefault();
+ const formData = new FormData(this);
+ const data = Object.fromEntries(formData.entries());
+ 
+ try {
+ const response = await fetch('/admin/api/agenda', {
+ method: 'POST',
+ headers: { 'Content-Type': 'application/json' },
+ body: JSON.stringify(data)
+ });
+ 
+ const result = await response.json();
+ if (result.success) {
+ window.location.reload();
+ } else {
+ alert('Erro: ' + result.message);
+ }
+ } catch (error) {
+ console.error('Error creating event:', error);
+ alert('Erro ao processar solicitação');
+ }
 });
+
+window.openCalendarQuickAdd = function(type) {
+ const eventModalEl = document.getElementById('newEventModal');
+ if (eventModalEl) {
+ const modalInstance = bootstrap.Modal.getInstance(eventModalEl);
+ if (modalInstance) modalInstance.hide();
+ }
+ 
+ setTimeout(() => {
+ if (type === 'crm') {
+ const dealModal = new bootstrap.Modal(document.getElementById('newDealModal'));
+ dealModal.show();
+ } else if (type === 'project') {
+ const projectModal = new bootstrap.Modal(document.getElementById('newProjectModal'));
+ projectModal.show();
+ }
+ }, 400);
+};
 </script>

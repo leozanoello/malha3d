@@ -22,6 +22,8 @@ const SubscriptionPlan = require('./SubscriptionPlan');
 const SystemLog = require('./SystemLog');
 const Webhook = require('./Webhook');
 const NotificationTemplate = require('./NotificationTemplate');
+const CategoryReceita = require('./CategoryReceita');
+const CategoryDespesa = require('./CategoryDespesa');
 const BudgetContact = require('./BudgetContact');
 const SmartNote = require('./SmartNote');
 const ApiKey = require('./ApiKey');
@@ -33,14 +35,17 @@ const TaskFile = require('./TaskFile');
 const TaskHistoryComment = require('./TaskHistoryComment');
 const TaskDependency = require('./TaskDependency');
 const TaskTemplate = require('./TaskTemplate');
+const CRMLeadLog = require('./CRMLeadLog');
+const CRMLeadMessage = require('./CRMLeadMessage');
+const CrmForecastProbability = require('./CrmForecastProbability');
 
 // Relacionamentos Budget e Client
 Client.hasMany(Budget, { as: 'budgets', foreignKey: 'clientId', onDelete: 'SET NULL' });
 Budget.belongsTo(Client, { as: 'client', foreignKey: 'clientId' });
 
 // Relacionamentos para múltiplos contatos (M:N)
-Budget.belongsToMany(Client, { through: BudgetContact, as: 'contacts', foreignKey: 'budgetId' });
-Client.belongsToMany(Budget, { through: BudgetContact, as: 'crmBudgets', foreignKey: 'clientId' });
+Budget.belongsToMany(Client, { through: BudgetContact, as: 'clientContacts', foreignKey: 'budgetId', otherKey: 'clientId' });
+Client.belongsToMany(Budget, { through: BudgetContact, as: 'crmBudgets', foreignKey: 'clientId', otherKey: 'budgetId' });
 Budget.hasMany(BudgetContact, { as: 'budgetContactLinks', foreignKey: 'budgetId' });
 
 Budget.hasMany(CRMNote, { as: 'crmNotes', foreignKey: 'budgetId', onDelete: 'CASCADE' });
@@ -50,7 +55,11 @@ CRMNote.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
 Budget.hasOne(Project, { as: 'project', foreignKey: 'budgetId' });
 Project.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
 Project.belongsTo(Client, { as: 'customer', foreignKey: 'clientId' });
+Project.belongsTo(User, { as: 'assignedUser', foreignKey: 'assignedUserId' });
+Project.belongsTo(Freelancer, { as: 'assignedFreelancer', foreignKey: 'assignedFreelancerId' });
 Client.hasMany(Project, { as: 'projects', foreignKey: 'clientId' });
+User.hasMany(Project, { as: 'assignedProjects', foreignKey: 'assignedUserId' });
+Freelancer.hasMany(Project, { as: 'assignedFreelancerProjects', foreignKey: 'assignedFreelancerId' });
 
 // Relacionamento Lead -> Propostas (1:N)
 Budget.hasMany(Budget, { as: 'propostas', foreignKey: 'linkedBudgetId', useJunctionTable: false });
@@ -110,6 +119,19 @@ ApiKey.belongsTo(User, { as: 'creator', foreignKey: 'created_by' });
 User.hasMany(Budget, { as: 'assignedDeals', foreignKey: 'assigned_user_id' });
 Budget.belongsTo(User, { as: 'assignedUser', foreignKey: 'assigned_user_id' });
 
+// Auditoria imutável e chat exclusivo por lead
+Budget.hasMany(CRMLeadLog, { as: 'logs', foreignKey: 'budgetId', onDelete: 'CASCADE' });
+CRMLeadLog.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
+
+// Forecast Probability (Exclusivo CRM — previsão de vendas)
+Budget.hasMany(CrmForecastProbability, { as: 'forecastProbabilities', foreignKey: 'budgetId', onDelete: 'CASCADE' });
+CrmForecastProbability.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
+
+Budget.hasMany(CRMLeadMessage, { as: 'messages', foreignKey: 'budgetId', onDelete: 'CASCADE' });
+CRMLeadMessage.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
+CRMLeadMessage.belongsTo(User, { as: 'sender', foreignKey: 'senderId' });
+CRMLeadMessage.belongsTo(User, { as: 'recipient', foreignKey: 'recipientId' });
+
 // Relacionamentos do Módulo de Planejamento 360º
 Project.hasMany(Milestone, { as: 'milestones', foreignKey: 'projectId', onDelete: 'CASCADE' });
 Milestone.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
@@ -152,7 +174,10 @@ const modelsToIsolate = [
   TaskFile,
   TaskHistoryComment,
   TaskDependency,
-  TaskTemplate
+  TaskTemplate,
+  CRMLeadLog,
+  CRMLeadMessage,
+  CrmForecastProbability
 ];
 
 modelsToIsolate.forEach(model => {
@@ -209,5 +234,10 @@ module.exports = {
   TaskFile,
   TaskHistoryComment,
   TaskDependency,
-  TaskTemplate
+  TaskTemplate,
+  CRMLeadLog,
+  CRMLeadMessage,
+  CrmForecastProbability,
+  CategoryReceita,
+  CategoryDespesa
 };

@@ -34,7 +34,7 @@ const generalLimiter = rateLimit({
     prefix: 'rl:general:'
   }),
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 1000, // limite de 1000 requisições por IP
+  max: 10000, // limite de 10000 requisições por IP (desenvolvimento)
   message: {
     error: 'Muitas requisições. Por favor, tente novamente mais tarde.',
     code: 'RATE_LIMIT_EXCEEDED'
@@ -60,7 +60,7 @@ const apiLimiter = rateLimit({
     prefix: 'rl:api:'
   }),
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 500, // limite de 500 requisições por IP
+  max: 10000, // limite de 10000 requisições por IP (desenvolvimento)
   message: {
     error: 'Muitas requisições à API. Por favor, tente novamente mais tarde.',
     code: 'API_RATE_LIMIT_EXCEEDED'
@@ -173,7 +173,7 @@ const adminLimiter = rateLimit({
     prefix: 'rl:admin:'
   }),
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 200, // limite de 200 requisições por IP
+  max: 10000, // limite de 10000 requisições por IP (desenvolvimento)
   message: {
     error: 'Muitas requisições ao painel administrativo.',
     code: 'ADMIN_RATE_LIMIT_EXCEEDED'

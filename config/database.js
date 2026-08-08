@@ -1,6 +1,7 @@
+const path = require('path');
 const { Sequelize } = require('sequelize');
 
-// Configurações do banco de dados para o Supabase (PostgreSQL)
+// Configurações compartilhadas entre os bancos
 const commonOptions = {
   dialect: 'postgres',
   dialectOptions: {
@@ -17,6 +18,16 @@ const commonOptions = {
   }
 };
 
+const baseDefineOptions = {
+  timestamps: true,
+  underscored: true,
+  freezeTableName: true
+};
+
+const localSqliteStoragePath = path.resolve(__dirname, '../data/local-dev.sqlite');
+const fallbackSqliteStoragePath = path.resolve(__dirname, '../data/dev.sqlite');
+const useLocalSqlite = process.env.DB_CLIENT === 'sqlite' || process.env.LOCAL_DEV === 'true';
+
 // Cria conexão com o banco de dados
 let sequelize;
 
@@ -24,11 +35,15 @@ if (process.env.NODE_ENV === 'test') {
   // Ambiente de teste: SQLite em memória
   sequelize = new Sequelize('sqlite::memory:', {
     logging: false,
-    define: {
-      timestamps: true,
-      underscored: true,
-      freezeTableName: true
-    }
+    define: baseDefineOptions
+  });
+} else if (useLocalSqlite) {
+  console.warn(`⚠️  Modo local habilitado. Usando SQLite em ${localSqliteStoragePath}`);
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: localSqliteStoragePath,
+    logging: false,
+    define: baseDefineOptions
   });
 } else if (process.env.SUPABASE_DB_URL && process.env.SUPABASE_DB_URL.includes('supabase.com')) {
   // Produção/Dev com Supabase: usar parâmetros explícitos para evitar
@@ -44,13 +59,11 @@ if (process.env.NODE_ENV === 'test') {
 } else {
   // Sem URL configurada — SQLite local como fallback de desenvolvimento
   console.warn('⚠️  SUPABASE_DB_URL não definida. Usando SQLite local como fallback.');
-  sequelize = new Sequelize('sqlite:./data/dev.sqlite', {
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: fallbackSqliteStoragePath,
     logging: false,
-    define: {
-      timestamps: true,
-      underscored: true,
-      freezeTableName: true
-    }
+    define: baseDefineOptions
   });
 }
 

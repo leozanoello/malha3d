@@ -21,11 +21,10 @@ const KanbanColumn = sequelize.define('KanbanColumn', {
   },
   statusKey: {
     type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
+    allowNull: false
   },
   type: {
-    type: DataTypes.ENUM('crm', 'project', 'leads', 'vendas'),
+    type: DataTypes.ENUM('crm', 'project', 'leads', 'vendas', 'modelagem'),
     defaultValue: 'leads'
   }
 }, {

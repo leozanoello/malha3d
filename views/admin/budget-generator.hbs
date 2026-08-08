@@ -1,502 +1,502 @@
 <div class="h-screen flex flex-col -m-8 overflow-hidden bg-[#0a0c10]">
-    <!-- Top Action Bar -->
-    <div class="h-20 bg-black/40 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-8 z-50">
-        <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
-                <span class="material-symbols-outlined text-white">description</span>
-            </div>
-            <div>
-                <h1 class="text-white font-black text-lg tracking-tighter uppercase">Gerador de <span class="text-orange-500">Orçamentos</span></h1>
-                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">ArchViz Premium Workspace</p>
-            </div>
-        </div>
-        
-        <div class="flex items-center gap-4">
-            <button id="btn-copy-link" class="px-6 py-3 rounded-xl bg-white/5 text-gray-400 text-[10px] font-black uppercase tracking-widest hover:text-white transition-all flex items-center gap-2 border border-white/5">
-                <span class="material-symbols-outlined text-sm">link</span> Copiar Link Público
-            </button>
-            <button id="btn-export-pdf" class="px-8 py-3 rounded-xl bg-orange-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-orange-500/20 hover:scale-105 transition-all flex items-center gap-2">
-                <span class="material-symbols-outlined text-sm">picture_as_pdf</span> Gerar Proposta PDF
-            </button>
-        </div>
-    </div>
+ <!-- Top Action Bar -->
+ <div class="h-20 bg-black/40 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-8 z-50">
+ <div class="flex items-center gap-4">
+ <div class="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
+ <span class="material-symbols-outlined text-white">description</span>
+ </div>
+ <div>
+ <h1 class="text-white font-black text-lg tracking-tighter uppercase">Gerador de <span class="text-orange-500">Orçamentos</span></h1>
+ <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">ArchViz Premium Workspace</p>
+ </div>
+ </div>
+ 
+ <div class="flex items-center gap-4">
+ <button id="btn-copy-link" class="px-6 py-3 rounded-xl bg-white/5 text-gray-400 text-[10px] font-black uppercase tracking-widest hover:text-white transition-all flex items-center gap-2 border border-white/5">
+ <span class="material-symbols-outlined text-sm">link</span> Copiar Link Público
+ </button>
+ <button id="btn-export-pdf" class="px-8 py-3 rounded-xl bg-orange-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-orange-500/20 transition-all flex items-center gap-2">
+ <span class="material-symbols-outlined text-sm">picture_as_pdf</span> Gerar Proposta PDF
+ </button>
+ </div>
+ </div>
 
-    <div class="flex-1 flex overflow-hidden">
-        <!-- Sidebar: Templates -->
-        <div class="w-80 bg-black/20 border-r border-white/5 overflow-y-auto p-6 space-y-8 no-scrollbar">
-            <div>
-                <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-6 block">Selecione o Estilo</label>
-                
-                <!-- Category: Dark Modern -->
-                <div class="space-y-4 mb-8">
-                    <div class="flex items-center gap-2 px-2">
-                        <span class="material-symbols-outlined text-orange-500 text-sm">dark_mode</span>
-                        <span class="text-[10px] font-black text-white uppercase tracking-widest">Dark Modern</span>
-                    </div>
-                    <div class="grid grid-cols-1 gap-3">
-                        <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all active-template btn-set-template" data-template-id="dark-modern" data-image="/public/images/templates/residencial.png">
-                            <img src="/public/images/templates/residencial.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-hover:scale-110">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-                            <span class="absolute bottom-3 left-4 text-[8px] font-black text-white uppercase tracking-widest">Theme: Dark Modern</span>
-                        </button>
-                    </div>
-                </div>
+ <div class="flex-1 flex overflow-hidden">
+ <!-- Sidebar: Templates -->
+ <div class="w-80 bg-black/20 border-r border-white/5 overflow-y-auto p-6 space-y-8 no-scrollbar">
+ <div>
+ <label class="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-6 block">Selecione o Estilo</label>
+ 
+ <!-- Category: Dark Modern -->
+ <div class="space-y-4 mb-8">
+ <div class="flex items-center gap-2 px-2">
+ <span class="material-symbols-outlined text-orange-500 text-sm">dark_mode</span>
+ <span class="text-[10px] font-black text-white uppercase tracking-widest">Dark Modern</span>
+ </div>
+ <div class="grid grid-cols-1 gap-3">
+ <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all active-template btn-set-template" data-template-id="dark-modern" data-image="/public/images/templates/residencial.png">
+ <img src="/public/images/templates/residencial.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-">
+ <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+ <span class="absolute bottom-3 left-4 text-[8px] font-black text-white uppercase tracking-widest">Theme: Dark Modern</span>
+ </button>
+ </div>
+ </div>
 
-                <!-- Category: Light Minimal -->
-                <div class="space-y-4 mb-8">
-                    <div class="flex items-center gap-2 px-2">
-                        <span class="material-symbols-outlined text-emerald-500 text-sm">light_mode</span>
-                        <span class="text-[10px] font-black text-white uppercase tracking-widest">Light Minimal</span>
-                    </div>
-                    <div class="grid grid-cols-1 gap-3">
-                        <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all btn-set-template" data-template-id="light-minimal" data-image="/public/images/templates/interiores.png">
-                            <img src="/public/images/templates/interiores.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-hover:scale-110">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-                            <span class="absolute bottom-3 left-4 text-[8px] font-black text-white uppercase tracking-widest">Theme: Light Minimal</span>
-                        </button>
-                    </div>
-                </div>
+ <!-- Category: Light Minimal -->
+ <div class="space-y-4 mb-8">
+ <div class="flex items-center gap-2 px-2">
+ <span class="material-symbols-outlined text-emerald-500 text-sm">light_mode</span>
+ <span class="text-[10px] font-black text-white uppercase tracking-widest">Light Minimal</span>
+ </div>
+ <div class="grid grid-cols-1 gap-3">
+ <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all btn-set-template" data-template-id="light-minimal" data-image="/public/images/templates/interiores.png">
+ <img src="/public/images/templates/interiores.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-">
+ <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+ <span class="absolute bottom-3 left-4 text-[8px] font-black text-white uppercase tracking-widest">Theme: Light Minimal</span>
+ </button>
+ </div>
+ </div>
 
-                <!-- Category: Neon Archviz -->
-                <div class="space-y-4">
-                    <div class="flex items-center gap-2 px-2">
-                        <span class="material-symbols-outlined text-blue-500 text-sm">flare</span>
-                        <span class="text-[10px] font-black text-white uppercase tracking-widest">Neon Archviz</span>
-                    </div>
-                    <div class="grid grid-cols-1 gap-3">
-                        <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all btn-set-template" data-template-id="neon-archviz" data-image="/public/images/templates/commercial.png">
-                            <img src="/public/images/templates/commercial.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-hover:scale-110">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-                            <span class="absolute bottom-3 left-4 text-[8px] font-black text-white uppercase tracking-widest">Theme: Neon Archviz</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+ <!-- Category: Neon Archviz -->
+ <div class="space-y-4">
+ <div class="flex items-center gap-2 px-2">
+ <span class="material-symbols-outlined text-blue-500 text-sm">flare</span>
+ <span class="text-[10px] font-black text-white uppercase tracking-widest">Neon Archviz</span>
+ </div>
+ <div class="grid grid-cols-1 gap-3">
+ <button class="template-card group relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-transparent hover:border-orange-500/50 transition-all btn-set-template" data-template-id="neon-archviz" data-image="/public/images/templates/commercial.png">
+ <img src="/public/images/templates/commercial.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all group-">
+ <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+ <span class="absolute bottom-3 left-4 text-[8px] font-black text-white uppercase tracking-widest">Theme: Neon Archviz</span>
+ </button>
+ </div>
+ </div>
+ </div>
+ </div>
 
-        <!-- Main Workspace -->
-        <div class="flex-1 flex overflow-hidden">
-            <!-- Left: Form -->
-            <div class="w-1/2 overflow-y-auto p-12 space-y-12 no-scrollbar bg-black/40">
-                <!-- Section 1: Cliente -->
-                <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500">
-                    <div class="flex items-center gap-3">
-                        <span class="text-orange-500 font-black text-sm">01.</span>
-                        <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Identificação do Projeto</h2>
-                    </div>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Nome do Cliente</label>
-                            <input type="text" id="clientName" class="input-premium h-14 preview-trigger" placeholder="Ex: João Silva">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Empresa / Escritório</label>
-                            <input type="text" id="clientCompany" class="input-premium h-14 preview-trigger" placeholder="Studio Arquitetura">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-6">
-                        <div class="space-y-2 col-span-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">E-mail</label>
-                            <input type="email" id="clientEmail" class="input-premium h-14 preview-trigger" placeholder="contato@cliente.com">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Validade</label>
-                            <input type="date" id="validity" class="input-premium h-14 preview-trigger">
-                        </div>
-                    </div>
-                </div>
+ <!-- Main Workspace -->
+ <div class="flex-1 flex overflow-hidden">
+ <!-- Left: Form -->
+ <div class="w-1/2 overflow-y-auto p-12 space-y-12 no-scrollbar bg-black/40">
+ <!-- Section 1: Cliente -->
+ <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500">
+ <div class="flex items-center gap-3">
+ <span class="text-orange-500 font-black text-sm">01.</span>
+ <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Identificação do Projeto</h2>
+ </div>
+ <div class="grid grid-cols-2 gap-6">
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Nome do Cliente</label>
+ <input type="text" id="clientName" class="input-premium h-14 preview-trigger" placeholder="Ex: João Silva">
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Empresa / Escritório</label>
+ <input type="text" id="clientCompany" class="input-premium h-14 preview-trigger" placeholder="Studio Arquitetura">
+ </div>
+ </div>
+ <div class="grid grid-cols-3 gap-6">
+ <div class="space-y-2 col-span-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">E-mail</label>
+ <input type="email" id="clientEmail" class="input-premium h-14 preview-trigger" placeholder="contato@cliente.com">
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Validade</label>
+ <input type="date" id="validity" class="input-premium h-14 preview-trigger">
+ </div>
+ </div>
+ </div>
 
-                <!-- Section 2: Escopo -->
-                <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500 delay-100">
-                    <div class="flex items-center gap-3">
-                        <span class="text-orange-500 font-black text-sm">02.</span>
-                        <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Definição de Escopo</h2>
-                    </div>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Formato de Entrada</label>
-                            <select id="inputFormat" class="input-premium h-14 preview-trigger">
-                                <option value="Modelo 3D enviado pelo cliente">Modelo 3D enviado pelo cliente</option>
-                                <option value="Necessita Modelagem do Zero">Necessita Modelagem do Zero</option>
-                                <option value="Arquivo BIM (Revit/Archicad)">Arquivo BIM (Revit/Archicad)</option>
-                                <option value="DWG / Sketch 2D">DWG / Sketch 2D</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">LOD (Nível de Detalhe)</label>
-                            <select id="techLOD" class="input-premium h-14 preview-trigger">
-                                <option value="LOD 200 - Esquemático">LOD 200 - Esquemático</option>
-                                <option value="LOD 300 - Preciso">LOD 300 - Preciso</option>
-                                <option value="LOD 350 - Detalhado (Recomendado)">LOD 350 - Detalhado</option>
-                                <option value="LOD 400 - Fabricação/Ultra">LOD 400 - Fabricação</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Descrição Detalhada</label>
-                        <div id="projectDescEditor" class="bg-white/[0.03] border border-white/10 rounded-xl text-white text-xs min-h-[150px]"></div>
-                        <input type="hidden" id="projectDesc">
-                    </div>
-                </div>
+ <!-- Section 2: Escopo -->
+ <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500 delay-100">
+ <div class="flex items-center gap-3">
+ <span class="text-orange-500 font-black text-sm">02.</span>
+ <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Definição de Escopo</h2>
+ </div>
+ <div class="grid grid-cols-2 gap-6">
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Formato de Entrada</label>
+ <select id="inputFormat" class="input-premium h-14 preview-trigger">
+ <option value="Modelo 3D enviado pelo cliente">Modelo 3D enviado pelo cliente</option>
+ <option value="Necessita Modelagem do Zero">Necessita Modelagem do Zero</option>
+ <option value="Arquivo BIM (Revit/Archicad)">Arquivo BIM (Revit/Archicad)</option>
+ <option value="DWG / Sketch 2D">DWG / Sketch 2D</option>
+ </select>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">LOD (Nível de Detalhe)</label>
+ <select id="techLOD" class="input-premium h-14 preview-trigger">
+ <option value="LOD 200 - Esquemático">LOD 200 - Esquemático</option>
+ <option value="LOD 300 - Preciso">LOD 300 - Preciso</option>
+ <option value="LOD 350 - Detalhado (Recomendado)">LOD 350 - Detalhado</option>
+ <option value="LOD 400 - Fabricação/Ultra">LOD 400 - Fabricação</option>
+ </select>
+ </div>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Descrição Detalhada</label>
+ <div id="projectDescEditor" class="bg-white/[0.03] border border-white/10 rounded-xl text-white text-xs min-h-[150px]"></div>
+ <input type="hidden" id="projectDesc">
+ </div>
+ </div>
 
-                <!-- Section 2.5: Especificações Técnicas ArchViz (15 Specialized Fields) -->
-                <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500 delay-150">
-                    <div class="flex items-center gap-3">
-                        <span class="text-orange-500 font-black text-sm">2.5</span>
-                        <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Especificações ArchViz</h2>
-                    </div>
-                    <div class="grid grid-cols-2 gap-x-6 gap-y-8">
-                        <!-- Tech Row 1 -->
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Modelagem 3D</label>
-                            <select id="techModeling" class="input-premium h-12 preview-trigger">
-                                <option value="Somente Mobiliário">Somente Mobiliário</option>
-                                <option value="Alvenaria e Estrutura">Alvenaria e Estrutura</option>
-                                <option value="Full Model (Int + Ext)">Full Model (Int + Ext)</option>
-                                <option value="Otimização de Malha">Otimização de Malha</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Estilo de Iluminação</label>
-                            <select id="techLighting" class="input-premium h-12 preview-trigger">
-                                <option value="Daylight (Diurno)">Daylight (Diurno)</option>
-                                <option value="Golden Hour (Pôr do Sol)">Golden Hour (Pôr do Sol)</option>
-                                <option value="Night (Noturno)">Night (Noturno)</option>
-                                <option value="Studio (Controlada)">Studio (Controlada)</option>
-                            </select>
-                        </div>
+ <!-- Section 2.5: Especificações Técnicas ArchViz (15 Specialized Fields) -->
+ <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500 delay-150">
+ <div class="flex items-center gap-3">
+ <span class="text-orange-500 font-black text-sm">2.5</span>
+ <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Especificações ArchViz</h2>
+ </div>
+ <div class="grid grid-cols-2 gap-x-6 gap-y-8">
+ <!-- Tech Row 1 -->
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Modelagem 3D</label>
+ <select id="techModeling" class="input-premium h-12 preview-trigger">
+ <option value="Somente Mobiliário">Somente Mobiliário</option>
+ <option value="Alvenaria e Estrutura">Alvenaria e Estrutura</option>
+ <option value="Full Model (Int + Ext)">Full Model (Int + Ext)</option>
+ <option value="Otimização de Malha">Otimização de Malha</option>
+ </select>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Estilo de Iluminação</label>
+ <select id="techLighting" class="input-premium h-12 preview-trigger">
+ <option value="Daylight (Diurno)">Daylight (Diurno)</option>
+ <option value="Golden Hour (Pôr do Sol)">Golden Hour (Pôr do Sol)</option>
+ <option value="Night (Noturno)">Night (Noturno)</option>
+ <option value="Studio (Controlada)">Studio (Controlada)</option>
+ </select>
+ </div>
 
-                        <!-- Tech Row 2 -->
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Formato de Entrega</label>
-                            <select id="techFormat" class="input-premium h-12 preview-trigger">
-                                <option value="Still (Imagem Estática)">Still (Imagem Estática)</option>
-                                <option value="Animation (Vídeo)">Animation (Vídeo)</option>
-                                <option value="360 Panorama / VR">360 Panorama / VR</option>
-                                <option value="Interactive (UE5/Realtime)">Interactive (UE5/Realtime)</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Resolução de Render</label>
-                            <select id="techResolution" class="input-premium h-12 preview-trigger">
-                                <option value="Full HD (1920x1080)">Full HD (1080p)</option>
-                                <option value="2K (2560x1440)">2K QHD</option>
-                                <option value="4K Ultra HD (3840x2160)">4K UHD</option>
-                                <option value="8K Print Ready">8K Print Ready</option>
-                            </select>
-                        </div>
+ <!-- Tech Row 2 -->
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Formato de Entrega</label>
+ <select id="techFormat" class="input-premium h-12 preview-trigger">
+ <option value="Still (Imagem Estática)">Still (Imagem Estática)</option>
+ <option value="Animation (Vídeo)">Animation (Vídeo)</option>
+ <option value="360 Panorama / VR">360 Panorama / VR</option>
+ <option value="Interactive (UE5/Realtime)">Interactive (UE5/Realtime)</option>
+ </select>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Resolução de Render</label>
+ <select id="techResolution" class="input-premium h-12 preview-trigger">
+ <option value="Full HD (1920x1080)">Full HD (1080p)</option>
+ <option value="2K (2560x1440)">2K QHD</option>
+ <option value="4K Ultra HD (3840x2160)">4K UHD</option>
+ <option value="8K Print Ready">8K Print Ready</option>
+ </select>
+ </div>
 
-                        <!-- Tech Row 3 -->
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Nível de Humanização</label>
-                            <select id="techHumanization" class="input-premium h-12 preview-trigger">
-                                <option value="Nenhuma (Empty Space)">Nenhuma (Empty Space)</option>
-                                <option value="Pessoas 2D (Cutouts)">Pessoas 2D (Cutouts)</option>
-                                <option value="Pessoas 3D Scanned (High Detail)">Pessoas 3D Scanned</option>
-                                <option value="Atores Reais (Green Screen)">Atores Reais</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Vegetação / Paisagismo</label>
-                            <select id="techLandscape" class="input-premium h-12 preview-trigger">
-                                <option value="Básica (Asset Library)">Básica (Asset Library)</option>
-                                <option value="Fiel ao Projeto Botânico">Fiel ao Botânico</option>
-                                <option value="Densa (Forest/Jungle)">Densa (Forest/Jungle)</option>
-                                <option value="Scattered Custom Assets">Scattered Custom Assets</option>
-                            </select>
-                        </div>
+ <!-- Tech Row 3 -->
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Nível de Humanização</label>
+ <select id="techHumanization" class="input-premium h-12 preview-trigger">
+ <option value="Nenhuma (Empty Space)">Nenhuma (Empty Space)</option>
+ <option value="Pessoas 2D (Cutouts)">Pessoas 2D (Cutouts)</option>
+ <option value="Pessoas 3D Scanned (High Detail)">Pessoas 3D Scanned</option>
+ <option value="Atores Reais (Green Screen)">Atores Reais</option>
+ </select>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Vegetação / Paisagismo</label>
+ <select id="techLandscape" class="input-premium h-12 preview-trigger">
+ <option value="Básica (Asset Library)">Básica (Asset Library)</option>
+ <option value="Fiel ao Projeto Botânico">Fiel ao Botânico</option>
+ <option value="Densa (Forest/Jungle)">Densa (Forest/Jungle)</option>
+ <option value="Scattered Custom Assets">Scattered Custom Assets</option>
+ </select>
+ </div>
 
-                        <!-- Tech Row 4 -->
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Pós-Produção</label>
-                            <select id="techPostProd" class="input-premium h-12 preview-trigger">
-                                <option value="Standard (Balanço de Cores)">Standard</option>
-                                <option value="Cinematic (Color Grading)">Cinematic</option>
-                                <option value="Matte Painting (Photoshop)">Matte Painting</option>
-                                <option value="VFX & Compositing">VFX & Compositing</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Mobiliário</label>
-                            <select id="techFurniture" class="input-premium h-12 preview-trigger">
-                                <option value="Standard Library">Standard Library</option>
-                                <option value="High-End Design Brands">High-End Brands</option>
-                                <option value="Custom / Marcenaria Sob Medida">Marcenaria Sob Medida</option>
-                            </select>
-                        </div>
+ <!-- Tech Row 4 -->
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Pós-Produção</label>
+ <select id="techPostProd" class="input-premium h-12 preview-trigger">
+ <option value="Standard (Balanço de Cores)">Standard</option>
+ <option value="Cinematic (Color Grading)">Cinematic</option>
+ <option value="Matte Painting (Photoshop)">Matte Painting</option>
+ <option value="VFX & Compositing">VFX & Compositing</option>
+ </select>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Mobiliário</label>
+ <select id="techFurniture" class="input-premium h-12 preview-trigger">
+ <option value="Standard Library">Standard Library</option>
+ <option value="High-End Design Brands">High-End Brands</option>
+ <option value="Custom / Marcenaria Sob Medida">Marcenaria Sob Medida</option>
+ </select>
+ </div>
 
-                        <!-- Tech Row 5 -->
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Contexto / Entorno</label>
-                            <select id="techContext" class="input-premium h-12 preview-trigger">
-                                <option value="3D Genérico">3D Genérico</option>
-                                <option value="Photomontage (Drone/Foto)">Photomontage (Drone)</option>
-                                <option value="Full 3D Real Environment">Full 3D Real Environment</option>
-                                <option value="Site Location Match">Site Location Match</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Realismo de Materiais</label>
-                            <select id="techMaterials" class="input-premium h-12 preview-trigger">
-                                <option value="PBR Standard">PBR Standard</option>
-                                <option value="Advanced Shaders (Complex)">Advanced Shaders</option>
-                                <option value="Scanned Textures (Megascans)">Scanned Textures</option>
-                            </select>
-                        </div>
+ <!-- Tech Row 5 -->
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Contexto / Entorno</label>
+ <select id="techContext" class="input-premium h-12 preview-trigger">
+ <option value="3D Genérico">3D Genérico</option>
+ <option value="Photomontage (Drone/Foto)">Photomontage (Drone)</option>
+ <option value="Full 3D Real Environment">Full 3D Real Environment</option>
+ <option value="Site Location Match">Site Location Match</option>
+ </select>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Realismo de Materiais</label>
+ <select id="techMaterials" class="input-premium h-12 preview-trigger">
+ <option value="PBR Standard">PBR Standard</option>
+ <option value="Advanced Shaders (Complex)">Advanced Shaders</option>
+ <option value="Scanned Textures (Megascans)">Scanned Textures</option>
+ </select>
+ </div>
 
-                        <!-- Tech Row 6 -->
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Suporte Técnico</label>
-                            <select id="techSupport" class="input-premium h-12 preview-trigger">
-                                <option value="Apenas Imagens">Apenas Imagens</option>
-                                <option value="Extração de Plantas 2D">Extração de Plantas 2D</option>
-                                <option value="Consultoria de Layout">Consultoria de Layout</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Refinamento por IA</label>
-                            <select id="techAI" class="input-premium h-12 preview-trigger">
-                                <option value="Não Utilizado">Não Utilizado</option>
-                                <option value="Refinamento de Textura (Upscale)">Refinamento de Textura</option>
-                                <option value="Generative Details (Inpainting)">Generative Details</option>
-                            </select>
-                        </div>
+ <!-- Tech Row 6 -->
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Suporte Técnico</label>
+ <select id="techSupport" class="input-premium h-12 preview-trigger">
+ <option value="Apenas Imagens">Apenas Imagens</option>
+ <option value="Extração de Plantas 2D">Extração de Plantas 2D</option>
+ <option value="Consultoria de Layout">Consultoria de Layout</option>
+ </select>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Refinamento por IA</label>
+ <select id="techAI" class="input-premium h-12 preview-trigger">
+ <option value="Não Utilizado">Não Utilizado</option>
+ <option value="Refinamento de Textura (Upscale)">Refinamento de Textura</option>
+ <option value="Generative Details (Inpainting)">Generative Details</option>
+ </select>
+ </div>
 
-                        <!-- Tech Row 7 (Animation Specifics) -->
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Áudio / Trilha (Vídeos)</label>
-                            <select id="techAudio" class="input-premium h-12 preview-trigger">
-                                <option value="Nenhum">Nenhum</option>
-                                <option value="Stock Music (Standard)">Stock Music</option>
-                                <option value="Sound Design Custom">Sound Design Custom</option>
-                                <option value="Voiceover (Locução)">Voiceover (Locução)</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Duração da Animação</label>
-                            <input type="text" id="techDuration" class="input-premium h-12 preview-trigger" placeholder="Ex: 30 segundos">
-                        </div>
-                    </div>
-                </div>
+ <!-- Tech Row 7 (Animation Specifics) -->
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Áudio / Trilha (Vídeos)</label>
+ <select id="techAudio" class="input-premium h-12 preview-trigger">
+ <option value="Nenhum">Nenhum</option>
+ <option value="Stock Music (Standard)">Stock Music</option>
+ <option value="Sound Design Custom">Sound Design Custom</option>
+ <option value="Voiceover (Locução)">Voiceover (Locução)</option>
+ </select>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Duração da Animação</label>
+ <input type="text" id="techDuration" class="input-premium h-12 preview-trigger" placeholder="Ex: 30 segundos">
+ </div>
+ </div>
+ </div>
 
-                <!-- Section 3: Entregáveis -->
-                <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500 delay-200">
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <span class="text-orange-500 font-black text-sm">03.</span>
-                            <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Tabela de Entregáveis</h2>
-                        </div>
-                        <button id="btn-add-item" class="px-4 py-2 rounded-lg bg-orange-500/10 text-orange-500 text-[9px] font-black uppercase tracking-widest border border-orange-500/20 hover:bg-orange-500 hover:text-white transition-all">+ Add Item</button>
-                    </div>
-                    
-                    <div id="itemsContainer" class="space-y-4">
-                        <!-- Items will be injected here -->
-                    </div>
-                </div>
+ <!-- Section 3: Entregáveis -->
+ <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500 delay-200">
+ <div class="flex justify-between items-center">
+ <div class="flex items-center gap-3">
+ <span class="text-orange-500 font-black text-sm">03.</span>
+ <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Tabela de Entregáveis</h2>
+ </div>
+ <button id="btn-add-item" class="px-4 py-2 rounded-lg bg-orange-500/10 text-orange-500 text-[9px] font-black uppercase tracking-widest border border-orange-500/20 hover:bg-orange-500 hover:text-white transition-all">+ Add Item</button>
+ </div>
+ 
+ <div id="itemsContainer" class="space-y-4">
+ <!-- Items will be injected here -->
+ </div>
+ </div>
 
-                <!-- Section 4: Prazos & Pagamento -->
-                <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500 delay-300">
-                    <div class="flex items-center gap-3">
-                        <span class="text-orange-500 font-black text-sm">04.</span>
-                        <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Condições Comerciais</h2>
-                    </div>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Prazo de Entrega (Dias)</label>
-                            <input type="number" id="deliveryDays" class="input-premium h-14 preview-trigger" value="15">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Ciclos de Revisão</label>
-                            <input type="number" id="revisionCycles" class="input-premium h-14 preview-trigger" value="2">
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Forma de Pagamento</label>
-                        <input type="text" id="paymentTerms" class="input-premium h-14 preview-trigger" value="50% Entrada + 50% Entrega Final">
-                    </div>
-                </div>
+ <!-- Section 4: Prazos & Pagamento -->
+ <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500 delay-300">
+ <div class="flex items-center gap-3">
+ <span class="text-orange-500 font-black text-sm">04.</span>
+ <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Condições Comerciais</h2>
+ </div>
+ <div class="grid grid-cols-2 gap-6">
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Prazo de Entrega (Dias)</label>
+ <input type="number" id="deliveryDays" class="input-premium h-14 preview-trigger" value="15">
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Ciclos de Revisão</label>
+ <input type="number" id="revisionCycles" class="input-premium h-14 preview-trigger" value="2">
+ </div>
+ </div>
+ <div class="space-y-2">
+ <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Forma de Pagamento</label>
+ <input type="text" id="paymentTerms" class="input-premium h-14 preview-trigger" value="50% Entrada + 50% Entrega Final">
+ </div>
+ </div>
 
-                <!-- Section 5: Portfolio (Images) -->
-                <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500 delay-400">
-                    <div class="flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-3">
-                            <span class="text-orange-500 font-black text-sm">05.</span>
-                            <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Referências de Portfólio</h2>
-                        </div>
-                        <button id="btn-add-portfolio" class="px-4 py-2 rounded-lg bg-orange-500/10 text-orange-500 text-[9px] font-black uppercase tracking-widest border border-orange-500/20 hover:bg-orange-500 hover:text-white transition-all">+ Add URL da Imagem</button>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-2">Insira links diretos de imagens para montar o portfólio que será anexado nesta proposta.</p>
-                    
-                    <div id="portfolioInputsContainer" class="space-y-4">
-                        <!-- Portfolio link inputs will be injected here -->
-                    </div>
-                </div>
-            </div>
+ <!-- Section 5: Portfolio (Images) -->
+ <div class="space-y-8 animate-in fade-in slide-in-from-left duration-500 delay-400">
+ <div class="flex items-center justify-between gap-3">
+ <div class="flex items-center gap-3">
+ <span class="text-orange-500 font-black text-sm">05.</span>
+ <h2 class="text-white font-black text-[10px] uppercase tracking-[0.3em]">Referências de Portfólio</h2>
+ </div>
+ <button id="btn-add-portfolio" class="px-4 py-2 rounded-lg bg-orange-500/10 text-orange-500 text-[9px] font-black uppercase tracking-widest border border-orange-500/20 hover:bg-orange-500 hover:text-white transition-all">+ Add URL da Imagem</button>
+ </div>
+ <p class="text-xs text-gray-400 mt-2">Insira links diretos de imagens para montar o portfólio que será anexado nesta proposta.</p>
+ 
+ <div id="portfolioInputsContainer" class="space-y-4">
+ <!-- Portfolio link inputs will be injected here -->
+ </div>
+ </div>
+ </div>
 
-            <!-- Right: Live Preview -->
-            <div class="flex-1 bg-white/[0.02] p-12 overflow-y-auto scrollbar-premium flex justify-center">
-                <div id="previewDocument" class="w-full max-w-[800px] bg-white rounded-none shadow-2xl origin-top transition-all duration-700 min-h-[1131px] text-black p-16 font-sans relative overflow-hidden">
-                    <!-- Overlay Style for Templates -->
-                    <div id="templateStyle" class="absolute inset-0 pointer-events-none opacity-5 mix-blend-overlay"></div>
-                    
-                    <!-- Branding Header -->
-                    <div class="flex justify-between items-start mb-20 relative z-10 border-b-2 border-black pb-12">
-                        <div id="studioBranding">
-                            <div class="h-12 flex items-center mb-4">
-                                <img src="/public/images/logo.png" id="previewLogo" class="h-full object-contain filter grayscale" onerror="this.src='https://placehold.co/200x50?text=MALHA+3D'">
-                            </div>
-                            <p class="text-[10px] font-black uppercase tracking-[0.2em] mb-0">Malha 3D</p>
-                            <p class="text-[8px] text-gray-500 font-bold uppercase tracking-[0.4em] mb-1">archviz</p>
-                            <p class="text-[9px] text-gray-500 font-medium">www.malha3d.com • (11) 99999-9999</p>
-                        </div>
-                        <div class="text-right">
-                            <h3 class="text-2xl font-black uppercase tracking-tighter mb-2">PROPOSTA <span class="text-orange-500">COMERCIAL</span></h3>
-                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Ref: <span id="prevRef">#{{now 'YYYYMMDD'}}-001</span></p>
-                        </div>
-                    </div>
+ <!-- Right: Live Preview -->
+ <div class="flex-1 bg-white/[0.02] p-12 overflow-y-auto scrollbar-premium flex justify-center">
+ <div id="previewDocument" class="w-full max-w-[800px] bg-white rounded-none shadow-2xl origin-top transition-all duration-700 min-h-[1131px] text-black p-16 font-sans relative overflow-hidden">
+ <!-- Overlay Style for Templates -->
+ <div id="templateStyle" class="absolute inset-0 pointer-events-none opacity-5 mix-blend-overlay"></div>
+ 
+ <!-- Branding Header -->
+ <div class="flex justify-between items-start mb-20 relative z-10 border-b-2 border-black pb-12">
+ <div id="studioBranding">
+ <div class="h-12 flex items-center mb-4">
+ <img src="/public/images/logo.png" id="previewLogo" class="h-full object-contain filter grayscale" onerror="this.src='https://placehold.co/200x50?text=MALHA+3D'">
+ </div>
+ <p class="text-[10px] font-black uppercase tracking-[0.2em] mb-0">Malha 3D</p>
+ <p class="text-[8px] text-gray-500 font-bold uppercase tracking-[0.4em] mb-1">archviz</p>
+ <p class="text-[9px] text-gray-500 font-medium">www.malha3d.com • (11) 99999-9999</p>
+ </div>
+ <div class="text-right">
+ <h3 class="text-2xl font-black uppercase tracking-tighter mb-2">PROPOSTA <span class="text-orange-500">COMERCIAL</span></h3>
+ <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Ref: <span id="prevRef">#{{now 'YYYYMMDD'}}-001</span></p>
+ </div>
+ </div>
 
-                    <!-- Hero Template Image -->
-                    <div class="mb-16 relative aspect-[21/9] rounded-sm overflow-hidden bg-gray-100 shadow-lg">
-                        <img id="templateCover" src="/public/images/templates/residencial.png" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                    </div>
+ <!-- Hero Template Image -->
+ <div class="mb-16 relative aspect-[21/9] rounded-sm overflow-hidden bg-gray-100 shadow-lg">
+ <img id="templateCover" src="/public/images/templates/residencial.png" class="w-full h-full object-cover">
+ <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+ </div>
 
-                    <!-- Proposal Body -->
-                    <div class="grid grid-cols-12 gap-12 mb-16 relative z-10">
-                        <!-- Left Column: Scope & Deliverables -->
-                        <div class="col-span-8 space-y-12">
-                            <!-- Scope -->
-                            <div>
-                                <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 border-b border-black pb-2">OBJETIVO & ESCOPO</p>
-                                <div class="grid grid-cols-2 gap-4 mb-4">
-                                    <div>
-                                        <p class="text-[7px] text-gray-400 font-bold uppercase mb-1">Entrada:</p>
-                                        <h5 id="prevInputFormat" class="text-[10px] font-black uppercase">Modelo 3D enviado pelo cliente</h5>
-                                    </div>
-                                    <div>
-                                        <p class="text-[7px] text-gray-400 font-bold uppercase mb-1">LOD:</p>
-                                        <h5 id="prevTechLOD" class="text-[10px] font-black uppercase">LOD 350</h5>
-                                    </div>
-                                </div>
-                                <div id="prevProjectDesc" class="text-[11px] text-gray-700 leading-relaxed border-l-4 border-orange-500 pl-4 bg-gray-50 py-3 pr-3">Descreva aqui os detalhes do projeto que serão refletidos no orçamento final.</div>
-                            </div>
+ <!-- Proposal Body -->
+ <div class="grid grid-cols-12 gap-12 mb-16 relative z-10">
+ <!-- Left Column: Scope & Deliverables -->
+ <div class="col-span-8 space-y-12">
+ <!-- Scope -->
+ <div>
+ <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 border-b border-black pb-2">OBJETIVO & ESCOPO</p>
+ <div class="grid grid-cols-2 gap-4 mb-4">
+ <div>
+ <p class="text-[7px] text-gray-400 font-bold uppercase mb-1">Entrada:</p>
+ <h5 id="prevInputFormat" class="text-[10px] font-black uppercase">Modelo 3D enviado pelo cliente</h5>
+ </div>
+ <div>
+ <p class="text-[7px] text-gray-400 font-bold uppercase mb-1">LOD:</p>
+ <h5 id="prevTechLOD" class="text-[10px] font-black uppercase">LOD 350</h5>
+ </div>
+ </div>
+ <div id="prevProjectDesc" class="text-[11px] text-gray-700 leading-relaxed border-l-4 border-orange-500 pl-4 bg-gray-50 py-3 pr-3">Descreva aqui os detalhes do projeto que serão refletidos no orçamento final.</div>
+ </div>
 
-                            <!-- Tech Specs (ArchViz Specialized) -->
-                            <div class="bg-gray-50 p-6 rounded-sm border-l-4 border-black">
-                                <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 border-b border-gray-200 pb-2">ESPECIFICAÇÕES TÉCNICAS ARCHVIZ</p>
-                                <div class="grid grid-cols-3 gap-y-4 gap-x-6" id="prevTechSpecsGrid">
-                                    <!-- Dynamic Tech Specs -->
-                                </div>
-                            </div>
+ <!-- Tech Specs (ArchViz Specialized) -->
+ <div class="bg-gray-50 p-6 rounded-sm border-l-4 border-black">
+ <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 border-b border-gray-200 pb-2">ESPECIFICAÇÕES TÉCNICAS ARCHVIZ</p>
+ <div class="grid grid-cols-3 gap-y-4 gap-x-6" id="prevTechSpecsGrid">
+ <!-- Dynamic Tech Specs -->
+ </div>
+ </div>
 
-                            <!-- Deliverables -->
-                            <div>
-                                <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 border-b border-black pb-2">TABELA DE ENTREGÁVEIS</p>
-                                <table class="w-full border-collapse">
-                                    <thead>
-                                        <tr class="bg-gray-50 border-y border-gray-200">
-                                            <th class="py-3 px-4 text-left text-[8px] font-black uppercase tracking-widest">Descrição do Item</th>
-                                            <th class="py-3 px-4 text-center text-[8px] font-black uppercase tracking-widest w-16">Qtd</th>
-                                            <th class="py-3 px-4 text-right text-[8px] font-black uppercase tracking-widest w-28">Unitário</th>
-                                            <th class="py-3 px-4 text-right text-[8px] font-black uppercase tracking-widest w-32">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="prevTableBody">
-                                        <!-- Dynamic rows -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+ <!-- Deliverables -->
+ <div>
+ <p class="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 border-b border-black pb-2">TABELA DE ENTREGÁVEIS</p>
+ <table class="w-full border-collapse">
+ <thead>
+ <tr class="bg-gray-50 border-y border-gray-200">
+ <th class="py-3 px-4 text-left text-[8px] font-black uppercase tracking-widest">Descrição do Item</th>
+ <th class="py-3 px-4 text-center text-[8px] font-black uppercase tracking-widest w-16">Qtd</th>
+ <th class="py-3 px-4 text-right text-[8px] font-black uppercase tracking-widest w-28">Unitário</th>
+ <th class="py-3 px-4 text-right text-[8px] font-black uppercase tracking-widest w-32">Total</th>
+ </tr>
+ </thead>
+ <tbody id="prevTableBody">
+ <!-- Dynamic rows -->
+ </tbody>
+ </table>
+ </div>
+ </div>
 
-                        <!-- Right Column: Details & Finance -->
-                        <div class="col-span-4 space-y-8">
-                            <!-- Client Info Box -->
-                            <div class="bg-gray-50 p-6 border-t-4 border-black">
-                                <p class="text-[8px] font-black text-orange-500 uppercase tracking-[0.3em] mb-4">DADOS DO CLIENTE</p>
-                                <h4 id="prevClientName" class="text-sm font-black uppercase tracking-tight mb-1">Nome do Cliente</h4>
-                                <p id="prevClientCompany" class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-3 border-b border-gray-200 pb-3">Empresa do Cliente</p>
-                                <p id="prevClientEmail" class="text-[9px] font-medium text-gray-500 mb-3 border-b border-gray-200 pb-3 lowercase truncate">email@cliente.com</p>
-                                <div class="space-y-2 mt-3">
-                                    <div class="flex justify-between text-[8px] font-bold uppercase">
-                                        <span class="text-gray-400">Data Base:</span>
-                                        <span class="text-black">{{now 'DD/MM/YYYY'}}</span>
-                                    </div>
-                                    <div class="flex justify-between text-[8px] font-bold uppercase">
-                                        <span class="text-gray-400">Válido Até:</span>
-                                        <span class="text-black" id="prevValidity">---</span>
-                                    </div>
-                                </div>
-                            </div>
+ <!-- Right Column: Details & Finance -->
+ <div class="col-span-4 space-y-8">
+ <!-- Client Info Box -->
+ <div class="bg-gray-50 p-6 border-t-4 border-black">
+ <p class="text-[8px] font-black text-orange-500 uppercase tracking-[0.3em] mb-4">DADOS DO CLIENTE</p>
+ <h4 id="prevClientName" class="text-sm font-black uppercase tracking-tight mb-1">Nome do Cliente</h4>
+ <p id="prevClientCompany" class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-3 border-b border-gray-200 pb-3">Empresa do Cliente</p>
+ <p id="prevClientEmail" class="text-[9px] font-medium text-gray-500 mb-3 border-b border-gray-200 pb-3 lowercase truncate">email@cliente.com</p>
+ <div class="space-y-2 mt-3">
+ <div class="flex justify-between text-[8px] font-bold uppercase">
+ <span class="text-gray-400">Data Base:</span>
+ <span class="text-black">{{now 'DD/MM/YYYY'}}</span>
+ </div>
+ <div class="flex justify-between text-[8px] font-bold uppercase">
+ <span class="text-gray-400">Válido Até:</span>
+ <span class="text-black" id="prevValidity">---</span>
+ </div>
+ </div>
+ </div>
 
-                            <!-- Commercial Terms -->
-                            <div class="bg-gray-50 p-6 border-t-4 border-black space-y-4">
-                                <p class="text-[8px] font-black text-orange-500 uppercase tracking-[0.3em] mb-4">CRONOGRAMA & PAGAMENTO</p>
-                                
-                                <div class="flex justify-between items-center border-b border-gray-200 pb-3">
-                                    <span class="text-[8px] font-bold text-gray-500 uppercase">Prazo (Úteis)</span>
-                                    <span class="text-xs font-black" id="prevDays">15</span>
-                                </div>
-                                <div class="flex justify-between items-center border-b border-gray-200 pb-3">
-                                    <span class="text-[8px] font-bold text-gray-500 uppercase">Revisões</span>
-                                    <span class="text-xs font-black" id="prevRevisions">02</span>
-                                </div>
-                                <div class="pt-2">
-                                    <span class="text-[8px] font-bold text-gray-500 uppercase block mb-1">Pagamento</span>
-                                    <span id="prevTerms" class="text-[9px] font-black uppercase">50% Entrada + 50% Entrega Final</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+ <!-- Commercial Terms -->
+ <div class="bg-gray-50 p-6 border-t-4 border-black space-y-4">
+ <p class="text-[8px] font-black text-orange-500 uppercase tracking-[0.3em] mb-4">CRONOGRAMA & PAGAMENTO</p>
+ 
+ <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+ <span class="text-[8px] font-bold text-gray-500 uppercase">Prazo (Úteis)</span>
+ <span class="text-xs font-black" id="prevDays">15</span>
+ </div>
+ <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+ <span class="text-[8px] font-bold text-gray-500 uppercase">Revisões</span>
+ <span class="text-xs font-black" id="prevRevisions">02</span>
+ </div>
+ <div class="pt-2">
+ <span class="text-[8px] font-bold text-gray-500 uppercase block mb-1">Pagamento</span>
+ <span id="prevTerms" class="text-[9px] font-black uppercase">50% Entrada + 50% Entrega Final</span>
+ </div>
+ </div>
+ </div>
+ </div>
 
-                    <!-- Total Section -->
-                    <div id="prevGrandTotalContainer" class="flex justify-between items-center bg-black text-white p-8 mb-16 relative z-10 rounded-sm shadow-2xl transition-colors duration-500">
-                        <div>
-                            <p class="text-[8px] font-black text-white/50 uppercase tracking-[0.3em] mb-1">VALOR TOTAL DO INVESTIMENTO</p>
-                            <p class="text-[9px] text-white/40 uppercase">Valores em Reais (BRL)</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-4xl font-black tracking-tighter text-white" id="prevGrandTotal">R$ 0,00</p>
-                        </div>
-                    </div>
+ <!-- Total Section -->
+ <div id="prevGrandTotalContainer" class="flex justify-between items-center bg-black text-white p-8 mb-16 relative z-10 rounded-sm shadow-2xl transition-colors duration-500">
+ <div>
+ <p class="text-[8px] font-black text-white/50 uppercase tracking-[0.3em] mb-1">VALOR TOTAL DO INVESTIMENTO</p>
+ <p class="text-[9px] text-white/40 uppercase">Valores em Reais (BRL)</p>
+ </div>
+ <div class="text-right">
+ <p class="text-4xl font-black tracking-tighter text-white" id="prevGrandTotal">R$ 0,00</p>
+ </div>
+ </div>
 
-                    <!-- Portfolio Gallery Section -->
-                    <div class="mb-20 relative z-10" id="previewPortfolioSection" style="display: none;">
-                        <div class="flex items-center gap-4 mb-8">
-                            <h3 class="text-xl font-black uppercase tracking-tighter">Galeria de <span class="text-orange-500">Referências</span></h3>
-                            <div class="flex-1 h-[2px] bg-gray-100"></div>
-                        </div>
-                        <div id="prevPortfolioGrid" class="grid grid-cols-2 gap-6">
-                            <!-- Portfolio images rendered here -->
-                        </div>
-                    </div>
+ <!-- Portfolio Gallery Section -->
+ <div class="mb-20 relative z-10" id="previewPortfolioSection" style="display: none;">
+ <div class="flex items-center gap-4 mb-8">
+ <h3 class="text-xl font-black uppercase tracking-tighter">Galeria de <span class="text-orange-500">Referências</span></h3>
+ <div class="flex-1 h-[2px] bg-gray-100"></div>
+ </div>
+ <div id="prevPortfolioGrid" class="grid grid-cols-2 gap-6">
+ <!-- Portfolio images rendered here -->
+ </div>
+ </div>
 
-                    <!-- Footer -->
-                    <div class="absolute bottom-16 left-16 right-16 flex justify-between items-center text-[8px] font-black text-gray-300 uppercase tracking-[0.4em]">
-                        <span>Malha 3D © 2026</span>
-                        <span>ArchViz Proposal Systems</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+ <!-- Footer -->
+ <div class="absolute bottom-16 left-16 right-16 flex justify-between items-center text-[8px] font-black text-gray-300 uppercase tracking-[0.4em]">
+ <span>Malha 3D © 2026</span>
+ <span>ArchViz Proposal Systems</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 </div>
 
 <style>
-    .input-premium {
-        @apply w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 text-white font-medium focus:border-orange-500/50 focus:bg-white/[0.05] transition-all outline-none text-xs;
-    }
-    .active-template {
-        @apply border-orange-500 shadow-2xl shadow-orange-500/20 opacity-100 ring-4 ring-orange-500/10;
-    }
-    .scrollbar-premium::-webkit-scrollbar { width: 4px; }
-    .scrollbar-premium::-webkit-scrollbar-track { background: transparent; }
-    .scrollbar-premium::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-    .scrollbar-premium::-webkit-scrollbar-thumb:hover { background: rgba(249,115,22,0.4); }
+ .input-premium {
+ @apply w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 text-white font-medium focus:border-orange-500/50 focus:bg-white/[0.05] transition-all outline-none text-xs;
+ }
+ .active-template {
+ @apply border-orange-500 shadow-2xl shadow-orange-500/20 opacity-100 ring-4 ring-orange-500/10;
+ }
+ .scrollbar-premium::-webkit-scrollbar { width: 4px; }
+ .scrollbar-premium::-webkit-scrollbar-track { background: transparent; }
+ .scrollbar-premium::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+ .scrollbar-premium::-webkit-scrollbar-thumb:hover { background: rgba(249,115,22,0.4); }
 
-    /* Templates Stylings */
-    .theme-residencial { font-family: 'Inter', sans-serif; }
-    .theme-interiores { font-family: 'Outfit', sans-serif; }
-    .theme-commercial { font-family: 'Roboto', sans-serif; }
+ /* Templates Stylings */
+ .theme-residencial { font-family: 'Inter', sans-serif; }
+ .theme-interiores { font-family: 'Outfit', sans-serif; }
+ .theme-commercial { font-family: 'Roboto', sans-serif; }
 </style>
 
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -504,262 +504,262 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let items = [
-        { type: 'Imagem Estática (Fotorrealista)', qty: 1, unit: 1500 }
-    ];
-    let portfolioUrls = [];
+ let items = [
+ { type: 'Imagem Estática (Fotorrealista)', qty: 1, unit: 1500 }
+ ];
+ let portfolioUrls = [];
 
-    // === QUILL INIT ===
-    const quill = new Quill('#projectDescEditor', {
-        theme: 'snow',
-        placeholder: 'Descreva os detalhes técnicos, atmosfera desejada e referências...',
-        modules: {
-            toolbar: [
-                ['bold', 'italic', 'underline'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                ['clean']
-            ]
-        }
-    });
+ // === QUILL INIT ===
+ const quill = new Quill('#projectDescEditor', {
+ theme: 'snow',
+ placeholder: 'Descreva os detalhes técnicos, atmosfera desejada e referências...',
+ modules: {
+ toolbar: [
+ ['bold', 'italic', 'underline'],
+ [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+ ['clean']
+ ]
+ }
+ });
 
-    quill.on('text-change', function() {
-        document.getElementById('projectDesc').value = quill.root.innerHTML;
-        updatePreview();
-    });
+ quill.on('text-change', function() {
+ document.getElementById('projectDesc').value = quill.root.innerHTML;
+ updatePreview();
+ });
 
-    // === FUNCTIONS ===
-    function updatePreview() {
-        document.getElementById('prevClientName').innerText = document.getElementById('clientName').value || 'Nome do Cliente';
-        document.getElementById('prevClientCompany').innerText = document.getElementById('clientCompany').value || 'Empresa do Cliente';
-        document.getElementById('prevClientEmail').innerText = document.getElementById('clientEmail').value || 'email@cliente.com';
-        document.getElementById('prevValidity').innerText = document.getElementById('validity').value || '---';
-        document.getElementById('prevInputFormat').innerText = document.getElementById('inputFormat').value;
-        document.getElementById('prevTechLOD').innerText = document.getElementById('techLOD').value;
-        document.getElementById('prevProjectDesc').innerHTML = document.getElementById('projectDesc').value || 'Descreva aqui os detalhes do projeto...';
-        document.getElementById('prevDays').innerText = document.getElementById('deliveryDays').value;
-        document.getElementById('prevRevisions').innerText = document.getElementById('revisionCycles').value;
-        document.getElementById('prevTerms').innerText = document.getElementById('paymentTerms').value;
+ // === FUNCTIONS ===
+ function updatePreview() {
+ document.getElementById('prevClientName').innerText = document.getElementById('clientName').value || 'Nome do Cliente';
+ document.getElementById('prevClientCompany').innerText = document.getElementById('clientCompany').value || 'Empresa do Cliente';
+ document.getElementById('prevClientEmail').innerText = document.getElementById('clientEmail').value || 'email@cliente.com';
+ document.getElementById('prevValidity').innerText = document.getElementById('validity').value || '---';
+ document.getElementById('prevInputFormat').innerText = document.getElementById('inputFormat').value;
+ document.getElementById('prevTechLOD').innerText = document.getElementById('techLOD').value;
+ document.getElementById('prevProjectDesc').innerHTML = document.getElementById('projectDesc').value || 'Descreva aqui os detalhes do projeto...';
+ document.getElementById('prevDays').innerText = document.getElementById('deliveryDays').value;
+ document.getElementById('prevRevisions').innerText = document.getElementById('revisionCycles').value;
+ document.getElementById('prevTerms').innerText = document.getElementById('paymentTerms').value;
 
-        // Tech Specs Grid
-        const techFields = [
-            { label: 'Modelagem', id: 'techModeling' },
-            { label: 'Iluminação', id: 'techLighting' },
-            { label: 'Formato', id: 'techFormat' },
-            { label: 'Resolução', id: 'techResolution' },
-            { label: 'Humanização', id: 'techHumanization' },
-            { label: 'Vegetação', id: 'techLandscape' },
-            { label: 'Pós-Prod', id: 'techPostProd' },
-            { label: 'Mobiliário', id: 'techFurniture' },
-            { label: 'Contexto', id: 'techContext' },
-            { label: 'Materiais', id: 'techMaterials' },
-            { label: 'Suporte', id: 'techSupport' },
-            { label: 'IA Tools', id: 'techAI' },
-            { label: 'Áudio', id: 'techAudio' },
-            { label: 'Duração', id: 'techDuration' }
-        ];
+ // Tech Specs Grid
+ const techFields = [
+ { label: 'Modelagem', id: 'techModeling' },
+ { label: 'Iluminação', id: 'techLighting' },
+ { label: 'Formato', id: 'techFormat' },
+ { label: 'Resolução', id: 'techResolution' },
+ { label: 'Humanização', id: 'techHumanization' },
+ { label: 'Vegetação', id: 'techLandscape' },
+ { label: 'Pós-Prod', id: 'techPostProd' },
+ { label: 'Mobiliário', id: 'techFurniture' },
+ { label: 'Contexto', id: 'techContext' },
+ { label: 'Materiais', id: 'techMaterials' },
+ { label: 'Suporte', id: 'techSupport' },
+ { label: 'IA Tools', id: 'techAI' },
+ { label: 'Áudio', id: 'techAudio' },
+ { label: 'Duração', id: 'techDuration' }
+ ];
 
-        let techGridHtml = '';
-        techFields.forEach(field => {
-            const val = document.getElementById(field.id).value;
-            if (val && val !== 'Nenhum' && val !== 'Não Utilizado') {
-                techGridHtml += `
-                    <div>
-                        <p class="text-[6px] text-gray-400 font-bold uppercase mb-0.5">${field.label}</p>
-                        <p class="text-[8px] font-black uppercase text-black truncate">${val}</p>
-                    </div>
-                `;
-            }
-        });
-        document.getElementById('prevTechSpecsGrid').innerHTML = techGridHtml;
+ let techGridHtml = '';
+ techFields.forEach(field => {
+ const val = document.getElementById(field.id).value;
+ if (val && val !== 'Nenhum' && val !== 'Não Utilizado') {
+ techGridHtml += `
+ <div>
+ <p class="text-[6px] text-gray-400 font-bold uppercase mb-0.5">${field.label}</p>
+ <p class="text-[8px] font-black uppercase text-black truncate">${val}</p>
+ </div>
+ `;
+ }
+ });
+ document.getElementById('prevTechSpecsGrid').innerHTML = techGridHtml;
 
-        let tableBody = '';
-        let grandTotal = 0;
-        items.forEach((item) => {
-            const total = item.qty * item.unit;
-            grandTotal += total;
-            tableBody += `
-                <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <td class="py-3 px-4 text-[10px] font-black uppercase text-gray-800">${item.type}</td>
-                    <td class="py-3 px-4 text-center text-[10px] font-bold text-gray-500">${item.qty}</td>
-                    <td class="py-3 px-4 text-right text-[10px] font-bold text-gray-500">R$ ${item.unit.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                    <td class="py-3 px-4 text-right text-[10px] font-black text-black">R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                </tr>
-            `;
-        });
-        document.getElementById('prevTableBody').innerHTML = tableBody;
-        document.getElementById('prevGrandTotal').innerText = `R$ ${grandTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+ let tableBody = '';
+ let grandTotal = 0;
+ items.forEach((item) => {
+ const total = item.qty * item.unit;
+ grandTotal += total;
+ tableBody += `
+ <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+ <td class="py-3 px-4 text-[10px] font-black uppercase text-gray-800">${item.type}</td>
+ <td class="py-3 px-4 text-center text-[10px] font-bold text-gray-500">${item.qty}</td>
+ <td class="py-3 px-4 text-right text-[10px] font-bold text-gray-500">R$ ${item.unit.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+ <td class="py-3 px-4 text-right text-[10px] font-black text-black">R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+ </tr>
+ `;
+ });
+ document.getElementById('prevTableBody').innerHTML = tableBody;
+ document.getElementById('prevGrandTotal').innerText = `R$ ${grandTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
-        // Update Portfolio Preview
-        const portfolioSection = document.getElementById('previewPortfolioSection');
-        const portfolioGrid = document.getElementById('prevPortfolioGrid');
-        const validUrls = portfolioUrls.filter(url => url && url.trim() !== '');
-        if (validUrls.length > 0) {
-            portfolioSection.style.display = 'block';
-            portfolioGrid.innerHTML = validUrls.map(url => `
-                <div class="aspect-[4/3] rounded-sm overflow-hidden shadow-md bg-gray-100 group relative border border-gray-200">
-                    <img src="${url}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="this.src='https://placehold.co/600x400?text=Invalid+Image'">
-                    <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                </div>
-            `).join('');
-        } else {
-            portfolioSection.style.display = 'none';
-            portfolioGrid.innerHTML = '';
-        }
-    }
+ // Update Portfolio Preview
+ const portfolioSection = document.getElementById('previewPortfolioSection');
+ const portfolioGrid = document.getElementById('prevPortfolioGrid');
+ const validUrls = portfolioUrls.filter(url => url && url.trim() !== '');
+ if (validUrls.length > 0) {
+ portfolioSection.style.display = 'block';
+ portfolioGrid.innerHTML = validUrls.map(url => `
+ <div class="aspect-[4/3] rounded-sm overflow-hidden shadow-md bg-gray-100 group relative border border-gray-200">
+ <img src="${url}" class="w-full h-full object-cover transition-transform duration-700 group-" onerror="this.src='https://placehold.co/600x400?text=Invalid+Image'">
+ <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+ </div>
+ `).join('');
+ } else {
+ portfolioSection.style.display = 'none';
+ portfolioGrid.innerHTML = '';
+ }
+ }
 
-    function renderFormItems() {
-        let html = '';
-        items.forEach((item, index) => {
-            html += `
-                <div class="grid grid-cols-12 gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 group relative animate-in zoom-in duration-300">
-                    <div class="col-span-5 space-y-2">
-                        <label class="text-[7px] font-black text-gray-500 uppercase tracking-widest px-1">Tipo de Serviço</label>
-                        <input type="text" value="${item.type}" data-index="${index}" data-field="type" class="input-premium h-10 item-input">
-                    </div>
-                    <div class="col-span-2 space-y-2">
-                        <label class="text-[7px] font-black text-gray-500 uppercase tracking-widest px-1">Qtd</label>
-                        <input type="number" value="${item.qty}" data-index="${index}" data-field="qty" class="input-premium h-10 text-center item-input">
-                    </div>
-                    <div class="col-span-4 space-y-2">
-                        <label class="text-[7px] font-black text-gray-500 uppercase tracking-widest px-1">Vlr Unitário</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[9px] text-gray-500 font-bold">R$</span>
-                            <input type="number" value="${item.unit}" data-index="${index}" data-field="unit" class="input-premium h-10 pl-8 item-input">
-                        </div>
-                    </div>
-                    <div class="col-span-1 flex items-end pb-1">
-                        <button type="button" data-index="${index}" class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all btn-remove-item">
-                            <span class="material-symbols-outlined text-sm">delete</span>
-                        </button>
-                    </div>
-                </div>
-            `;
-        });
-        document.getElementById('itemsContainer').innerHTML = html;
-        updatePreview();
-    }
+ function renderFormItems() {
+ let html = '';
+ items.forEach((item, index) => {
+ html += `
+ <div class="grid grid-cols-12 gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 group relative animate-in zoom-in duration-300">
+ <div class="col-span-5 space-y-2">
+ <label class="text-[7px] font-black text-gray-500 uppercase tracking-widest px-1">Tipo de Serviço</label>
+ <input type="text" value="${item.type}" data-index="${index}" data-field="type" class="input-premium h-10 item-input">
+ </div>
+ <div class="col-span-2 space-y-2">
+ <label class="text-[7px] font-black text-gray-500 uppercase tracking-widest px-1">Qtd</label>
+ <input type="number" value="${item.qty}" data-index="${index}" data-field="qty" class="input-premium h-10 text-center item-input">
+ </div>
+ <div class="col-span-4 space-y-2">
+ <label class="text-[7px] font-black text-gray-500 uppercase tracking-widest px-1">Vlr Unitário</label>
+ <div class="relative">
+ <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[9px] text-gray-500 font-bold">R$</span>
+ <input type="number" value="${item.unit}" data-index="${index}" data-field="unit" class="input-premium h-10 pl-8 item-input">
+ </div>
+ </div>
+ <div class="col-span-1 flex items-end pb-1">
+ <button type="button" data-index="${index}" class="w-8 h-8 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all btn-remove-item">
+ <span class="material-symbols-outlined text-sm">delete</span>
+ </button>
+ </div>
+ </div>
+ `;
+ });
+ document.getElementById('itemsContainer').innerHTML = html;
+ updatePreview();
+ }
 
-    function renderPortfolioInputs() {
-        let html = '';
-        portfolioUrls.forEach((url, index) => {
-            html += `
-                <div class="flex gap-3 animate-in zoom-in duration-300">
-                    <input type="url" value="${url}" data-index="${index}" class="input-premium h-12 flex-1 portfolio-input" placeholder="https://exemplo.com/imagem.jpg">
-                    <button type="button" data-index="${index}" class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all btn-remove-portfolio flex items-center justify-center shadow-lg">
-                        <span class="material-symbols-outlined text-sm">delete</span>
-                    </button>
-                </div>
-            `;
-        });
-        document.getElementById('portfolioInputsContainer').innerHTML = html;
-        updatePreview();
-    }
+ function renderPortfolioInputs() {
+ let html = '';
+ portfolioUrls.forEach((url, index) => {
+ html += `
+ <div class="flex gap-3 animate-in zoom-in duration-300">
+ <input type="url" value="${url}" data-index="${index}" class="input-premium h-12 flex-1 portfolio-input" placeholder="https://exemplo.com/imagem.jpg">
+ <button type="button" data-index="${index}" class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all btn-remove-portfolio flex items-center justify-center shadow-lg">
+ <span class="material-symbols-outlined text-sm">delete</span>
+ </button>
+ </div>
+ `;
+ });
+ document.getElementById('portfolioInputsContainer').innerHTML = html;
+ updatePreview();
+ }
 
-    // === EVENT LISTENERS ===
-    document.addEventListener('input', function(e) {
-        if (e.target.classList.contains('preview-trigger')) {
-            updatePreview();
-        }
-        if (e.target.classList.contains('item-input')) {
-            const index = e.target.dataset.index;
-            const field = e.target.dataset.field;
-            const value = e.target.value;
-            items[index][field] = field === 'type' ? value : parseFloat(value) || 0;
-            updatePreview();
-        }
-        if (e.target.classList.contains('portfolio-input')) {
-            const index = e.target.dataset.index;
-            portfolioUrls[index] = e.target.value;
-            updatePreview();
-        }
-    });
+ // === EVENT LISTENERS ===
+ document.addEventListener('input', function(e) {
+ if (e.target.classList.contains('preview-trigger')) {
+ updatePreview();
+ }
+ if (e.target.classList.contains('item-input')) {
+ const index = e.target.dataset.index;
+ const field = e.target.dataset.field;
+ const value = e.target.value;
+ items[index][field] = field === 'type' ? value : parseFloat(value) || 0;
+ updatePreview();
+ }
+ if (e.target.classList.contains('portfolio-input')) {
+ const index = e.target.dataset.index;
+ portfolioUrls[index] = e.target.value;
+ updatePreview();
+ }
+ });
 
-    document.addEventListener('change', function(e) {
-        if (e.target.classList.contains('preview-trigger')) {
-            updatePreview();
-        }
-    });
+ document.addEventListener('change', function(e) {
+ if (e.target.classList.contains('preview-trigger')) {
+ updatePreview();
+ }
+ });
 
-    document.addEventListener('click', function(e) {
-        // Copy link
-        if (e.target.closest('#btn-copy-link')) {
-            alert('Link público gerado: https://malha3d.com/p/proposal-882193');
-        }
+ document.addEventListener('click', function(e) {
+ // Copy link
+ if (e.target.closest('#btn-copy-link')) {
+ alert('Link público gerado: https://malha3d.com/p/proposal-882193');
+ }
 
-        // Export PDF
-        if (e.target.closest('#btn-export-pdf')) {
-            window.print();
-        }
+ // Export PDF
+ if (e.target.closest('#btn-export-pdf')) {
+ window.print();
+ }
 
-        // Add Item
-        if (e.target.closest('#btn-add-item')) {
-            items.push({ type: 'Novo Entregável', qty: 1, unit: 1000 });
-            renderFormItems();
-        }
+ // Add Item
+ if (e.target.closest('#btn-add-item')) {
+ items.push({ type: 'Novo Entregável', qty: 1, unit: 1000 });
+ renderFormItems();
+ }
 
-        // Remove Item
-        const removeBtn = e.target.closest('.btn-remove-item');
-        if (removeBtn) {
-            const index = removeBtn.dataset.index;
-            items.splice(index, 1);
-            renderFormItems();
-        }
+ // Remove Item
+ const removeBtn = e.target.closest('.btn-remove-item');
+ if (removeBtn) {
+ const index = removeBtn.dataset.index;
+ items.splice(index, 1);
+ renderFormItems();
+ }
 
-        // Add Portfolio Image
-        if (e.target.closest('#btn-add-portfolio')) {
-            portfolioUrls.push('');
-            renderPortfolioInputs();
-        }
+ // Add Portfolio Image
+ if (e.target.closest('#btn-add-portfolio')) {
+ portfolioUrls.push('');
+ renderPortfolioInputs();
+ }
 
-        // Remove Portfolio Image
-        const removePortBtn = e.target.closest('.btn-remove-portfolio');
-        if (removePortBtn) {
-            const index = removePortBtn.dataset.index;
-            portfolioUrls.splice(index, 1);
-            renderPortfolioInputs();
-        }
+ // Remove Portfolio Image
+ const removePortBtn = e.target.closest('.btn-remove-portfolio');
+ if (removePortBtn) {
+ const index = removePortBtn.dataset.index;
+ portfolioUrls.splice(index, 1);
+ renderPortfolioInputs();
+ }
 
-        // Set Template
-        const templateBtn = e.target.closest('.btn-set-template');
-        if (templateBtn) {
-            const { templateId, image } = templateBtn.dataset;
-            document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active-template', 'border-orange-500'));
-            templateBtn.classList.add('active-template', 'border-orange-500');
-            
-            const previewDoc = document.getElementById('previewDocument');
-            const cover = document.getElementById('templateCover');
-            previewDoc.classList.add('opacity-0', 'scale-95', 'blur-sm');
-            
-            setTimeout(() => {
-                cover.src = image;
-                previewDoc.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
-                previewDoc.style.color = '#000';
-                
-                const totalContainer = document.getElementById('prevGrandTotalContainer');
-                const docRoot = document.getElementById('previewDocument');
-                
-                // Clear previous theme classes
-                docRoot.classList.remove('bg-[#111111]', 'text-white', 'bg-white', 'text-black', 'bg-gray-900');
-                
-                if (templateId === 'dark-modern') {
-                    docRoot.classList.add('bg-[#111111]', 'text-white');
-                    docRoot.style.fontFamily = "'Inter', sans-serif";
-                    totalContainer.style.backgroundColor = '#f97316'; // orange-500
-                } else if (templateId === 'light-minimal') {
-                    docRoot.classList.add('bg-white', 'text-black');
-                    docRoot.style.fontFamily = "'Outfit', sans-serif";
-                    totalContainer.style.backgroundColor = '#10b981'; // emerald-500
-                } else if (templateId === 'neon-archviz') {
-                    docRoot.classList.add('bg-gray-900', 'text-white');
-                    docRoot.style.fontFamily = "'Roboto', sans-serif";
-                    totalContainer.style.backgroundColor = '#ec4899'; // pink-500
-                }
-                previewDoc.classList.remove('opacity-0', 'scale-95', 'blur-sm');
-            }, 400);
-        }
-    });
+ // Set Template
+ const templateBtn = e.target.closest('.btn-set-template');
+ if (templateBtn) {
+ const { templateId, image } = templateBtn.dataset;
+ document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active-template', 'border-orange-500'));
+ templateBtn.classList.add('active-template', 'border-orange-500');
+ 
+ const previewDoc = document.getElementById('previewDocument');
+ const cover = document.getElementById('templateCover');
+ previewDoc.classList.add('opacity-0', 'scale-95', 'blur-sm');
+ 
+ setTimeout(() => {
+ cover.src = image;
+ previewDoc.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+ previewDoc.style.color = '#000';
+ 
+ const totalContainer = document.getElementById('prevGrandTotalContainer');
+ const docRoot = document.getElementById('previewDocument');
+ 
+ // Clear previous theme classes
+ docRoot.classList.remove('bg-[#111111]', 'text-white', 'bg-white', 'text-black', 'bg-gray-900');
+ 
+ if (templateId === 'dark-modern') {
+ docRoot.classList.add('bg-[#111111]', 'text-white');
+ docRoot.style.fontFamily = "'Inter', sans-serif";
+ totalContainer.style.backgroundColor = '#f97316'; // orange-500
+ } else if (templateId === 'light-minimal') {
+ docRoot.classList.add('bg-white', 'text-black');
+ docRoot.style.fontFamily = "'Outfit', sans-serif";
+ totalContainer.style.backgroundColor = '#10b981'; // emerald-500
+ } else if (templateId === 'neon-archviz') {
+ docRoot.classList.add('bg-gray-900', 'text-white');
+ docRoot.style.fontFamily = "'Roboto', sans-serif";
+ totalContainer.style.backgroundColor = '#ec4899'; // pink-500
+ }
+ previewDoc.classList.remove('opacity-0', 'scale-95', 'blur-sm');
+ }, 400);
+ }
+ });
 
-    // === INITIALIZATION ===
-    renderFormItems();
+ // === INITIALIZATION ===
+ renderFormItems();
 });
 </script>

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Project, Testimonial, Setting, Budget, CRMNote, Client, BudgetContact, CRMTask, sequelize } = require('../models');
+const { Project, Testimonial, Setting, Budget, CRMNote, Client, BudgetContact, CRMTask, ProjectTask, sequelize } = require('../models');
 const { Op } = require('sequelize');
 const { v4: uuidv4 } = require('uuid');
 const { getAutomatedFieldsForStatus } = require('../services/crmAutomation');
@@ -218,7 +218,7 @@ router.post('/budgets', async (req, res, next) => {
     const data = {
       ...req.body,
       trackingCode: `TZ-${uuidv4().substring(0, 8).toUpperCase()}`,
-      status: req.body.status || 'leads'
+      status: req.body.status || 'novo_lead'
     };
 
     if (!data.name && data.clientName) {data.name = data.clientName;}
@@ -411,12 +411,12 @@ router.get('/budgets/:id/contacts', async (req, res, next) => {
     const budget = await Budget.findByPk(req.params.id, {
       include: [{
         model: Client,
-        as: 'contacts',
+        as: 'clientContacts',
         through: { attributes: ['responsibilityLevel', 'isPrimary'] }
       }]
     });
     if (!budget) {return res.status(404).json({ error: 'Negociação não encontrada' });}
-    res.json(budget.contacts);
+    res.json(budget.clientContacts);
   } catch (error) {
     next(error);
   }
@@ -664,5 +664,97 @@ router.post('/calcularOrcamentoAvancado', async (req, res) => {
 // Rota de Precificação Inteligente de ArchViz alimentada por IA
 const calculadoraController = require('../controllers/calculadoraController');
 router.post('/calculadora/calcular', (req, res) => calculadoraController.calcularPricingArchvizIA(req, res));
+
+// --- Planner Kanban APIs ---
+router.get('/projects/:id/planner', async (req, res, next) => {
+  try {
+    const project = await Project.findByPk(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Projeto não encontrado' });
+    
+    // Default columns if none exist
+    const defaultColumns = ['A Fazer', 'Em Andamento', 'Concluído'];
+    const plannerColumns = (project.plannerColumns && project.plannerColumns.length > 0) ? project.plannerColumns : defaultColumns;
+    
+    const tasks = await ProjectTask.findAll({
+      where: { projectId: project.id },
+      order: [['order', 'ASC']]
+    });
+
+    res.json({ columns: plannerColumns, tasks });
+  } catch (error) {
+    console.error('API GET Planner Error:', error);
+    next(error);
+  }
+});
+
+router.post('/projects/:id/planner/columns', async (req, res, next) => {
+  try {
+    const project = await Project.findByPk(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Projeto não encontrado' });
+    
+    const { columns } = req.body;
+    if (Array.isArray(columns)) {
+      await project.update({ plannerColumns: columns });
+      res.json({ success: true, columns });
+    } else {
+      res.status(400).json({ error: 'Formato inválido de colunas.' });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/projects/:id/planner/tasks', async (req, res, next) => {
+  try {
+    const { id: projectId } = req.params;
+    const { tasks } = req.body; // array of tasks to create/update
+    
+    if (!Array.isArray(tasks)) return res.status(400).json({ error: 'Tasks must be an array' });
+
+    // Handle updates or creation
+    // For simplicity, tasks can contain { id, title, stage, order }
+    const updatedTasks = [];
+    for (const taskData of tasks) {
+      if (taskData.id) {
+        const task = await ProjectTask.findOne({ where: { id: taskData.id, projectId } });
+        if (task) {
+          await task.update({
+            title: taskData.title !== undefined ? taskData.title : task.title,
+            stage: taskData.stage || task.stage,
+            order: taskData.order !== undefined ? taskData.order : task.order
+          });
+          updatedTasks.push(task);
+        }
+      } else {
+        const newTask = await ProjectTask.create({
+          projectId,
+          title: taskData.title,
+          stage: taskData.stage,
+          order: taskData.order || 0
+        });
+        updatedTasks.push(newTask);
+      }
+    }
+    
+    res.json({ success: true, tasks: updatedTasks });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/projects/:id/planner/tasks/:taskId', async (req, res, next) => {
+  try {
+    const { id: projectId, taskId } = req.params;
+    const task = await ProjectTask.findOne({ where: { id: taskId, projectId } });
+    if (task) {
+      await task.destroy();
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: 'Task não encontrada' });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;

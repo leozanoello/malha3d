@@ -9,10 +9,7 @@ const Budget = sequelize.define('Budget', {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      len: [3, 100]
-    }
+    allowNull: false
   },
   email: {
     type: DataTypes.STRING,
@@ -37,7 +34,8 @@ const Budget = sequelize.define('Budget', {
       'Comercial',
       'Outro'
     ),
-    allowNull: false
+    allowNull: true,
+    defaultValue: 'Outro'
   },
   description: {
     type: DataTypes.TEXT,
@@ -100,6 +98,10 @@ const Budget = sequelize.define('Budget', {
     defaultValue: 50,
     validate: { min: 0, max: 100 }
   },
+  contacts: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
   leadImage: {
     type: DataTypes.STRING,
     allowNull: true
@@ -128,6 +130,12 @@ const Budget = sequelize.define('Budget', {
   expectedRevenueDate: {
     type: DataTypes.DATE,
     allowNull: true
+  },
+  expectedCloseDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: true,
+    field: 'expected_close_date',
+    comment: 'Data estimada de fechamento — usado pela previsão de vendas CRM'
   },
   order: {
     type: DataTypes.INTEGER,
@@ -382,6 +390,62 @@ const Budget = sequelize.define('Budget', {
   urgencyFee: {
     type: DataTypes.DECIMAL(5, 2),
     defaultValue: 0
+  },
+  valorGanho: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: true
+  },
+  dataGanhoOportunidade: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  expectativaInicio: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  origemProjeto: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  observacao: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  etiquetas: {
+    type: DataTypes.JSONB,
+    defaultValue: []
+  },
+  cep: {
+    type: DataTypes.STRING(10),
+    allowNull: true
+  },
+  rua: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  numero: {
+    type: DataTypes.STRING(20),
+    allowNull: true
+  },
+  complemento: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  bairro: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  modelagemType: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  modelagemTypeCustom: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  projectClass: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
 }, {
   tableName: 'budgets',

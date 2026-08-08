@@ -1,0 +1,40 @@
+{{!-- Partial: Endereço do Projeto (ViaCEP) --}}
+<div class="p-3 rounded-xl border border-purple-500/20 bg-purple-500/5 space-y-2">
+ <h5 class="text-[9px] font-black text-purple-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+  <span class="material-symbols-outlined text-xs">location_on</span> Endereço do Projeto
+ </h5>
+ <div class="grid grid-cols-3 gap-2">
+  <div>
+   <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">CEP</label>
+   <input type="text" name="cep" id="{{prefix}}Cep" maxlength="9" placeholder="00000-000" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" oninput="window.autoFillCep(this.value, '{{prefix}}')">
+  </div>
+  <div class="col-span-2">
+   <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Rua</label>
+   <input type="text" name="rua" id="{{prefix}}Rua" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Preenchido via CEP...">
+  </div>
+ </div>
+ <div class="grid grid-cols-3 gap-2">
+  <div>
+   <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Número</label>
+   <input type="text" name="numero" id="{{prefix}}Numero" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Nº">
+  </div>
+  <div class="col-span-2">
+   <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Complemento</label>
+   <input type="text" name="complemento" id="{{prefix}}Complemento" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Apto, Sala...">
+  </div>
+ </div>
+ <div class="grid grid-cols-3 gap-2">
+  <div>
+   <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Bairro</label>
+   <input type="text" name="bairro" id="{{prefix}}Bairro" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Preenchido via CEP...">
+  </div>
+  <div>
+   <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Estado (UF)</label>
+   <input type="text" name="state" id="{{prefix}}Estado" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="UF" readonly>
+  </div>
+  <div>
+   <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Cidade</label>
+   <input type="text" name="city" id="{{prefix}}Cidade" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Preenchido via CEP..." readonly>
+  </div>
+ </div>
+</div>

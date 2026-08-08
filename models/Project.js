@@ -113,6 +113,10 @@ const Project = sequelize.define('Project', {
     type: DataTypes.JSONB,
     defaultValue: []
   },
+  plannerColumns: {
+    type: DataTypes.JSONB,
+    defaultValue: [] // Added for Planejamento Kanban
+  },
   productionDays: {
     type: DataTypes.INTEGER,
     allowNull: true
@@ -247,6 +251,10 @@ const Project = sequelize.define('Project', {
     defaultValue: []
   },
   assignedUserId: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
+  assignedFreelancerId: {
     type: DataTypes.UUID,
     allowNull: true
   },
