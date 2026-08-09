@@ -1,89 +1,81 @@
-﻿<!-- 
+﻿<!--
  MALHA 3D - CRM PREMIUM (LEADS & PROSPECTS)
- Design: Liquid Glass / Ultra High Density / ArchViz Focused
+ Design: Uiverse / kcard Pattern / ArchViz Focused
 -->
 
 <div class="crm-wrapper animate-in fade-in duration-700">
- <!-- Header: Business Intelligence & Quick Actions -->
- <div class="mb-4 p-3 glass-card border-none bg-gradient-to-br from-white/10 to-white/[0.02] relative overflow-hidden rounded-2xl">
- <div class="absolute top-0 right-0 w-48 h-48 bg-orange-500/10 blur-[80px] -mr-24 -mt-24"></div>
- 
- <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 relative z-10">
+ <!-- Header: Same visual as .kcard (bg #151515, radius 5px, subtle shadow) -->
+ <div class="mb-3 p-3" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+
+ <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
  <!-- Left Side: Title & Sub-Nav -->
- <div class="flex flex-wrap items-center gap-6">
- <div class="flex items-center gap-3">
- <div class="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/30">
- <span class="material-symbols-outlined text-white text-lg">hub</span>
+ <div class="flex flex-wrap items-center gap-5">
+ <div class="flex items-center gap-2.5">
+ <div class="w-7 h-7 rounded-md bg-orange-500/15 border border-orange-500/30 flex items-center justify-center">
+ <span class="material-symbols-outlined text-orange-400 text-sm">hub</span>
  </div>
  <div>
- <h1 class="text-xl font-black text-white tracking-tighter leading-none">
- Central de <span class="text-gradient">Leads</span>
+ <h1 class="text-sm font-black text-white tracking-tight leading-none">
+ Central de <span class="text-orange-400">Leads</span>
  </h1>
- <p class="text-gray-400 font-bold text-[8px] uppercase tracking-[0.3em]">CRM & Acquisition</p>
- </div>
- </div>
- 
- <!-- Sub-Navigation -->
- <div class="flex items-center gap-1 p-1 bg-black/30 rounded-xl border border-white/5">
- <a href="/admin/crm" class="px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.15em] rounded-lg transition-all flex items-center gap-1.5 {{#if (eq activeTab 'kanban')}}bg-orange-500 text-white shadow-md{{else}}text-gray-500 hover:text-white{{/if}}">
- <span class="material-symbols-outlined text-[11px]">view_kanban</span> Pipeline
- </a>
- <a href="/admin/crm/previsao" class="px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.15em] rounded-lg transition-all flex items-center gap-1.5 {{#if (eq activeTab 'forecast')}}bg-orange-500 text-white shadow-md{{else}}text-gray-500 hover:text-white{{/if}}">
- <span class="material-symbols-outlined text-[11px]">query_stats</span> Previsão
- </a>
- </div>
- </div>
- 
- <!-- Right Side: Stats & Actions -->
- <div class="flex flex-wrap items-center gap-3">
- <div class="relative flex items-center">
- <span class="material-symbols-outlined absolute left-2.5 text-gray-400 text-[15px] pointer-events-none">search</span>
- <input type="text" id="kanbanSearch" placeholder="Pesquisar cards..." class="bg-black/40 dark:bg-black/40 border border-white/10 rounded-xl pl-8 pr-4 py-2 text-[10px] font-bold text-white placeholder-gray-400 focus:outline-none focus:border-orange-500/50 transition-colors w-48">
- </div>
- <button id="btn-bulk-edit" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-[9px] uppercase tracking-[0.15em]" onclick="window.toggleBulkMode()">
- <span class="material-symbols-outlined text-sm">edit_note</span>
- Editar Vários
- </button>
- <!-- Bulk action toolbar (hidden by default) -->
- <div id="bulk-toolbar" class="hidden flex items-center gap-2 px-4 py-2 bg-orange-500/10 border border-orange-500/30 rounded-xl">
- <span class="text-[9px] font-black text-orange-400 uppercase tracking-widest"><span id="bulk-count">0</span> selecionado(s)</span>
- <div class="w-px h-4 bg-white/10"></div>
- <button onclick="window.bulkTrashLeads()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[9px] font-black uppercase tracking-wider hover:bg-amber-500/20 transition-all">
- <span class="material-symbols-outlined text-xs">delete</span>
- Lixeira
- </button>
- <button onclick="window.bulkDeleteLeads()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[9px] font-black uppercase tracking-wider hover:bg-red-500/20 transition-all">
- <span class="material-symbols-outlined text-xs">delete_forever</span>
- Apagar
- </button>
- <button onclick="window.toggleBulkMode()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-400 text-[9px] font-black uppercase tracking-wider hover:bg-white/10 transition-all">
- <span class="material-symbols-outlined text-xs">close</span>
- Cancelar
- </button>
- </div>
- <div class="flex gap-4 px-4 py-1.5 bg-black/40 rounded-xl border border-white/5 backdrop-blur-md">
- <div class="text-center">
- <p class="text-[7px] font-black text-gray-500 uppercase tracking-widest">Leads</p>
- <p class="text-xs font-black text-white">{{length budgets}}</p>
- </div>
- <div class="w-px h-6 bg-white/10 self-center"></div>
- <div class="text-center">
- <p class="text-[7px] font-black text-gray-500 uppercase tracking-widest">Conv.</p>
- <p class="text-xs font-black text-orange-500">24%</p>
+ <p class="text-[7px] font-bold text-gray-500 uppercase tracking-[0.2em] mt-0.5">CRM & Acquisition</p>
  </div>
  </div>
 
- <button class="bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-black py-2 px-4 rounded-xl transition-all flex items-center gap-2 text-[9px] uppercase tracking-[0.15em]" onclick="window.openTrashModal('crm')">
- <span class="material-symbols-outlined text-sm">delete</span>
- Lixeira
+ <!-- Sub-Navigation -->
+ <div class="flex items-center gap-1 p-0.5 rounded-md" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);">
+ <a href="/admin/crm" class="px-3 py-1 text-[8px] font-black uppercase tracking-wider rounded-[3px] transition-all flex items-center gap-1 {{#if (eq activeTab 'kanban')}}bg-orange-500 text-white{{else}}text-gray-500 hover:text-white{{/if}}">
+ <span class="material-symbols-outlined text-[10px]">view_kanban</span> Pipeline
+ </a>
+ <a href="/admin/crm/previsao" class="px-3 py-1 text-[8px] font-black uppercase tracking-wider rounded-[3px] transition-all flex items-center gap-1 {{#if (eq activeTab 'forecast')}}bg-orange-500 text-white{{else}}text-gray-500 hover:text-white{{/if}}">
+ <span class="material-symbols-outlined text-[10px]">query_stats</span> Previsão
+ </a>
+ </div>
+ </div>
+
+ <!-- Right Side: Actions -->
+ <div class="flex flex-wrap items-center gap-2">
+ <div class="relative flex items-center">
+ <span class="material-symbols-outlined absolute left-2 text-gray-500 text-[13px] pointer-events-none">search</span>
+ <input type="text" id="kanbanSearch" placeholder="Pesquisar..." class="pl-7 pr-3 py-1.5 text-[9px] font-bold text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/40 transition-colors w-36" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:4px;">
+ </div>
+
+ <!-- Stats compact -->
+ <div class="flex gap-3 px-3 py-1.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <div class="text-center">
+ <p class="text-[7px] font-bold text-gray-500 uppercase tracking-widest">Leads</p>
+ <p class="text-[11px] font-black text-white">{{length budgets}}</p>
+ </div>
+ <div class="w-px bg-white/10 self-stretch"></div>
+ <div class="text-center">
+ <p class="text-[7px] font-bold text-gray-500 uppercase tracking-widest">Conv.</p>
+ <p class="text-[11px] font-black text-orange-400">24%</p>
+ </div>
+ </div>
+
+ <!-- Bulk Edit -->
+ <button id="btn-bulk-edit" class="py-1.5 px-3 rounded-[4px] transition-all flex items-center gap-1.5 text-[8px] font-black uppercase tracking-wider text-gray-400 hover:text-white" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" onclick="window.toggleBulkMode()">
+ <span class="material-symbols-outlined text-[11px]">edit_note</span> Editar
  </button>
- <button id="btn-generate-ai-banners" class="bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black py-2 px-5 rounded-xl transition-all flex items-center gap-2 text-[9px] uppercase tracking-[0.15em]" onclick="window.generateMissingLeadImages()">
- <span class="material-symbols-outlined text-sm">auto_awesome</span>
- Gerar Imagens IA
+ <div id="bulk-toolbar" class="hidden flex items-center gap-2 px-3 py-1.5 rounded-[4px]" style="background:rgba(249,115,22,0.08); border:1px solid rgba(249,115,22,0.2);">
+ <span class="text-[8px] font-black text-orange-400 uppercase"><span id="bulk-count">0</span> sel.</span>
+ <button onclick="window.bulkTrashLeads()" class="flex items-center gap-1 px-2 py-1 rounded-[3px] text-amber-400 text-[8px] font-bold hover:bg-amber-500/20 transition-all" style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2);">
+ <span class="material-symbols-outlined text-[10px]">delete</span> Lixeira
  </button>
- <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-2 px-5 rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2 text-[9px] uppercase tracking-[0.15em]" onclick="if(typeof window.openNewLeadModal === 'function'){ window.openNewLeadModal(); } else { const m = document.getElementById('newLeadModal'); if(m){ m.classList.remove('hidden'); m.style.display='flex'; } }">
- <span class="material-symbols-outlined text-sm">person_add</span>
- Novo Lead
+ <button onclick="window.bulkDeleteLeads()" class="flex items-center gap-1 px-2 py-1 rounded-[3px] text-red-400 text-[8px] font-bold hover:bg-red-500/20 transition-all" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2);">
+ <span class="material-symbols-outlined text-[10px]">delete_forever</span> Apagar
+ </button>
+ <button onclick="window.toggleBulkMode()" class="text-gray-400 text-[8px] font-bold px-2 py-1 rounded-[3px] hover:text-white" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);">Cancelar</button>
+ </div>
+
+ <!-- + Nova Coluna -->
+ <button onclick="window.openAddColumnModal()" class="py-1.5 px-3 rounded-[4px] transition-all flex items-center gap-1.5 text-[8px] font-black uppercase tracking-wider text-emerald-400 hover:text-white hover:bg-emerald-500/20" style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2);" title="Adicionar nova coluna ao Kanban">
+ <span class="material-symbols-outlined text-[11px]">add</span> Coluna
+ </button>
+
+ <!-- Novo Lead -->
+ <button class="py-1.5 px-4 rounded-[4px] bg-orange-500 text-white font-black text-[8px] uppercase tracking-wider shadow-sm hover:bg-orange-600 transition-all flex items-center gap-1.5" onclick="if(typeof window.openNewLeadModal === 'function'){ window.openNewLeadModal(); } else { const m = document.getElementById('newLeadModal'); if(m){ m.classList.remove('hidden'); m.style.display='flex'; } }">
+ <span class="material-symbols-outlined text-[11px]">person_add</span> Novo Lead
  </button>
  </div>
  </div>
@@ -94,9 +86,9 @@
  {{#if (eq activeTab 'kanban')}}
  <!-- View 1: KANBAN -->
  <div id="tab-kanban" class="tab-pane active animate-in slide-in-from-right-4 duration-500">
- <div id="kanban-scroll-area" class="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 min-h-[750px] scrollbar-premium px-2 select-none">
+ <div id="kanban-scroll-area" class="flex gap-3 overflow-x-auto overflow-y-hidden pb-4 min-h-[750px] scrollbar-premium px-2 select-none">
  {{#each columns}}
- <div class="flex-shrink-0 w-[320px] flex flex-col gap-4">
+ <div class="flex-shrink-0 w-[270px] flex flex-col gap-2">
  <!-- Column Header -->
  <div class="flex items-center justify-between px-4">
  <div class="flex items-center gap-4">
@@ -142,7 +134,7 @@
  {{/each}}
 
  <!-- ZONA DE RECUPERAÇÃO (Coluna fixa — sempre última) -->
- <div class="flex-shrink-0 w-[320px] flex flex-col gap-4">
+ <div class="flex-shrink-0 w-[270px] flex flex-col gap-2">
  <!-- Column Header -->
  <div class="flex items-center justify-between px-4">
  <div class="flex items-center gap-4">
@@ -179,206 +171,254 @@
  {{/if}}
 
  {{#if (eq activeTab 'forecast')}}
- <!-- View 2: PREVISÃO (Forecast with AI) -->
- <div id="tab-forecast" class="tab-pane active animate-in slide-in-from-bottom-4 duration-500">
- <!-- AI Forecast Banner Header -->
- <div class="mb-8 p-8 glass-card border-orange-500/20 bg-gradient-to-r from-orange-500/10 via-purple-500/5 to-transparent rounded-3xl relative overflow-hidden">
- <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
- <div>
- <div class="flex items-center gap-2 mb-2">
- <span class="px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 text-[10px] font-black uppercase tracking-widest border border-orange-500/30 flex items-center gap-1">
- <span class="material-symbols-outlined text-xs">auto_awesome</span> Inteligência Artificial Antigravity
- </span>
+ <!-- View 2: PREVISÃO (Compacto, BI-optimized) -->
+ <div id="tab-forecast" class="tab-pane active animate-in slide-in-from-bottom-4 duration-500 space-y-3">
+
+ <!-- Banner Compacto -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:12px 16px;">
+ <div class="flex items-center justify-between">
+ <div class="flex items-center gap-2">
+ <span class="kcard-badge kcard-badge-orange"><span class="material-symbols-outlined text-[8px] align-middle mr-0.5">auto_awesome</span> IA Antigravity</span>
+ <h4 class="kcard-title" style="margin-bottom:0;">Previsão de Vendas</h4>
  </div>
- <h2 class="text-3xl font-black text-white tracking-tight">Previsão de Vendas Mensal</h2>
- <p class="text-xs text-gray-400 font-medium mt-1">Cálculo de possibilidade de vendas baseado na probabilidade real de cada card</p>
+ <div class="flex items-center gap-3 text-[8px]">
+ <div><span class="text-[7px] text-[#555] uppercase">Pipeline</span> <span class="font-bold text-emerald-400" id="val-pipeline">--</span></div>
+ <div><span class="text-[7px] text-[#555] uppercase">Ponderado</span> <span class="font-bold text-orange-400" id="val-ponderado">--</span></div>
+ <div><span class="text-[7px] text-[#555] uppercase">Leads</span> <span class="font-bold text-white/80">{{length budgets}}</span></div>
+ <button onclick="location.reload()" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] bg-orange-500 text-[7px] font-black uppercase text-white hover:bg-orange-600"><span class="material-symbols-outlined text-[10px]">refresh</span> Recalcular</button>
  </div>
- <button class="bg-orange-500 hover:bg-orange-600 text-white text-xs font-black uppercase tracking-widest py-3 px-6 rounded-2xl shadow-lg shadow-orange-500/30 transition-colors flex items-center gap-2" onclick="location.reload()">
- <span class="material-symbols-outlined text-base">refresh</span> Recalcular
- </button>
+ </div>
  </div>
  </div>
 
- <!-- Main Forecast Content -->
- <div class="grid grid-cols-1 gap-8">
- <div class="space-y-6">
- <h3 class="text-sm font-black text-white uppercase tracking-widest mb-4">Projeção Mensal de Faturamento (R$)</h3>
- 
- <!-- Min / Avg / Max Cards -->
- <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
- <!-- Mínima -->
- <div class="glass-card p-6 border-white/5 rounded-2xl bg-white/[0.02]">
- <div class="flex items-center justify-between mb-4">
- <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Cenário Pessimista</span>
- <span class="material-symbols-outlined text-red-400">trending_down</span>
+ <!-- NOVA LINHA: 3 Cards de BI (Funil + Top Modalidades + Troféus) -->
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+ <!-- Card 1: Funil de Contatos -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px;">
+ <p class="text-[8px] font-black text-blue-400 uppercase tracking-widest mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">people</span> Funil de Contatos</p>
+ <p class="text-[7px] text-[#555] uppercase mb-1">Total ativo: <strong class="text-white" id="bi-total-leads">{{length budgets}}</strong></p>
+ <div class="space-y-1 mt-2">
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Mínimo (fechamentos)</span><span class="text-[8px] font-black text-rose-400" id="bi-close-min">--</span></div>
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Médio (fechamentos)</span><span class="text-[8px] font-black text-orange-400" id="bi-close-avg">--</span></div>
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Máximo (fechamentos)</span><span class="text-[8px] font-black text-emerald-400" id="bi-close-max">--</span></div>
  </div>
- <h4 class="text-2xl font-black text-white">Mínima</h4>
- <p class="text-3xl font-black text-red-400 mt-2" id="val-min">--</p>
- <p class="text-[9px] text-gray-500 uppercase font-bold mt-2">Cards c/ Probabilidade > 80%</p>
- </div>
- 
- <!-- Média -->
- <div class="glass-card p-6 border-orange-500/30 rounded-2xl bg-orange-500/10 shadow-[0_0_30px_rgba(249,115,22,0.15)] relative overflow-hidden">
- <div class="absolute -right-4 -top-4 w-16 h-16 bg-orange-500/20 rounded-full blur-xl"></div>
- <div class="flex items-center justify-between mb-4 relative z-10">
- <span class="text-[10px] font-black text-orange-200 uppercase tracking-widest">Cenário Mais Provável</span>
- <span class="material-symbols-outlined text-orange-400">trending_flat</span>
- </div>
- <h4 class="text-2xl font-black text-white relative z-10">Média (Realista)</h4>
- <p class="text-3xl font-black text-orange-400 mt-2 relative z-10" id="val-avg">--</p>
- <p class="text-[9px] text-orange-200/50 uppercase font-bold mt-2 relative z-10">Valor x Probabilidade de cada card</p>
- </div>
-
- <!-- Máxima -->
- <div class="glass-card p-6 border-white/5 rounded-2xl bg-white/[0.02]">
- <div class="flex items-center justify-between mb-4">
- <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Cenário Otimista</span>
- <span class="material-symbols-outlined text-emerald-400">trending_up</span>
- </div>
- <h4 class="text-2xl font-black text-white">Máxima</h4>
- <p class="text-3xl font-black text-emerald-400 mt-2" id="val-max">--</p>
- <p class="text-[9px] text-gray-500 uppercase font-bold mt-2">100% de conversão dos cards</p>
  </div>
  </div>
 
- <!-- Gráfico de Colunas -->
- <div class="glass-card p-6 border-white/5 rounded-3xl mt-6 relative h-[350px]">
+ <!-- Card 2: Top 6 Modalidades -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px;">
+ <p class="text-[8px] font-black text-purple-400 uppercase tracking-widest mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">leaderboard</span> Top 6 Modalidades</p>
+ <div class="space-y-1" id="bi-top-modalidades">
+ <p class="text-[8px] text-gray-500">Calculando...</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- Card 3: Troféus e Medalhas -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px;">
+ <p class="text-[8px] font-black text-amber-400 uppercase tracking-widest mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">emoji_events</span> Troféus e Medalhas</p>
+ <p class="text-[7px] text-[#555] uppercase mb-1">Prob. fechamento: <strong class="text-amber-400" id="bi-trofeu-prob">--</strong></p>
+ <div class="space-y-1 mt-2">
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Unid. Mínima</span><span class="text-[8px] font-black text-rose-400" id="bi-trofeu-min">--</span></div>
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Unid. Média</span><span class="text-[8px] font-black text-orange-400" id="bi-trofeu-avg">--</span></div>
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Unid. Máxima</span><span class="text-[8px] font-black text-emerald-400" id="bi-trofeu-max">--</span></div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Projeção Mensal + Filtro -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:10px 14px;">
+ <div class="flex items-center justify-between">
+ <div class="flex items-center gap-2">
+ <span class="kcard-badge">Forecast</span>
+ <p class="text-[9px] font-black text-white uppercase tracking-wide">Projeção Mensal de Faturamento</p>
+ </div>
+ <select id="forecast-period-filter" class="text-[8px] font-bold text-gray-400 py-1 px-2 rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" onchange="window.updateForecastPeriod(this.value)">
+ <option value="current">Mês Atual</option>
+ <option value="next">Próximo Mês</option>
+ <option value="quarter">Trimestre</option>
+ <option value="semester">Semestre</option>
+ </select>
+ </div>
+ </div>
+ </div>
+
+ <!-- 3 Cenários -->
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px;">
+ <div class="flex items-center justify-between mb-2">
+ <span class="text-[8px] font-black text-gray-400 uppercase tracking-[0.12em]">Cenário Pessimista</span>
+ <span class="material-symbols-outlined text-rose-400 text-sm">trending_down</span>
+ </div>
+ <p class="text-[9px] font-black text-white mb-0.5">Mínima</p>
+ <p class="text-lg font-black text-rose-400 tracking-tight" id="val-min">--</p>
+ <p class="text-[7px] font-bold text-gray-600 uppercase tracking-widest mt-1">Prob. > 80%</p>
+ </div>
+ </div>
+
+ <div class="kcard" style="border-color: rgba(249,115,22,0.3);">
+ <div class="kcard-body" style="padding:14px;">
+ <div class="flex items-center justify-between mb-2">
+ <span class="text-[8px] font-black text-orange-400 uppercase tracking-[0.12em]">Mais Provável</span>
+ <span class="material-symbols-outlined text-orange-400 text-sm">arrow_forward</span>
+ </div>
+ <p class="text-[9px] font-black text-white mb-0.5">Média</p>
+ <p class="text-lg font-black text-orange-400 tracking-tight" id="val-avg">--</p>
+ <p class="text-[7px] font-bold text-gray-600 uppercase tracking-widest mt-1">Valor x Prob.</p>
+ </div>
+ </div>
+
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px;">
+ <div class="flex items-center justify-between mb-2">
+ <span class="text-[8px] font-black text-gray-400 uppercase tracking-[0.12em]">Otimista</span>
+ <span class="material-symbols-outlined text-emerald-400 text-sm">trending_up</span>
+ </div>
+ <p class="text-[9px] font-black text-white mb-0.5">Máxima</p>
+ <p class="text-lg font-black text-emerald-400 tracking-tight" id="val-max">--</p>
+ <p class="text-[7px] font-bold text-gray-600 uppercase tracking-widest mt-1">100% conv.</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- Gráfico -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px; height:240px;">
  <canvas id="forecastChart"></canvas>
  </div>
+ </div>
 
- <!-- AI Actionable Recommendations (Otimista) -->
- <div class="glass-card p-8 border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-transparent rounded-3xl space-y-4 mt-8 relative overflow-hidden">
- <div class="absolute right-0 top-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
- <h4 class="text-sm font-black text-orange-400 uppercase tracking-widest flex items-center gap-2">
- <span class="material-symbols-outlined text-orange-500 text-xl">smart_toy</span>
- Sugestões da Inteligência Artificial: Potencializando o Cenário Otimista
- </h4>
- <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 relative z-10">
- <div class="p-5 rounded-2xl bg-black/40 border border-white/5 space-y-3">
- <div class="flex items-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider">
- <span class="material-symbols-outlined text-base">bolt</span> Acelerar Fechamentos
+ <!-- Sugestões IA (compacto) -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px;">
+ <p class="text-[8px] font-black text-orange-400 uppercase tracking-[0.12em] mb-3 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">auto_awesome</span> Sugestões IA</p>
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+ <div class="p-3 rounded-[4px]" style="border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02);">
+ <p class="text-[7px] font-black text-emerald-400 uppercase tracking-widest mb-1"><span class="material-symbols-outlined text-[9px] align-middle">bolt</span> Acelerar</p>
+ <p class="text-[8px] text-gray-400 leading-relaxed"><strong class="text-white"><span id="ai-insight-mornos">--</span> cards</strong> mornos (30-70%) — follow-up em 5 dias.</p>
  </div>
- <p class="text-xs text-gray-300 leading-relaxed">Identificamos <strong><span id="ai-insight-mornos">--</span> cards mornos</strong> na etapa de negociação (probabilidade entre 30% e 70%). Focar no follow-up destas negociaçãµes nos próximos 5 dias garantirá que a métrica média seja superada em direção ao cenário otimista.</p>
- </div>
- <div class="p-5 rounded-2xl bg-black/40 border border-white/5 space-y-3">
- <div class="flex items-center gap-2 text-orange-400 font-bold text-xs uppercase tracking-wider">
- <span class="material-symbols-outlined text-base">diamond</span> Upsell no Curto Prazo
- </div>
- <p class="text-xs text-gray-300 leading-relaxed">O cenário otimista máximo (<strong class="text-orange-300">R$ <span id="ai-insight-max">--</span></strong>) pode ser atingido oferecendo pacotes extras (ex: Animação VR ou render extra) aos clientes que já possuem orçamentos acima da média. Crie uma oferta especial limitada para aprovação ainda neste mês.</p>
+ <div class="p-3 rounded-[4px]" style="border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02);">
+ <p class="text-[7px] font-black text-pink-400 uppercase tracking-widest mb-1"><span class="material-symbols-outlined text-[9px] align-middle">favorite</span> Upsell</p>
+ <p class="text-[8px] text-gray-400 leading-relaxed">Otimista: <strong class="text-emerald-400">R$ <span id="ai-insight-max">--</span></strong> — ofereça pacotes extras.</p>
  </div>
  </div>
  </div>
  </div>
 
- <!-- Right Col: VGV Metrics & Probabilities -->
- <div class="space-y-6">
- <div class="glass-card p-6 border-white/5 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-3xl">
- <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">VGV Total Válido</p>
- <h4 class="text-3xl font-black text-emerald-400 tracking-tighter">R$ {{numberFormat totalVgv 2 ',' '.'}}</h4>
- <p class="text-[9px] text-gray-500 font-bold uppercase mt-3">Soma de {{length budgets}} negociacões ativas</p>
+ <!-- VGV -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:12px 16px;">
+ <div class="flex items-center justify-between">
+ <div class="flex items-center gap-2">
+ <span class="kcard-badge kcard-badge-orange">VGV</span>
+ <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Total Válido</p>
+ </div>
+ <p class="text-lg font-black text-emerald-400 tracking-tight">R$ {{numberFormat totalVgv 2 ',' '.'}}</p>
  </div>
  </div>
  </div>
- 
+
+ </div>
+
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
  <script>
- // Calculate and populate forecast on load
  document.addEventListener('DOMContentLoaded', () => {
  const rawBudgets = {{{json budgets}}};
- let minVal = 0;
- let avgVal = 0;
- let maxVal = 0;
- let mornosCount = 0;
- 
+ let minVal = 0, avgVal = 0, maxVal = 0, mornosCount = 0;
+ const modalityCounts = {};
+ let trofeuCount = 0, trofeuProb = 0, trofeuUnits = 0;
+
  rawBudgets.forEach(b => {
  const val = parseFloat(b.estimatedValue) || 0;
  const prob = parseFloat(b.probability) || 0;
- 
+ const tipo = b.projectType || 'Outro';
  maxVal += val;
  avgVal += (val * (prob / 100));
- if (prob >= 80) {
- minVal += val;
- }
- if (prob >= 30 && prob <= 70) {
- mornosCount++;
+ if (prob >= 80) minVal += val;
+ if (prob >= 30 && prob <= 70) mornosCount++;
+ // Modalidades
+ if (!modalityCounts[tipo]) modalityCounts[tipo] = { value: 0, prob: 0, count: 0 };
+ modalityCounts[tipo].value += val;
+ modalityCounts[tipo].prob += prob;
+ modalityCounts[tipo].count++;
+ // Troféus
+ if (tipo.toLowerCase().includes('trof') || tipo.toLowerCase().includes('medal')) {
+  trofeuCount++;
+  trofeuProb += prob;
+  trofeuUnits += (parseInt(b.imagesCount) || 1);
  }
  });
- 
- const formatBRL = (num) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(num);
- 
- const elMin = document.getElementById('val-min');
- const elAvg = document.getElementById('val-avg');
- const elMax = document.getElementById('val-max');
- if (elMin) elMin.textContent = formatBRL(minVal);
- if (elAvg) elAvg.textContent = formatBRL(avgVal);
- if (elMax) elMax.textContent = formatBRL(maxVal);
 
- const elInsightMornos = document.getElementById('ai-insight-mornos');
- const elInsightMax = document.getElementById('ai-insight-max');
- if (elInsightMornos) elInsightMornos.textContent = mornosCount;
- if (elInsightMax) elInsightMax.textContent = formatBRL(maxVal);
+ const fmt = (n) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(n);
+ const fmtS = (n) => new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2 }).format(n);
 
- // Gráfico de Previsão
+ // Cenários
+ if (document.getElementById('val-min')) document.getElementById('val-min').textContent = fmt(minVal);
+ if (document.getElementById('val-avg')) document.getElementById('val-avg').textContent = fmt(avgVal);
+ if (document.getElementById('val-max')) document.getElementById('val-max').textContent = fmt(maxVal);
+ if (document.getElementById('val-pipeline')) document.getElementById('val-pipeline').textContent = fmtS(maxVal);
+ if (document.getElementById('val-ponderado')) document.getElementById('val-ponderado').textContent = fmtS(avgVal);
+ if (document.getElementById('ai-insight-mornos')) document.getElementById('ai-insight-mornos').textContent = mornosCount;
+ if (document.getElementById('ai-insight-max')) document.getElementById('ai-insight-max').textContent = fmtS(maxVal);
+
+ // BI Card 1: Funil de Contatos
+ const totalLeads = rawBudgets.length;
+ const convRate = totalLeads > 0 ? rawBudgets.filter(b => (parseFloat(b.probability)||0) >= 80).length / totalLeads : 0.2;
+ if (document.getElementById('bi-close-min')) document.getElementById('bi-close-min').textContent = Math.round(totalLeads * convRate * 0.6);
+ if (document.getElementById('bi-close-avg')) document.getElementById('bi-close-avg').textContent = Math.round(totalLeads * convRate);
+ if (document.getElementById('bi-close-max')) document.getElementById('bi-close-max').textContent = Math.round(totalLeads * convRate * 1.5);
+
+ // BI Card 2: Top 6 Modalidades
+ const sorted = Object.entries(modalityCounts).sort((a,b) => b[1].value - a[1].value).slice(0,6);
+ const topEl = document.getElementById('bi-top-modalidades');
+ if (topEl) {
+  topEl.innerHTML = sorted.map(([name, d]) => {
+   const avgProb = d.count > 0 ? Math.round(d.prob / d.count) : 0;
+   return '<div class="flex justify-between"><span class="text-[8px] text-gray-300 truncate flex-1">' + name + '</span><span class="text-[8px] font-black ' + (avgProb >= 60 ? 'text-emerald-400' : avgProb >= 30 ? 'text-orange-400' : 'text-red-400') + '">' + avgProb + '%</span></div>';
+  }).join('') || '<p class="text-[8px] text-gray-500">Sem dados</p>';
+ }
+
+ // BI Card 3: Troféus
+ const trofAvgProb = trofeuCount > 0 ? Math.round(trofeuProb / trofeuCount) : 0;
+ if (document.getElementById('bi-trofeu-prob')) document.getElementById('bi-trofeu-prob').textContent = trofAvgProb + '%';
+ if (document.getElementById('bi-trofeu-min')) document.getElementById('bi-trofeu-min').textContent = Math.round(trofeuUnits * 0.6);
+ if (document.getElementById('bi-trofeu-avg')) document.getElementById('bi-trofeu-avg').textContent = trofeuUnits;
+ if (document.getElementById('bi-trofeu-max')) document.getElementById('bi-trofeu-max').textContent = Math.round(trofeuUnits * 1.4);
+
+ // Chart
  const ctx = document.getElementById('forecastChart');
  if (ctx) {
- // Nomes dos meses (2 passados, 1 atual, 2 futuros)
  const now = new Date();
  const months = [];
  for(let i = -2; i <= 2; i++) {
- const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
- let m = d.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase();
- if (i === 0) m += ' (ATUAL)';
- months.push(m);
+  const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+  let m = d.toLocaleDateString('pt-BR', { month: 'short' }).toUpperCase().replace('.','');
+  if (i === 0) m += ' (ATUAL)';
+  months.push(m);
  }
-
- // Dados mockados para os meses passados e futuros com base no atual (Apenas visual ilustrativo)
- const dataMin = [minVal*0.7, minVal*0.9, minVal, minVal*1.1, minVal*1.3];
- const dataAvg = [avgVal*0.75, avgVal*0.85, avgVal, avgVal*1.2, avgVal*1.4];
- const dataMax = [maxVal*0.8, maxVal*0.9, maxVal, maxVal*1.15, maxVal*1.35];
-
  new Chart(ctx, {
- type: 'bar',
- data: {
- labels: months,
- datasets: [
- {
- label: 'Mínima (Pessimista)',
- data: dataMin,
- backgroundColor: 'rgba(248, 113, 113, 0.8)', // red-400
- borderRadius: 4
- },
- {
- label: 'Média (Realista)',
- data: dataAvg,
- backgroundColor: 'rgba(251, 146, 60, 0.8)', // orange-400
- borderRadius: 4
- },
- {
- label: 'Máxima (Otimista)',
- data: dataMax,
- backgroundColor: 'rgba(52, 211, 153, 0.8)', // emerald-400
- borderRadius: 4
- }
- ]
- },
- options: {
- responsive: true,
- maintainAspectRatio: false,
- plugins: {
- legend: { labels: { color: '#9ca3af', font: { family: 'Inter', weight: 'bold' } } },
- tooltip: {
- callbacks: {
- label: function(context) { return formatBRL(context.raw); }
- }
- }
- },
- scales: {
- y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af', callback: (val) => 'R$ ' + (val/1000) + 'k' } },
- x: { grid: { display: false }, ticks: { color: '#9ca3af', font: { weight: 'bold' } } }
- }
- }
+  type: 'bar',
+  data: { labels: months, datasets: [
+   { label: 'Mín', data: [minVal*0.7, minVal*0.9, minVal, minVal*1.1, minVal*1.3], backgroundColor: 'rgba(244,114,182,0.7)', borderRadius: 3 },
+   { label: 'Méd', data: [avgVal*0.75, avgVal*0.85, avgVal, avgVal*1.2, avgVal*1.4], backgroundColor: 'rgba(249,115,22,0.8)', borderRadius: 3 },
+   { label: 'Máx', data: [maxVal*0.8, maxVal*0.9, maxVal, maxVal*1.15, maxVal*1.35], backgroundColor: 'rgba(52,211,153,0.7)', borderRadius: 3 }
+  ]},
+  options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { color: '#9ca3af', font: { size: 8 }, usePointStyle: true, pointStyle: 'rect', padding: 12 } }, tooltip: { callbacks: { label: (c) => fmt(c.raw) } } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#6b7280', font: { size: 8 }, callback: (v) => 'R$' + (v/1000).toFixed(0) + 'k' } }, x: { grid: { display: false }, ticks: { color: '#9ca3af', font: { size: 9 } } } } }
  });
  }
+
+ // Period filter (front-end only — adjusts chart labels)
+ window.updateForecastPeriod = function(period) {
+  // Future: reload with ?period= param. For now visual only.
+  if (window.showToast) window.showToast('Filtro: ' + period, 'info');
+ };
  });
  </script>
  </div>
@@ -1192,26 +1232,56 @@
 
 
 {{> newCardModal kanbanType="vendas" cardTitle="Criar Novo Lead" cardSubtitle="ArchViz 3D — Aquisição" helpNote="Preencha os dados do novo lead. Após criar, abra o card para acessar todas as abas."}}
- <!-- Edit Column Modal -->
- <div id="editColumnModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm">
- <div class="w-full max-w-sm bg-[#0c0d10] border border-[#1a1c22] rounded-2xl p-6">
- <h3 class="text-white font-black uppercase text-sm mb-4">Editar Etapa</h3>
+ <!-- Edit Column Modal (Editar + Excluir com segurança) -->
+ <div id="editColumnModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm" style="display:none;">
+ <div class="w-full max-w-sm" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); padding:24px;">
+ <h3 class="text-white font-black uppercase text-xs mb-4 flex items-center gap-2">
+ <span class="material-symbols-outlined text-orange-400 text-sm">settings</span> Editar Etapa
+ </h3>
  <form id="editColumnForm" method="POST" action="">
- <div class="space-y-4">
+ <div class="space-y-3">
  <div>
- <label class="text-[10px] font-black text-gray-500 uppercase">Nome da Etapa</label>
- <input type="text" name="title" id="editColumnTitle" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-white text-xs mt-1">
+ <label class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Nome</label>
+ <input type="text" name="title" id="editColumnTitle" class="w-full mt-1 px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
  </div>
  <div>
- <label class="text-[10px] font-black text-gray-500 uppercase">Cor</label>
- <input type="color" name="color" id="editColumnColor" class="w-full h-10 rounded-xl cursor-pointer bg-transparent border-0 mt-1">
+ <label class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Cor</label>
+ <input type="color" name="color" id="editColumnColor" class="w-full h-9 rounded-[4px] cursor-pointer mt-1 bg-transparent border-0">
  </div>
- <div class="flex justify-end gap-2 mt-6">
- <button type="button" class="px-4 py-2 text-[10px] font-black text-gray-500 hover:text-white" onclick="document.getElementById('editColumnModal').classList.add('hidden')">Cancelar</button>
- <button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded-xl text-[10px] font-black uppercase">Salvar</button>
+ <div class="flex justify-between items-center mt-4 pt-3" style="border-top:1px solid rgba(255,255,255,0.06);">
+ <button type="button" onclick="window.deleteColumnSafe()" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] text-red-400 text-[8px] font-bold uppercase hover:bg-red-500/20 transition-all" style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2);">
+ <span class="material-symbols-outlined text-[10px]">delete</span> Excluir
+ </button>
+ <div class="flex gap-2">
+ <button type="button" class="px-3 py-1.5 text-[9px] font-bold text-gray-500 hover:text-white" onclick="document.getElementById('editColumnModal').classList.add('hidden'); document.getElementById('editColumnModal').style.display='none';">Cancelar</button>
+ <button type="submit" class="px-4 py-1.5 bg-orange-500 text-white rounded-[4px] text-[9px] font-black uppercase hover:bg-orange-600">Salvar</button>
+ </div>
  </div>
  </div>
  </form>
+ </div>
+ </div>
+
+ <!-- Add Column Modal -->
+ <div id="addColumnModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm" style="display:none;">
+ <div class="w-full max-w-sm" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); padding:24px;">
+ <h3 class="text-white font-black uppercase text-xs mb-4 flex items-center gap-2">
+ <span class="material-symbols-outlined text-emerald-400 text-sm">add_circle</span> Nova Coluna
+ </h3>
+ <div class="space-y-3">
+ <div>
+ <label class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Nome da Etapa</label>
+ <input type="text" id="newColumnTitle" class="w-full mt-1 px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" placeholder="Ex: Em Proposta">
+ </div>
+ <div>
+ <label class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Cor</label>
+ <input type="color" id="newColumnColor" value="#f97316" class="w-full h-9 rounded-[4px] cursor-pointer mt-1 bg-transparent border-0">
+ </div>
+ <div class="flex justify-end gap-2 mt-4 pt-3" style="border-top:1px solid rgba(255,255,255,0.06);">
+ <button type="button" class="px-3 py-1.5 text-[9px] font-bold text-gray-500 hover:text-white" onclick="document.getElementById('addColumnModal').classList.add('hidden'); document.getElementById('addColumnModal').style.display='none';">Cancelar</button>
+ <button type="button" onclick="window.saveNewColumn()" class="px-4 py-1.5 bg-emerald-500 text-white rounded-[4px] text-[9px] font-black uppercase hover:bg-emerald-600">Criar Coluna</button>
+ </div>
+ </div>
  </div>
  </div>
 
@@ -2205,112 +2275,119 @@ window.loadLeadHistory = function(leadId) {
  });
  };
 
- // === SORTABLE KANBAN DRAG & DROP FOR CRM (Performance-Optimized) ===
- if (typeof Sortable !== 'undefined') {
- const _inflight = new Map(); // Prevent duplicate requests per lead
- document.querySelectorAll('.kanban-drop-zone').forEach(dropZone => {
- new Sortable(dropZone, {
- group: 'crm-kanban',
- animation: 120,
- ghostClass: 'opacity-30',
- chosenClass: 'sortable-chosen',
- forceFallback: true,       // Faster than HTML5 drag on complex cards
- fallbackTolerance: 3,
- fallbackOnBody: true,
- swapThreshold: 0.65,       // More forgiving drop detection
- emptyInsertThreshold: 30,  // Pixels around empty zone that accept drop
- onStart: function(evt) {
-  // Highlight all drop zones during drag
-  document.querySelectorAll('.kanban-drop-zone').forEach(z => z.classList.add('drag-over'));
-  evt.from.classList.remove('drag-over');
- },
- onEnd: function(evt) {
-  // Remove highlights
-  document.querySelectorAll('.kanban-drop-zone').forEach(z => z.classList.remove('drag-over'));
+ // === NATIVE DRAG & DROP ENGINE (Zero-delay, 60fps) ===
+ (function() {
+ const _inflight = new Map();
+ let _draggedCard = null;
+ let _sourceZone = null;
+ let _sourceIndex = 0;
 
-  const itemEl = evt.item;
-  const newStatus = evt.to.dataset.status;
-  const leadId = itemEl.dataset.id;
-  const oldIndex = evt.oldIndex;
-  const fromEl = evt.from;
+ // PROBABILITY AUTO-MAP
+ const PROB_MAP = { 'novo_lead': 10, 'em_contato': 25, 'em_negociacao': 50, 'orcamento_enviado': 70, 'aguardando_fechamento': 90 };
 
-  if (!leadId || !newStatus) return;
+ // Bind drag events to all cards
+ document.addEventListener('dragstart', function(e) {
+  const card = e.target.closest('.kanban-card-main');
+  if (!card) return;
+  _draggedCard = card;
+  _sourceZone = card.closest('.kanban-drop-zone');
+  _sourceIndex = Array.from(_sourceZone.children).indexOf(card);
+  card.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', card.dataset.id);
+  // Minimal ghost (just text)
+  const ghost = document.createElement('div');
+  ghost.textContent = card.querySelector('.kcard-title')?.textContent || 'Card';
+  ghost.style.cssText = 'position:absolute;top:-9999px;left:-9999px;padding:8px 16px;background:#151515;color:#fff;border-radius:4px;font-size:11px;font-weight:900;border:1px solid rgba(249,115,22,0.4);';
+  document.body.appendChild(ghost);
+  e.dataTransfer.setDragImage(ghost, 60, 15);
+  setTimeout(function() { ghost.remove(); }, 0);
+  // Highlight all drop zones
+  document.querySelectorAll('.kanban-drop-zone').forEach(function(z) { z.classList.add('drag-over'); });
+ });
 
-  // === AUTOMAÇÃO DE PROBABILIDADE POR COLUNA ===
-  // Regra: mover o card para uma coluna altera automaticamente a probabilidade
-  // EXCETO se for movido para Recuperação (FREEZE — não altera)
-  const COLUMN_PROBABILITY_MAP = {
-    'novo_lead': 10,
-    'em_contato': 25,
-    'em_negociacao': 50,
-    'orcamento_enviado': 70,
-    'aguardando_fechamento': 90
-    // 'recuperacao' — NÃO está aqui = FREEZE
-  };
+ document.addEventListener('dragend', function(e) {
+  if (_draggedCard) _draggedCard.classList.remove('dragging');
+  document.querySelectorAll('.kanban-drop-zone').forEach(function(z) { z.classList.remove('drag-over', 'drag-hover'); });
+  _draggedCard = null;
+  _sourceZone = null;
+ });
 
-  if (newStatus !== 'recuperacao' && COLUMN_PROBABILITY_MAP[newStatus] !== undefined) {
-    const autoProbability = COLUMN_PROBABILITY_MAP[newStatus];
-    // Atualizar UI instantaneamente (Optimistic)
-    const probEl = itemEl.querySelector('.kcard-probability');
-    if (probEl) {
-      probEl.textContent = autoProbability + '%';
-      probEl.dataset.probability = autoProbability;
-      // Cor dinâmica
-      probEl.className = probEl.className.replace(/text-(emerald|orange|amber|red)-\d+/g, '');
-      if (autoProbability >= 80) probEl.classList.add('text-emerald-400');
-      else if (autoProbability >= 50) probEl.classList.add('text-orange-300');
-      else if (autoProbability >= 25) probEl.classList.add('text-amber-400');
-      else probEl.classList.add('text-red-400');
-    }
-    // Salvar probabilidade no backend (fire-and-forget, não bloqueia o drag)
-    fetch('/admin/api/crm/forecast-inline/' + leadId, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ probability: autoProbability })
-    }).catch(function() {}); // silencioso
-  }
-
-  // Optimistic UI: card already moved by SortableJS. Fire-and-forget.
-  // Cancel previous in-flight request for same lead
-  if (_inflight.has(leadId)) {
-    _inflight.get(leadId).abort();
-  }
-  const controller = new AbortController();
-  _inflight.set(leadId, controller);
-
-  fetch('/admin/negociacoes/' + leadId + '/update-status', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ status: newStatus, position: evt.newIndex }),
-  signal: controller.signal
-  })
-  .then(function(res) { return res.json(); })
-  .then(function(data) {
-  _inflight.delete(leadId);
-  if (!data.success) {
-    // Rollback: insert at original position
-    if (fromEl && fromEl.children[oldIndex]) {
-      fromEl.insertBefore(itemEl, fromEl.children[oldIndex]);
-    } else if (fromEl) {
-      fromEl.appendChild(itemEl);
-    }
-    if (window.showToast) window.showToast(data.error || 'Erro ao mover', 'error');
-  }
-  })
-  .catch(function(err) {
-  _inflight.delete(leadId);
-  if (err.name === 'AbortError') return; // Superseded by newer drag
-  // Rollback
-  if (fromEl && fromEl.children[oldIndex]) {
-    fromEl.insertBefore(itemEl, fromEl.children[oldIndex]);
-  } else if (fromEl) {
-    fromEl.appendChild(itemEl);
-  }
+ // Drop zones
+ document.querySelectorAll('.kanban-drop-zone').forEach(function(zone) {
+  zone.addEventListener('dragover', function(e) {
+   e.preventDefault();
+   e.dataTransfer.dropEffect = 'move';
+   this.classList.add('drag-hover');
   });
- }
+
+  zone.addEventListener('dragleave', function(e) {
+   this.classList.remove('drag-hover');
+  });
+
+  zone.addEventListener('drop', function(e) {
+   e.preventDefault();
+   this.classList.remove('drag-hover');
+   if (!_draggedCard) return;
+
+   const newStatus = this.dataset.status;
+   const leadId = _draggedCard.dataset.id;
+   if (!leadId || !newStatus) return;
+
+   // === OPTIMISTIC UI: Move card instantly ===
+   this.appendChild(_draggedCard);
+
+   // === AUTO-PROBABILITY (except recuperacao = FREEZE) ===
+   if (newStatus !== 'recuperacao' && PROB_MAP[newStatus] !== undefined) {
+    const prob = PROB_MAP[newStatus];
+    const probEl = _draggedCard.querySelector('.kcard-probability');
+    if (probEl) {
+     probEl.textContent = prob + '%';
+     probEl.dataset.probability = prob;
+     probEl.className = probEl.className.replace(/text-(emerald|orange|amber|red)-\d+/g, '');
+     if (prob >= 80) probEl.classList.add('text-emerald-400');
+     else if (prob >= 50) probEl.classList.add('text-orange-300');
+     else if (prob >= 25) probEl.classList.add('text-amber-400');
+     else probEl.classList.add('text-red-400');
+    }
+    fetch('/admin/api/crm/forecast-inline/' + leadId, {
+     method: 'POST', headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify({ probability: prob })
+    }).catch(function() {});
+   }
+
+   // === PERSIST STATUS (fire-and-forget with rollback) ===
+   if (_inflight.has(leadId)) _inflight.get(leadId).abort();
+   const ctrl = new AbortController();
+   _inflight.set(leadId, ctrl);
+   const fromZone = _sourceZone;
+   const fromIdx = _sourceIndex;
+   const movedCard = _draggedCard;
+
+   fetch('/admin/negociacoes/' + leadId + '/update-status', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: newStatus }),
+    signal: ctrl.signal
+   })
+   .then(function(r) { return r.json(); })
+   .then(function(d) {
+    _inflight.delete(leadId);
+    if (!d.success) {
+     // Rollback
+     if (fromZone && fromZone.children[fromIdx]) fromZone.insertBefore(movedCard, fromZone.children[fromIdx]);
+     else if (fromZone) fromZone.appendChild(movedCard);
+     if (window.showToast) window.showToast(d.error || 'Erro', 'error');
+    }
+   })
+   .catch(function(err) {
+    _inflight.delete(leadId);
+    if (err.name === 'AbortError') return;
+    if (fromZone && fromZone.children[fromIdx]) fromZone.insertBefore(movedCard, fromZone.children[fromIdx]);
+    else if (fromZone) fromZone.appendChild(movedCard);
+   });
+  });
  });
- });
- }
+ })();
 
  // Auto-open lead if leadId is in URL
  const urlParams = new URLSearchParams(window.location.search);
@@ -2712,9 +2789,10 @@ window.submitNewLead = async function(e) {
  window.editColumn = function(id, title, color) {
  const modal = document.getElementById('editColumnModal');
  if (!modal) return;
+ window._editingColumnId = id;
  document.getElementById('editColumnTitle').value = title;
  document.getElementById('editColumnColor').value = color;
- document.getElementById('editColumnForm').action = `/admin/api/crm/columns/${id}/update`;
+ document.getElementById('editColumnForm').action = '/admin/kanban/columns/' + id;
  modal.classList.remove('hidden');
  modal.style.setProperty('display', 'flex', 'important');
  };
@@ -3356,5 +3434,98 @@ window.editCardCloseDate = function(leadId, btn) {
   input.onblur = function() {
     setTimeout(function() { input.remove(); }, 200);
   };
+};
+
+// === GESTÃO DE COLUNAS DO KANBAN ===
+window._editingColumnId = null;
+
+window.openAddColumnModal = function() {
+ document.getElementById('newColumnTitle').value = '';
+ document.getElementById('newColumnColor').value = '#f97316';
+ const modal = document.getElementById('addColumnModal');
+ modal.classList.remove('hidden');
+ modal.style.display = 'flex';
+};
+
+window.saveNewColumn = async function() {
+ const title = document.getElementById('newColumnTitle').value.trim();
+ const color = document.getElementById('newColumnColor').value;
+ if (!title) { alert('Digite um nome para a coluna'); return; }
+ try {
+  const res = await fetch('/admin/kanban/columns', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({ title, color, type: 'vendas' })
+  });
+  const data = await res.json();
+  if (data.id) {
+   if (window.showToast) window.showToast('Coluna "' + title + '" criada!', 'success');
+   setTimeout(function() { location.reload(); }, 500);
+  } else {
+   alert(data.error || 'Erro ao criar coluna');
+  }
+ } catch (e) {
+  alert('Erro de rede');
+ }
+};
+
+// Exclusão segura: perguntar para onde mover os cards
+window.deleteColumnSafe = async function() {
+ const colId = window._editingColumnId;
+ if (!colId) return;
+
+ // Buscar quantos leads estão nesta coluna
+ const colEl = document.querySelector('[data-col-id="' + colId + '"]') ||
+               document.querySelector('.btn-edit-col[data-id="' + colId + '"]');
+ const statusKey = colEl ? colEl.closest('.flex-shrink-0')?.querySelector('.kanban-drop-zone')?.dataset.status : null;
+
+ // Listar colunas disponíveis para transferência
+ const allZones = document.querySelectorAll('.kanban-drop-zone[data-status]');
+ const options = [];
+ allZones.forEach(function(z) {
+  if (z.dataset.status !== statusKey && z.dataset.status !== 'recuperacao') {
+   const header = z.closest('.flex-shrink-0')?.querySelector('h4');
+   options.push({ status: z.dataset.status, title: header ? header.textContent.trim() : z.dataset.status });
+  }
+ });
+
+ if (options.length === 0) {
+  alert('Não há outras colunas para transferir os cards. Crie outra coluna antes de excluir esta.');
+  return;
+ }
+
+ // Perguntar destino
+ let message = 'EXCLUIR COLUNA\n\nOs leads desta coluna serão transferidos para qual etapa?\n\n';
+ options.forEach(function(o, i) { message += (i + 1) + '. ' + o.title + '\n'; });
+ message += '\nDigite o número (1-' + options.length + ') ou CANCELAR:';
+
+ const choice = prompt(message);
+ if (!choice || choice.toLowerCase() === 'cancelar') return;
+ const idx = parseInt(choice) - 1;
+ if (isNaN(idx) || idx < 0 || idx >= options.length) { alert('Opção inválida'); return; }
+
+ const targetStatus = options[idx].status;
+
+ // Confirmar
+ if (!confirm('Confirma: Excluir coluna e mover leads para "' + options[idx].title + '"?')) return;
+
+ try {
+  const res = await fetch('/admin/kanban/columns/' + colId + '/delete-safe', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({ transferTo: targetStatus })
+  });
+  const data = await res.json();
+  if (data.success) {
+   if (window.showToast) window.showToast('Coluna excluída e leads transferidos!', 'success');
+   document.getElementById('editColumnModal').classList.add('hidden');
+   document.getElementById('editColumnModal').style.display = 'none';
+   setTimeout(function() { location.reload(); }, 500);
+  } else {
+   alert(data.error || 'Erro ao excluir');
+  }
+ } catch (e) {
+  alert('Erro de rede');
+ }
 };
 </script>

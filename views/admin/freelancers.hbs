@@ -1,54 +1,72 @@
-<div class="container-fluid py-4 h-screen flex flex-col overflow-hidden">
- <!-- Header -->
- <div class="flex items-center justify-between mb-8 flex-shrink-0 px-4">
- <div class="flex flex-col gap-1">
- <h1 class="text-3xl font-black text-white tracking-tight">Time de <span class="text-orange-500">Freelancers</span></h1>
- <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">Gestão de Talentos ArchViz & Colaboradores Externos</p>
+<!-- Freelancers — Template Padrão (.kcard) -->
+<div class="p-6 md:p-8 flex flex-col h-screen overflow-hidden gap-5" style="background:#0a0c10;">
+
+ <!-- Banner Header (.kcard com imagem) -->
+ <div class="kcard">
+ <div class="kcard-img" style="height:80px;">
+ <img src="/assets/c8355bfd-b4cf-4e82-a0a9-4899168c6eb8_3840w.webp" alt="Freeelancers ArchViz" class="w-full h-full object-cover">
+ <div class="absolute inset-0 bg-gradient-to-t from-[#151515] via-[#151515]/70 to-transparent"></div>
  </div>
- <div class="flex items-center gap-4">
- <div class="glass-card px-4 py-2 border-white/5 flex items-center gap-3">
- <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Ativos no Banco:</span>
- <span class="text-lg font-black text-white">{{length freelancers}}</span>
+ <div class="kcard-body" style="padding:18px 20px;">
+ <div class="flex items-center gap-1.5 flex-wrap mb-2">
+ <span class="kcard-badge kcard-badge-orange">
+ <span class="material-symbols-outlined text-[8px] align-middle mr-0.5">group</span> Banco de Talentos
+ </span>
+ <span class="kcard-badge">ArchViz</span>
  </div>
- <button class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2" data-bs-toggle="modal" data-bs-target="#newFreelancerModal">
- <span class="material-symbols-outlined text-sm">person_add</span> Novo Artista
+ <div class="flex items-center justify-between mt-2">
+ <div>
+ <h4 class="kcard-title" style="font-size:1.1rem; white-space:normal; margin-bottom:4px;">Time de Freelancers</h4>
+ <p class="text-[9px] text-[#777] uppercase tracking-widest">Gestão de Talentos ArchViz & Colaboradores Externos</p>
+ </div>
+ <div class="flex items-center gap-3">
+ <div class="px-3 py-1.5" style="background:#151515; border-radius:5px; border:1px solid rgba(255,255,255,0.06);">
+ <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Ativos:&nbsp;</span>
+ <span class="text-sm font-black ds-text">{{length freelancers}}</span>
+ </div>
+ <button class="flex items-center gap-1.5 px-4 py-2 rounded-md bg-orange-500 text-[8px] font-black uppercase tracking-wider text-white hover:bg-orange-600 transition-colors" data-bs-toggle="modal" data-bs-target="#newFreelancerModal">
+ <span class="material-symbols-outlined text-[11px]">person_add</span> Novo Artista
  </button>
  </div>
  </div>
-
- <!-- Freelancer Cards Grid -->
- <div class="flex-1 overflow-y-auto px-4 pb-20 scrollbar-hide">
- <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
- {{#each freelancers}}
- <div class="luminous-card p-3 group hover:border-orange-500/30 relative overflow-visible h-fit" style="width:100%; height:auto; border-radius:1.4rem;">
- <!-- Status Badge -->
- <div class="absolute top-4 right-4 flex items-center gap-2">
- <span class="w-1.5 h-1.5 rounded-full {{#if (eq status 'active')}}bg-emerald-500 shadow-[0_0_8px_#10b981]{{else if (eq status 'on_project')}}bg-amber-500 shadow-[0_0_8px_#f59e0b]{{else}}bg-gray-500{{/if}}"></span>
- <span class="text-[8px] font-black text-gray-400 uppercase tracking-widest">{{#if (eq status 'active')}}Ativo{{else if (eq status 'on_project')}}Em Projeto{{else}}Inativo{{/if}}</span>
+ </div>
  </div>
 
- <div class="flex items-center gap-3 mb-3">
- <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-sm font-black text-white shadow-md shadow-orange-500/20">
+ <!-- Grid de Cards (kcard) -->
+ <div class="flex-1 overflow-y-auto pb-6 custom-scrollbar">
+ <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+ {{#each freelancers}}
+ <div class="kcard" data-status="{{status}}">
+ <!-- Status indicator -->
+ <div class="absolute top-3 right-3 flex items-center gap-1.5">
+ <span class="w-1.5 h-1.5 rounded-full {{#if (eq status 'active')}}bg-emerald-500{{else if (eq status 'on_project')}}bg-amber-500{{else}}bg-gray-500{{/if}}"></span>
+ <span class="text-[7px] font-black text-gray-400 uppercase tracking-widest">{{#if (eq status 'active')}}Ativo{{else if (eq status 'on_project')}}Em Projeto{{else}}Inativo{{/if}}</span>
+ </div>
+
+ <!-- Header do card -->
+ <div class="kcard-body" style="padding:24px 14px 14px;">
+ <div class="flex items-center gap-2.5 mb-3">
+ <div class="w-9 h-9 rounded-md bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-[11px] font-black text-orange-400">
  {{firstLetter name}}
  </div>
  <div class="overflow-hidden flex-1 min-w-0">
- <h3 class="text-[11px] font-black text-white truncate group-hover:text-orange-500 uppercase tracking-tight">{{name}}</h3>
- <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest truncate">{{expertise}}</p>
+ <h3 class="text-[10px] font-black text-white truncate uppercase tracking-tight">{{name}}</h3>
+ <p class="text-[7px] text-gray-500 font-bold uppercase tracking-widest truncate">{{expertise}}</p>
  </div>
  </div>
 
+ <!-- Stats grid -->
  <div class="grid grid-cols-2 gap-2 mb-3">
- <div class="p-2 rounded-lg bg-white/5 border border-white/5">
+ <div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
  <p class="text-[7px] font-black text-gray-500 uppercase mb-0.5">Avaliação</p>
  <div class="flex text-orange-500 text-[9px]">{{{ratingStars rating}}}</div>
  </div>
- <div class="p-2 rounded-lg bg-white/5 border border-white/5">
+ <div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
  <p class="text-[7px] font-black text-gray-500 uppercase mb-0.5">Valor/H</p>
- <p class="text-[9px] font-black text-white">{{formatCurrency hourlyRate}}</p>
+ <p class="text-[9px] font-black text-emerald-400">{{formatCurrency hourlyRate}}</p>
  </div>
  </div>
 
- <!-- Softwares -->
  {{#if softwares}}
  <div class="mb-3">
  <p class="text-[7px] font-black text-gray-500 uppercase tracking-widest mb-1">Softwares</p>
@@ -56,41 +74,44 @@
  </div>
  {{/if}}
 
- <div class="space-y-1.5 mb-4 px-1">
- <div class="flex items-center gap-2 text-gray-400">
- <span class="material-symbols-outlined text-[12px]">mail</span>
- <span class="text-[8px] font-bold truncate">{{email}}</span>
+ <!-- Contato -->
+ <div class="space-y-1 mb-3">
+ <div class="flex items-center gap-1.5 text-gray-400">
+ <span class="material-symbols-outlined text-[10px]">mail</span>
+ <span class="text-[7px] font-bold truncate">{{email}}</span>
  </div>
  {{#if phone}}
- <div class="flex items-center gap-2 text-gray-400">
- <span class="material-symbols-outlined text-[12px]">call</span>
- <span class="text-[8px] font-bold">{{phone}}</span>
+ <div class="flex items-center gap-1.5 text-gray-400">
+ <span class="material-symbols-outlined text-[10px]">call</span>
+ <span class="text-[7px] font-bold">{{phone}}</span>
  </div>
  {{/if}}
  {{#if availability}}
- <div class="flex items-center gap-2">
- <span class="material-symbols-outlined text-[12px] {{#if (eq availability 'disponivel')}}text-emerald-400{{else if (eq availability 'ocupado')}}text-amber-400{{else}}text-gray-500{{/if}}">schedule</span>
- <span class="text-[8px] font-bold {{#if (eq availability 'disponivel')}}text-emerald-400{{else if (eq availability 'ocupado')}}text-amber-400{{else}}text-gray-500{{/if}}">{{#if (eq availability 'disponivel')}}Disponível{{else if (eq availability 'ocupado')}}Ocupado{{else}}Ausente{{/if}}</span>
+ <div class="flex items-center gap-1.5">
+ <span class="material-symbols-outlined text-[10px] {{#if (eq availability 'disponivel')}}text-emerald-400{{else if (eq availability 'ocupado')}}text-amber-400{{else}}text-gray-500{{/if}}">schedule</span>
+ <span class="text-[7px] font-bold {{#if (eq availability 'disponivel')}}text-emerald-400{{else if (eq availability 'ocupado')}}text-amber-400{{else}}text-gray-500{{/if}}">{{#if (eq availability 'disponivel')}}Disponível{{else if (eq availability 'ocupado')}}Ocupado{{else}}Ausente{{/if}}</span>
  </div>
  {{/if}}
  </div>
 
+ <!-- Ações -->
  <div class="flex gap-1.5">
- <button onclick="window.viewFreelancerProfile('{{id}}')" class="flex-1 py-2 rounded-lg bg-white/5 text-[8px] font-black uppercase tracking-widest text-white hover:bg-white/10">Perfil</button>
- <button onclick="window.editFreelancer('{{id}}')" class="px-2 py-2 rounded-lg bg-white/5 text-gray-400 hover:bg-orange-500/20 hover:text-orange-400" title="Editar">
- <span class="material-symbols-outlined text-[12px]">edit</span>
+ <button onclick="window.viewFreelancerProfile('{{id}}')" class="flex-1 py-1.5 rounded-md text-[7px] font-black uppercase tracking-widest text-white" style="background:rgba(249,115,22,0.15); border:1px solid rgba(249,115,22,0.3);">Perfil</button>
+ <button onclick="window.editFreelancer('{{id}}')" class="w-6 h-6 rounded-md flex items-center justify-center" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);" title="Editar">
+ <span class="material-symbols-outlined text-[10px] text-gray-400">edit</span>
  </button>
  <div class="dropup">
- <button class="px-2 py-2 rounded-lg bg-orange-500/10 text-orange-500 hover:bg-orange-500 hover:text-white" data-bs-toggle="dropdown" aria-expanded="false" onclick="this.closest('.glass-card').style.zIndex='50';" onblur="setTimeout(()=>{this.closest('.glass-card').style.zIndex='';},200);">
- <span class="material-symbols-outlined text-[12px]">more_vert</span>
+ <button class="w-6 h-6 rounded-md flex items-center justify-center" style="background:rgba(249,115,22,0.1); border:1px solid rgba(249,115,22,0.3);" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="material-symbols-outlined text-[10px] text-orange-400">more_vert</span>
  </button>
- <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark border border-white/10 rounded-xl shadow-2xl p-2" style="z-index: 9999; background: #0a0c10; min-width: 160px; position: absolute; bottom: 100%; right: 0;">
- <li><a class="dropdown-item rounded-lg text-[9px] font-bold uppercase py-2 px-3 flex items-center gap-2" href="#" onclick="event.preventDefault(); window.viewFreelancerProfile('{{id}}')"><span class="material-symbols-outlined text-xs">person</span> Ver Perfil</a></li>
- <li><a class="dropdown-item rounded-lg text-[9px] font-bold uppercase py-2 px-3 flex items-center gap-2" href="#" onclick="event.preventDefault(); window.editFreelancer('{{id}}')"><span class="material-symbols-outlined text-xs">edit</span> Editar</a></li>
- <li><a class="dropdown-item rounded-lg text-[9px] font-bold uppercase py-2 px-3 flex items-center gap-2" href="#" onclick="event.preventDefault(); window.toggleHidden('{{id}}')"><span class="material-symbols-outlined text-xs">visibility_off</span> Ocultar</a></li>
- <li><hr class="dropdown-divider border-white/5 my-1"></li>
- <li><a class="dropdown-item rounded-lg text-[9px] font-bold uppercase py-2 px-3 text-red-500 flex items-center gap-2" href="#" onclick="event.preventDefault(); deleteFreelancer('{{id}}')"><span class="material-symbols-outlined text-xs">delete</span> Remover</a></li>
+ <ul class="dropdown-menu dropdown-menu-end border rounded-[5px] p-1.5" style="z-index:9999; background:#0a0c10; border:1px solid rgba(255,255,255,0.1); min-width:160px; position:absolute; bottom:100%; right:0;">
+ <li><a class="dropdown-item rounded text-[8px] font-bold uppercase py-1.5 px-2 flex items-center gap-1.5" href="#" onclick="event.preventDefault(); window.viewFreelancerProfile('{{id}}')" style="color:#ffffff;"><span class="material-symbols-outlined text-[10px]">person</span> Ver Perfil</a></li>
+ <li><a class="dropdown-item rounded text-[8px] font-bold uppercase py-1.5 px-2 flex items-center gap-1.5" href="#" onclick="event.preventDefault(); window.editFreelancer('{{id}}')" style="color:#ffffff;"><span class="material-symbols-outlined text-[10px]">edit</span> Editar</a></li>
+ <li><a class="dropdown-item rounded text-[8px] font-bold uppercase py-1.5 px-2 flex items-center gap-1.5" href="#" onclick="event.preventDefault(); window.toggleHidden('{{id}}')" style="color:#ffffff;"><span class="material-symbols-outlined text-[10px]">visibility_off</span> Ocultar</a></li>
+ <li><hr style="border-color:rgba(255,255,255,0.05); margin:4px 0;"></li>
+ <li><a class="dropdown-item rounded text-[8px] font-bold uppercase py-1.5 px-2 flex items-center gap-1.5" href="#" onclick="event.preventDefault(); deleteFreelancer('{{id}}')" style="color:#f87171;"><span class="material-symbols-outlined text-[10px]">delete</span> Remover</a></li>
  </ul>
+ </div>
  </div>
  </div>
  </div>
@@ -105,66 +126,64 @@
  </div>
 </div>
 
-<!-- Modal: Novo Freelancer -->
+<!-- Modal: Novo Freelancer (.kcard style) -->
 <div class="modal fade" id="newFreelancerModal" tabindex="-1" aria-hidden="true">
  <div class="modal-dialog modal-lg modal-dialog-centered">
- <div class="modal-content glass-card p-4 border-white/10 bg-dark-950/95">
- <div class="flex justify-between items-center mb-6 px-4">
- <h3 class="text-xl font-black text-white uppercase tracking-tighter">Novo <span class="text-orange-500">Artista Freelancer</span></h3>
- <button type="button" class="text-gray-500 hover:text-white" data-bs-dismiss="modal"><span class="material-symbols-outlined">close</span></button>
+ <div class="modal-content" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+ <div class="flex justify-between items-center p-4" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+ <h3 class="text-sm font-black text-white uppercase tracking-tight">Novo <span class="text-orange-400">Artista Freelancer</span></h3>
+ <button type="button" class="text-gray-500 hover:text-white" data-bs-dismiss="modal" style="background:transparent; border:none;"><span class="material-symbols-outlined">close</span></button>
  </div>
- <form action="/admin/freelancers" method="POST" class="p-4 grid grid-cols-2 gap-6">
- <div class="space-y-2">
- <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Nome Completo</label>
- <input type="text" name="name" class="input-premium" placeholder="Ex: Roberto Silva" required>
+ <form action="/admin/freelancers" method="POST" class="p-4 grid grid-cols-2 gap-3">
+ <div>
+ <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Nome Completo</label>
+ <input type="text" name="name" placeholder="Ex: Roberto Silva" required class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
  </div>
- <div class="space-y-2">
- <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">E-mail Profissional</label>
- <input type="email" name="email" class="input-premium" placeholder="contato@artista.com" required>
+ <div>
+ <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">E-mail</label>
+ <input type="email" name="email" placeholder="contato@artista.com" required class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
  </div>
- <div class="space-y-2">
- <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">WhatsApp / Telefone</label>
- <input type="text" name="phone" class="input-premium" placeholder="(11) 99999-9999">
+ <div>
+ <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">WhatsApp</label>
+ <input type="text" name="phone" placeholder="(11) 99999-9999" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
  </div>
- <div class="space-y-2">
- <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Valor Hora (R$)</label>
- <input type="number" name="hourlyRate" class="input-premium" placeholder="80.00" step="0.01">
+ <div>
+ <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Valor Hora (R$)</label>
+ <input type="number" name="hourlyRate" placeholder="80.00" step="0.01" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
  </div>
- <div class="col-span-2 space-y-2">
- <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Especialidades (ArchViz)</label>
- <div class="flex flex-wrap gap-2" id="expertiseToggles">
- <button type="button" class="expertise-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="Modelagem" onclick="window.toggleExpertise(this)">Modelagem</button>
- <button type="button" class="expertise-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="Renderização" onclick="window.toggleExpertise(this)">Renderização</button>
- <button type="button" class="expertise-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="Animação" onclick="window.toggleExpertise(this)">Animação</button>
- <button type="button" class="expertise-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="Pós-Produção" onclick="window.toggleExpertise(this)">Pós-Produção</button>
- <button type="button" class="expertise-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="Texturização" onclick="window.toggleExpertise(this)">Texturização</button>
- <button type="button" class="expertise-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="Iluminação" onclick="window.toggleExpertise(this)">Iluminação</button>
+ <div class="col-span-2">
+ <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 block">Especialidades</label>
+ <div class="flex flex-wrap gap-1.5" id="expertiseToggles">
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Modelagem" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Modelagem</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Renderização" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Renderização</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Animação" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Animação</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Pós-Produção" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Pós-Produção</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Texturização" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Texturização</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Iluminação" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Iluminação</button>
  </div>
  <input type="hidden" name="expertise" id="expertiseHidden" value="">
  </div>
- <div class="col-span-2 space-y-2">
- <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Softwares</label>
- <div class="flex flex-wrap gap-2" id="softwareToggles">
- <button type="button" class="software-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="D5 Render" onclick="window.toggleSoftware(this)">D5 Render</button>
- <button type="button" class="software-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="3ds Max" onclick="window.toggleSoftware(this)">3ds Max</button>
- <button type="button" class="software-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="Revit" onclick="window.toggleSoftware(this)">Revit</button>
- <button type="button" class="software-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="SketchUp" onclick="window.toggleSoftware(this)">SketchUp</button>
- <button type="button" class="software-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="Blender" onclick="window.toggleSoftware(this)">Blender</button>
- <button type="button" class="software-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="Corona" onclick="window.toggleSoftware(this)">Corona</button>
- <button type="button" class="software-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="V-Ray" onclick="window.toggleSoftware(this)">V-Ray</button>
- <button type="button" class="software-btn px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400 uppercase" data-value="Lumion" onclick="window.toggleSoftware(this)">Lumion</button>
+ <div class="col-span-2">
+ <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 block">Softwares</label>
+ <div class="flex flex-wrap gap-1.5" id="softwareToggles">
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="D5 Render" onclick="window.toggleSoftware(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">D5 Render</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="3ds Max" onclick="window.toggleSoftware(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">3ds Max</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Revit" onclick="window.toggleSoftware(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Revit</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="SketchUp" onclick="window.toggleSoftware(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">SketchUp</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Blender" onclick="window.toggleSoftware(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Blender</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Corona" onclick="window.toggleSoftware(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Corona</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="V-Ray" onclick="window.toggleSoftware(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">V-Ray</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Lumion" onclick="window.toggleSoftware(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Lumion</button>
  </div>
  <input type="hidden" name="softwares" id="softwaresHidden" value="">
  </div>
- <div class="col-span-2 space-y-2">
- <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Notas e Observações</label>
- <textarea name="notes" class="input-premium h-24" placeholder="Descreva pontos fortes, disponibilidade e histórico..."></textarea>
+ <div class="col-span-2">
+ <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Notas e Observações</label>
+ <textarea name="notes" placeholder="Pontos fortes, disponibilidade, histórico..." class="w-full px-3 py-2 text-xs text-white rounded-[4px] resize-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); height:80px;"></textarea>
  </div>
- <div class="col-span-2 flex gap-4 pt-4">
- <button type="submit" class="flex-1 py-4 rounded-2xl bg-orange-500 text-white font-black uppercase tracking-widest shadow-xl shadow-orange-500/20 ] ] transition-all">
- Salvar no Banco de Talentos
- </button>
- <button type="button" class="px-8 rounded-2xl bg-white/5 text-white font-black uppercase tracking-widest hover:bg-white/10" data-bs-dismiss="modal">Cancelar</button>
+ <div class="col-span-2 flex gap-2 pt-2">
+ <button type="submit" class="flex-1 py-2.5 rounded-md bg-orange-500 text-white text-[8px] font-black uppercase tracking-wider hover:bg-orange-600 transition-colors">Salvar no Banco</button>
+ <button type="button" class="px-4 py-2.5 rounded-md text-[8px] font-bold text-gray-400 hover:text-white" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" data-bs-dismiss="modal">Cancelar</button>
  </div>
  </form>
  </div>
@@ -172,7 +191,6 @@
 </div>
 
 <script>
-// === TOGGLE BUTTONS (Especialidades + Softwares) ===
 let _selectedExpertise = [];
 let _selectedSoftwares = [];
 
@@ -180,12 +198,10 @@ window.toggleExpertise = function(btn) {
  const val = btn.dataset.value;
  if (_selectedExpertise.includes(val)) {
   _selectedExpertise = _selectedExpertise.filter(v => v !== val);
-  btn.classList.remove('bg-orange-500', 'text-white', 'border-orange-500');
-  btn.classList.add('bg-white/5', 'text-gray-400', 'border-white/10');
+  btn.style.cssText = 'background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color:#9ca3af;';
  } else {
   _selectedExpertise.push(val);
-  btn.classList.add('bg-orange-500', 'text-white', 'border-orange-500');
-  btn.classList.remove('bg-white/5', 'text-gray-400', 'border-white/10');
+  btn.style.cssText = 'background:#f97316; border:1px solid #f97316; color:#ffffff;';
  }
  document.getElementById('expertiseHidden').value = _selectedExpertise.join(', ');
 };
@@ -194,75 +210,67 @@ window.toggleSoftware = function(btn) {
  const val = btn.dataset.value;
  if (_selectedSoftwares.includes(val)) {
   _selectedSoftwares = _selectedSoftwares.filter(v => v !== val);
-  btn.classList.remove('bg-cyan-500', 'text-white', 'border-cyan-500');
-  btn.classList.add('bg-white/5', 'text-gray-400', 'border-white/10');
+  btn.style.cssText = 'background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color:#9ca3af;';
  } else {
   _selectedSoftwares.push(val);
-  btn.classList.add('bg-cyan-500', 'text-white', 'border-cyan-500');
-  btn.classList.remove('bg-white/5', 'text-gray-400', 'border-white/10');
+  btn.style.cssText = 'background:#06b6d4; border:1px solid #06b6d4; color:#ffffff;';
  }
  document.getElementById('softwaresHidden').value = _selectedSoftwares.join(', ');
 };
 
-// === VER PERFIL (Modal) ===
 window.viewFreelancerProfile = function(id) {
  const existing = document.getElementById('freelancerProfileModal');
  if (existing) existing.remove();
-
- // Buscar dados do freelancer
  fetch('/admin/api/freelancers/' + id + '/profile')
   .then(r => r.json())
   .then(data => {
    if (!data.success) { alert('Erro ao carregar perfil'); return; }
    const f = data.freelancer;
    const modalHtml = `
-    <div id="freelancerProfileModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm" style="display:flex;">
-     <div class="bg-[#0a0c10] border border-white/10 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden flex flex-col max-h-[85vh]">
-      <header class="p-4 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-orange-500/10 to-cyan-500/10 shrink-0">
+    <div id="freelancerProfileModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80" style="display:flex;">
+     <div class="flex flex-col max-h-[85vh] overflow-hidden mx-4" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); width:100%; max-width:600px;">
+      <header class="p-4 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.06);">
        <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-xl font-black text-orange-400">${(f.name||'?')[0]}</div>
+        <div class="w-10 h-10 rounded-[4px] flex items-center justify-center text-base font-black text-orange-400" style="background:rgba(249,115,22,0.15); border:1px solid rgba(249,115,22,0.3);">${(f.name||'?')[0]}</div>
         <div>
-         <h3 class="text-base font-black text-white">${f.name}</h3>
-         <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">${f.expertise || 'Sem especialidade'}</p>
+         <h3 class="text-sm font-black text-white">${f.name}</h3>
+         <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">${f.expertise || 'Sem especialidade'}</p>
         </div>
        </div>
-       <div class="flex items-center gap-2">
-        <span class="px-2 py-1 rounded-full text-[8px] font-black uppercase ${f.status === 'active' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-500/20 text-gray-400'}">${f.status === 'active' ? 'Ativo' : f.status === 'on_project' ? 'Em Projeto' : 'Inativo'}</span>
-        <button onclick="document.getElementById('freelancerProfileModal').remove()" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white"><span class="material-symbols-outlined text-sm">close</span></button>
-       </div>
+       <button onclick="document.getElementById('freelancerProfileModal').remove()" class="w-7 h-7 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-white" style="background:rgba(255,255,255,0.05);"><span class="material-symbols-outlined text-sm">close</span></button>
       </header>
-      <div class="p-4 overflow-y-auto custom-scrollbar space-y-4 flex-1">
-       <div class="grid grid-cols-2 gap-3">
-        <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-         <p class="text-[8px] font-black text-gray-500 uppercase">Email</p>
-         <p class="text-xs text-white font-bold">${f.email || '---'}</p>
+      <div class="p-4 overflow-y-auto custom-scrollbar space-y-3 flex-1">
+       <div class="grid grid-cols-2 gap-2">
+        <div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+         <p class="text-[7px] font-black text-gray-500 uppercase">Email</p>
+         <p class="text-[10px] text-white font-bold truncate">${f.email || '---'}</p>
         </div>
-        <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-         <p class="text-[8px] font-black text-gray-500 uppercase">Telefone</p>
-         <p class="text-xs text-white font-bold">${f.phone || '---'}</p>
+        <div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+         <p class="text-[7px] font-black text-gray-500 uppercase">Telefone</p>
+         <p class="text-[10px] text-white font-bold">${f.phone || '---'}</p>
         </div>
-        <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-         <p class="text-[8px] font-black text-gray-500 uppercase">Valor Hora</p>
-         <p class="text-xs text-emerald-400 font-black">R$ ${parseFloat(f.hourlyRate || 0).toFixed(2)}</p>
+        <div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+         <p class="text-[7px] font-black text-gray-500 uppercase">Valor/Hora</p>
+         <p class="text-[10px] text-emerald-400 font-black">R$ ${parseFloat(f.hourlyRate || 0).toFixed(2)}</p>
         </div>
-        <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-         <p class="text-[8px] font-black text-gray-500 uppercase">Horas Mês Atual</p>
-         <p class="text-xs text-cyan-400 font-black">${parseFloat(f.monthlyHours || 0).toFixed(1)}h</p>
+        <div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+         <p class="text-[7px] font-black text-gray-500 uppercase">Horas Mês</p>
+         <p class="text-[10px] text-cyan-400 font-black">${parseFloat(f.monthlyHours || 0).toFixed(1)}h</p>
         </div>
        </div>
-       <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-        <p class="text-[8px] font-black text-gray-500 uppercase mb-1">Softwares</p>
-        <p class="text-xs text-white">${f.softwares || f.expertise || '---'}</p>
+       <div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+        <p class="text-[7px] font-black text-gray-500 uppercase mb-1">Softwares</p>
+        <p class="text-[10px] text-white">${f.softwares || f.expertise || '---'}</p>
        </div>
-       <div class="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-        <p class="text-[8px] font-black text-gray-500 uppercase mb-1">Notas</p>
-        <p class="text-xs text-gray-300">${f.notes || 'Sem observações'}</p>
+       <div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+        <p class="text-[7px] font-black text-gray-500 uppercase mb-1">Notas</p>
+        <p class="text-[10px] text-gray-300">${f.notes || 'Sem observações'}</p>
        </div>
        <div class="flex gap-2">
-        <button onclick="window.toggleWorking('${f.id}')" class="flex-1 py-2 rounded-xl ${f.startTimestamp ? 'bg-red-500 text-white' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'} text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1">
-         <span class="material-symbols-outlined text-sm">${f.startTimestamp ? 'stop' : 'play_arrow'}</span> ${f.startTimestamp ? 'Parar Tracking' : 'Iniciar Trabalho'}
+        <button onclick="window.toggleWorking('${f.id}')" class="flex-1 py-2 rounded-[4px] text-[8px] font-black uppercase tracking-widest flex items-center justify-center gap-1 ${f.startTimestamp ? 'bg-red-500 text-white' : 'text-emerald-400'}" style="${f.startTimestamp ? '' : 'background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3);'}">
+         <span class="material-symbols-outlined text-[12px]">${f.startTimestamp ? 'stop' : 'play_arrow'}</span> ${f.startTimestamp ? 'Parar Tracking' : 'Iniciar Trabalho'}
         </button>
-        <button onclick="window.toggleHidden('${f.id}')" class="px-4 py-2 rounded-xl bg-white/5 text-gray-400 border border-white/10 text-[10px] font-black uppercase tracking-widest">
+        <button onclick="window.toggleHidden('${f.id}')" class="px-4 py-2 rounded-[4px] text-gray-400 text-[8px] font-black uppercase tracking-widest" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
          ${f.isHidden ? 'Mostrar' : 'Ocultar'}
         </button>
        </div>
@@ -294,7 +302,6 @@ window.toggleHidden = async function(id) {
  }
 };
 
-// === EDITAR FREELANCER (Modal) ===
 window.editFreelancer = async function(id) {
  const existing = document.getElementById('editFreelancerModal');
  if (existing) existing.remove();
@@ -310,64 +317,65 @@ window.editFreelancer = async function(id) {
 
   const softwareBtns = allSoftwares.map(sw => {
    const isActive = selectedSoftwares.includes(sw);
-   return '<button type="button" class="ef-sw-btn px-2 py-1 rounded-lg text-[8px] font-bold uppercase ' + (isActive ? 'bg-cyan-500 text-white border-cyan-500' : 'bg-white/5 text-gray-400 border-white/10') + ' border" data-value="' + sw + '" onclick="window.toggleEditSoftware(this)">' + sw + '</button>';
+   const style = isActive ? 'background:#06b6d4; border:1px solid #06b6d4; color:#ffffff;' : 'background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color:#9ca3af;';
+   return '<button type="button" class="ef-sw-btn px-2 py-1 rounded-[4px] text-[8px] font-bold uppercase" data-value="' + sw + '" onclick="window.toggleEditSoftware(this)" style="' + style + '">' + sw + '</button>';
   }).join('');
 
   const modalHtml = `
-   <div id="editFreelancerModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm" style="display:flex;">
-    <div class="bg-[#0a0c10] border border-white/10 rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden flex flex-col max-h-[85vh]">
-     <header class="p-3 border-b border-white/5 flex items-center justify-between shrink-0">
-      <h3 class="text-sm font-black text-white">Editar: ${f.name}</h3>
-      <button onclick="document.getElementById('editFreelancerModal').remove()" class="w-7 h-7 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center"><span class="material-symbols-outlined text-sm">close</span></button>
+   <div id="editFreelancerModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80" style="display:flex;">
+    <div class="flex flex-col max-h-[85vh] overflow-hidden mx-4" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); width:100%; max-width:500px;">
+     <header class="p-3 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+      <h3 class="text-xs font-black text-white">Editar: ${f.name}</h3>
+      <button onclick="document.getElementById('editFreelancerModal').remove()" class="w-7 h-7 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-white" style="background:rgba(255,255,255,0.05);"><span class="material-symbols-outlined text-sm">close</span></button>
      </header>
-     <div class="p-4 overflow-y-auto custom-scrollbar space-y-3 flex-1">
+     <div class="p-3 overflow-y-auto custom-scrollbar space-y-2 flex-1">
       <div class="grid grid-cols-2 gap-2">
-       <div><label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Nome</label>
-       <input type="text" id="ef_name" value="${f.name||''}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none"></div>
-       <div><label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Email</label>
-       <input type="email" id="ef_email" value="${f.email||''}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none"></div>
+       <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Nome</label>
+       <input type="text" id="ef_name" value="${f.name||''}" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></div>
+       <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Email</label>
+       <input type="email" id="ef_email" value="${f.email||''}" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></div>
       </div>
       <div class="grid grid-cols-2 gap-2">
-       <div><label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Telefone</label>
-       <input type="text" id="ef_phone" value="${f.phone||''}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none"></div>
-       <div><label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Valor Hora (R$)</label>
-       <input type="number" step="0.01" id="ef_hourlyRate" value="${f.hourlyRate||0}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none"></div>
+       <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Telefone</label>
+       <input type="text" id="ef_phone" value="${f.phone||''}" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></div>
+       <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Valor/Hora</label>
+       <input type="number" step="0.01" id="ef_hourlyRate" value="${f.hourlyRate||0}" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></div>
       </div>
-      <div><label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Especialidades</label>
-      <input type="text" id="ef_expertise" value="${f.expertise||''}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="Ex: Interiores, Fachadas"></div>
+      <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Especialidades</label>
+      <input type="text" id="ef_expertise" value="${f.expertise||''}" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" placeholder="Ex: Interiores, Fachadas"></div>
       <div>
-       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Softwares (clique para selecionar)</label>
-       <div class="flex flex-wrap gap-1.5" id="ef_softwareToggles">${softwareBtns}</div>
+       <label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Softwares</label>
+       <div class="flex flex-wrap gap-1" id="ef_softwareToggles">${softwareBtns}</div>
        <input type="hidden" id="ef_softwares" value="${f.softwares||''}">
       </div>
-      <div><label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Hardware</label>
-      <input type="text" id="ef_hardware" value="${f.hardwareSpecs||''}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="Ex: RTX 4090, 64GB RAM"></div>
+      <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Hardware</label>
+      <input type="text" id="ef_hardware" value="${f.hardwareSpecs||''}" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" placeholder="Ex: RTX 4090, 64GB RAM"></div>
       <div class="grid grid-cols-2 gap-2">
-       <div><label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Portfólio URL</label>
-       <input type="text" id="ef_portfolio" value="${f.portfolioUrl||''}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none"></div>
-       <div><label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Chave PIX</label>
-       <input type="text" id="ef_pix" value="${f.pixKey||''}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none"></div>
+       <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Portfólio URL</label>
+       <input type="text" id="ef_portfolio" value="${f.portfolioUrl||''}" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></div>
+       <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Chave PIX</label>
+       <input type="text" id="ef_pix" value="${f.pixKey||''}" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></div>
       </div>
       <div class="grid grid-cols-2 gap-2">
-       <div><label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Status</label>
-       <select id="ef_status" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none appearance-none">
+       <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Status</label>
+       <select id="ef_status" class="w-full px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
         <option value="active" ${f.status==='active'?'selected':''}>Ativo</option>
         <option value="inactive" ${f.status==='inactive'?'selected':''}>Inativo</option>
         <option value="on_project" ${f.status==='on_project'?'selected':''}>Em Projeto</option>
        </select></div>
-       <div><label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Disponibilidade</label>
-       <select id="ef_availability" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none appearance-none">
+       <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Disponibilidade</label>
+       <select id="ef_availability" class="w-full px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
         <option value="disponivel" ${f.availability==='disponivel'?'selected':''}>Disponível</option>
         <option value="ocupado" ${f.availability==='ocupado'?'selected':''}>Ocupado</option>
         <option value="ausente" ${f.availability==='ausente'?'selected':''}>Ausente</option>
        </select></div>
       </div>
-      <div><label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Notas Internas</label>
-      <textarea id="ef_notes" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none">${f.notes||''}</textarea></div>
+      <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Notas</label>
+      <textarea id="ef_notes" rows="2" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">${f.notes||''}</textarea></div>
      </div>
-     <footer class="p-3 border-t border-white/5 flex gap-2 shrink-0">
-      <button onclick="document.getElementById('editFreelancerModal').remove()" class="flex-1 py-2 rounded-lg bg-white/5 text-white text-[9px] font-black uppercase border border-white/10">Cancelar</button>
-      <button onclick="window.saveFreelancerEdit('${f.id}')" class="flex-[2] py-2 rounded-lg bg-orange-500 text-white text-[9px] font-black uppercase shadow-lg shadow-orange-500/20">Salvar</button>
+     <footer class="p-3 flex gap-2" style="border-top:1px solid rgba(255,255,255,0.06);">
+      <button onclick="document.getElementById('editFreelancerModal').remove()" class="flex-1 py-2 rounded-[4px] text-[8px] font-black uppercase tracking-widest text-white" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">Cancelar</button>
+      <button onclick="window.saveFreelancerEdit('${f.id}')" class="flex-[2] py-2 rounded-[4px] bg-orange-500 text-white text-[8px] font-black uppercase tracking-widest hover:bg-orange-600">Salvar</button>
      </footer>
     </div>
    </div>
@@ -378,17 +386,14 @@ window.editFreelancer = async function(id) {
 
 window.toggleEditSoftware = function(btn) {
  const val = btn.dataset.value;
- const isActive = btn.classList.contains('bg-cyan-500');
+ const isActive = btn.style.background.includes('06b6d4');
  if (isActive) {
-  btn.classList.remove('bg-cyan-500', 'text-white', 'border-cyan-500');
-  btn.classList.add('bg-white/5', 'text-gray-400', 'border-white/10');
+  btn.style.cssText = 'background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color:#9ca3af;';
  } else {
-  btn.classList.add('bg-cyan-500', 'text-white', 'border-cyan-500');
-  btn.classList.remove('bg-white/5', 'text-gray-400', 'border-white/10');
+  btn.style.cssText = 'background:#06b6d4; border:1px solid #06b6d4; color:#ffffff;';
  }
- // Atualizar hidden
  const allBtns = document.querySelectorAll('#ef_softwareToggles .ef-sw-btn');
- const selected = Array.from(allBtns).filter(b => b.classList.contains('bg-cyan-500')).map(b => b.dataset.value);
+ const selected = Array.from(allBtns).filter(b => b.style.background.includes('06b6d4')).map(b => b.dataset.value);
  document.getElementById('ef_softwares').value = selected.join(', ');
 };
 
@@ -418,14 +423,13 @@ window.saveFreelancerEdit = async function(id) {
  } catch (err) { alert('Erro de rede'); }
 };
 
-// === DELETE ===
 async function deleteFreelancer(id) {
  if (!confirm('Deseja remover este artista do banco de talentos?')) return;
  try {
- const res = await fetch(`/admin/api/freelancers/${id}`, { method: 'DELETE' });
- const json = await res.json();
- if (json.success) window.location.reload();
- else alert('Erro ao remover freelancer.');
+  const res = await fetch(`/admin/api/freelancers/${id}`, { method: 'DELETE' });
+  const json = await res.json();
+  if (json.success) window.location.reload();
+  else alert('Erro ao remover freelancer.');
  } catch (err) { alert('Erro de rede.'); }
 }
 </script>

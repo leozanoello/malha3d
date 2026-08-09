@@ -1005,6 +1005,7 @@ router.get('/previsao', requireAuth, checkPermission('crm'), async (req, res) =>
   try {
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
     const allDeals = await Budget.findAll();
     const deals = allDeals
@@ -1012,76 +1013,141 @@ router.get('/previsao', requireAuth, checkPermission('crm'), async (req, res) =>
       .map(d => {
         const data = d.get({ plain: true });
         data.winStatus = data.winStatus || 'aberto';
-        data.estimatedValue = parseFloat(data.estimatedValue) || 0;
+        data.estimatedValue = parseFloat(data.estimatedValue) || parseFloat(data.valorGanho) || 0;
         data.probability = parseFloat(data.probability) || 0;
         return data;
       });
 
-    // KPIs
-    const wonThisMonth = deals.filter(d => d.winStatus === 'ganho' && new Date(d.updatedAt) >= firstDayOfMonth);
-    const billingWon = wonThisMonth.reduce((sum, d) => sum + d.estimatedValue, 0);
+    // === VENDAS EFETUADAS (Projetos Fechados) ===
+    const wonAll = deals.filter(d => d.winStatus === 'ganho');
+    const wonThisMonth = wonAll.filter(d => new Date(d.updatedAt) >= firstDayOfMonth);
+    const billingWonMonth = wonThisMonth.reduce((sum, d) => sum + d.estimatedValue, 0);
+    const billingWonTotal = wonAll.reduce((sum, d) => sum + d.estimatedValue, 0);
+
+    // Faturamento por Vendedor (assignedUserId)
+    const byVendor = {};
+    wonThisMonth.forEach(d => {
+      const vendor = d.assignedUserId || 'sem_vendedor';
+      byVendor[vendor] = (byVendor[vendor] || 0) + d.estimatedValue;
+    });
+
+    // Faturamento por Modalidade (projectType)
+    const byModality = {};
+    wonThisMonth.forEach(d => {
+      const mod = d.projectType || 'Outro';
+      byModality[mod] = (byModality[mod] || 0) + d.estimatedValue;
+    });
+
+    // === PREVISÃO DE VENDAS (Funil CRM — leads abertos) ===
     const inNegotiation = deals.filter(d => d.winStatus === 'aberto');
     const totalInNegotiation = inNegotiation.reduce((sum, d) => sum + d.estimatedValue, 0);
-    const wonTotalCount = deals.filter(d => d.winStatus === 'ganho').length;
-    const ticketMedio = wonTotalCount > 0 ? (deals.filter(d => d.winStatus === 'ganho').reduce((sum, d) => sum + d.estimatedValue, 0) / wonTotalCount) : 0;
+    const weightedPipeline = inNegotiation.reduce((sum, d) => sum + d.estimatedValue * (d.probability / 100), 0);
 
-    // Chart 1: Weighted Funnel (Next 6 months)
+    // Ticket Médio
+    const wonTotalCount = wonAll.length;
+    const ticketMedio = wonTotalCount > 0 ? billingWonTotal / wonTotalCount : 0;
+
+    // Win Rate
+    const lostThisMonth = deals.filter(d => d.winStatus === 'perdido' && new Date(d.updatedAt) >= firstDayOfMonth);
+    const totalDecided = wonThisMonth.length + lostThisMonth.length;
+    const winRate = totalDecided > 0 ? Math.round((wonThisMonth.length / totalDecided) * 100) : 0;
+
+    // Taxa de conversão necessária para meta (hipotético: meta = pipeline ponderado)
+    const conversionNeeded = totalInNegotiation > 0 ? Math.round((weightedPipeline / totalInNegotiation) * 100) : 0;
+
+    // Chart: Weighted Funnel (Next 6 months)
     const months = [];
     const weightedRevenue = [];
+    const rawRevenue = [];
     for (let i = 0; i < 6; i++) {
       const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
-      const monthLabel = d.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
-      months.push(monthLabel);
-
+      months.push(d.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' }));
       const monthDeals = inNegotiation.filter(deal => {
-        const estDate = deal.expectedRevenueDate || deal.deadline;
-        if (!estDate) {return false;}
+        const estDate = deal.expectedCloseDate || deal.expectedRevenueDate || deal.deadline;
+        if (!estDate) return false;
         const ed = new Date(estDate);
         return ed.getMonth() === d.getMonth() && ed.getFullYear() === d.getFullYear();
       });
-
-      const weighted = monthDeals.reduce((sum, deal) => {
-        return sum + deal.estimatedValue * (deal.probability / 100);
-      }, 0);
-      weightedRevenue.push(weighted);
+      weightedRevenue.push(monthDeals.reduce((sum, deal) => sum + deal.estimatedValue * (deal.probability / 100), 0));
+      rawRevenue.push(monthDeals.reduce((sum, deal) => sum + deal.estimatedValue, 0));
     }
 
-    const stats = {
-      billingWon,
-      totalInNegotiation,
-      ticketMedio
-    };
+    // Loss Reasons
+    const lossReasons = {};
+    deals.filter(d => d.winStatus === 'perdido').forEach(d => {
+      const reason = d.lossReason || 'Não informado';
+      lossReasons[reason] = (lossReasons[reason] || 0) + 1;
+    });
 
-    const chartsData = {
-      funnel: {
-        labels: months,
-        data: weightedRevenue
-      },
-      winRate: {
-        labels: ['Ganhos', 'Perdidos'],
-        data: [
-          deals.filter(d => d.winStatus === 'ganho' && new Date(d.updatedAt) >= firstDayOfMonth).length,
-          deals.filter(d => d.winStatus === 'perdido' && new Date(d.updatedAt) >= firstDayOfMonth).length
-        ]
-      },
-      lossReasons: {
-        labels: ['Preço', 'Prazo', 'Concorrente', 'Outros'],
-        data: [
-          deals.filter(d => d.lossReason === 'Preço').length,
-          deals.filter(d => d.lossReason === 'Prazo').length,
-          deals.filter(d => d.lossReason === 'Concorrente').length,
-          deals.filter(d => d.lossReason === 'Outros').length
-        ]
+    // Deals count by stage (for funnel visual)
+    const pipeline = {};
+    inNegotiation.forEach(d => {
+      pipeline[d.status] = (pipeline[d.status] || 0) + 1;
+    });
+
+    // Fetch team names for vendor display
+    const teamMembers = (await User.findAll({ attributes: ['id', 'name'] })).map(u => u.get({ plain: true }));
+    const vendorNames = {};
+    teamMembers.forEach(u => { vendorNames[u.id] = u.name; });
+
+    // Forecast Min (cenário pessimista: apenas leads com prob >= 80%)
+    const forecastMin = inNegotiation
+      .filter(d => d.probability >= 80)
+      .reduce((sum, d) => sum + d.estimatedValue, 0);
+
+    // Top 3 Categorias (por volume de leads)
+    const categoryCount = {};
+    inNegotiation.forEach(d => {
+      const cat = d.projectType || 'Outro';
+      categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+    });
+    const topCategories = Object.entries(categoryCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([name, count]) => ({ name, count }));
+
+    // % Médio de Desconto (baseado na diferença entre clientBudget e estimatedValue)
+    let discountSum = 0;
+    let discountCount = 0;
+    deals.forEach(d => {
+      const client = parseFloat(d.clientBudget) || 0;
+      const estimated = d.estimatedValue || 0;
+      if (client > 0 && estimated > 0 && client < estimated) {
+        discountSum += ((estimated - client) / estimated) * 100;
+        discountCount++;
       }
-    };
+    });
+    const avgDiscount = discountCount > 0 ? Math.round(discountSum / discountCount) : 0;
 
     res.render('admin/previsao', {
       layout: 'admin',
-      title: 'Previsão Comercial',
+      title: 'Previsão & Relatórios',
       currentPage: 'previsao',
       user: req.user,
-      stats,
-      charts: chartsData
+      stats: {
+        billingWonMonth,
+        billingWonTotal,
+        totalInNegotiation,
+        weightedPipeline,
+        forecastMin,
+        ticketMedio,
+        winRate,
+        conversionNeeded,
+        avgDiscount,
+        wonThisMonthCount: wonThisMonth.length,
+        lostThisMonthCount: lostThisMonth.length,
+        openLeadsCount: inNegotiation.length
+      },
+      topCategories,
+      charts: {
+        funnel: { labels: months, weighted: weightedRevenue, raw: rawRevenue },
+        winRate: { labels: ['Ganhos', 'Perdidos'], data: [wonThisMonth.length, lostThisMonth.length] },
+        lossReasons: { labels: Object.keys(lossReasons), data: Object.values(lossReasons) },
+        byModality: { labels: Object.keys(byModality), data: Object.values(byModality) }
+      },
+      byVendor: Object.entries(byVendor).map(([id, val]) => ({ name: vendorNames[id] || 'Sem vendedor', value: val })),
+      byModality: Object.entries(byModality).map(([mod, val]) => ({ name: mod, value: val })),
+      pipeline
     });
   } catch (error) {
     console.error('Forecast Route Error:', error);
@@ -1183,16 +1249,55 @@ router.put('/kanban/columns/:id', requireAuth, async (req, res) => {
   }
 });
 
+// POST fallback for column update (HTML forms can't send PUT)
+router.post('/kanban/columns/:id', requireAuth, async (req, res) => {
+  try {
+    await KanbanColumn.update(req.body, { where: { id: req.params.id } });
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+      return res.json({ success: true });
+    }
+    res.redirect('/admin/crm');
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.delete('/kanban/columns/:id', requireAuth, async (req, res) => {
   try {
     const col = await KanbanColumn.findByPk(req.params.id);
     if (col) {
-      // Reatribuir cards para a primeira coluna disponível se necessário
       await col.destroy();
     }
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Exclusão segura de coluna — transfere leads antes de deletar
+router.post('/kanban/columns/:id/delete-safe', requireAuth, async (req, res) => {
+  try {
+    const col = await KanbanColumn.findByPk(req.params.id);
+    if (!col) return res.status(404).json({ success: false, error: 'Coluna não encontrada' });
+
+    const { transferTo } = req.body;
+    if (!transferTo) return res.status(400).json({ success: false, error: 'Informe o destino dos leads (transferTo)' });
+
+    // Transferir todos os leads desta coluna para a coluna destino
+    const leadsInColumn = await Budget.findAll({ where: { status: col.statusKey } });
+    if (leadsInColumn.length > 0) {
+      await Budget.update(
+        { status: transferTo },
+        { where: { status: col.statusKey } }
+      );
+    }
+
+    // Agora pode excluir a coluna com segurança
+    await col.destroy();
+
+    res.json({ success: true, transferred: leadsInColumn.length, to: transferTo });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
@@ -3371,12 +3476,43 @@ router.get('/relatorios', requireAuth, async (req, res) => {
       }
     };
 
+    // Dados para aba Orçamentos
+    const allBudgets = budgets;
+    const budgetStats = {
+      total: allBudgets.length,
+      abertos: allBudgets.filter(b => b.winStatus === 'aberto').length,
+      ganhos: allBudgets.filter(b => b.winStatus === 'ganho').length,
+      perdidos: allBudgets.filter(b => b.winStatus === 'perdido').length,
+      valorTotal: allBudgets.reduce((s, b) => s + (parseFloat(b.estimatedValue) || 0), 0)
+    };
+
+    // Dados para aba Vendas
+    const vendasFechadas = allBudgets.filter(b => b.winStatus === 'ganho');
+    const vendasStats = {
+      totalFechadas: vendasFechadas.length,
+      faturamento: vendasFechadas.reduce((s, b) => s + (parseFloat(b.estimatedValue) || 0), 0),
+      ticketMedio: vendasFechadas.length > 0 ? vendasFechadas.reduce((s, b) => s + (parseFloat(b.estimatedValue) || 0), 0) / vendasFechadas.length : 0
+    };
+
+    // Dados para aba Financeiro (buscar transações)
+    const FinanceTransaction = require('../models').FinanceTransaction;
+    const allTransactions = await FinanceTransaction.findAll({ raw: true });
+    const financeStats = {
+      totalReceitas: allTransactions.filter(t => t.type === 'receita').reduce((s, t) => s + Math.abs(parseFloat(t.amount) || 0), 0),
+      totalDespesas: allTransactions.filter(t => t.type === 'despesa').reduce((s, t) => s + Math.abs(parseFloat(t.amount) || 0), 0),
+      transacoes: allTransactions.length
+    };
+    financeStats.saldo = financeStats.totalReceitas - financeStats.totalDespesas;
+
     res.render('admin/ai-reports', {
       layout: 'admin',
       title: 'Relatórios & BI',
       currentPage: 'reports',
       user: req.user,
-      stats: reportStats
+      reportStats,
+      budgetStats,
+      vendasStats,
+      financeStats
     });
   } catch (error) {
     console.error('Error generating reports:', error);
@@ -3392,24 +3528,6 @@ router.get('/produtividade', requireAuth, (req, res) => res.redirect('/admin/pre
 
 router.get('/automacoes', requireAuth, async (req, res) => {
   res.render('admin/automacoes', { layout: 'admin', title: 'Automações Inteligentes', currentPage: 'automations', user: req.user });
-});
-
-router.get('/previsao', requireAuth, async (req, res) => {
-  try {
-    const stats = {
-      billingWon: 45000,
-      totalInNegotiation: 120000,
-      ticketMedio: 15000
-    };
-    const charts = {
-      funnel: { labels: ['Lead', 'Proposta', 'Negociação', 'Ajustes'], data: [50000, 30000, 20000, 10000] },
-      winRate: { labels: ['Ganhos', 'Perdidos'], data: [12, 5] },
-      lossReasons: { labels: ['Preço', 'Prazo', 'Escopo', 'Concorrência'], data: [5, 2, 1, 3] }
-    };
-    res.render('admin/previsao', { layout: 'admin', title: 'Previsão & Analytics', currentPage: 'previsao', user: req.user, stats, charts });
-  } catch (error) {
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar previsões' });
-  }
 });
 
 router.get('/agenda', requireAuth, async (req, res) => {

@@ -1,4 +1,4 @@
-<div class="kanban-card-wrap group relative mb-3 kanban-card-main"
+<div class="kanban-card-wrap group relative mb-2 kanban-card-main"
      draggable="true"
      data-id="{{lead.id}}"
      data-lead='{{{json lead}}}'
@@ -8,7 +8,7 @@
            data-id="{{lead.id}}" onclick="event.stopPropagation();" onchange="event.stopPropagation(); window.toggleLeadSelection('{{lead.id}}', this);">
 
     <div class="kcard" data-status="{{lead.status}}">
-        <!-- Imagem de capa (lazy + WebP + fallback) -->
+        <!-- Imagem de capa (lazy) -->
         <div class="kcard-img">
             <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='112' fill='%23111'%3E%3Crect width='300' height='112'/%3E%3C/svg%3E"
                  data-src="{{#if lead.leadImage}}{{lead.leadImage}}{{else}}/assets/{{archvizBanner lead.id}}{{/if}}"
@@ -19,54 +19,33 @@
 
         <!-- Content -->
         <div class="kcard-body">
-            <!-- Badges -->
-            <div class="flex items-center gap-1.5 flex-wrap mb-2">
+            <!-- Badges + Probabilidade (mesma linha) -->
+            <div class="flex items-center gap-1.5 flex-wrap mb-1.5">
                 <span class="kcard-badge">{{#if lead.projectType}}{{lead.projectType}}{{else}}Projeto{{/if}}</span>
                 <span class="kcard-badge {{#if (eq lead.priority 'alta')}}kcard-badge-red{{else if (eq lead.priority 'baixa')}}kcard-badge-blue{{else}}kcard-badge-orange{{/if}}">{{#if lead.priority}}{{lead.priority}}{{else}}Média{{/if}}</span>
+                <span class="kcard-probability text-[9px] font-black ml-auto cursor-pointer hover:text-white transition-colors {{#if (gt lead.probability 79)}}text-emerald-400{{else if (gt lead.probability 49)}}text-orange-300{{else if (gt lead.probability 24)}}text-amber-400{{else}}text-red-400{{/if}}"
+                      data-lead-id="{{lead.id}}" data-probability="{{lead.probability}}"
+                      onclick="event.stopPropagation(); if(window.editCardProbability) window.editCardProbability('{{lead.id}}', this);"
+                      title="Probabilidade">{{lead.probability}}%</span>
             </div>
 
-            <!-- Title -->
+            <!-- Title + Client -->
             <h4 class="kcard-title">{{lead.name}}</h4>
-            <p class="text-[9px] text-[#777] uppercase tracking-widest mb-2.5 truncate">
-                {{#if lead.clientName}}{{lead.clientName}}{{else}}—{{/if}}
-            </p>
+            <p class="text-[8px] text-[#666] uppercase tracking-widest mb-2 truncate">{{#if lead.clientName}}{{lead.clientName}}{{else}}—{{/if}}</p>
 
-            <!-- Stats -->
-            <div class="grid grid-cols-3 gap-2 text-[9px] mb-2.5 pb-2.5 border-b border-white/10">
-                <div>
-                    <p class="text-[7px] text-[#555] uppercase tracking-widest">Tipologia</p>
-                    <p class="font-bold text-white/80 truncate">{{#if lead.projectType}}{{lead.projectType}}{{else}}---{{/if}}</p>
-                </div>
+            <!-- Stats (2 cols: Valor + Data) -->
+            <div class="kcard-forecast flex items-center justify-between mb-2 pb-2 border-b border-white/10">
                 <div>
                     <p class="text-[7px] text-[#555] uppercase tracking-widest">Valor</p>
-                    <p class="font-bold text-emerald-400 truncate">{{#if lead.valorGanho}}{{formatCurrency lead.valorGanho}}{{else}}{{formatCurrency lead.estimatedValue}}{{/if}}</p>
+                    <p class="text-[9px] font-bold text-emerald-400 truncate">{{#if lead.valorGanho}}{{formatCurrency lead.valorGanho}}{{else}}{{formatCurrency lead.estimatedValue}}{{/if}}</p>
                 </div>
-                <div>
-                    <p class="text-[7px] text-[#555] uppercase tracking-widest">Local</p>
-                    <p class="font-bold text-white/80 truncate">{{#if lead.state}}{{lead.state}}{{#if lead.city}} · {{lead.city}}{{/if}}{{else}}---{{/if}}</p>
-                </div>
-            </div>
-
-            <!-- FORECAST BAR (Probabilidade + Data Estimada — CRM Only) -->
-            <div class="kcard-forecast flex items-center gap-2 mb-2.5 pb-2.5 border-b border-white/10">
-                <div class="flex items-center gap-1 flex-1 min-w-0">
-                    <span class="material-symbols-outlined text-[11px] text-orange-400">trending_up</span>
-                    <span class="kcard-probability text-[10px] font-black cursor-pointer hover:text-white transition-colors {{#if (gt lead.probability 79)}}text-emerald-400{{else if (gt lead.probability 49)}}text-orange-300{{else if (gt lead.probability 24)}}text-amber-400{{else}}text-red-400{{/if}}"
-                          data-lead-id="{{lead.id}}"
-                          data-probability="{{lead.probability}}"
-                          onclick="event.stopPropagation(); if(window.editCardProbability) window.editCardProbability('{{lead.id}}', this);"
-                          title="Probabilidade de Fechamento — Clique para editar">{{lead.probability}}%</span>
-                </div>
-                <div class="flex items-center gap-1 shrink-0">
-                    <button class="kcard-date-btn flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 hover:border-orange-500/30 hover:bg-orange-500/10 transition-colors"
-                            data-lead-id="{{lead.id}}"
-                            data-date="{{lead.expectedCloseDate}}"
-                            onclick="event.stopPropagation(); if(window.editCardCloseDate) window.editCardCloseDate('{{lead.id}}', this);"
-                            title="Data estimada de fechamento — Clique para definir">
-                        <span class="material-symbols-outlined text-[10px] text-gray-400">event</span>
-                        <span class="kcard-date-label text-[8px] font-bold text-gray-400">{{#if lead.expectedCloseDate}}{{formatDateShort lead.expectedCloseDate}}{{else}}—{{/if}}</span>
-                    </button>
-                </div>
+                <button class="kcard-date-btn flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 hover:border-orange-500/30 hover:bg-orange-500/10 transition-colors"
+                        data-lead-id="{{lead.id}}" data-date="{{lead.expectedCloseDate}}"
+                        onclick="event.stopPropagation(); if(window.editCardCloseDate) window.editCardCloseDate('{{lead.id}}', this);"
+                        title="Data estimada de fechamento">
+                    <span class="material-symbols-outlined text-[10px] text-gray-400">event</span>
+                    <span class="kcard-date-label text-[8px] font-bold text-gray-400">{{#if lead.expectedCloseDate}}{{formatDateShort lead.expectedCloseDate}}{{else}}—{{/if}}</span>
+                </button>
             </div>
 
             <!-- Buttons -->

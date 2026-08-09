@@ -7,7 +7,7 @@
  <div class="flex flex-col xl:flex-row gap-8">
  <!-- Vertical Tab Navigation -->
  <div class="xl:w-72 flex-shrink-0">
- <div class="glass-card p-4 border-white/5 sticky top-10">
+ <div class="p-4 sticky top-10" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
  <div class="flex flex-col gap-2">
  <button class="advanced-tab-btn" data-tab="usuarios">
  <span class="material-symbols-outlined text-lg">group</span>
@@ -59,11 +59,11 @@
  <h2 class="text-3xl font-black text-white tracking-tighter">Painel Master de <span class="text-orange-500">Acessos</span></h2>
  <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gerenciamento de assinantes, staff e sub-contas (RBAC)</p>
  </div>
- <button id="btnOpenNewUser" class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-orange-500/20 hover:bg-orange-400 transition-all">Criar UsuÃ¡rio Manual</button>
+ <button id="btnOpenNewUser" class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px] hover:bg-orange-400 transition-all">Criar UsuÃ¡rio Manual</button>
  </header>
 
  <!-- Bloco de Assinantes -->
- <div class="glass-card border-white/5 overflow-hidden mb-8">
+ <div class="kcard-panel border-white/5 overflow-hidden mb-8">
  <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-subscribers')">
  <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Assinantes</h4>
  <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-subscribers">expand_more</span>
@@ -143,7 +143,7 @@
  </div>
 
  <!-- Bloco de Outros UsuÃ¡rios (Staff/Admins/Avulsos) -->
- <div class="glass-card border-white/5 overflow-hidden">
+ <div class="kcard-panel border-white/5 overflow-hidden">
  <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-other-users')">
  <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Malha 3D</h4>
  <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-other-users">expand_more</span>
@@ -192,7 +192,7 @@
 
  <!-- Dynamic Users View (Audit Mode) -->
  <div id="users-audit-view" class="hidden pt-10">
- <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center mb-6 rounded-xl cursor-pointer" onclick="toggleCollapseCard('card-audit-grid')">
+ <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center mb-6 rounded-[5px] cursor-pointer" onclick="toggleCollapseCard('card-audit-grid')">
  <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">VisualizaÃ§Ã£o de Auditoria Flat</h4>
  <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-audit-grid">expand_more</span>
  </div>
@@ -209,13 +209,13 @@
  <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">GestÃ£o de contÃªineres e render nodes</p>
  </div>
  <div class="flex gap-4">
- <button class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-orange-500/20" onclick="openNewInstanceModal()">Nova InstÃ¢ncia</button>
- <button class="px-6 py-3 bg-orange-500/10 border border-orange-500/20 text-orange-500 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-orange-500 hover:text-white transition-all" onclick="syncCluster()">Sincronizar Cluster</button>
+ <button class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px]" onclick="openNewInstanceModal()">Nova InstÃ¢ncia</button>
+ <button class="px-6 py-3 bg-orange-500/10 border border-orange-500/20 text-orange-500 text-[10px] font-black uppercase tracking-widest rounded-[5px] hover:bg-orange-500 hover:text-white transition-all" onclick="syncCluster()">Sincronizar Cluster</button>
  </div>
  </header>
 
  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
- <div class="glass-card p-6 border-white/5 bg-white/[0.01]">
+ <div class="kcard-panel p-6 border-white/5 bg-white/[0.01]">
  <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2">Total InstÃ¢ncias</p>
  <h4 class="text-2xl font-black text-white">{{instances.length}}</h4>
  <div class="mt-4 flex items-center gap-2">
@@ -226,7 +226,7 @@
  <!-- More summary cards can go here -->
  </div>
 
- <div class="glass-card border-white/5 overflow-hidden">
+ <div class="kcard-panel border-white/5 overflow-hidden">
  <table class="w-full text-left">
  <thead class="bg-white/5 border-b border-white/5">
  <tr>
@@ -242,7 +242,7 @@
  <tr class="hover:bg-white/[0.02] transition-colors">
  <td class="px-8 py-6">
  <div class="flex items-center gap-4">
- <div class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-orange-500">
+ <div class="w-10 h-10 rounded-[5px] bg-white/5 border border-white/10 flex items-center justify-center text-orange-500">
  <span class="material-symbols-outlined text-lg">{{#if (eq this.type 'docker')}}terminal{{else if (eq this.type 'ia')}}psychology{{else}}dns{{/if}}</span>
  </div>
  <div>
@@ -288,12 +288,12 @@
  <h2 class="text-3xl font-black text-white tracking-tighter">Planos & <span class="text-orange-500">RecorrÃªncia</span></h2>
  <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">GestÃ£o de assinaturas corporativas e SLAs</p>
  </div>
- <button class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-orange-500/20" onclick="document.getElementById('newPlanModal').classList.remove('hidden')">Criar Novo NÃ­vel</button>
+ <button class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px]" onclick="document.getElementById('newPlanModal').classList.remove('hidden')">Criar Novo NÃ­vel</button>
  </header>
 
  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
  {{#each plans}}
- <div class="glass-card p-10 border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent relative overflow-hidden group">
+ <div class="kcard-panel p-10 border-white/5 bg-gradient-to-br from-white/[0.02] to-transparent relative overflow-hidden group">
  <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[60px] -mr-16 -mt-16 group-hover:bg-orange-500/20 transition-all"></div>
  
  <div class="relative z-10">
@@ -319,8 +319,8 @@
  </div>
 
  <div class="flex items-center gap-3">
- <button class="flex-1 py-4 rounded-xl bg-white/5 text-white font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all" onclick="openEditPlanModal('{{this.id}}', '{{this.name}}', '{{this.price}}', '{{this.revisionsLimit}}', '{{this.slaDays}}', '{{this.extraDiscount}}')">Editar</button>
- <button class="p-4 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all" onclick="deletePlan('{{this.id}}')"><span class="material-symbols-outlined text-sm">delete</span></button>
+ <button class="flex-1 py-4 rounded-[5px] bg-white/5 text-white font-black text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all" onclick="openEditPlanModal('{{this.id}}', '{{this.name}}', '{{this.price}}', '{{this.revisionsLimit}}', '{{this.slaDays}}', '{{this.extraDiscount}}')">Editar</button>
+ <button class="p-4 rounded-[5px] bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all" onclick="deletePlan('{{this.id}}')"><span class="material-symbols-outlined text-sm">delete</span></button>
  </div>
  </div>
  </div>
@@ -338,14 +338,14 @@
  </header>
 
  <div class="grid grid-cols-1 xl:grid-cols-2 gap-10">
- <div class="glass-card p-10 border-white/5 bg-white/[0.01] space-y-8">
+ <div class="kcard-panel p-10 border-white/5 bg-white/[0.01] space-y-8">
  <h4 class="text-sm font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
  <span class="material-symbols-outlined text-orange-500">point_of_sale</span> Gateway Principal
  </h4>
  <div class="space-y-6">
- <div class="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between group hover:border-orange-500/40 transition-all cursor-pointer">
+ <div class="p-6 rounded-[5px] bg-white/5 border border-white/10 flex items-center justify-between group hover:border-orange-500/40 transition-all cursor-pointer">
  <div class="flex items-center gap-4">
- <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center p-2">
+ <div class="w-12 h-12 rounded-[5px] bg-white flex items-center justify-center p-2">
  <img src="https://stripe.com/favicon.ico" class="w-full grayscale group-hover:grayscale-0 transition-all">
  </div>
  <div>
@@ -355,9 +355,9 @@
  </div>
  <span class="material-symbols-outlined text-emerald-500">check_circle</span>
  </div>
- <div class="p-6 rounded-2xl bg-white/2 border border-white/5 flex items-center justify-between group hover:border-blue-500/40 transition-all cursor-pointer opacity-50">
+ <div class="p-6 rounded-[5px] bg-white/2 border border-white/5 flex items-center justify-between group hover:border-blue-500/40 transition-all cursor-pointer opacity-50">
  <div class="flex items-center gap-4">
- <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center p-2 text-blue-600 font-black italic">asaas</div>
+ <div class="w-12 h-12 rounded-[5px] bg-white flex items-center justify-center p-2 text-blue-600 font-black italic">asaas</div>
  <div>
  <p class="text-[11px] font-black text-white uppercase">Asaas</p>
  <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Boletos & Pix Nativo</p>
@@ -368,19 +368,19 @@
  </div>
  </div>
 
- <div class="glass-card p-10 border-white/5 bg-white/[0.01] space-y-8">
+ <div class="kcard-panel p-10 border-white/5 bg-white/[0.01] space-y-8">
  <h4 class="text-sm font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-3">
  <span class="material-symbols-outlined text-orange-500">settings_b_roll</span> Regras de Gatilho
  </h4>
  <div class="space-y-6">
- <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
+ <div class="flex items-center justify-between p-4 bg-white/5 rounded-[5px] border border-white/10">
  <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sinal ObrigatÃ³rio (50%)</span>
  <label class="switch">
  <input type="checkbox" data-setting="banking_require_signal" onchange="updateSystemSetting(this)" {{#if (eq settings.banking_require_signal 'true')}}checked{{/if}}>
  <span class="slider round"></span>
  </label>
  </div>
- <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
+ <div class="flex items-center justify-between p-4 bg-white/5 rounded-[5px] border border-white/10">
  <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Bloquear Download sem Pagamento</span>
  <label class="switch">
  <input type="checkbox" data-setting="banking_block_download" onchange="updateSystemSetting(this)" {{#if (eq settings.banking_block_download 'true')}}checked{{/if}}>
@@ -401,11 +401,11 @@
  <h2 class="text-3xl font-black text-white tracking-tighter">CiberseguranÃ§a & <span class="text-orange-500">RBAC</span></h2>
  <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">ProteÃ§Ã£o de IP e controle de acesso granular</p>
  </div>
- <button class="px-6 py-3 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg shadow-red-500/20" onclick="terminateAllSessions()">Terminar Todas as SessÃµes</button>
+ <button class="px-6 py-3 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px] shadow-red-500/20" onclick="terminateAllSessions()">Terminar Todas as SessÃµes</button>
  </header>
 
  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
- <div class="lg:col-span-2 glass-card border-white/5 overflow-hidden">
+ <div class="lg:col-span-2 border-white/5 overflow-hidden">
  <div class="p-8 border-b border-white/5 bg-white/5">
  <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Matriz de PermissÃµes (Roles)</h4>
  </div>
@@ -436,14 +436,14 @@
  </div>
 
  <div class="space-y-8">
- <div class="glass-card p-8 border-white/5 bg-white/[0.01]">
+ <div class="kcard-panel p-8 border-white/5 bg-white/[0.01]">
  <h5 class="text-[11px] font-black text-white uppercase tracking-widest mb-6">IP Whitelisting</h5>
  <div class="space-y-4">
  <div class="flex gap-2">
  <input type="text" id="newIpAddress" class="input-premium py-3" placeholder="192.168.1.1">
- <button onclick="addIpWhitelist()" class="px-4 bg-orange-500 rounded-xl text-white"><span class="material-symbols-outlined">add</span></button>
+ <button onclick="addIpWhitelist()" class="px-4 bg-orange-500 rounded-[5px] text-white"><span class="material-symbols-outlined">add</span></button>
  </div>
- <div class="p-3 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center">
+ <div class="p-3 rounded-[5px] bg-white/5 border border-white/5 flex justify-between items-center">
  <span class="text-[9px] font-black text-gray-500 tracking-widest uppercase">EscritÃ³rio Central</span>
  <button class="text-red-500"><span class="material-symbols-outlined text-sm">delete</span></button>
  </div>
@@ -463,29 +463,29 @@
  </header>
 
  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
- <div class="glass-card p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
- <div class="w-16 h-16 rounded-2xl bg-[#FF4B2B]/10 flex items-center justify-center text-[#FF4B2B] mb-6">
+ <div class="kcard-panel p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
+ <div class="w-16 h-16 rounded-[5px] bg-[#FF4B2B]/10 flex items-center justify-center text-[#FF4B2B] mb-6">
  <span class="material-symbols-outlined text-4xl">webhook</span>
  </div>
  <h4 class="text-xs font-black text-white uppercase tracking-widest mb-2">Webhooks</h4>
  <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">Dispare aÃ§Ãµes para n8n/Zapier</p>
- <button onclick="alert('IntegraÃ§Ã£o Webhooks v2 em desenvolvimento. Ative o modo Dev para logs detalhados.')" class="w-full py-4 rounded-xl bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Configurar</button>
+ <button onclick="alert('IntegraÃ§Ã£o Webhooks v2 em desenvolvimento. Ative o modo Dev para logs detalhados.')" class="w-full py-4 rounded-[5px] bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Configurar</button>
  </div>
- <div class="glass-card p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
- <div class="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 mb-6">
+ <div class="kcard-panel p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
+ <div class="w-16 h-16 rounded-[5px] bg-blue-500/10 flex items-center justify-center text-blue-500 mb-6">
  <span class="material-symbols-outlined text-4xl">database</span>
  </div>
  <h4 class="text-xs font-black text-white uppercase tracking-widest mb-2">Supabase DB</h4>
  <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">ConexÃ£o direta ao banco neural</p>
- <button class="w-full py-4 rounded-xl bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Ver Credentials</button>
+ <button class="w-full py-4 rounded-[5px] bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Ver Credentials</button>
  </div>
- <div class="glass-card p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
- <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-6">
+ <div class="kcard-panel p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
+ <div class="w-16 h-16 rounded-[5px] bg-emerald-500/10 flex items-center justify-center text-emerald-500 mb-6">
  <span class="material-symbols-outlined text-4xl">cloud</span>
  </div>
  <h4 class="text-xs font-black text-white uppercase tracking-widest mb-2">Cloud Storage</h4>
  <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">Google Drive & Dropbox Auth</p>
- <button class="w-full py-4 rounded-xl bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Autorizar</button>
+ <button class="w-full py-4 rounded-[5px] bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Autorizar</button>
  </div>
  </div>
  </div>
@@ -499,11 +499,11 @@
  <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">PersonalizaÃ§Ã£o de templates e fluxos de alerta</p>
  </header>
 
- <div class="glass-card border-white/5 overflow-hidden">
+ <div class="kcard-panel border-white/5 overflow-hidden">
  {{#each notifications}}
  <div class="p-8 border-b border-white/5 flex items-center justify-between hover:bg-white/[0.02] transition-all">
  <div class="flex items-center gap-6">
- <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+ <div class="w-12 h-12 rounded-[5px] bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
  <span class="material-symbols-outlined">mail</span>
  </div>
  <div>
@@ -512,7 +512,7 @@
  </div>
  </div>
  <div class="flex items-center gap-4">
- <button class="px-6 py-2 rounded-xl bg-white/5 text-[9px] font-black uppercase tracking-widest hover:bg-white/10">Editar Template</button>
+ <button class="px-6 py-2 rounded-[5px] bg-white/5 text-[9px] font-black uppercase tracking-widest hover:bg-white/10">Editar Template</button>
  <label class="switch">
  <input type="checkbox" {{#if this.isActive}}checked{{/if}}>
  <span class="slider round"></span>
@@ -535,13 +535,13 @@
  <h2 class="text-3xl font-black text-white tracking-tighter">GestÃ£o de <span class="text-orange-500">Storage 3D</span></h2>
  <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Backups, snapshots e cold storage inteligente</p>
  </div>
- <button class="px-6 py-3 bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all flex items-center gap-3" onclick="generateSnapshot()">
+ <button class="px-6 py-3 bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px] hover:bg-white/10 transition-all flex items-center gap-3" onclick="generateSnapshot()">
  <span class="material-symbols-outlined text-sm">download</span> Gerar Snapshot SQL
  </button>
  </header>
 
  <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
- <div class="xl:col-span-2 glass-card p-10 border-white/5 bg-white/[0.01]">
+ <div class="xl:col-span-2 p-10 border-white/5 bg-white/[0.01]">
  <h4 class="text-sm font-black text-white uppercase tracking-[0.2em] mb-8">Cold Storage AutomÃ¡tico</h4>
  <div class="space-y-8">
  <div class="p-8 rounded-[2rem] bg-orange-500/5 border border-orange-500/10">
@@ -553,24 +553,24 @@
  Projetos finalizados hÃ¡ mais de <span class="text-orange-500">12 meses</span> serÃ£o automaticamente compactados e movidos para a camada de armazenamento de longo prazo (S3 Glacier).
  </p>
  <div class="flex gap-4">
- <button class="flex-1 py-4 rounded-xl bg-orange-500/10 text-orange-500 text-[10px] font-black uppercase tracking-widest">Alterar Limite</button>
- <button class="flex-1 py-4 rounded-xl bg-white/5 text-gray-400 text-[10px] font-black uppercase tracking-widest">Ver Projetos na Fila</button>
+ <button class="flex-1 py-4 rounded-[5px] bg-orange-500/10 text-orange-500 text-[10px] font-black uppercase tracking-widest">Alterar Limite</button>
+ <button class="flex-1 py-4 rounded-[5px] bg-white/5 text-gray-400 text-[10px] font-black uppercase tracking-widest">Ver Projetos na Fila</button>
  </div>
  </div>
  </div>
  </div>
 
- <div class="glass-card p-8 border-white/5 bg-white/[0.01] space-y-8">
+ <div class="kcard-panel p-8 border-white/5 bg-white/[0.01] space-y-8">
  <h5 class="text-[11px] font-black text-white uppercase tracking-widest mb-6">HistÃ³rico de Snapshots</h5>
  <div class="space-y-4">
- <div class="p-4 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center">
+ <div class="p-4 rounded-[5px] bg-white/5 border border-white/5 flex justify-between items-center">
  <div>
  <p class="text-[10px] font-black text-white uppercase">2026-05-06_12:00.sql</p>
  <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-1">128 MB â€¢ Hoje</p>
  </div>
  <button class="text-orange-500"><span class="material-symbols-outlined text-sm">cloud_download</span></button>
  </div>
- <div class="p-4 rounded-xl bg-white/5 border border-white/5 flex justify-between items-center opacity-50">
+ <div class="p-4 rounded-[5px] bg-white/5 border border-white/5 flex justify-between items-center opacity-50">
  <div>
  <p class="text-[10px] font-black text-white uppercase">2026-05-05_12:00.sql</p>
  <p class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-1">126 MB â€¢ Ontem</p>
@@ -596,11 +596,11 @@
  <input type="text" class="input-premium py-3 pr-10 min-w-[250px]" placeholder="Filtrar por UsuÃ¡rio ou AÃ§Ã£o...">
  <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 text-lg">search</span>
  </div>
- <button class="p-3 bg-white/5 rounded-xl text-gray-400 hover:text-white transition-all"><span class="material-symbols-outlined">filter_list</span></button>
+ <button class="p-3 bg-white/5 rounded-[5px] text-gray-400 hover:text-white transition-all"><span class="material-symbols-outlined">filter_list</span></button>
  </div>
  </header>
 
- <div class="glass-card border-white/5 overflow-hidden">
+ <div class="kcard-panel border-white/5 overflow-hidden">
  <table class="w-full text-left">
  <thead class="bg-white/5 border-b border-white/5">
  <tr>
@@ -727,7 +727,7 @@ function showToast(message, type = 'success') {
  if (!container) return;
  
  const toast = document.createElement('div');
- toast.className = `flex items-center gap-3 px-6 py-4 rounded-2xl border shadow-2xl animate-in slide-in-from-right duration-300 pointer-events-auto ${
+ toast.className = `flex items-center gap-3 px-6 py-4 rounded-[5px] border shadow-2xl animate-in slide-in-from-right duration-300 pointer-events-auto ${
  type === 'success' 
  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' 
  : 'bg-red-500/10 border-red-500/20 text-red-500'
@@ -926,10 +926,10 @@ async function loadUsers() {
  }
 
  container.innerHTML = data.users.map(u => `
- <div class="glass-card p-6 flex flex-col gap-4 border border-white/5 hover:border-orange-500/30 transition-all group">
+ <div class="kcard-panel p-6 flex flex-col gap-4 border border-white/5 hover:border-orange-500/30 transition-all group">
  <div class="flex justify-between items-start">
  <div class="flex items-center gap-4">
- <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-500/20">
+ <div class="w-12 h-12 rounded-[5px] bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white font-black text-xl">
  ${u.name ? u.name.charAt(0).toUpperCase() : 'U'}
  </div>
  <div>
@@ -965,11 +965,11 @@ async function loadUsers() {
  Editar Perfil
  </button>
  <button onclick="openResetPasswordModal('${u.id}', '${u.name}')" 
- class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 transition-all border border-white/5" title="Redefinir Senha">
+ class="w-10 h-10 rounded-[5px] bg-white/5 flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-blue-500/10 transition-all border border-white/5" title="Redefinir Senha">
  <span class="material-symbols-outlined text-sm">key</span>
  </button>
  <button onclick="deleteUser('${u.id}')" 
- class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-white/5" title="Excluir UsuÃ¡rio">
+ class="w-10 h-10 rounded-[5px] bg-white/5 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-white/5" title="Excluir UsuÃ¡rio">
  <span class="material-symbols-outlined text-sm">delete</span>
  </button>
  </div>
@@ -1374,8 +1374,8 @@ function toggleAccordion(id) {
 
 <!-- Modals -->
 <!-- Criar Novo UsuÃ¡rio Modal -->
-<div id="newUserModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm">
- <div class="glass-card w-full max-w-lg p-8 relative">
+<div id="newUserModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80">
+ <div class="kcard-panel w-full max-w-lg p-8 relative">
  <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closeNewUserModal()">
  <span class="material-symbols-outlined">close</span>
  </button>
@@ -1448,30 +1448,30 @@ function toggleAccordion(id) {
  <div class="pt-2 border-t border-white/5 mt-4">
  <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Controle de Acessos (Menus)</label>
  <div class="grid grid-cols-2 gap-3">
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="dashboard"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">CRM</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="crm"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Projetos</span>\n <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="modelagem"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Propostas</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="propostas"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Financeiro</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="financeiro"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">ConfiguraÃ§Ãµes</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="configuracoes"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">GestÃ£o de Equipe</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="equipe"><span class="slider round"></span></label>
  </div>
@@ -1480,15 +1480,15 @@ function toggleAccordion(id) {
 
  <div class="pt-4 flex justify-end gap-3">
  <button type="button" id="btnCancelNewUser" class="btn bg-white/5 text-white">Cancelar</button>
- <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Criar Conta</button>
+ <button type="submit" class="btn bg-orange-500 text-white">Criar Conta</button>
  </div>
  </form>
  </div>
 </div>
 
 <!-- Reset Password Modal -->
-<div id="resetPasswordModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm">
- <div class="glass-card w-full max-w-sm p-8 relative">
+<div id="resetPasswordModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80">
+ <div class="kcard-panel w-full max-w-sm p-8 relative">
  <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closeResetPasswordModal()">
  <span class="material-symbols-outlined">close</span>
  </button>
@@ -1503,15 +1503,15 @@ function toggleAccordion(id) {
  </div>
  <div class="pt-4 flex justify-end gap-3">
  <button type="button" class="btn bg-white/5 text-white" onclick="closeResetPasswordModal()">Cancelar</button>
- <button type="submit" class="btn bg-green-500/10 text-green-500 border border-green-500/20 hover:bg-green-500/20 shadow-lg shadow-green-500/10">Troca</button>
+ <button type="submit" class="btn bg-green-500/10 text-green-500 border border-green-500/20 hover:bg-green-500/20 shadow-green-500/10">Troca</button>
  </div>
  </form>
  </div>
 </div>
 
 <!-- Nova InstÃ¢ncia Modal -->
-<div id="newInstanceModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm">
- <div class="glass-card w-full max-w-lg p-8 relative">
+<div id="newInstanceModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80">
+ <div class="kcard-panel w-full max-w-lg p-8 relative">
  <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closeInstanceModal()">
  <span class="material-symbols-outlined">close</span>
  </button>
@@ -1544,15 +1544,15 @@ function toggleAccordion(id) {
  </div>
  <div class="pt-4 flex justify-end gap-3">
  <button type="button" class="btn bg-white/5 text-white" onclick="closeInstanceModal()">Cancelar</button>
- <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Criar InstÃ¢ncia</button>
+ <button type="submit" class="btn bg-orange-500 text-white">Criar InstÃ¢ncia</button>
  </div>
  </form>
  </div>
 </div>
 
 <!-- Novo Plano B2B Modal -->
-<div id="newPlanModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm flex">
- <div class="glass-card w-full max-w-lg p-8 relative">
+<div id="newPlanModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 flex">
+ <div class="kcard-panel w-full max-w-lg p-8 relative">
  <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closePlanModal()">
  <span class="material-symbols-outlined">close</span>
  </button>
@@ -1590,21 +1590,21 @@ function toggleAccordion(id) {
  
  <div class="space-y-3 pt-2">
  <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Features Ativas</label>
- <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-3 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Acesso a Projetos</span>
  <label class="switch scale-75">
  <input type="checkbox" name="hasProjects" checked>
  <span class="slider round"></span>
  </label>
  </div>
- <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-3 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">MÃ³dulo Financeiro</span>
  <label class="switch scale-75">
  <input type="checkbox" name="hasFinance">
  <span class="slider round"></span>
  </label>
  </div>
- <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-3 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard AvanÃ§ado</span>
  <label class="switch scale-75">
  <input type="checkbox" name="hasDashboard">
@@ -1615,15 +1615,15 @@ function toggleAccordion(id) {
 
  <div class="pt-4 flex justify-end gap-3">
  <button type="button" class="btn bg-white/5 text-white" onclick="closePlanModal()">Cancelar</button>
- <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Salvar Plano</button>
+ <button type="submit" class="btn bg-orange-500 text-white">Salvar Plano</button>
  </div>
  </form>
  </div>
 </div>
 
 <!-- Modal: Editar UsuÃ¡rio -->
-<div id="editUserModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm">
- <div class="bg-slate-900 border border-white/10 w-full max-w-lg rounded-3xl p-8 shadow-2xl">
+<div id="editUserModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80">
+ <div class="bg-slate-900 border border-white/10 w-full max-w-lg rounded-[5px] p-8 shadow-2xl">
  <div class="flex justify-between items-center mb-8">
  <div>
  <h3 class="text-xl font-black text-white uppercase tracking-tight">Editar UsuÃ¡rio</h3>
@@ -1673,30 +1673,30 @@ function toggleAccordion(id) {
  <div class="pt-2 border-t border-white/5 mt-4">
  <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Controle de Acessos (Menus)</label>
  <div class="grid grid-cols-2 gap-3">
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="dashboard"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">CRM</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="crm"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Projetos</span>\n <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="modelagem"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Propostas</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="propostas"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Financeiro</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="financeiro"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">ConfiguraÃ§Ãµes</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="configuracoes"><span class="slider round"></span></label>
  </div>
- <div class="flex items-center justify-between p-2 bg-white/5 rounded-xl border border-white/5">
+ <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
  <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">GestÃ£o de Equipe</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="equipe"><span class="slider round"></span></label>
  </div>
@@ -1705,7 +1705,7 @@ function toggleAccordion(id) {
 
  <div class="pt-4 flex justify-end gap-3">
  <button type="button" class="btn bg-white/5 text-white" onclick="closeEditUserModal()">Cancelar</button>
- <button type="submit" class="btn bg-orange-500 text-white shadow-lg shadow-orange-500/20">Salvar AlteraÃ§Ãµes</button>
+ <button type="submit" class="btn bg-orange-500 text-white">Salvar AlteraÃ§Ãµes</button>
  </div>
  </form>
  </div>

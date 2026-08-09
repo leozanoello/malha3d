@@ -1,280 +1,327 @@
-<div class="container-fluid py-4">
- <div class="flex items-center justify-between mb-10">
- <div>
- <h1 class="text-3xl font-black text-white tracking-tight">Previsão & <span class="text-cyber-500">Analytics</span></h1>
- <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mt-1">Inteligência Comercial Archviz</p>
+<div class="p-6 md:p-8 flex flex-col gap-5" style="background:#0a0c10;">
+
+ <!-- Banner: Previsão de Vendas Mensal (Template .kcard do CRM) -->
+ <div class="kcard">
+ <div class="kcard-img">
+ <img src="/assets/c4b1c00e-873c-45a6-a351-b6b876982dcb_3840w.webp" alt="ArchViz Forecast" class="w-full h-full object-cover">
+ <div class="absolute inset-0 bg-gradient-to-t from-[#151515] via-[#151515]/60 to-transparent"></div>
  </div>
- <div class="flex items-center gap-4">
- <div class="glass-card px-4 py-2 border-white/5 flex items-center gap-3">
- <span class="material-symbols-outlined text-cyber-500">calendar_today</span>
- <span class="text-[10px] font-black text-white uppercase tracking-widest">{{formatDate now 'long'}}</span>
+ <div class="kcard-body" style="padding:20px 24px;">
+ <div class="flex items-center gap-1.5 flex-wrap mb-3">
+ <span class="kcard-badge kcard-badge-orange">
+ <span class="material-symbols-outlined text-[8px] align-middle mr-0.5">auto_awesome</span> Inteligência Artificial Antigravity
+ </span>
+ </div>
+ <h4 class="kcard-title" style="font-size:1.4rem; white-space:normal; margin-bottom:6px;">Previsão de Vendas Mensal</h4>
+ <p class="text-[9px] text-[#777] uppercase tracking-widest mb-3">Cálculo de possibilidade de vendas baseado na probabilidade real de cada card</p>
+ <div class="flex items-center justify-between">
+ <div class="grid grid-cols-3 gap-4 text-[9px]">
+ <div>
+ <p class="text-[7px] text-[#555] uppercase tracking-widest">Pipeline</p>
+ <p class="font-bold text-emerald-400">{{formatCurrency stats.totalInNegotiation}}</p>
+ </div>
+ <div>
+ <p class="text-[7px] text-[#555] uppercase tracking-widest">Ponderado</p>
+ <p class="font-bold text-orange-400">{{formatCurrency stats.weightedPipeline}}</p>
+ </div>
+ <div>
+ <p class="text-[7px] text-[#555] uppercase tracking-widest">Leads</p>
+ <p class="font-bold text-white/80">{{stats.openLeadsCount}}</p>
+ </div>
+ </div>
+ <button onclick="location.reload()" class="flex items-center gap-1.5 px-4 py-2 rounded-md bg-orange-500 text-[8px] font-black uppercase tracking-wider text-white hover:bg-orange-600 transition-colors">
+ <span class="material-symbols-outlined text-[11px]">refresh</span> Recalcular
+ </button>
  </div>
  </div>
  </div>
 
- <!-- KPI Cards -->
- <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
- <div class="glass-card p-6 border-white/10 relative overflow-hidden group">
- <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-500/10 rounded-full blur-2xl group-hover:bg-green-500/20 transition-all"></div>
- <div class="flex items-center gap-4 mb-4">
- <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center border border-green-500/20">
- <span class="material-symbols-outlined text-green-500">payments</span>
- </div>
- <div>
- <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Faturamento (Mês)</h4>
- <p class="text-2xl font-black text-white">{{formatCurrency stats.billingWon}}</p>
- </div>
- </div>
+ <!-- Título Seção (Template .kcard) -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px 20px;">
+ <div class="flex items-center justify-between">
  <div class="flex items-center gap-2">
- <span class="text-[10px] font-bold text-green-500 bg-green-500/10 px-2 py-0.5 rounded-full">+12% vs mês ant.</span>
+ <span class="kcard-badge">Forecast</span>
+ <h4 class="kcard-title" style="white-space:normal; margin-bottom:0;">Projeção Mensal de Faturamento (R$)</h4>
+ </div>
+ <div class="grid grid-cols-3 gap-3 text-[9px]">
+ <div class="text-center">
+ <p class="text-[7px] text-[#555] uppercase tracking-widest">Mínima</p>
+ <p class="font-bold text-rose-400">{{formatCurrency stats.forecastMin}}</p>
+ </div>
+ <div class="text-center">
+ <p class="text-[7px] text-[#555] uppercase tracking-widest">Média</p>
+ <p class="font-bold text-orange-400">{{formatCurrency stats.weightedPipeline}}</p>
+ </div>
+ <div class="text-center">
+ <p class="text-[7px] text-[#555] uppercase tracking-widest">Máxima</p>
+ <p class="font-bold text-emerald-400">{{formatCurrency stats.totalInNegotiation}}</p>
+ </div>
+ </div>
+ </div>
  </div>
  </div>
 
- <div class="glass-card p-6 border-white/10 relative overflow-hidden group">
- <div class="absolute -right-4 -top-4 w-24 h-24 bg-cyber-500/10 rounded-full blur-2xl group-hover:bg-cyber-500/20 transition-all"></div>
- <div class="flex items-center gap-4 mb-4">
- <div class="w-12 h-12 rounded-2xl bg-cyber-500/10 flex items-center justify-center border border-cyber-500/20">
- <span class="material-symbols-outlined text-cyber-500">account_tree</span>
+ <!-- 3 Cenários (grid 3 colunas, tamanho grande como na imagem) -->
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+ <!-- Cenário Pessimista -->
+ <div class="uv-card">
+ <div class="uv-glow"></div>
+ <div class="uv-inner" style="padding:24px;">
+ <div class="flex items-center justify-between mb-4">
+ <span class="text-[9px] font-black text-gray-400 uppercase tracking-[0.15em]">Cenário Pessimista</span>
+ <span class="material-symbols-outlined text-rose-400 text-lg">trending_down</span>
+ </div>
+ <p class="text-base font-black text-white mb-2">Mínima</p>
+ <p class="text-2xl font-black text-rose-400 tracking-tight">{{formatCurrency stats.forecastMin}}</p>
+ <p class="text-[8px] font-bold text-gray-600 uppercase tracking-widest mt-3">Cards c/ probabilidade > 80%</p>
+ </div>
+ </div>
+
+ <!-- Cenário Mais Provável (destaque) -->
+ <div class="uv-card uv-card-highlight">
+ <div class="uv-glow"></div>
+ <div class="uv-inner" style="padding:24px;">
+ <div class="flex items-center justify-between mb-4">
+ <span class="text-[9px] font-black text-orange-400 uppercase tracking-[0.15em]">Cenário Mais Provável</span>
+ <span class="material-symbols-outlined text-orange-400 text-lg">arrow_forward</span>
+ </div>
+ <p class="text-base font-black text-white mb-2">Média (Realista)</p>
+ <p class="text-2xl font-black text-orange-400 tracking-tight">{{formatCurrency stats.weightedPipeline}}</p>
+ <p class="text-[8px] font-bold text-gray-600 uppercase tracking-widest mt-3">Valor x probabilidade de cada card</p>
+ </div>
+ </div>
+
+ <!-- Cenário Otimista -->
+ <div class="uv-card">
+ <div class="uv-glow"></div>
+ <div class="uv-inner" style="padding:24px;">
+ <div class="flex items-center justify-between mb-4">
+ <span class="text-[9px] font-black text-gray-400 uppercase tracking-[0.15em]">Cenário Otimista</span>
+ <span class="material-symbols-outlined text-emerald-400 text-lg">trending_up</span>
+ </div>
+ <p class="text-base font-black text-white mb-2">Máxima</p>
+ <p class="text-2xl font-black text-emerald-400 tracking-tight">{{formatCurrency stats.totalInNegotiation}}</p>
+ <p class="text-[8px] font-bold text-gray-600 uppercase tracking-widest mt-3">100% de conversão dos cards</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- Gráfico de Barras (mesmo estilo da imagem) -->
+ <div class="uv-card">
+ <div class="uv-glow"></div>
+ <div class="uv-inner" style="padding:24px;">
+ <canvas id="forecastChart" height="220"></canvas>
+ </div>
+ </div>
+
+ <!-- KPIs Secundários (mesma estética) -->
+ <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+ <div class="uv-card"><div class="uv-glow"></div><div class="uv-inner"><span class="uv-label text-blue-400">Leads Abertos</span><span class="uv-value">{{stats.openLeadsCount}}</span></div></div>
+ <div class="uv-card"><div class="uv-glow"></div><div class="uv-inner"><span class="uv-label text-purple-400">Win Rate</span><span class="uv-value">{{stats.winRate}}%</span></div></div>
+ <div class="uv-card"><div class="uv-glow"></div><div class="uv-inner"><span class="uv-label text-cyan-400">Ticket Médio</span><span class="uv-value">{{formatCurrency stats.ticketMedio}}</span></div></div>
+ <div class="uv-card"><div class="uv-glow"></div><div class="uv-inner"><span class="uv-label text-amber-400">Conversão</span><span class="uv-value">{{stats.conversionNeeded}}%</span></div></div>
+ <div class="uv-card"><div class="uv-glow"></div><div class="uv-inner"><span class="uv-label text-emerald-400">Ganhos (Mês)</span><span class="uv-value">{{stats.wonThisMonthCount}}</span></div></div>
+ <div class="uv-card"><div class="uv-glow"></div><div class="uv-inner"><span class="uv-label text-red-400">Perdidos (Mês)</span><span class="uv-value">{{stats.lostThisMonthCount}}</span></div></div>
+ </div>
+
+ <!-- Win Rate + Loss Reasons -->
+ <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+ <div class="uv-card">
+ <div class="uv-glow"></div>
+ <div class="uv-inner" style="padding:20px;">
+ <h4 class="text-[10px] font-black text-white uppercase tracking-[0.15em] mb-3">Win Rate — Mês Atual</h4>
+ <canvas id="winRateChart" height="140"></canvas>
+ </div>
+ </div>
+ <div class="uv-card">
+ <div class="uv-glow"></div>
+ <div class="uv-inner" style="padding:20px;">
+ <h4 class="text-[10px] font-black text-white uppercase tracking-[0.15em] mb-3">Motivos de Perda</h4>
+ <canvas id="lossReasonsChart" height="140"></canvas>
+ </div>
+ </div>
+ </div>
+
+ <!-- SUGESTÕES DA INTELIGÊNCIA ARTIFICIAL -->
+ <div class="uv-card">
+ <div class="uv-glow"></div>
+ <div class="uv-inner" style="padding:24px;">
+ <h4 class="text-[10px] font-black text-orange-400 uppercase tracking-[0.15em] mb-4 flex items-center gap-2">
+ <span class="material-symbols-outlined text-sm">auto_awesome</span> Sugestões da Inteligência Artificial: Potencializando o Cenário Otimista
+ </h4>
+ <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+ <div class="p-5 rounded-[5px]" style="border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02);">
+ <h5 class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+ <span class="material-symbols-outlined text-xs">bolt</span> Acelerar Fechamentos
+ </h5>
+ <p class="text-[10px] text-gray-400 leading-relaxed">
+ Identificamos <strong class="text-white">{{stats.openLeadsCount}} cards mornos</strong> na etapa de negociação (probabilidade entre 30% e 70%). Focar no follow-up destas negociações nos próximos 5 dias garantirá que a métrica média seja superada em direção ao cenário otimista.
+ </p>
+ </div>
+ <div class="p-5 rounded-[5px]" style="border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02);">
+ <h5 class="text-[9px] font-black text-pink-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+ <span class="material-symbols-outlined text-xs">favorite</span> Upsell no Curto Prazo
+ </h5>
+ <p class="text-[10px] text-gray-400 leading-relaxed">
+ O cenário otimista máximo (<strong class="text-emerald-400">{{formatCurrency stats.totalInNegotiation}}</strong>) pode ser atingido oferecendo pacotes extras (ex: Animação VR ou render extra) aos clientes que já possuem orçamentos acima da média. Crie uma oferta especial limitada para aprovação ainda neste mês.
+ </p>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- VGV TOTAL VÁLIDO (Template .kcard do CRM) -->
+ <div class="kcard">
+ <div class="kcard-img" style="height:60px;">
+ <img src="/assets/e71e0aaf-f809-4930-bf94-3ba0f1467b95_3840w.webp" alt="VGV" class="w-full h-full object-cover">
+ <div class="absolute inset-0 bg-gradient-to-t from-[#151515] via-[#151515]/80 to-transparent"></div>
+ </div>
+ <div class="kcard-body" style="padding:16px 20px;">
+ <div class="flex items-center gap-1.5 flex-wrap mb-2">
+ <span class="kcard-badge kcard-badge-orange">VGV</span>
+ <span class="kcard-badge">Válido</span>
+ </div>
+ <h4 class="kcard-title" style="font-size:0.75rem; margin-bottom:2px;">VGV Total Válido</h4>
+ <p class="text-2xl font-black text-emerald-400 tracking-tight my-1">{{formatCurrency stats.totalInNegotiation}}</p>
+ <div class="grid grid-cols-3 gap-2 text-[9px] mt-3 pt-3 border-t border-white/10">
+ <div>
+ <p class="text-[7px] text-[#555] uppercase tracking-widest">Negociações</p>
+ <p class="font-bold text-white/80">{{stats.openLeadsCount}}</p>
  </div>
  <div>
- <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Valor em Negociação</h4>
- <p class="text-2xl font-black text-white">{{formatCurrency stats.totalInNegotiation}}</p>
- </div>
- </div>
- <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
- <div class="bg-cyber-500 h-full w-[65%] shadow-[0_0_10px_#00f2ff]"></div>
- </div>
- </div>
-
- <div class="glass-card p-6 border-white/10 relative overflow-hidden group">
- <div class="absolute -right-4 -top-4 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-all"></div>
- <div class="flex items-center gap-4 mb-4">
- <div class="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center border border-orange-500/20">
- <span class="material-symbols-outlined text-orange-500">avg_time</span>
+ <p class="text-[7px] text-[#555] uppercase tracking-widest">Ticket Médio</p>
+ <p class="font-bold text-emerald-400">{{formatCurrency stats.ticketMedio}}</p>
  </div>
  <div>
- <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Ticket Médio</h4>
- <p class="text-2xl font-black text-white">{{formatCurrency stats.ticketMedio}}</p>
- </div>
- </div>
- <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Baseado em contratos ganhos</p>
- </div>
- </div>
-
- <!-- Charts Row 1 -->
- <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
- <!-- Previsão de Vendas (Card Dividido) -->
- <div class="lg:col-span-1 glass-card p-8 border-white/10 flex flex-col">
- <div class="flex items-center justify-between mb-8">
- <div>
- <h3 class="text-lg font-black text-white tracking-tight">Previsão de <span class="text-orange-500">Vendas</span></h3>
- <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Receita Prevista por Estágio</p>
- </div>
- <div class="flex items-center gap-2">
- <div class="w-3 h-3 bg-cyber-500 rounded-full shadow-[0_0_8px_#00f2ff]"></div>
- <span class="text-[10px] font-black text-white uppercase tracking-widest">Esperado</span>
- </div>
- </div>
- <div class="flex-1 flex items-center">
- <div class="h-[280px] w-full">
-  <canvas id="salesForecastChart"></canvas>
- </div>
- </div>
- </div>
-
- <!-- Previsão de Entrega (Card Dividido) -->
- <div class="lg:col-span-1 glass-card p-8 border-white/10 flex flex-col">
- <div class="flex items-center justify-between mb-8">
- <div>
- <h3 class="text-lg font-black text-white tracking-tight">Previsão de <span class="text-cyan-400">Entrega</span></h3>
- <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Modelagens 3D para Entregar</p>
- </div>
- <div class="flex items-center gap-2">
- <div class="w-3 h-3 bg-cyan-400 rounded-full shadow-[0_0_8px_#22d3ee]"></div>
- <span class="text-[10px] font-black text-white uppercase tracking-widest">Prazo</span>
- </div>
- </div>
- <div class="flex-1 flex items-center">
- <div class="h-[280px] w-full">
-  <canvas id="deliveryForecastChart"></canvas>
- </div>
- </div>
- </div>
-
- <!-- Win Rate -->
- <div class="glass-card p-8 border-white/10">
- <div class="mb-8">
- <h3 class="text-lg font-black text-white tracking-tight">Taxa de Conversão <span class="text-gray-500 text-sm font-medium ml-2">(Win Rate)</span></h3>
- <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Ganhos vs Perdidos (Mês Atual)</p>
- </div>
- <div class="h-[280px] flex items-center justify-center">
- <canvas id="winRateChart"></canvas>
- </div>
- <div class="mt-8 grid grid-cols-2 gap-4">
- <div class="p-4 rounded-2xl bg-white/5 border border-white/5 text-center">
- <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Taxa Final</p>
- <p class="text-xl font-black text-green-500" id="winRateValue">0%</p>
- </div>
- <div class="p-4 rounded-2xl bg-white/5 border border-white/5 text-center">
- <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Status</p>
- <p class="text-xl font-black text-cyber-500">Estável</p>
+ <p class="text-[7px] text-[#555] uppercase tracking-widest">Win Rate</p>
+ <p class="font-bold text-orange-400">{{stats.winRate}}%</p>
  </div>
  </div>
  </div>
  </div>
 
- <!-- Row 2 -->
- <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
- <!-- Loss Reasons -->
- <div class="glass-card p-8 border-white/10">
- <div class="mb-8">
- <h3 class="text-lg font-black text-white tracking-tight">Motivos de Perda <span class="text-gray-500 text-sm font-medium ml-2">(Churn Analysis)</span></h3>
- <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Por que os orçamentos não foram fechados?</p>
- </div>
- <div class="h-[300px]">
- <canvas id="lossReasonsChart"></canvas>
- </div>
- </div>
- </div>
 </div>
+
+<style>
+/* === UIVERSE CARD (Glow Border Animation — Template Oficial) === */
+.uv-card {
+ position: relative;
+ overflow: hidden;
+ border-radius: 5px;
+ box-shadow: 0px 0px 10px 1px #000000ee;
+ padding: 2px;
+ background: #151515;
+}
+.uv-card .uv-glow {
+ position: absolute;
+ inset: 0;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ overflow: hidden;
+ border-radius: 5px;
+}
+.uv-card .uv-glow::before {
+ content: '';
+ position: absolute;
+ width: 120px;
+ height: 200%;
+ background: linear-gradient(90deg, transparent, #ff9966, #ff9966, transparent);
+ animation: uv-rotation 5000ms infinite linear;
+ opacity: 0.35;
+}
+.uv-card:hover .uv-glow::before {
+ opacity: 0.8;
+}
+@keyframes uv-rotation {
+ 0% { transform: rotateZ(0deg); }
+ 100% { transform: rotateZ(360deg); }
+}
+.uv-card .uv-inner {
+ position: relative;
+ width: 100%;
+ background: #151515;
+ border-radius: 4px;
+ padding: 14px 16px;
+ display: flex;
+ flex-direction: column;
+ gap: 4px;
+ z-index: 1;
+}
+.uv-card-highlight .uv-glow::before {
+ opacity: 0.7;
+ width: 180px;
+}
+.uv-label {
+ font-size: 8px;
+ font-weight: 700;
+ text-transform: uppercase;
+ letter-spacing: 0.1em;
+}
+.uv-value {
+ font-size: 16px;
+ font-weight: 900;
+ color: #fff;
+ letter-spacing: -0.02em;
+}
+
+/* Light mode */
+body.theme-light .uv-card { background: #fff; box-shadow: 0 1px 6px rgba(15,23,42,0.1); }
+body.theme-light .uv-card .uv-inner { background: #fff; }
+body.theme-light .uv-card .uv-glow::before { background: linear-gradient(90deg, transparent, #f97316, #f97316, transparent); opacity: 0.15; }
+body.theme-light .uv-value { color: #0f172a; }
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
- const chartsData = {{{json charts}}};
- 
- // Configurações Globais
- Chart.defaults.color = 'rgba(255, 255, 255, 0.5)';
- Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
- Chart.defaults.font.weight = '600';
+ var chartsData = {{{json charts}}};
 
- // 1. Previsão de Vendas - Chart
- new Chart(document.getElementById('salesForecastChart'), {
- type: 'bar',
- data: {
- labels: chartsData.funnel.labels,
- datasets: [{
- label: 'Receita Prevista (R$)',
- data: chartsData.funnel.data,
- backgroundColor: 'rgba(249, 115, 22, 0.1)',
- borderColor: '#f97316',
- borderWidth: 2,
- borderRadius: 12,
- hoverBackgroundColor: 'rgba(249, 115, 22, 0.2)',
- }]
- },
- options: {
- responsive: true,
- maintainAspectRatio: false,
- plugins: { legend: { display: false } },
- scales: {
- y: {
- beginAtZero: true,
- grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
- ticks: {
- callback: function(value) { return 'R$ ' + value.toLocaleString('pt-BR'); }
+ // Forecast Chart (3 barras por mês: mínima, média, máxima)
+ var ctxForecast = document.getElementById('forecastChart');
+ if (ctxForecast && chartsData.funnel) {
+  new Chart(ctxForecast.getContext('2d'), {
+   type: 'bar',
+   data: {
+    labels: chartsData.funnel.labels,
+    datasets: [
+     { label: 'Mínima (Pessimista)', data: chartsData.funnel.weighted.map(function(v) { return v * 0.5; }), backgroundColor: 'rgba(244,114,182,0.7)', borderRadius: 4 },
+     { label: 'Média (Realista)', data: chartsData.funnel.weighted, backgroundColor: 'rgba(249,115,22,0.8)', borderRadius: 4 },
+     { label: 'Máxima (Otimista)', data: chartsData.funnel.raw, backgroundColor: 'rgba(16,185,129,0.7)', borderRadius: 4 }
+    ]
+   },
+   options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+     legend: { position: 'top', align: 'center', labels: { color: '#9ca3af', font: { size: 9, weight: 'bold' }, usePointStyle: true, pointStyle: 'rect', padding: 16 } }
+    },
+    scales: {
+     y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#6b7280', font: { size: 9 }, callback: function(v) { return 'R$ ' + (v/1000).toFixed(0) + 'k'; } } },
+     x: { grid: { display: false }, ticks: { color: '#9ca3af', font: { size: 10, weight: 'bold' } } }
+    }
+   }
+  });
  }
- },
- x: {
- grid: { display: false, drawBorder: false }
- }
- }
- }
- });
 
- // 2. Previsão de Entrega - Chart (mockup)
- new Chart(document.getElementById('deliveryForecastChart'), {
- type: 'bar',
- data: {
- labels: ['Esta Semana', 'Próx. Semana', 'Em 15 dias', 'Em 30 dias', 'Em 60 dias'],
- datasets: [{
- label: 'Modelagens para Entregar',
- data: [3, 5, 8, 12, 18],
- backgroundColor: 'rgba(34, 211, 238, 0.1)',
- borderColor: '#22d3ee',
- borderWidth: 2,
- borderRadius: 12,
- hoverBackgroundColor: 'rgba(34, 211, 238, 0.2)',
- }]
- },
- options: {
- responsive: true,
- maintainAspectRatio: false,
- plugins: { legend: { display: false } },
- scales: {
- y: {
- beginAtZero: true,
- grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
- ticks: {
- callback: function(value) { return value + ' jobs'; }
+ // Win Rate
+ var ctxWin = document.getElementById('winRateChart');
+ if (ctxWin && chartsData.winRate) {
+  new Chart(ctxWin.getContext('2d'), {
+   type: 'doughnut',
+   data: { labels: chartsData.winRate.labels, datasets: [{ data: chartsData.winRate.data, backgroundColor: ['#10b981', '#ef4444'], borderWidth: 0 }] },
+   options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af', font: { size: 9 } } } } }
+  });
  }
- },
- x: {
- grid: { display: false, drawBorder: false }
- }
- }
- }
- });
 
- // 2. Win Rate Chart
- const winRateChart = new Chart(document.getElementById('winRateChart'), {
- type: 'doughnut',
- data: {
- labels: chartsData.winRate.labels,
- datasets: [{
- data: chartsData.winRate.data,
- backgroundColor: ['#10b981', '#ef4444'],
- borderWidth: 0,
- hoverOffset: 20
- }]
- },
- options: {
- responsive: true,
- cutout: '80%',
- plugins: {
- legend: {
- position: 'bottom',
- labels: { padding: 20, usePointStyle: true }
+ // Loss Reasons
+ var ctxLoss = document.getElementById('lossReasonsChart');
+ if (ctxLoss && chartsData.lossReasons && chartsData.lossReasons.labels.length > 0) {
+  new Chart(ctxLoss.getContext('2d'), {
+   type: 'bar',
+   data: { labels: chartsData.lossReasons.labels, datasets: [{ data: chartsData.lossReasons.data, backgroundColor: 'rgba(239,68,68,0.3)', borderColor: '#ef4444', borderWidth: 1, borderRadius: 4 }] },
+   options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#6b7280', font: { size: 9 } } }, y: { grid: { display: false }, ticks: { color: '#9ca3af', font: { size: 9, weight: 'bold' } } } } }
+  });
  }
- }
- }
- });
-
- // Calcular taxa de win rate
- const total = chartsData.winRate.data[0] + chartsData.winRate.data[1];
- const rate = total > 0 ? Math.round((chartsData.winRate.data[0] / total) * 100) : 0;
- document.getElementById('winRateValue').innerText = rate + '%';
-
- // 3. Loss Reasons Chart
- new Chart(document.getElementById('lossReasonsChart'), {
- type: 'bar',
- data: {
- labels: chartsData.lossReasons.labels,
- datasets: [{
- label: 'Ocorrências',
- data: chartsData.lossReasons.data,
- backgroundColor: 'rgba(249, 115, 22, 0.1)',
- borderColor: '#f97316',
- borderWidth: 2,
- borderRadius: 8,
- indexAxis: 'y',
- }]
- },
- options: {
- responsive: true,
- maintainAspectRatio: false,
- plugins: {
- legend: { display: false }
- },
- scales: {
- x: {
- grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
- beginAtZero: true
- },
- y: {
- grid: { display: false, drawBorder: false }
- }
- }
- }
- });
 });
 </script>

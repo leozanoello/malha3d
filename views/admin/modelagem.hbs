@@ -8,7 +8,7 @@
  <div class="flex gap-4">
 
   <!-- Sidebar Vertical: Header + Menu + Ações -->
-  <aside class="w-60 shrink-0 flex flex-col gap-3 p-3 relative overflow-hidden rounded-2xl self-start sticky top-4" style="max-height: calc(100vh - 2rem); height: auto; background: radial-gradient(circle at 50% 0%, #2a2a2a 0%, #151515 64%); box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 4px 16px rgba(0,0,0,0.4);">
+  <aside class="w-60 shrink-0 flex flex-col gap-3 p-3 relative overflow-hidden self-start sticky top-4" style="max-height: calc(100vh - 2rem); height: auto; background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
    <div class="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 blur-[40px]"></div>
 
    <!-- Logo & Título -->
@@ -120,7 +120,7 @@
  <button class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-500 hover:text-white" data-bs-toggle="dropdown">
  <span class="material-symbols-outlined text-[12px]">more_vert</span>
  </button>
- <ul class="dropdown-menu dropdown-menu-dark glass-card border-white/10 p-2 rounded-2xl shadow-2xl">
+ <ul class="dropdown-menu dropdown-menu-dark border-white/10 p-2 rounded-2xl shadow-2xl">
  <li><a class="dropdown-item text-[10px] font-black uppercase tracking-widest py-3 flex items-center gap-3 rounded-xl hover:bg-orange-500 btn-edit-col" href="#" data-id="{{this.id}}" data-title="{{this.title}}" data-color="{{this.color}}">
  <span class="material-symbols-outlined text-sm">settings</span> Editar Etapa
  </a></li>
@@ -191,7 +191,7 @@
  <!-- View 2: PREVISÃO (Forecast with AI) -->
  <div id="tab-forecast" class="tab-pane active animate-in slide-in-from-bottom-4 duration-500">
  <!-- AI Forecast Banner Header -->
- <div class="mb-8 p-8 glass-card border-orange-500/20 bg-gradient-to-r from-orange-500/10 via-purple-500/5 to-transparent rounded-3xl relative overflow-hidden">
+ <div class="mb-8 p-8 border-orange-500/20 bg-gradient-to-r from-orange-500/10 via-purple-500/5 to-transparent rounded-3xl relative overflow-hidden">
  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
  <div>
  <div class="flex items-center gap-2 mb-2">
@@ -216,7 +216,7 @@
  <!-- Min / Avg / Max Cards -->
  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
  <!-- Mínima -->
- <div class="glass-card p-6 border-white/5 rounded-2xl bg-white/[0.02]">
+ <div class="kcard-panel p-6 border-white/5 rounded-2xl bg-white/[0.02]">
  <div class="flex items-center justify-between mb-4">
  <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Cenário Pessimista</span>
  <span class="material-symbols-outlined text-red-400">trending_down</span>
@@ -227,7 +227,7 @@
  </div>
  
  <!-- Média -->
- <div class="glass-card p-6 border-orange-500/30 rounded-2xl bg-orange-500/10 shadow-[0_0_30px_rgba(249,115,22,0.15)] relative overflow-hidden">
+ <div class="kcard-panel p-6 border-orange-500/30 rounded-2xl bg-orange-500/10 shadow-[0_0_30px_rgba(249,115,22,0.15)] relative overflow-hidden">
  <div class="absolute -right-4 -top-4 w-16 h-16 bg-orange-500/20 rounded-full blur-xl"></div>
  <div class="flex items-center justify-between mb-4 relative z-10">
  <span class="text-[10px] font-black text-orange-200 uppercase tracking-widest">Cenário Mais Provável</span>
@@ -239,7 +239,7 @@
  </div>
 
  <!-- Máxima -->
- <div class="glass-card p-6 border-white/5 rounded-2xl bg-white/[0.02]">
+ <div class="kcard-panel p-6 border-white/5 rounded-2xl bg-white/[0.02]">
  <div class="flex items-center justify-between mb-4">
  <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Cenário Otimista</span>
  <span class="material-symbols-outlined text-emerald-400">trending_up</span>
@@ -251,12 +251,12 @@
  </div>
 
  <!-- Gráfico de Colunas -->
- <div class="glass-card p-6 border-white/5 rounded-3xl mt-6 relative h-[350px]">
+ <div class="kcard-panel p-6 border-white/5 rounded-3xl mt-6 relative h-[350px]">
  <canvas id="forecastChart"></canvas>
  </div>
 
  <!-- AI Actionable Recommendations (Otimista) -->
- <div class="glass-card p-8 border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-transparent rounded-3xl space-y-4 mt-8 relative overflow-hidden">
+ <div class="kcard-panel p-8 border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-transparent rounded-3xl space-y-4 mt-8 relative overflow-hidden">
  <div class="absolute right-0 top-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
  <h4 class="text-sm font-black text-orange-400 uppercase tracking-widest flex items-center gap-2">
  <span class="material-symbols-outlined text-orange-500 text-xl">smart_toy</span>
@@ -281,7 +281,7 @@
 
  <!-- Right Col: VGV Metrics & Probabilities -->
  <div class="space-y-6">
- <div class="glass-card p-6 border-white/5 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-3xl">
+ <div class="kcard-panel p-6 border-white/5 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-3xl">
  <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">VGV Total Válido</p>
  <h4 class="text-3xl font-black text-emerald-400 tracking-tighter">R$ {{numberFormat totalVgv 2 ',' '.'}}</h4>
  <p class="text-[9px] text-gray-500 font-bold uppercase mt-3">Soma de {{length budgets}} negociacões ativas</p>
@@ -409,7 +409,7 @@
 
 <!-- Modal: Manage Lead (Ultra Advanced) -->
 <div id="manageLeadModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm" style="display: none;">
- <div class="glass-card w-full max-w-5xl relative rounded-[1.5rem] bg-[#0c0e12]/95 backdrop-blur-3xl overflow-hidden shadow-2xl">
+ <div class="kcard-panel w-full max-w-5xl relative rounded-[1.5rem] bg-[#0c0e12]/95 backdrop-blur-3xl overflow-hidden shadow-2xl">
  <div class="flex flex-col" style="max-height: 90vh; height: 90vh;">
  <!-- Main Content -->
  <div class="flex-1 flex flex-col min-h-0">
@@ -1096,7 +1096,7 @@
 
 <!-- BRIEFING COMPLETO MODAL (Quick read-only view, opened directly from the card) -->
 <div id="briefingModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm" style="display: none;">
- <div class="glass-card w-full max-w-2xl relative rounded-[1.5rem] bg-[#0c0e12]/95 backdrop-blur-3xl overflow-hidden shadow-2xl max-h-[80vh] flex flex-col">
+ <div class="kcard-panel w-full max-w-2xl relative rounded-[1.5rem] bg-[#0c0e12]/95 backdrop-blur-3xl overflow-hidden shadow-2xl max-h-[80vh] flex flex-col">
  <div class="p-5 border-b border-white/5 flex items-center justify-between bg-white/[0.01] shrink-0">
  <div class="flex items-center gap-2">
  <span class="material-symbols-outlined text-orange-500 text-lg">description</span>
@@ -1181,7 +1181,7 @@
  .interactive-hover,
  .kanban-card-main,
  .kanban-card,
- .glass-card,
+ .kcard-panel,
  .modelagem-page-tab,
  input:hover,
  select:hover {
@@ -1807,62 +1807,79 @@ document.addEventListener('DOMContentLoaded', function() {
  });
  };
 
- // === SORTABLE KANBAN DRAG & DROP FOR Modelagem (Performance-Optimized) ===
- if (typeof Sortable !== 'undefined') {
+ // === NATIVE DRAG & DROP ENGINE (Zero-delay, 60fps) ===
+ (function() {
  const _inflight = new Map();
- document.querySelectorAll('.kanban-drop-zone').forEach(dropZone => {
- new Sortable(dropZone, {
- group: 'modelagem-kanban',
- animation: 120,
- ghostClass: 'opacity-30',
- chosenClass: 'sortable-chosen',
- forceFallback: true,
- fallbackTolerance: 3,
- fallbackOnBody: true,
- swapThreshold: 0.65,
- emptyInsertThreshold: 30,
- onStart: function(evt) {
-  document.querySelectorAll('.kanban-drop-zone').forEach(z => z.classList.add('drag-over'));
-  evt.from.classList.remove('drag-over');
- },
- onEnd: function(evt) {
-  document.querySelectorAll('.kanban-drop-zone').forEach(z => z.classList.remove('drag-over'));
-  const itemEl = evt.item;
-  const newStatus = evt.to.dataset.status;
-  const leadId = itemEl.dataset.id;
-  const oldIndex = evt.oldIndex;
-  const fromEl = evt.from;
-  if (!leadId || !newStatus) return;
+ let _draggedCard = null;
+ let _sourceZone = null;
+ let _sourceIndex = 0;
 
-  if (_inflight.has(leadId)) { _inflight.get(leadId).abort(); }
-  const controller = new AbortController();
-  _inflight.set(leadId, controller);
+ document.addEventListener('dragstart', function(e) {
+  const card = e.target.closest('.kanban-card-main');
+  if (!card) return;
+  _draggedCard = card;
+  _sourceZone = card.closest('.kanban-drop-zone');
+  _sourceIndex = Array.from(_sourceZone.children).indexOf(card);
+  card.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', card.dataset.id);
+  const ghost = document.createElement('div');
+  ghost.textContent = card.querySelector('.kcard-title')?.textContent || 'Card';
+  ghost.style.cssText = 'position:absolute;top:-9999px;left:-9999px;padding:8px 16px;background:#151515;color:#fff;border-radius:4px;font-size:11px;font-weight:900;border:1px solid rgba(249,115,22,0.4);';
+  document.body.appendChild(ghost);
+  e.dataTransfer.setDragImage(ghost, 60, 15);
+  setTimeout(function() { ghost.remove(); }, 0);
+  document.querySelectorAll('.kanban-drop-zone').forEach(function(z) { z.classList.add('drag-over'); });
+ });
 
-  fetch('/admin/negociacoes/' + leadId + '/update-status', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ status: newStatus, position: evt.newIndex }),
-  signal: controller.signal
-  })
-  .then(function(res) { return res.json(); })
-  .then(function(data) {
-  _inflight.delete(leadId);
-  if (!data.success) {
-    if (fromEl && fromEl.children[oldIndex]) { fromEl.insertBefore(itemEl, fromEl.children[oldIndex]); }
-    else if (fromEl) { fromEl.appendChild(itemEl); }
-    if (window.showToast) window.showToast(data.error || 'Erro ao mover', 'error');
-  }
-  })
-  .catch(function(err) {
-  _inflight.delete(leadId);
-  if (err.name === 'AbortError') return;
-  if (fromEl && fromEl.children[oldIndex]) { fromEl.insertBefore(itemEl, fromEl.children[oldIndex]); }
-  else if (fromEl) { fromEl.appendChild(itemEl); }
+ document.addEventListener('dragend', function(e) {
+  if (_draggedCard) _draggedCard.classList.remove('dragging');
+  document.querySelectorAll('.kanban-drop-zone').forEach(function(z) { z.classList.remove('drag-over', 'drag-hover'); });
+  _draggedCard = null; _sourceZone = null;
+ });
+
+ document.querySelectorAll('.kanban-drop-zone').forEach(function(zone) {
+  zone.addEventListener('dragover', function(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; this.classList.add('drag-hover'); });
+  zone.addEventListener('dragleave', function(e) { this.classList.remove('drag-hover'); });
+  zone.addEventListener('drop', function(e) {
+   e.preventDefault();
+   this.classList.remove('drag-hover');
+   if (!_draggedCard) return;
+   const newStatus = this.dataset.status;
+   const leadId = _draggedCard.dataset.id;
+   if (!leadId || !newStatus) return;
+
+   this.appendChild(_draggedCard);
+
+   if (_inflight.has(leadId)) _inflight.get(leadId).abort();
+   const ctrl = new AbortController();
+   _inflight.set(leadId, ctrl);
+   const fromZone = _sourceZone;
+   const fromIdx = _sourceIndex;
+   const movedCard = _draggedCard;
+
+   fetch('/admin/negociacoes/' + leadId + '/update-status', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: newStatus }), signal: ctrl.signal
+   })
+   .then(function(r) { return r.json(); })
+   .then(function(d) {
+    _inflight.delete(leadId);
+    if (!d.success) {
+     if (fromZone && fromZone.children[fromIdx]) fromZone.insertBefore(movedCard, fromZone.children[fromIdx]);
+     else if (fromZone) fromZone.appendChild(movedCard);
+     if (window.showToast) window.showToast(d.error || 'Erro', 'error');
+    }
+   })
+   .catch(function(err) {
+    _inflight.delete(leadId);
+    if (err.name === 'AbortError') return;
+    if (fromZone && fromZone.children[fromIdx]) fromZone.insertBefore(movedCard, fromZone.children[fromIdx]);
+    else if (fromZone) fromZone.appendChild(movedCard);
+   });
   });
- }
  });
- });
- }
+ })();
 
  // Auto-open lead if leadId is in URL
  const urlParams = new URLSearchParams(window.location.search);
@@ -1933,7 +1950,7 @@ document.addEventListener('DOMContentLoaded', function() {
  grid.innerHTML = '';
  templates.forEach(tpl => {
  const card = document.createElement('div');
- card.className = 'glass-card p-6 border-white/5 bg-white/5 hover:bg-white/10 transition-all cursor-pointer group relative overflow-hidden rounded-3xl';
+ card.className = 'kcard-panel p-6 border-white/5 bg-white/5 hover:bg-white/10 transition-all cursor-pointer group relative overflow-hidden rounded-3xl';
  card.innerHTML = `
  <div class="relative z-10">
  <div class="flex items-center justify-between mb-4">
