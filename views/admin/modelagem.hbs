@@ -151,38 +151,7 @@
  </div>
  {{/each}}
  </div>
- 
- <!-- RECUPERAÇÃO (ISOLATED ZONE) -->
- <div class="mt-8 pt-8 border-t border-dashed border-white/10">
- <div class="flex items-center gap-4 mb-6 px-4">
- <div class="w-10 h-10 rounded-2xl bg-gray-800/50 flex items-center justify-center border border-gray-600/30 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
- <span class="material-symbols-outlined text-gray-400">recycling</span>
- </div>
- <div>
- <h4 class="text-lg font-black text-gray-300 uppercase tracking-widest">Zona de Recuperação</h4>
- <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">Leads isolados que precisam ser reanalisados (Não entram na previsão)</p>
- </div>
- </div>
- <div class="flex gap-6 overflow-x-auto pb-4 scrollbar-premium px-2 select-none">
- <div class="flex-shrink-0 w-full md:w-[660px] flex flex-col gap-4">
- <div class="kanban-drop-zone p-4 rounded-3xl border border-gray-700/30 transition-all flex flex-row flex-wrap gap-4 min-h-[200px]" 
- style="background-color: rgba(30, 30, 35, 0.4);" 
- id="col-recuperacao" 
- data-status="recuperacao">
- {{#each recuperacaoBudgets}}
- <div class="w-[300px]">
- {{> kanbanCard lead=this}}
- </div>
- {{/each}}
- {{#unless recuperacaoBudgets.length}}
- <div class="flex-1 border-2 border-dashed border-white/[0.03] rounded-[2rem] flex flex-col items-center justify-center opacity-20 py-10 select-none pointer-events-none" style="user-select:none; -webkit-user-drag:none;">
- <span class="material-symbols-outlined text-4xl mb-3 text-gray-600" style="pointer-events:none;">move_item</span>
- <p class="text-[9px] font-black uppercase tracking-widest text-gray-500">Mover Lead para Recuperação</p>
- </div>
- {{/unless}}
- </div>
- </div>
- </div>
+
  </div>
  </div>
  {{/if}}

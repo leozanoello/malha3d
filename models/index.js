@@ -38,6 +38,13 @@ const TaskTemplate = require('./TaskTemplate');
 const CRMLeadLog = require('./CRMLeadLog');
 const CRMLeadMessage = require('./CRMLeadMessage');
 const CrmForecastProbability = require('./CrmForecastProbability');
+const BankAccount = require('./BankAccount');
+const ChartOfAccounts = require('./ChartOfAccounts');
+const CostCenter = require('./CostCenter');
+const AccountsReceivable = require('./AccountsReceivable');
+const AccountsPayable = require('./AccountsPayable');
+const ArInstallment = require('./ArInstallment');
+const ApInstallment = require('./ApInstallment');
 
 // Relacionamentos Budget e Client
 Client.hasMany(Budget, { as: 'budgets', foreignKey: 'clientId', onDelete: 'SET NULL' });
@@ -126,6 +133,35 @@ CRMLeadLog.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
 // Forecast Probability (Exclusivo CRM — previsão de vendas)
 Budget.hasMany(CrmForecastProbability, { as: 'forecastProbabilities', foreignKey: 'budgetId', onDelete: 'CASCADE' });
 CrmForecastProbability.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
+
+// === ERP FINANCEIRO (Fase 2) ===
+// Accounts Receivable
+AccountsReceivable.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
+AccountsReceivable.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
+AccountsReceivable.belongsTo(Client, { as: 'client', foreignKey: 'clientId' });
+AccountsReceivable.belongsTo(BankAccount, { as: 'bankAccount', foreignKey: 'bankAccountId' });
+AccountsReceivable.belongsTo(ChartOfAccounts, { as: 'chartAccount', foreignKey: 'chartAccountId' });
+AccountsReceivable.belongsTo(CostCenter, { as: 'costCenter', foreignKey: 'costCenterId' });
+AccountsReceivable.hasMany(ArInstallment, { as: 'installments', foreignKey: 'receivableId', onDelete: 'CASCADE' });
+ArInstallment.belongsTo(AccountsReceivable, { as: 'receivable', foreignKey: 'receivableId' });
+ArInstallment.belongsTo(BankAccount, { as: 'bankAccount', foreignKey: 'bankAccountId' });
+
+// Accounts Payable
+AccountsPayable.belongsTo(Freelancer, { as: 'freelancer', foreignKey: 'freelancerId' });
+AccountsPayable.belongsTo(Project, { as: 'project', foreignKey: 'projectId' });
+AccountsPayable.belongsTo(BankAccount, { as: 'bankAccount', foreignKey: 'bankAccountId' });
+AccountsPayable.belongsTo(ChartOfAccounts, { as: 'chartAccount', foreignKey: 'chartAccountId' });
+AccountsPayable.belongsTo(CostCenter, { as: 'costCenter', foreignKey: 'costCenterId' });
+AccountsPayable.hasMany(ApInstallment, { as: 'installments', foreignKey: 'payableId', onDelete: 'CASCADE' });
+ApInstallment.belongsTo(AccountsPayable, { as: 'payable', foreignKey: 'payableId' });
+ApInstallment.belongsTo(BankAccount, { as: 'bankAccount', foreignKey: 'bankAccountId' });
+
+// Freelancer → Payables
+Freelancer.hasMany(AccountsPayable, { as: 'payables', foreignKey: 'freelancerId' });
+
+// Budget/Project → Receivables
+Budget.hasMany(AccountsReceivable, { as: 'receivables', foreignKey: 'budgetId' });
+Project.hasMany(AccountsReceivable, { as: 'receivables', foreignKey: 'projectId' });
 
 Budget.hasMany(CRMLeadMessage, { as: 'messages', foreignKey: 'budgetId', onDelete: 'CASCADE' });
 CRMLeadMessage.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
@@ -238,6 +274,13 @@ module.exports = {
   CRMLeadLog,
   CRMLeadMessage,
   CrmForecastProbability,
+  BankAccount,
+  ChartOfAccounts,
+  CostCenter,
+  AccountsReceivable,
+  AccountsPayable,
+  ArInstallment,
+  ApInstallment,
   CategoryReceita,
   CategoryDespesa
 };

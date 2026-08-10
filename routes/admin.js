@@ -7,10 +7,11 @@ const {
   Instance, SubscriptionPlan, SystemLog, NotificationTemplate,
   SmartNote, ApiKey, ProjectLog, ProjectTask,
   Milestone, Task, TaskFile, TaskHistoryComment, TaskDependency, TaskTemplate,
-  CRMLeadLog, CRMLeadMessage, CrmForecastProbability, CategoryReceita, CategoryDespesa
+  CRMLeadLog, CRMLeadMessage, CrmForecastProbability, CategoryReceita, CategoryDespesa,
+  BankAccount, ChartOfAccounts, CostCenter, AccountsReceivable, AccountsPayable, ArInstallment, ApInstallment
 } = require('../models');
-const { Op } = require('sequelize');
 const { sequelize } = require('../config/database');
+const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const path = require('path');
@@ -2053,17 +2054,19 @@ const crmRouteHandler = async (req, res, activeTab = 'kanban') => {
     columns.forEach(col => { kanban[col.statusKey] = validBudgets.filter(b => b.status === col.statusKey); });
 
     const totalVgv = validBudgets.reduce((acc, curr) => acc + parseFloat(curr.estimatedValue || 0), 0);
+    const avgConversion = validBudgets.length > 0 ? Math.round(validBudgets.reduce((acc, curr) => acc + (parseFloat(curr.probability) || 0), 0) / validBudgets.length) : 0;
     const clients = (await Client.findAll({ order: [['name', 'ASC']] })).map(c => c.get({ plain: true }));
 
-    res.render('admin/crm', { 
-      layout: 'admin', 
-      title: 'Central de Leads (CRM)', 
-      currentPage: 'crm', 
+    res.render('admin/crm', {
+      layout: 'admin',
+      title: 'Central de Leads (CRM)',
+      currentPage: 'crm',
       activeTab: activeTab,
-      user: req.user, 
-      columns, 
-      kanban, 
-      budgets: validBudgets, 
+      user: req.user,
+      columns,
+      kanban,
+      budgets: validBudgets,
+      avgConversion,
       recuperacaoBudgets,
       clients,
       totalVgv,
@@ -2550,6 +2553,22 @@ router.get('/agenda', requireAuth, async (req, res) => {
 
     const weeks = buildCalendarGrid(year, zeroIndexedMonth, events);
 
+    // Dados para as 3 colunas informativas
+    const upcomingEvents = events.filter(e => new Date(e.startTime) >= new Date()).slice(0, 8);
+
+    // Contagem por tipo (decrescente)
+    const typeCount = {};
+    events.forEach(e => { const t = e.type || 'outro'; typeCount[t] = (typeCount[t] || 0) + 1; });
+    const eventsByType = Object.entries(typeCount).sort((a, b) => b[1] - a[1]).map(([type, count]) => ({ type, count }));
+
+    // Frequência: esta semana e este mês
+    const startOfWeek = moment().startOf('isoWeek').toDate();
+    const endOfWeek = moment().endOf('isoWeek').toDate();
+    const startOfMonth = moment().startOf('month').toDate();
+    const endOfMonth = moment().endOf('month').toDate();
+    const eventsThisWeek = events.filter(e => { const d = new Date(e.startTime); return d >= startOfWeek && d <= endOfWeek; }).length;
+    const eventsThisMonth = events.filter(e => { const d = new Date(e.startTime); return d >= startOfMonth && d <= endOfMonth; }).length;
+
     res.render('admin/calendar', {
       layout: 'admin',
       title: 'Agenda de Produção',
@@ -2557,6 +2576,10 @@ router.get('/agenda', requireAuth, async (req, res) => {
       user: req.user,
       events,
       weeks,
+      upcomingEvents,
+      eventsByType,
+      eventsThisWeek,
+      eventsThisMonth,
       monthLabel: current.format('MMMM').replace(/^./, c => c.toUpperCase()),
       year,
       prevMonth: prev.month() + 1,
@@ -3528,10 +3551,6 @@ router.get('/produtividade', requireAuth, (req, res) => res.redirect('/admin/pre
 
 router.get('/automacoes', requireAuth, async (req, res) => {
   res.render('admin/automacoes', { layout: 'admin', title: 'Automações Inteligentes', currentPage: 'automations', user: req.user });
-});
-
-router.get('/agenda', requireAuth, async (req, res) => {
-  res.render('admin/calendar', { layout: 'admin', title: 'Agenda do Estúdio', currentPage: 'calendar', user: req.user });
 });
 
 router.get('/marketing-ia', requireAuth, async (req, res) => {
@@ -5189,6 +5208,293 @@ router.post('/api/crm/forecast-inline/:budgetId', requireAuth, async (req, res) 
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
+});
+
+// ══════════════════════════════════════════════════════════════════
+// ERP FINANCEIRO — FASE 3: APIs de Contas a Receber, Pagar, Bancos
+// ══════════════════════════════════════════════════════════════════
+
+// --- BANK ACCOUNTS ---
+router.get('/api/erp/bank-accounts', requireAuth, async (req, res) => {
+  try {
+    const accounts = await BankAccount.findAll({ where: { isActive: true }, order: [['name', 'ASC']] });
+    res.json({ success: true, accounts: accounts.map(a => a.get({ plain: true })) });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// --- CHART OF ACCOUNTS ---
+router.get('/api/erp/chart-of-accounts', requireAuth, async (req, res) => {
+  try {
+    const accounts = await ChartOfAccounts.findAll({ where: { isActive: true }, order: [['code', 'ASC']] });
+    res.json({ success: true, accounts: accounts.map(a => a.get({ plain: true })) });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// --- COST CENTERS ---
+router.get('/api/erp/cost-centers', requireAuth, async (req, res) => {
+  try {
+    const centers = await CostCenter.findAll({ where: { isActive: true }, order: [['name', 'ASC']] });
+    res.json({ success: true, centers: centers.map(c => c.get({ plain: true })) });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// --- ACCOUNTS RECEIVABLE (Contas a Receber) ---
+router.get('/api/erp/receivables', requireAuth, async (req, res) => {
+  try {
+    const items = await AccountsReceivable.findAll({
+      include: [
+        { model: ArInstallment, as: 'installments' },
+        { model: Client, as: 'client', attributes: ['id', 'name'] },
+        { model: BankAccount, as: 'bankAccount', attributes: ['id', 'name'] }
+      ],
+      order: [['createdAt', 'DESC']],
+      limit: 200
+    });
+    res.json({ success: true, receivables: items.map(i => i.get({ plain: true })) });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// GATILHO: Gerar Contas a Receber a partir de um Projeto/Budget
+router.post('/api/erp/receivables/generate', requireAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const { budgetId, projectId, clientId, description, totalAmount, installmentsCount, paymentMethod, bankAccountId, firstDueDate } = req.body;
+    if (!totalAmount || !description) return res.status(400).json({ success: false, error: 'totalAmount e description obrigatórios' });
+
+    const parcelas = parseInt(installmentsCount) || 1;
+    const valorParcela = parseFloat(totalAmount) / parcelas;
+
+    // Criar AR
+    const ar = await AccountsReceivable.create({
+      budgetId: budgetId || null,
+      projectId: projectId || null,
+      clientId: clientId || null,
+      description,
+      totalAmount: parseFloat(totalAmount),
+      installmentsCount: parcelas,
+      paymentMethod: paymentMethod || 'pix',
+      bankAccountId: bankAccountId || null,
+      status: 'aberto',
+      originDate: new Date().toISOString().split('T')[0]
+    }, { transaction: t });
+
+    // Gerar parcelas
+    const baseDate = firstDueDate ? new Date(firstDueDate) : new Date();
+    const installments = [];
+    for (let i = 0; i < parcelas; i++) {
+      const dueDate = new Date(baseDate);
+      dueDate.setMonth(dueDate.getMonth() + i);
+      installments.push({
+        receivableId: ar.id,
+        installmentNumber: i + 1,
+        amount: valorParcela,
+        dueDate: dueDate.toISOString().split('T')[0],
+        status: 'pendente'
+      });
+    }
+    await ArInstallment.bulkCreate(installments, { transaction: t });
+
+    await t.commit();
+    res.json({ success: true, receivable: ar.get({ plain: true }), installmentsCreated: parcelas });
+  } catch (e) {
+    await t.rollback();
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// DAR BAIXA em parcela de AR
+router.post('/api/erp/receivables/installments/:id/pay', requireAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const inst = await ArInstallment.findByPk(req.params.id, { transaction: t });
+    if (!inst) { await t.rollback(); return res.status(404).json({ success: false, error: 'Parcela não encontrada' }); }
+
+    await inst.update({
+      status: 'pago',
+      paidDate: new Date().toISOString().split('T')[0],
+      paidAmount: inst.amount,
+      paymentMethod: req.body.paymentMethod || 'pix',
+      bankAccountId: req.body.bankAccountId || null
+    }, { transaction: t });
+
+    // Atualizar saldo do banco
+    if (req.body.bankAccountId) {
+      await BankAccount.increment('balance', { by: parseFloat(inst.amount), where: { id: req.body.bankAccountId }, transaction: t });
+    }
+
+    // Verificar se todas parcelas do AR estão pagas → quitar
+    const ar = await AccountsReceivable.findByPk(inst.receivableId, { include: [{ model: ArInstallment, as: 'installments' }], transaction: t });
+    const allPaid = ar.installments.every(i => i.status === 'pago' || i.id === inst.id);
+    if (allPaid) await ar.update({ status: 'quitado' }, { transaction: t });
+    else await ar.update({ status: 'parcial' }, { transaction: t });
+
+    await t.commit();
+    res.json({ success: true, message: 'Parcela baixada com sucesso' });
+  } catch (e) {
+    await t.rollback();
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// --- ACCOUNTS PAYABLE (Contas a Pagar) ---
+router.get('/api/erp/payables', requireAuth, async (req, res) => {
+  try {
+    const items = await AccountsPayable.findAll({
+      include: [
+        { model: ApInstallment, as: 'installments' },
+        { model: Freelancer, as: 'freelancer', attributes: ['id', 'name'] },
+        { model: BankAccount, as: 'bankAccount', attributes: ['id', 'name'] }
+      ],
+      order: [['createdAt', 'DESC']],
+      limit: 200
+    });
+    res.json({ success: true, payables: items.map(i => i.get({ plain: true })) });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// GATILHO: Gerar Contas a Pagar (Freelancer aprovado)
+router.post('/api/erp/payables/generate', requireAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const { freelancerId, projectId, description, totalAmount, dueDate, costCenterId, bankAccountId } = req.body;
+    if (!totalAmount || !description) return res.status(400).json({ success: false, error: 'totalAmount e description obrigatórios' });
+
+    const ap = await AccountsPayable.create({
+      freelancerId: freelancerId || null,
+      projectId: projectId || null,
+      description,
+      totalAmount: parseFloat(totalAmount),
+      installmentsCount: 1,
+      dueDate: dueDate || null,
+      costCenterId: costCenterId || null,
+      bankAccountId: bankAccountId || null,
+      costClassification: 'variavel',
+      status: 'aberto',
+      approvalStatus: 'aprovado'
+    }, { transaction: t });
+
+    // Parcela única
+    await ApInstallment.create({
+      payableId: ap.id,
+      installmentNumber: 1,
+      amount: parseFloat(totalAmount),
+      dueDate: dueDate || new Date().toISOString().split('T')[0],
+      status: 'pendente'
+    }, { transaction: t });
+
+    await t.commit();
+    res.json({ success: true, payable: ap.get({ plain: true }) });
+  } catch (e) {
+    await t.rollback();
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// DAR BAIXA em parcela de AP
+router.post('/api/erp/payables/installments/:id/pay', requireAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const inst = await ApInstallment.findByPk(req.params.id, { transaction: t });
+    if (!inst) { await t.rollback(); return res.status(404).json({ success: false, error: 'Parcela não encontrada' }); }
+
+    await inst.update({
+      status: 'pago',
+      paidDate: new Date().toISOString().split('T')[0],
+      paidAmount: inst.amount,
+      paymentMethod: req.body.paymentMethod || 'pix',
+      bankAccountId: req.body.bankAccountId || null
+    }, { transaction: t });
+
+    // Debitar saldo do banco
+    if (req.body.bankAccountId) {
+      await BankAccount.decrement('balance', { by: parseFloat(inst.amount), where: { id: req.body.bankAccountId }, transaction: t });
+    }
+
+    // Verificar se AP está quitado
+    const ap = await AccountsPayable.findByPk(inst.payableId, { include: [{ model: ApInstallment, as: 'installments' }], transaction: t });
+    const allPaid = ap.installments.every(i => i.status === 'pago' || i.id === inst.id);
+    if (allPaid) await ap.update({ status: 'quitado' }, { transaction: t });
+    else await ap.update({ status: 'parcial' }, { transaction: t });
+
+    await t.commit();
+    res.json({ success: true, message: 'Pagamento efetuado com sucesso' });
+  } catch (e) {
+    await t.rollback();
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// --- DRE (Demonstrativo de Resultado) ---
+router.get('/api/erp/dre', requireAuth, async (req, res) => {
+  try {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    // Receitas realizadas (parcelas pagas no período)
+    const receitasPagas = await ArInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.between]: [firstDay.toISOString().split('T')[0], lastDay.toISOString().split('T')[0]] } } });
+    const totalReceitas = receitasPagas.reduce((s, i) => s + parseFloat(i.paidAmount || i.amount || 0), 0);
+
+    // Custos (freelancers pagos no período)
+    const custosPagos = await ApInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.between]: [firstDay.toISOString().split('T')[0], lastDay.toISOString().split('T')[0]] } } });
+    const totalCustos = custosPagos.reduce((s, i) => s + parseFloat(i.paidAmount || i.amount || 0), 0);
+
+    // Despesas fixas (da tabela finance_transactions existente)
+    const despesasFixas = await FinanceTransaction.findAll({ where: { type: 'despesa', costClassification: 'fixo', status: 'pago', paymentDate: { [Op.between]: [firstDay, lastDay] } } });
+    const totalDespesasFixas = despesasFixas.reduce((s, t) => s + Math.abs(parseFloat(t.amount) || 0), 0);
+
+    const lucroOperacional = totalReceitas - totalCustos;
+    const lucroLiquido = lucroOperacional - totalDespesasFixas;
+
+    res.json({
+      success: true,
+      periodo: { inicio: firstDay.toISOString().split('T')[0], fim: lastDay.toISOString().split('T')[0] },
+      receitaBruta: totalReceitas,
+      custosVariaveis: totalCustos,
+      lucroOperacional,
+      despesasFixas: totalDespesasFixas,
+      lucroLiquido,
+      margemLiquida: totalReceitas > 0 ? Math.round((lucroLiquido / totalReceitas) * 100) : 0
+    });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// --- FLUXO DE CAIXA PROJETADO ---
+router.get('/api/erp/cash-flow', requireAuth, async (req, res) => {
+  try {
+    const now = new Date();
+    const result = { months: [], realized: [], projected: [] };
+
+    for (let i = 0; i < 6; i++) {
+      const month = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      const monthEnd = new Date(now.getFullYear(), now.getMonth() + i + 1, 0);
+      const label = month.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' });
+      result.months.push(label);
+
+      // AR vencendo no mês (a receber)
+      const arDue = await ArInstallment.findAll({ where: { status: 'pendente', dueDate: { [Op.between]: [month.toISOString().split('T')[0], monthEnd.toISOString().split('T')[0]] } } });
+      const arTotal = arDue.reduce((s, i) => s + parseFloat(i.amount || 0), 0);
+
+      // AP vencendo no mês (a pagar)
+      const apDue = await ApInstallment.findAll({ where: { status: 'pendente', dueDate: { [Op.between]: [month.toISOString().split('T')[0], monthEnd.toISOString().split('T')[0]] } } });
+      const apTotal = apDue.reduce((s, i) => s + parseFloat(i.amount || 0), 0);
+
+      result.projected.push(arTotal - apTotal);
+
+      // Realizado (parcelas já pagas nesse mês)
+      const arPaid = await ArInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.between]: [month.toISOString().split('T')[0], monthEnd.toISOString().split('T')[0]] } } });
+      const apPaid = await ApInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.between]: [month.toISOString().split('T')[0], monthEnd.toISOString().split('T')[0]] } } });
+      const realizedIn = arPaid.reduce((s, i) => s + parseFloat(i.paidAmount || i.amount || 0), 0);
+      const realizedOut = apPaid.reduce((s, i) => s + parseFloat(i.paidAmount || i.amount || 0), 0);
+      result.realized.push(realizedIn - realizedOut);
+    }
+
+    // Saldo atual (soma de todos os bancos)
+    const banks = await BankAccount.findAll({ where: { isActive: true } });
+    const saldoAtual = banks.reduce((s, b) => s + parseFloat(b.balance || 0), 0);
+
+    res.json({ success: true, saldoAtual, ...result });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
 // Lista de softwares cadastrados no sistema

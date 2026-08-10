@@ -28,18 +28,24 @@
 </div>
 
 <!-- Tabs Navigation -->
-<div class="flex items-center gap-2 mb-8 p-1.5 bg-white/[0.02] border border-white/5 rounded-[5px] max-w-2xl">
- <button class="finance-tab-btn flex items-center gap-2 px-6 py-3 rounded-[5px] text-[10px] font-black uppercase tracking-widest transition-all duration-300 active" data-tab="painel">
- <span class="material-symbols-outlined text-sm">dashboard</span>
- Painel Geral
+<div class="flex items-center gap-1 mb-4 p-1 bg-white/[0.02] border border-white/5 rounded-[5px] overflow-x-auto">
+ <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all active" data-tab="painel">
+ <span class="material-symbols-outlined text-[12px]">dashboard</span> Painel
  </button>
- <button class="finance-tab-btn flex items-center gap-2 px-6 py-3 rounded-[5px] text-[10px] font-black uppercase tracking-widest transition-all duration-300" data-tab="extrato">
- <span class="material-symbols-outlined text-sm">receipt_long</span>
- Extrato
+ <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all" data-tab="extrato">
+ <span class="material-symbols-outlined text-[12px]">receipt_long</span> Extrato
  </button>
- <button class="finance-tab-btn flex items-center gap-2 px-6 py-3 rounded-[5px] text-[10px] font-black uppercase tracking-widest transition-all duration-300" data-tab="lucro">
- <span class="material-symbols-outlined text-sm">analytics</span>
- Lucratividade
+ <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all" data-tab="receber">
+ <span class="material-symbols-outlined text-[12px]">arrow_downward</span> A Receber
+ </button>
+ <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all" data-tab="pagar">
+ <span class="material-symbols-outlined text-[12px]">arrow_upward</span> A Pagar
+ </button>
+ <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all" data-tab="dre">
+ <span class="material-symbols-outlined text-[12px]">analytics</span> DRE
+ </button>
+ <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all" data-tab="lucro">
+ <span class="material-symbols-outlined text-[12px]">trending_up</span> Lucratividade
  </button>
 </div>
 
@@ -346,6 +352,54 @@
  <p class="text-[8px] font-bold text-gray-600 uppercase mt-2 text-right tracking-widest">Faturamento Realizado</p>
  </div>
  {{/each}}
+ </div>
+</div>
+
+<!-- Tab Pane: Contas a Receber -->
+<div id="tab-pane-receber" class="finance-pane hidden space-y-4">
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px;">
+ <div class="flex items-center justify-between mb-3">
+ <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] flex items-center gap-1.5"><span class="material-symbols-outlined text-emerald-400 text-[12px]">arrow_downward</span> Contas a Receber</p>
+ <button onclick="window.openGenerateReceivableModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] bg-emerald-500 text-[8px] font-black uppercase text-white hover:bg-emerald-600 transition-colors"><span class="material-symbols-outlined text-[10px]">add</span> Novo</button>
+ </div>
+ <div id="erp-receivables-list" class="space-y-2">
+ <p class="text-[9px] text-gray-500 text-center py-4">Carregando...</p>
+ </div>
+ </div>
+ </div>
+</div>
+
+<!-- Tab Pane: Contas a Pagar -->
+<div id="tab-pane-pagar" class="finance-pane hidden space-y-4">
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px;">
+ <div class="flex items-center justify-between mb-3">
+ <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] flex items-center gap-1.5"><span class="material-symbols-outlined text-red-400 text-[12px]">arrow_upward</span> Contas a Pagar</p>
+ <button onclick="window.openGeneratePayableModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] bg-orange-500 text-[8px] font-black uppercase text-white hover:bg-orange-600 transition-colors"><span class="material-symbols-outlined text-[10px]">add</span> Novo</button>
+ </div>
+ <div id="erp-payables-list" class="space-y-2">
+ <p class="text-[9px] text-gray-500 text-center py-4">Carregando...</p>
+ </div>
+ </div>
+ </div>
+</div>
+
+<!-- Tab Pane: DRE -->
+<div id="tab-pane-dre" class="finance-pane hidden space-y-4">
+ <div class="kcard">
+ <div class="kcard-body" style="padding:16px;">
+ <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] mb-4 flex items-center gap-1.5"><span class="material-symbols-outlined text-purple-400 text-[12px]">analytics</span> Demonstrativo de Resultado do Exercício (DRE) — Mês Atual</p>
+ <div class="space-y-2" id="erp-dre-content">
+ <p class="text-[9px] text-gray-500 text-center py-4">Carregando...</p>
+ </div>
+ </div>
+ </div>
+ <div class="kcard">
+ <div class="kcard-body" style="padding:16px;">
+ <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] mb-3 flex items-center gap-1.5"><span class="material-symbols-outlined text-blue-400 text-[12px]">bar_chart</span> Fluxo de Caixa — Projetado vs Realizado (6 meses)</p>
+ <div style="height:220px;"><canvas id="erpCashFlowChart"></canvas></div>
+ </div>
  </div>
 </div>
 
@@ -1409,23 +1463,6 @@ window.openTransactionDetail = async function(id) {
         <select id="td_category" class="w-full bg-transparent text-xs text-white font-bold border-none focus:outline-none">
          <option value="${t.category||''}" selected>${t.category||'---'}</option>
         </select>
-        <script>
-         (function(){
-          var tipo = '${t.type}' === 'receita' ? 'receita' : 'despesa';
-          fetch('/admin/api/financeiro/categorias/' + tipo).then(r=>r.json()).then(d=>{
-           if(d.success && d.categorias){
-            var sel = document.getElementById('td_category');
-            d.categorias.forEach(function(c){
-             if(c.name !== '${t.category||''}'){
-              var opt = document.createElement('option');
-              opt.value = c.name; opt.textContent = c.name;
-              sel.appendChild(opt);
-             }
-            });
-           }
-          });
-         })();
-        </script>
        </div>
        <div class="p-3 rounded-[5px] bg-white/[0.02] border border-white/5">
         <p class="text-[8px] text-gray-500 font-bold uppercase">Aprovação</p>
@@ -1443,6 +1480,22 @@ window.openTransactionDetail = async function(id) {
    </div>
   `;
   document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+  // Load categories dynamically (after DOM insert — no inline script tag)
+  var tipo = t.type === 'receita' ? 'receita' : 'despesa';
+  fetch('/admin/api/financeiro/categorias/' + tipo).then(function(r){return r.json();}).then(function(d){
+   if(d.success && d.categorias){
+    var sel = document.getElementById('td_category');
+    if(sel) d.categorias.forEach(function(c){
+     if(c.name !== (t.category||'')){
+      var opt = document.createElement('option');
+      opt.value = c.name; opt.textContent = c.name;
+      sel.appendChild(opt);
+     }
+    });
+   }
+  }).catch(function(){});
+
  } catch (e) { alert('Erro ao carregar transação'); }
 };
 
@@ -1481,5 +1534,122 @@ window.salvarCategoriaTransacao = async function(id) {
   document.getElementById('transactionDetailModal')?.remove();
   setTimeout(() => location.reload(), 500);
  } else alert(data.error || 'Erro');
+};
+
+// === ERP: Carregar Contas a Receber ===
+window.loadReceivables = async function() {
+ const el = document.getElementById('erp-receivables-list');
+ if (!el) return;
+ try {
+  const res = await fetch('/admin/api/erp/receivables');
+  const data = await res.json();
+  if (!data.success || !data.receivables.length) {
+   el.innerHTML = '<p class="text-[9px] text-gray-500 text-center py-4">Nenhuma conta a receber cadastrada</p>';
+   return;
+  }
+  el.innerHTML = data.receivables.map(function(r) {
+   const paidCount = r.installments ? r.installments.filter(function(i) { return i.status === 'pago'; }).length : 0;
+   const totalInst = r.installments ? r.installments.length : 0;
+   const statusColor = r.status === 'quitado' ? 'text-emerald-400' : r.status === 'atrasado' ? 'text-red-400' : 'text-orange-400';
+   return '<div class="flex items-center justify-between p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">' +
+    '<div class="flex-1 min-w-0"><p class="text-[9px] font-bold text-white truncate">' + r.description + '</p><p class="text-[7px] text-gray-500">' + paidCount + '/' + totalInst + ' parcelas pagas</p></div>' +
+    '<div class="text-right shrink-0"><p class="text-[9px] font-black text-emerald-400">R$ ' + parseFloat(r.totalAmount).toLocaleString('pt-BR', {minimumFractionDigits:2}) + '</p><p class="text-[7px] font-bold ' + statusColor + ' uppercase">' + r.status + '</p></div></div>';
+  }).join('');
+ } catch(e) { el.innerHTML = '<p class="text-[9px] text-red-400 text-center py-4">Erro ao carregar</p>'; }
+};
+
+// === ERP: Carregar Contas a Pagar ===
+window.loadPayables = async function() {
+ const el = document.getElementById('erp-payables-list');
+ if (!el) return;
+ try {
+  const res = await fetch('/admin/api/erp/payables');
+  const data = await res.json();
+  if (!data.success || !data.payables.length) {
+   el.innerHTML = '<p class="text-[9px] text-gray-500 text-center py-4">Nenhuma conta a pagar cadastrada</p>';
+   return;
+  }
+  el.innerHTML = data.payables.map(function(p) {
+   const statusColor = p.status === 'quitado' ? 'text-emerald-400' : p.status === 'atrasado' ? 'text-red-400' : 'text-orange-400';
+   const name = p.freelancer ? p.freelancer.name : 'Fornecedor';
+   return '<div class="flex items-center justify-between p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">' +
+    '<div class="flex-1 min-w-0"><p class="text-[9px] font-bold text-white truncate">' + p.description + '</p><p class="text-[7px] text-gray-500">' + name + '</p></div>' +
+    '<div class="text-right shrink-0"><p class="text-[9px] font-black text-red-400">R$ ' + parseFloat(p.totalAmount).toLocaleString('pt-BR', {minimumFractionDigits:2}) + '</p><p class="text-[7px] font-bold ' + statusColor + ' uppercase">' + p.status + '</p></div></div>';
+  }).join('');
+ } catch(e) { el.innerHTML = '<p class="text-[9px] text-red-400 text-center py-4">Erro ao carregar</p>'; }
+};
+
+// === ERP: Carregar DRE ===
+window.loadDRE = async function() {
+ const el = document.getElementById('erp-dre-content');
+ if (!el) return;
+ try {
+  const res = await fetch('/admin/api/erp/dre');
+  const data = await res.json();
+  if (!data.success) { el.innerHTML = '<p class="text-[9px] text-red-400">Erro</p>'; return; }
+  const fmt = function(n) { return 'R$ ' + parseFloat(n||0).toLocaleString('pt-BR', {minimumFractionDigits:2}); };
+  el.innerHTML = '' +
+   '<div class="flex justify-between p-2 rounded-[4px]" style="background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.15);"><span class="text-[9px] font-bold text-emerald-400 uppercase">Receita Bruta</span><span class="text-[9px] font-black text-emerald-400">' + fmt(data.receitaBruta) + '</span></div>' +
+   '<div class="flex justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><span class="text-[9px] font-bold text-gray-400 uppercase">(-) Custos Variáveis (Freelancers)</span><span class="text-[9px] font-black text-red-400">' + fmt(data.custosVariaveis) + '</span></div>' +
+   '<div class="flex justify-between p-2 rounded-[4px]" style="background:rgba(249,115,22,0.05); border:1px solid rgba(249,115,22,0.15);"><span class="text-[9px] font-bold text-orange-400 uppercase">= Lucro Operacional</span><span class="text-[9px] font-black text-orange-400">' + fmt(data.lucroOperacional) + '</span></div>' +
+   '<div class="flex justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><span class="text-[9px] font-bold text-gray-400 uppercase">(-) Despesas Fixas</span><span class="text-[9px] font-black text-red-400">' + fmt(data.despesasFixas) + '</span></div>' +
+   '<div class="flex justify-between p-3 rounded-[4px] mt-1" style="background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.2);"><span class="text-[10px] font-black text-purple-400 uppercase">= Lucro Líquido</span><span class="text-base font-black ' + (data.lucroLiquido >= 0 ? 'text-emerald-400' : 'text-red-400') + '">' + fmt(data.lucroLiquido) + '</span></div>' +
+   '<div class="flex justify-between p-2 mt-1"><span class="text-[8px] font-bold text-gray-500 uppercase">Margem Líquida</span><span class="text-[9px] font-black text-white">' + data.margemLiquida + '%</span></div>';
+ } catch(e) { el.innerHTML = '<p class="text-[9px] text-red-400">Erro ao carregar DRE</p>'; }
+};
+
+// === ERP: Carregar Fluxo de Caixa ===
+window.loadCashFlow = async function() {
+ try {
+  const res = await fetch('/admin/api/erp/cash-flow');
+  const data = await res.json();
+  if (!data.success) return;
+  const ctx = document.getElementById('erpCashFlowChart');
+  if (!ctx) return;
+  new Chart(ctx.getContext('2d'), {
+   type: 'bar',
+   data: { labels: data.months, datasets: [
+    { label: 'Realizado', data: data.realized, backgroundColor: 'rgba(16,185,129,0.6)', borderRadius: 3 },
+    { label: 'Projetado', data: data.projected, backgroundColor: 'rgba(249,115,22,0.4)', borderRadius: 3 }
+   ]},
+   options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#9ca3af', font: { size: 8 } } } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#6b7280', font: { size: 8 }, callback: function(v) { return 'R$' + (v/1000).toFixed(0) + 'k'; } } }, x: { grid: { display: false }, ticks: { color: '#9ca3af', font: { size: 8 } } } } }
+  });
+ } catch(e) {}
+};
+
+// Auto-load ERP tabs when selected
+var _erpLoaded = {};
+var origSwitchTab = switchTab;
+switchTab = function(tabId) {
+ origSwitchTab(tabId);
+ if (tabId === 'receber' && !_erpLoaded.receber) { _erpLoaded.receber = true; window.loadReceivables(); }
+ if (tabId === 'pagar' && !_erpLoaded.pagar) { _erpLoaded.pagar = true; window.loadPayables(); }
+ if (tabId === 'dre' && !_erpLoaded.dre) { _erpLoaded.dre = true; window.loadDRE(); window.loadCashFlow(); }
+};
+
+// Generate Receivable modal (simplified prompt)
+window.openGenerateReceivableModal = function() {
+ var desc = prompt('Descrição (Ex: Projeto Casa Moderna):');
+ if (!desc) return;
+ var amount = prompt('Valor Total (R$):');
+ if (!amount) return;
+ var parcelas = prompt('Número de Parcelas:', '1');
+ fetch('/admin/api/erp/receivables/generate', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ description: desc, totalAmount: parseFloat(amount), installmentsCount: parseInt(parcelas)||1 }) })
+ .then(function(r){return r.json();}).then(function(d){
+  if(d.success){ if(window.showToast) window.showToast('Conta a receber criada!','success'); _erpLoaded.receber=false; window.loadReceivables(); }
+  else alert(d.error||'Erro');
+ });
+};
+
+window.openGeneratePayableModal = function() {
+ var desc = prompt('Descrição (Ex: Freelancer João - Agosto):');
+ if (!desc) return;
+ var amount = prompt('Valor Total (R$):');
+ if (!amount) return;
+ fetch('/admin/api/erp/payables/generate', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ description: desc, totalAmount: parseFloat(amount) }) })
+ .then(function(r){return r.json();}).then(function(d){
+  if(d.success){ if(window.showToast) window.showToast('Conta a pagar criada!','success'); _erpLoaded.pagar=false; window.loadPayables(); }
+  else alert(d.error||'Erro');
+ });
 };
 </script>

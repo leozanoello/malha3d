@@ -29,8 +29,11 @@
                       title="Probabilidade">{{lead.probability}}%</span>
             </div>
 
-            <!-- Title + Client -->
-            <h4 class="kcard-title">{{lead.name}}</h4>
+            <!-- Title + Client + Valor -->
+            <div class="flex items-center justify-between mb-1.5">
+                <h4 class="kcard-title flex-1 min-w-0">{{lead.name}}</h4>
+                <span class="text-[9px] font-black text-emerald-400 shrink-0 ml-2">{{#if lead.valorGanho}}{{formatCurrency lead.valorGanho}}{{else if lead.estimatedValue}}{{formatCurrency lead.estimatedValue}}{{/if}}</span>
+            </div>
             <p class="text-[8px] text-[#666] uppercase tracking-widest mb-2 truncate">{{#if lead.clientName}}{{lead.clientName}}{{else}}—{{/if}}</p>
 
             <!-- Stats (2 cols: Valor + Data) -->

@@ -1,5 +1,5 @@
 <!-- Agenda — Template Padrão (.kcard) -->
-<div class="p-6 md:p-8 flex flex-col gap-5" style="background:#0a0c10;">
+<div class="p-4 md:p-5 flex flex-col gap-3" style="background:#0a0c10;">
 
  <!-- Banner Header (.kcard com imagem) -->
  <div class="kcard">
@@ -73,6 +73,63 @@
  {{/if}}
  {{/each}}
  {{/each}}
+ </div>
+ </div>
+ </div>
+
+ <!-- 3 Colunas Informativas -->
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+ <!-- Col 1: Próximos Eventos (cronológico) -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px;">
+ <p class="text-[8px] font-black text-orange-400 uppercase tracking-widest mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">event</span> Próximos Eventos</p>
+ <div class="space-y-1.5" id="upcoming-events-list">
+ {{#each upcomingEvents}}
+ <div class="flex items-center gap-2 p-1.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <span class="text-[7px] font-bold text-gray-500">{{formatDateShort this.startTime}}</span>
+ <span class="text-[8px] font-bold text-white truncate flex-1">{{this.title}}</span>
+ <span class="kcard-badge" style="font-size:6px;">{{this.type}}</span>
+ </div>
+ {{/each}}
+ {{#unless upcomingEvents.length}}
+ <p class="text-[8px] text-gray-500 text-center py-3">Nenhum evento futuro</p>
+ {{/unless}}
+ </div>
+ </div>
+ </div>
+
+ <!-- Col 2: Quantidade por Tipo (decrescente) -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px;">
+ <p class="text-[8px] font-black text-purple-400 uppercase tracking-widest mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">category</span> Tipo de Reunião</p>
+ <div class="space-y-1.5">
+ {{#each eventsByType}}
+ <div class="flex items-center justify-between p-1.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <span class="text-[8px] font-bold text-gray-300 capitalize">{{this.type}}</span>
+ <span class="text-[9px] font-black text-white">{{this.count}}</span>
+ </div>
+ {{/each}}
+ {{#unless eventsByType.length}}
+ <p class="text-[8px] text-gray-500 text-center py-3">Sem dados</p>
+ {{/unless}}
+ </div>
+ </div>
+ </div>
+
+ <!-- Col 3: Reuniões por Semana/Mês -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px;">
+ <p class="text-[8px] font-black text-emerald-400 uppercase tracking-widest mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">bar_chart</span> Frequência</p>
+ <div class="space-y-2">
+ <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <span class="text-[8px] font-bold text-gray-400 uppercase">Esta Semana</span>
+ <span class="text-sm font-black text-white">{{eventsThisWeek}}</span>
+ </div>
+ <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <span class="text-[8px] font-bold text-gray-400 uppercase">Este Mês</span>
+ <span class="text-sm font-black text-white">{{eventsThisMonth}}</span>
+ </div>
+ </div>
  </div>
  </div>
  </div>
