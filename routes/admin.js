@@ -3384,33 +3384,83 @@ router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, r
 });
 
 router.post('/api/financeiro', requireAuth, async (req, res) => {
+  const dbTransaction = await sequelize.transaction();
   try {
     const data = { ...req.body };
-    if (!data.projectId || data.projectId === '') {
-      data.projectId = null;
-    }
-    if (!data.budgetId || data.budgetId === '') {
-      data.budgetId = null;
-    }
-    // Normalizar: armazenar amount sempre como valor positivo
-    if (data.amount) {
-      data.amount = Math.abs(parseFloat(data.amount));
-    }
-    const transaction = await FinanceTransaction.create(data);
+    if (!data.projectId || data.projectId === '') data.projectId = null;
+    if (!data.budgetId || data.budgetId === '') data.budgetId = null;
+    if (data.amount) data.amount = Math.abs(parseFloat(data.amount));
 
-    // Register log in ProjectLog if projectId is associated
+    // Criar na tabela legacy (para retrocompatibilidade do Extrato)
+    const transaction = await FinanceTransaction.create(data, { transaction: dbTransaction });
+
+    // === NOVO: Criar automaticamente no ERP (AR ou AP) ===
+    const amount = parseFloat(transaction.amount) || 0;
+    const bank = await BankAccount.findOne({ transaction: dbTransaction });
+
+    if (transaction.type === 'receita' && amount > 0) {
+      const ar = await AccountsReceivable.create({
+        budgetId: transaction.budgetId,
+        projectId: transaction.projectId,
+        description: transaction.description,
+        totalAmount: amount,
+        installmentsCount: 1,
+        paymentMethod: transaction.paymentMethod || 'pix',
+        status: (transaction.status === 'pago' || transaction.status === 'recebido') ? 'quitado' : 'aberto',
+        bankAccountId: bank ? bank.id : null,
+        originDate: new Date().toISOString().split('T')[0]
+      }, { transaction: dbTransaction });
+
+      await ArInstallment.create({
+        receivableId: ar.id,
+        installmentNumber: 1,
+        amount: amount,
+        dueDate: transaction.dueDate ? new Date(transaction.dueDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        paidDate: (transaction.status === 'pago' || transaction.status === 'recebido') ? new Date().toISOString().split('T')[0] : null,
+        paidAmount: (transaction.status === 'pago' || transaction.status === 'recebido') ? amount : null,
+        status: (transaction.status === 'pago' || transaction.status === 'recebido') ? 'pago' : 'pendente',
+        paymentMethod: transaction.paymentMethod || 'pix'
+      }, { transaction: dbTransaction });
+
+    } else if (transaction.type === 'despesa' && amount > 0) {
+      const ap = await AccountsPayable.create({
+        description: transaction.description,
+        totalAmount: amount,
+        installmentsCount: 1,
+        status: transaction.status === 'pago' ? 'quitado' : 'aberto',
+        dueDate: transaction.dueDate ? new Date(transaction.dueDate).toISOString().split('T')[0] : null,
+        costClassification: data.costClassification || 'variavel',
+        bankAccountId: bank ? bank.id : null,
+        approvalStatus: 'aprovado'
+      }, { transaction: dbTransaction });
+
+      await ApInstallment.create({
+        payableId: ap.id,
+        installmentNumber: 1,
+        amount: amount,
+        dueDate: transaction.dueDate ? new Date(transaction.dueDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        paidDate: transaction.status === 'pago' ? new Date().toISOString().split('T')[0] : null,
+        paidAmount: transaction.status === 'pago' ? amount : null,
+        status: transaction.status === 'pago' ? 'pago' : 'pendente',
+        paymentMethod: transaction.paymentMethod || 'pix'
+      }, { transaction: dbTransaction });
+    }
+
+    // Log
     if (transaction.projectId) {
       await ProjectLog.create({
         projectId: transaction.projectId,
         userId: req.user.id,
         userName: req.user.name,
         action: 'FINANCE_ADD',
-        details: `Lançamento financeiro adicionado por ${req.user.name}: Tipo = ${transaction.type === 'receita' ? 'Receita' : 'Despesa'}, Descrição = "${transaction.description}", Valor = R$ ${parseFloat(transaction.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-      });
+        details: `Lançamento financeiro: ${transaction.type === 'receita' ? 'Receita' : 'Despesa'} "${transaction.description}" R$ ${amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+      }, { transaction: dbTransaction });
     }
 
+    await dbTransaction.commit();
     res.json({ success: true, transaction });
   } catch (error) {
+    await dbTransaction.rollback();
     console.error('Finance API Error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
