@@ -4289,7 +4289,7 @@ router.get('/contatos', requireAuth, async (req, res) => {
   }
 });
 
-router.post('/admin/api/contatos', requireAuth, async (req, res) => {
+router.post('/api/contatos', requireAuth, async (req, res) => {
   try {
     const { name, type, document, email, phone, company, city, state, paymentMethods, notes, category, status } = req.body;
 
