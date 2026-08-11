@@ -3261,6 +3261,189 @@ router.get('/entregas', requireAuth, async (req, res) => {
 // ==========================================
 
 // Rotas diretas para tabs do financeiro
+// ══════════════════════════════════════════════════════════════════
+// BLOCO DE INTELIGÊNCIA — Lead Scoring, Comparativo, Deadlines, IA
+// ══════════════════════════════════════════════════════════════════
+
+// === LEAD SCORING (0-100) ===
+router.get('/api/lead-score/:id', requireAuth, async (req, res) => {
+  try {
+    const lead = await Budget.findByPk(req.params.id);
+    if (!lead) return res.status(404).json({ success: false });
+    const d = lead.get({ plain: true });
+    const value = parseFloat(d.estimatedValue) || 0;
+    const prob = parseFloat(d.probability) || 50;
+    const daysInFunnel = Math.max(1, Math.floor((Date.now() - new Date(d.createdAt).getTime()) / 86400000));
+    const freshness = Math.max(0, 100 - (daysInFunnel * 2)); // Decays 2 pts/day
+    const valueScore = Math.min(30, (value / 1000)); // Max 30pts for R$30k+
+    const probScore = prob * 0.4; // Max 40pts
+    const score = Math.min(100, Math.round(freshness * 0.3 + valueScore + probScore));
+    res.json({ success: true, score, breakdown: { freshness: Math.round(freshness * 0.3), value: Math.round(valueScore), probability: Math.round(probScore) } });
+  } catch (e) { res.json({ success: false, score: 0 }); }
+});
+
+// === COMPARATIVO MENSAL (Este mês vs anterior) ===
+router.get('/api/erp/monthly-comparison', requireAuth, async (req, res) => {
+  try {
+    const now = new Date();
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    // This month AR paid
+    const thisMonthAR = await ArInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.gte]: thisMonthStart.toISOString().split('T')[0] } } });
+    const thisRevenue = thisMonthAR.reduce((s, i) => s + parseFloat(i.paidAmount || i.amount || 0), 0);
+
+    // Last month AR paid
+    const lastMonthAR = await ArInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.between]: [lastMonthStart.toISOString().split('T')[0], lastMonthEnd.toISOString().split('T')[0]] } } });
+    const lastRevenue = lastMonthAR.reduce((s, i) => s + parseFloat(i.paidAmount || i.amount || 0), 0);
+
+    // This month AP paid
+    const thisMonthAP = await ApInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.gte]: thisMonthStart.toISOString().split('T')[0] } } });
+    const thisExpense = thisMonthAP.reduce((s, i) => s + parseFloat(i.paidAmount || i.amount || 0), 0);
+
+    const lastMonthAPaid = await ApInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.between]: [lastMonthStart.toISOString().split('T')[0], lastMonthEnd.toISOString().split('T')[0]] } } });
+    const lastExpense = lastMonthAPaid.reduce((s, i) => s + parseFloat(i.paidAmount || i.amount || 0), 0);
+
+    const revenueVar = lastRevenue > 0 ? Math.round(((thisRevenue - lastRevenue) / lastRevenue) * 100) : 0;
+    const expenseVar = lastExpense > 0 ? Math.round(((thisExpense - lastExpense) / lastExpense) * 100) : 0;
+    const thisProfit = thisRevenue - thisExpense;
+    const lastProfit = lastRevenue - lastExpense;
+    const profitVar = lastProfit !== 0 ? Math.round(((thisProfit - lastProfit) / Math.abs(lastProfit)) * 100) : 0;
+
+    res.json({ success: true, thisMonth: { revenue: thisRevenue, expense: thisExpense, profit: thisProfit }, lastMonth: { revenue: lastRevenue, expense: lastExpense, profit: lastProfit }, variation: { revenue: revenueVar, expense: expenseVar, profit: profitVar } });
+  } catch (e) { res.json({ success: false }); }
+});
+
+// === ALERTAS DE DEADLINE (Projetos em risco) ===
+router.get('/api/deadline-alerts', requireAuth, async (req, res) => {
+  try {
+    const now = new Date();
+    const threeDays = new Date(now); threeDays.setDate(threeDays.getDate() + 3);
+    const atRisk = await Budget.findAll({
+      where: { winStatus: 'aberto', deadline: { [Op.between]: [now, threeDays] } },
+      attributes: ['id', 'name', 'deadline', 'probability']
+    });
+    res.json({ success: true, atRisk: atRisk.map(b => b.get({ plain: true })) });
+  } catch (e) { res.json({ success: true, atRisk: [] }); }
+});
+
+// === PREVISÃO DE CAIXA POR IA (Regressão Linear Simples) ===
+router.get('/api/erp/cash-forecast-ai', requireAuth, async (req, res) => {
+  try {
+    // Collect last 6 months of realized cash flow
+    const now = new Date();
+    const monthlyData = [];
+    for (let i = 5; i >= 0; i--) {
+      const start = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
+      const arPaid = await ArInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.between]: [start.toISOString().split('T')[0], end.toISOString().split('T')[0]] } } });
+      const apPaid = await ApInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.between]: [start.toISOString().split('T')[0], end.toISOString().split('T')[0]] } } });
+      const net = arPaid.reduce((s, i) => s + parseFloat(i.amount || 0), 0) - apPaid.reduce((s, i) => s + parseFloat(i.amount || 0), 0);
+      monthlyData.push(net);
+    }
+
+    // Simple linear regression to predict next 3 months
+    const n = monthlyData.length;
+    const xMean = (n - 1) / 2;
+    const yMean = monthlyData.reduce((s, v) => s + v, 0) / n;
+    let num = 0, den = 0;
+    monthlyData.forEach((y, x) => { num += (x - xMean) * (y - yMean); den += (x - xMean) * (x - xMean); });
+    const slope = den !== 0 ? num / den : 0;
+    const intercept = yMean - slope * xMean;
+
+    const predictions = [];
+    for (let i = 1; i <= 3; i++) {
+      const month = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      predictions.push({ month: month.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' }), value: Math.round(intercept + slope * (n - 1 + i)) });
+    }
+
+    res.json({ success: true, historical: monthlyData, predictions, trend: slope > 0 ? 'crescente' : slope < 0 ? 'decrescente' : 'estável' });
+  } catch (e) { res.json({ success: true, historical: [], predictions: [], trend: 'indefinido' }); }
+});
+
+// === SUGESTÃO DE PREÇO POR IA (Média histórica) ===
+router.get('/api/ai/suggest-price', requireAuth, async (req, res) => {
+  try {
+    const { area, type, complexity } = req.query;
+    const totalArea = parseFloat(area) || 100;
+
+    // Get historical averages from won deals
+    const wonDeals = await Budget.findAll({ where: { winStatus: 'ganho' } });
+    const relevant = wonDeals.filter(b => {
+      const d = b.get({ plain: true });
+      if (type && d.projectType && d.projectType !== type) return false;
+      return true;
+    }).map(b => b.get({ plain: true }));
+
+    let avgPricePerM2 = 150; // Default fallback
+    if (relevant.length > 0) {
+      const withArea = relevant.filter(d => parseFloat(d.totalArea) > 0 && parseFloat(d.estimatedValue) > 0);
+      if (withArea.length > 0) {
+        avgPricePerM2 = withArea.reduce((s, d) => s + (parseFloat(d.estimatedValue) / parseFloat(d.totalArea)), 0) / withArea.length;
+      }
+    }
+
+    const complexityMultiplier = { 'Baixa': 0.8, 'Média': 1.0, 'Alta': 1.3, 'Ultra': 1.6 };
+    const mult = complexityMultiplier[complexity] || 1.0;
+    const suggestedPrice = Math.round(totalArea * avgPricePerM2 * mult);
+
+    res.json({ success: true, suggestedPrice, avgPricePerM2: Math.round(avgPricePerM2), complexity: mult, basedOn: relevant.length + ' projetos históricos' });
+  } catch (e) { res.json({ success: true, suggestedPrice: 0 }); }
+});
+
+// === DUPLICAR PROJETO (Template) ===
+router.post('/api/projetos/duplicate/:id', requireAuth, async (req, res) => {
+  try {
+    const original = await Budget.findByPk(req.params.id);
+    if (!original) return res.status(404).json({ success: false, error: 'Projeto não encontrado' });
+    const d = original.get({ plain: true });
+    delete d.id; delete d.createdAt; delete d.updatedAt;
+    d.name = (d.name || 'Projeto') + ' (Cópia)';
+    d.status = 'modelagem_novo_lead';
+    d.winStatus = 'aberto';
+    d.proposalStatus = 'rascunho';
+    d.source = 'template';
+    const clone = await Budget.create(d);
+    res.json({ success: true, clone: clone.get({ plain: true }) });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// === RECORRÊNCIA DE DESPESAS ===
+router.post('/api/erp/payables/:id/recurrence', requireAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const ap = await AccountsPayable.findByPk(req.params.id, { transaction: t });
+    if (!ap) { await t.rollback(); return res.status(404).json({ success: false }); }
+
+    // Generate next month's installment
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    const newAP = await AccountsPayable.create({
+      description: ap.description,
+      totalAmount: ap.totalAmount,
+      installmentsCount: 1,
+      status: 'aberto',
+      dueDate: nextMonth.toISOString().split('T')[0],
+      costClassification: ap.costClassification,
+      costCenterId: ap.costCenterId,
+      bankAccountId: ap.bankAccountId,
+      approvalStatus: 'aprovado'
+    }, { transaction: t });
+
+    await ApInstallment.create({
+      payableId: newAP.id,
+      installmentNumber: 1,
+      amount: ap.totalAmount,
+      dueDate: nextMonth.toISOString().split('T')[0],
+      status: 'pendente'
+    }, { transaction: t });
+
+    await t.commit();
+    res.json({ success: true, newPayable: newAP.get({ plain: true }) });
+  } catch (e) { await t.rollback(); res.status(500).json({ success: false, error: e.message }); }
+});
+
 // === BUSCA GLOBAL ===
 router.get('/api/search', requireAuth, async (req, res) => {
   try {
