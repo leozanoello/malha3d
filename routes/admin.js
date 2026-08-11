@@ -3260,6 +3260,9 @@ router.get('/entregas', requireAuth, async (req, res) => {
 // FINANCEIRO & RELATÓRIOS
 // ==========================================
 
+// Rotas diretas para tabs do financeiro
+// Rotas diretas removidas — tab switching é feito via JS no frontend
+
 router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, res) => {
   try {
     const transactions = (await FinanceTransaction.findAll({ order: [['dueDate', 'DESC']], limit: 1000 })).map(t => t.get({ plain: true }));
@@ -3397,12 +3400,14 @@ router.post('/api/financeiro', requireAuth, async (req, res) => {
     // === NOVO: Criar automaticamente no ERP (AR ou AP) ===
     const amount = parseFloat(transaction.amount) || 0;
     const bank = await BankAccount.findOne({ transaction: dbTransaction });
+    // Limpar descrição: remover prefixos "Receita:", "Venda:", "Recebível:" e sufixos "— Parcela X/Y"
+    let cleanDesc = (transaction.description || '').replace(/^(Receita|Venda|Recebível|Despesa):\s*/i, '').replace(/\s*—\s*Parcela\s*\d+\/\d+/i, '').replace(/\s*—\s*Pagamento\s*único/i, '').trim();
 
     if (transaction.type === 'receita' && amount > 0) {
       const ar = await AccountsReceivable.create({
         budgetId: transaction.budgetId,
         projectId: transaction.projectId,
-        description: transaction.description,
+        description: cleanDesc,
         totalAmount: amount,
         installmentsCount: 1,
         paymentMethod: transaction.paymentMethod || 'pix',
@@ -3424,7 +3429,7 @@ router.post('/api/financeiro', requireAuth, async (req, res) => {
 
     } else if (transaction.type === 'despesa' && amount > 0) {
       const ap = await AccountsPayable.create({
-        description: transaction.description,
+        description: cleanDesc,
         totalAmount: amount,
         installmentsCount: 1,
         status: transaction.status === 'pago' ? 'quitado' : 'aberto',
@@ -5544,6 +5549,76 @@ router.get('/api/erp/cash-flow', requireAuth, async (req, res) => {
     const saldoAtual = banks.reduce((s, b) => s + parseFloat(b.balance || 0), 0);
 
     res.json({ success: true, saldoAtual, ...result });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// --- DISTRIBUIÇÃO POR CENTRO DE CUSTO ---
+router.get('/api/erp/cost-distribution', requireAuth, async (req, res) => {
+  try {
+    const centers = await CostCenter.findAll({ where: { isActive: true } });
+    const payables = await AccountsPayable.findAll({ include: [{ model: CostCenter, as: 'costCenter' }] });
+
+    const distribution = centers.map(c => {
+      const items = payables.filter(p => p.costCenterId === c.id);
+      const total = items.reduce((s, p) => s + parseFloat(p.totalAmount || 0), 0);
+      const pago = items.filter(p => p.status === 'quitado').reduce((s, p) => s + parseFloat(p.totalAmount || 0), 0);
+      const pendente = total - pago;
+      return { id: c.id, name: c.name, code: c.code, color: c.color, total, pago, pendente, count: items.length };
+    }).filter(d => d.total > 0).sort((a, b) => b.total - a.total);
+
+    const grandTotal = distribution.reduce((s, d) => s + d.total, 0);
+    distribution.forEach(d => { d.percent = grandTotal > 0 ? Math.round((d.total / grandTotal) * 100) : 0; });
+
+    res.json({ success: true, distribution, grandTotal });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// --- RECEITA FUTURA (parcelas pendentes) ---
+router.get('/api/erp/future-revenue', requireAuth, async (req, res) => {
+  try {
+    const pendingInstallments = await ArInstallment.findAll({
+      where: { status: 'pendente' },
+      include: [{ model: AccountsReceivable, as: 'receivable', attributes: ['description', 'paymentMethod'] }],
+      order: [['dueDate', 'ASC']]
+    });
+
+    const byMonth = {};
+    let total = 0;
+    pendingInstallments.forEach(inst => {
+      const month = inst.dueDate ? inst.dueDate.substring(0, 7) : 'sem-data';
+      if (!byMonth[month]) byMonth[month] = { month, total: 0, count: 0, items: [] };
+      byMonth[month].total += parseFloat(inst.amount || 0);
+      byMonth[month].count++;
+      byMonth[month].items.push({ desc: inst.receivable?.description || '—', amount: parseFloat(inst.amount), dueDate: inst.dueDate });
+      total += parseFloat(inst.amount || 0);
+    });
+
+    res.json({ success: true, total, months: Object.values(byMonth), count: pendingInstallments.length });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
+// --- LUCRATIVIDADE POR CENTRO DE CUSTO ---
+router.get('/api/erp/profitability', requireAuth, async (req, res) => {
+  try {
+    // Receitas realizadas (total)
+    const arPaid = await ArInstallment.findAll({ where: { status: 'pago' } });
+    const totalReceita = arPaid.reduce((s, i) => s + parseFloat(i.paidAmount || i.amount || 0), 0);
+
+    // Custos por centro
+    const centers = await CostCenter.findAll({ where: { isActive: true } });
+    const payables = await AccountsPayable.findAll();
+
+    const profitability = centers.map(c => {
+      const items = payables.filter(p => p.costCenterId === c.id && p.status === 'quitado');
+      const custo = items.reduce((s, p) => s + parseFloat(p.totalAmount || 0), 0);
+      return { name: c.name, color: c.color, custo, margemContribuicao: totalReceita - custo };
+    });
+
+    const custoTotal = payables.filter(p => p.status === 'quitado').reduce((s, p) => s + parseFloat(p.totalAmount || 0), 0);
+    const lucroLiquido = totalReceita - custoTotal;
+    const margem = totalReceita > 0 ? Math.round((lucroLiquido / totalReceita) * 100) : 0;
+
+    res.json({ success: true, totalReceita, custoTotal, lucroLiquido, margem, byCostCenter: profitability });
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 

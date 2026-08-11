@@ -10,18 +10,18 @@
  Controle rigoroso de receitas e despesas. Visão clara da saúde financeira do estúdio <span class="text-orange-500 font-bold">Malha3D</span>.
  </p>
  </div>
- <div class="flex items-center gap-3 flex-wrap shrink-0">
- <button class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-[5px] bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-500/50 text-emerald-400 font-bold transition-all duration-300 flex flex-col items-center justify-center gap-1.5 hover:shadow-emerald-500/10 cursor-pointer" data-bs-toggle="modal" data-bs-target="#newTransactionModal" onclick="setModalType('receita')">
- <span class="material-symbols-outlined text-xl">add_circle</span>
- <span class="text-[8px] uppercase tracking-widest font-black text-center mt-1">Receita</span>
+ <div class="flex items-center gap-2 flex-wrap shrink-0">
+ <button class="kcard flex flex-col items-center justify-center gap-1 w-[70px] h-[70px] cursor-pointer hover:border-emerald-500/40 transition-all" style="border-color:rgba(16,185,129,0.2);" data-bs-toggle="modal" data-bs-target="#newTransactionModal" onclick="setModalType('receita')">
+ <span class="material-symbols-outlined text-lg text-emerald-400">add_circle</span>
+ <span class="text-[7px] uppercase tracking-widest font-black text-emerald-400">Receita</span>
  </button>
- <button class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-[5px] bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/50 text-red-400 font-bold transition-all duration-300 flex flex-col items-center justify-center gap-1.5 hover:shadow-red-500/10 cursor-pointer" data-bs-toggle="modal" data-bs-target="#newTransactionModal" onclick="setModalType('despesa')">
- <span class="material-symbols-outlined text-xl">remove_circle</span>
- <span class="text-[8px] uppercase tracking-widest font-black text-center mt-1">Despesa</span>
+ <button class="kcard flex flex-col items-center justify-center gap-1 w-[70px] h-[70px] cursor-pointer hover:border-red-500/40 transition-all" style="border-color:rgba(239,68,68,0.2);" data-bs-toggle="modal" data-bs-target="#newTransactionModal" onclick="setModalType('despesa')">
+ <span class="material-symbols-outlined text-lg text-red-400">remove_circle</span>
+ <span class="text-[7px] uppercase tracking-widest font-black text-red-400">Despesa</span>
  </button>
- <button class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-[5px] bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 hover:border-indigo-500/50 text-indigo-400 font-bold transition-all duration-300 flex flex-col items-center justify-center gap-1.5 hover:shadow-indigo-500/10 cursor-pointer" data-bs-toggle="modal" data-bs-target="#newTransactionModal" onclick="setModalType('transferir')">
- <span class="material-symbols-outlined text-xl">sync_alt</span>
- <span class="text-[8px] uppercase tracking-widest font-black text-center mt-1">Transferir</span>
+ <button class="kcard flex flex-col items-center justify-center gap-1 w-[70px] h-[70px] cursor-pointer hover:border-indigo-500/40 transition-all" style="border-color:rgba(99,102,241,0.2);" data-bs-toggle="modal" data-bs-target="#newTransactionModal" onclick="setModalType('transferir')">
+ <span class="material-symbols-outlined text-lg text-indigo-400">sync_alt</span>
+ <span class="text-[7px] uppercase tracking-widest font-black text-indigo-400">Transferir</span>
  </button>
  </div>
  </div>
@@ -31,9 +31,6 @@
 <div class="flex items-center gap-1 mb-4 p-1 bg-white/[0.02] border border-white/5 rounded-[5px] overflow-x-auto">
  <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all active" data-tab="painel">
  <span class="material-symbols-outlined text-[12px]">dashboard</span> Painel
- </button>
- <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all" data-tab="extrato">
- <span class="material-symbols-outlined text-[12px]">receipt_long</span> Extrato
  </button>
  <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all" data-tab="receber">
  <span class="material-symbols-outlined text-[12px]">arrow_downward</span> A Receber
@@ -192,185 +189,24 @@
  </div>
 </div>
 
-<!-- Tab Pane 2: Extrato de Transações -->
-<div id="tab-pane-extrato" class="finance-pane hidden space-y-4">
+<!-- Tab Pane 3: Lucratividade por Projeto -->
+<div id="tab-pane-lucro" class="finance-pane hidden space-y-4">
  <div class="kcard">
  <div class="kcard-body" style="padding:16px;">
- <div class="flex items-center gap-2 mb-3">
- <span class="material-symbols-outlined text-blue-400 text-sm">info</span>
- <p class="text-[9px] font-black text-white uppercase tracking-[0.12em]">Nova Estrutura Financeira</p>
+ <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] mb-3 flex items-center gap-1.5"><span class="material-symbols-outlined text-purple-400 text-[12px]">trending_up</span> Lucratividade Real — Dados do Sistema</p>
+ <!-- KPIs -->
+ <div class="grid grid-cols-4 gap-2 mb-4" id="lucro-kpis">
+ <div class="p-2.5 rounded-[4px]" style="background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Receita Total</p><p class="text-sm font-black text-emerald-400" id="lucro-receita">--</p></div>
+ <div class="p-2.5 rounded-[4px]" style="background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Custos Totais</p><p class="text-sm font-black text-red-400" id="lucro-custos">--</p></div>
+ <div class="p-2.5 rounded-[4px]" style="background:rgba(139,92,246,0.05); border:1px solid rgba(139,92,246,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Lucro Líquido</p><p class="text-sm font-black text-purple-400" id="lucro-liquido">--</p></div>
+ <div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Margem</p><p class="text-sm font-black text-white" id="lucro-margem">--</p></div>
  </div>
- <p class="text-[9px] text-gray-400 leading-relaxed mb-3">Os lançamentos foram reorganizados: <strong class="text-emerald-400">Receitas de projetos</strong> estão na aba <strong class="text-white">"A Receber"</strong> e <strong class="text-red-400">Despesas</strong> estão na aba <strong class="text-white">"A Pagar"</strong>. O Extrato agora exibe apenas movimentações avulsas e transferências.</p>
- <div class="flex gap-2">
- <button onclick="switchTab('receber')" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] text-[8px] font-black uppercase text-emerald-400 hover:bg-emerald-500/20 transition-colors" style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3);">
- <span class="material-symbols-outlined text-[10px]">arrow_downward</span> Ver A Receber
- </button>
- <button onclick="switchTab('pagar')" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] text-[8px] font-black uppercase text-red-400 hover:bg-red-500/20 transition-colors" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3);">
- <span class="material-symbols-outlined text-[10px]">arrow_upward</span> Ver A Pagar
- </button>
- </div>
- </div>
- </div>
-
- <!-- Extrato legacy (transferências e avulsos) -->
- <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
- <div>
- <h3 class="text-[10px] font-black text-white uppercase tracking-widest">
- Movimentações Avulsas
- </h3>
- <p class="text-[8px] text-gray-500 font-bold uppercase tracking-wider mt-1">Transferências e lançamentos manuais</p>
+ <!-- Distribuição por Centro de Custo -->
+ <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-2">Custo por Centro</p>
+ <div class="space-y-1.5" id="lucro-centros">
+ <p class="text-[9px] text-gray-500 text-center py-3">Carregando...</p>
  </div>
  </div>
-
- <!-- FILTROS -->
- <div class="flex flex-wrap gap-2 p-3 rounded-[5px] border-white/5">
- <select id="filter-tipo" onchange="window.filterExtrato()" class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[9px] text-white font-bold focus:border-orange-500 focus:outline-none appearance-none">
- <option value="">Todos os Tipos</option>
- <option value="receita">Receitas</option>
- <option value="despesa">Despesas</option>
- <option value="transferir">Transferências</option>
- </select>
- <select id="filter-status" onchange="window.filterExtrato()" class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[9px] text-white font-bold focus:border-orange-500 focus:outline-none appearance-none">
- <option value="">Todos os Status</option>
- <option value="pendente">Pendente</option>
- <option value="pago">Pago</option>
- <option value="recebido">Recebido</option>
- <option value="atrasado">Atrasado</option>
- </select>
- <select id="filter-categoria" onchange="window.filterExtrato()" class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[9px] text-white font-bold focus:border-orange-500 focus:outline-none appearance-none">
- <option value="">Todas Categorias</option>
- <option value="venda_projeto">Venda Projeto</option>
- <option value="recebivel_projeto">Recebível Projeto</option>
- <option value="operacional">Operacional</option>
- <option value="freelancers_modelagem">Freelancers</option>
- <option value="marketing">Marketing</option>
- <option value="infraestrutura">Infraestrutura</option>
- <option value="impostos">Impostos</option>
- </select>
- <input type="date" id="filter-data-de" onchange="window.filterExtrato()" class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[9px] text-white font-bold focus:border-orange-500 focus:outline-none" title="De">
- <input type="date" id="filter-data-ate" onchange="window.filterExtrato()" class="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[9px] text-white font-bold focus:border-orange-500 focus:outline-none" title="Até">
- <input type="text" id="search-transactions" oninput="window.filterExtrato()" class="flex-1 min-w-[150px] bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[9px] text-white font-bold placeholder-gray-500 focus:border-orange-500 focus:outline-none" placeholder="Buscar descrição...">
- <button onclick="window.clearFilters()" class="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-[9px] font-bold text-gray-400 hover:text-white">Limpar</button>
- </div>
-
- <div class="kcard-panel border-white/5 overflow-hidden rounded-[5px] shadow-2xl">
- <div class="overflow-x-auto">
- <table class="w-full text-left">
- <thead>
- <tr class="bg-white/[0.02]">
- <th class="px-4 py-4 text-[9px] font-black text-gray-500 uppercase tracking-widest">Descrição</th>
- <th class="px-4 py-4 text-[9px] font-black text-gray-500 uppercase tracking-widest">Categoria</th>
- <th class="px-4 py-4 text-[9px] font-black text-gray-500 uppercase tracking-widest">Vencimento</th>
- <th class="px-4 py-4 text-[9px] font-black text-gray-500 uppercase tracking-widest">Valor</th>
- <th class="px-4 py-4 text-[9px] font-black text-gray-500 uppercase tracking-widest">Status</th>
- <th class="px-4 py-4 text-[9px] font-black text-gray-500 uppercase tracking-widest text-right">Ação</th>
- </tr>
- </thead>
- <tbody class="divide-y divide-white/5" id="extrato-tbody">
- {{#each transactions}}
- <tr class="hover:bg-white/[0.03] cursor-pointer transaction-row" data-id="{{this.id}}" data-type="{{this.type}}" data-status="{{this.status}}" data-category="{{this.category}}" data-date="{{this.dueDate}}" data-desc="{{this.description}}" onclick="window.openTransactionDetail('{{this.id}}')">
- <td class="px-4 py-4">
- <div class="flex items-center gap-3">
- <div class="w-8 h-8 rounded-lg flex items-center justify-center
- {{#if (eq this.type 'receita')}}bg-emerald-500/20 text-emerald-500
- {{else}}{{#if (eq this.type 'transferir')}}bg-indigo-500/20 text-indigo-500
- {{else}}bg-red-500/20 text-red-500{{/if}}{{/if}}">
- <span class="material-symbols-outlined text-sm">
- {{#if (eq this.type 'receita')}}trending_up{{else}}{{#if (eq this.type 'transferir')}}sync_alt{{else}}trending_down{{/if}}{{/if}}
- </span>
- </div>
- <div>
- <p class="text-[10px] font-black text-white truncate max-w-[200px]">{{this.description}}</p>
- <p class="text-[8px] text-gray-500 font-bold">{{this.paymentMethod}}</p>
- </div>
- </div>
- </td>
- <td class="px-4 py-4">
- <span class="text-[9px] font-bold text-gray-400 bg-white/5 px-2 py-0.5 rounded border border-white/5 uppercase">{{this.category}}</span>
- </td>
- <td class="px-4 py-4 text-[10px] font-bold text-gray-400">{{formatDate this.dueDate}}</td>
- <td class="px-4 py-4">
- <span class="text-[11px] font-black
- {{#if (eq this.type 'receita')}}text-emerald-500{{else}}text-red-500{{/if}}">
- {{#if (eq this.type 'receita')}}+{{else}}-{{/if}} {{formatCurrencyAbs this.amount}}
- </span>
- </td>
- <td class="px-4 py-4">
- <span class="text-[8px] font-black px-2 py-1 rounded-lg border uppercase
- {{#if (eq this.status 'pago')}}bg-emerald-500/10 border-emerald-500/20 text-emerald-400
- {{else if (eq this.status 'recebido')}}bg-emerald-500/10 border-emerald-500/20 text-emerald-400
- {{else if (eq this.status 'atrasado')}}bg-red-500/10 border-red-500/20 text-red-400
- {{else}}bg-orange-500/10 border-orange-500/20 text-orange-400{{/if}}">
- {{this.status}}
- </span>
- </td>
- <td class="px-4 py-4 text-right">
- {{#if (eq this.type 'receita')}}
-  {{#if (eq this.status 'pendente')}}
-  <button onclick="event.stopPropagation(); window.aprovarTransacao('{{this.id}}')" class="px-2 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-lg text-[8px] font-black uppercase hover:bg-emerald-500 hover:text-white">Aprovar</button>
-  {{/if}}
- {{else}}
-  {{#if (eq this.status 'pendente')}}
-  <button onclick="event.stopPropagation(); window.pagarDespesa('{{this.id}}')" class="px-2 py-1 bg-orange-500/10 text-orange-400 border border-orange-500/30 rounded-lg text-[8px] font-black uppercase hover:bg-orange-500 hover:text-white">Pagar</button>
-  {{/if}}
- {{/if}}
- </td>
- </tr>
- {{/each}}
- </tbody>
- </table>
- </div>
- </div>
-</div>
-
-<!-- Tab Pane 3: Lucratividade por Projeto -->
-<div id="tab-pane-lucro" class="finance-pane hidden space-y-6">
- <div>
- <h3 class="text-sm font-black text-white uppercase tracking-widest">
- Análise de <span class="text-gradient">Lucratividade</span> por Projeto
- </h3>
- <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider mt-1">Visão holística da rentabilidade líquida por contrato fechado</p>
- </div>
-
- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
- {{#each projectProfits}}
- <div class="kcard-panel p-5 border-white/5 bg-white/[0.01] hover:bg-white/[0.03] transition-all group">
- <div class="flex items-center justify-between mb-6">
- <h4 class="text-sm font-black text-white group-hover:text-cyber-500 transition-colors truncate pr-4">{{this.name}}</h4>
- <span class="text-[10px] font-black px-2 py-1 rounded bg-cyber-500/10 text-cyber-500 border border-cyber-500/20">
- {{this.margin}}% Margem
- </span>
- </div>
- 
- <div class="space-y-4">
- <div class="flex justify-between items-center">
- <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Valor do Contrato</span>
- <span class="text-xs font-black text-white">{{formatCurrency this.price}}</span>
- </div>
- <div class="flex justify-between items-center">
- <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Recebido (Realizado)</span>
- <span class="text-xs font-black text-emerald-500">{{formatCurrency this.income}}</span>
- </div>
- <div class="flex justify-between items-center">
- <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Custos (Freelancers/Outros)</span>
- <span class="text-xs font-black text-red-500">{{formatCurrency this.expenses}}</span>
- </div>
- 
- <div class="pt-4 border-t border-white/5 flex justify-between items-center">
- <span class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Resultado Líquido</span>
- <span class="text-lg font-black {{#if (gt this.profit 0)}}text-cyber-500{{else}}text-red-500{{/if}}">
- {{formatCurrency this.profit}}
- </span>
- </div>
- </div>
-
- <!-- Progress Bar: Income vs Price -->
- <div class="mt-6 w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
- <div class="h-full bg-gradient-to-r from-emerald-500 to-cyber-500" style="width: {{#if (gt this.price 0)}}{{multiply (divide this.income this.price) 100}}{{else}}0{{/if}}%"></div>
- </div>
- <p class="text-[8px] font-bold text-gray-600 uppercase mt-2 text-right tracking-widest">Faturamento Realizado</p>
- </div>
- {{/each}}
  </div>
 </div>
 
@@ -385,6 +221,33 @@
  <button onclick="window.openGenerateReceivableModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] bg-emerald-500 text-[8px] font-black uppercase text-white hover:bg-emerald-600 transition-colors"><span class="material-symbols-outlined text-[10px]">add</span> Novo</button>
  </div>
  </div>
+ <!-- Filtros AR -->
+ <div class="flex flex-wrap gap-2 mb-3 p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <select id="ar-filter-status" onchange="window.filterAR()" class="px-2 py-1 text-[8px] font-bold text-gray-400 rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ <option value="">Todos Status</option>
+ <option value="aberto">Aberto</option>
+ <option value="parcial">Parcial</option>
+ <option value="quitado">Quitado</option>
+ <option value="atrasado">Atrasado</option>
+ <option value="cancelado">Cancelado</option>
+ </select>
+ <select id="ar-filter-payment" onchange="window.filterAR()" class="px-2 py-1 text-[8px] font-bold text-gray-400 rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ <option value="">Todas Formas</option>
+ <option value="pix">PIX</option>
+ <option value="boleto">Boleto</option>
+ <option value="cartao_credito">Cartão</option>
+ <option value="transferencia">Transferência</option>
+ </select>
+ <select id="ar-filter-value" onchange="window.filterAR()" class="px-2 py-1 text-[8px] font-bold text-gray-400 rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ <option value="">Todos Valores</option>
+ <option value="0-5000">Até R$5.000</option>
+ <option value="5000-20000">R$5k — R$20k</option>
+ <option value="20000-50000">R$20k — R$50k</option>
+ <option value="50000-999999">Acima R$50k</option>
+ </select>
+ <input type="text" id="ar-filter-search" oninput="window.filterAR()" placeholder="Buscar descrição..." class="px-2 py-1 text-[8px] font-bold text-white rounded-[4px] flex-1 min-w-[120px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ <button onclick="document.getElementById('ar-filter-status').value=''; document.getElementById('ar-filter-payment').value=''; document.getElementById('ar-filter-value').value=''; document.getElementById('ar-filter-search').value=''; window.filterAR();" class="px-2 py-1 text-[7px] font-bold text-gray-500 hover:text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Limpar</button>
+ </div>
  <!-- Tabela de Recebíveis -->
  <div class="overflow-x-auto">
  <table class="w-full text-left" id="erp-ar-table">
@@ -392,6 +255,7 @@
  <tr style="background:rgba(255,255,255,0.02);">
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Descrição</th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Valor Total</th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Valor Parcela</th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Parcelas</th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Forma Pgto</th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Status</th>
@@ -416,12 +280,38 @@
  <button onclick="window.openGeneratePayableModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] bg-orange-500 text-[8px] font-black uppercase text-white hover:bg-orange-600 transition-colors"><span class="material-symbols-outlined text-[10px]">add</span> Novo</button>
  </div>
  </div>
+ <!-- Filtros AP -->
+ <div class="flex flex-wrap gap-2 mb-3 p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <select id="ap-filter-status" onchange="window.filterAP()" class="px-2 py-1 text-[8px] font-bold text-gray-400 rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ <option value="">Todos Status</option>
+ <option value="aberto">Aberto</option>
+ <option value="parcial">Parcial</option>
+ <option value="quitado">Quitado</option>
+ <option value="atrasado">Atrasado</option>
+ <option value="cancelado">Cancelado</option>
+ </select>
+ <select id="ap-filter-cost" onchange="window.filterAP()" class="px-2 py-1 text-[8px] font-bold text-gray-400 rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ <option value="">Todos Tipos</option>
+ <option value="fixo">Custo Fixo</option>
+ <option value="variavel">Custo Variável</option>
+ </select>
+ <select id="ap-filter-value" onchange="window.filterAP()" class="px-2 py-1 text-[8px] font-bold text-gray-400 rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ <option value="">Todos Valores</option>
+ <option value="0-1000">Até R$1.000</option>
+ <option value="1000-5000">R$1k — R$5k</option>
+ <option value="5000-20000">R$5k — R$20k</option>
+ <option value="20000-999999">Acima R$20k</option>
+ </select>
+ <input type="text" id="ap-filter-search" oninput="window.filterAP()" placeholder="Buscar descrição..." class="px-2 py-1 text-[8px] font-bold text-white rounded-[4px] flex-1 min-w-[120px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ <button onclick="document.getElementById('ap-filter-status').value=''; document.getElementById('ap-filter-cost').value=''; document.getElementById('ap-filter-value').value=''; document.getElementById('ap-filter-search').value=''; window.filterAP();" class="px-2 py-1 text-[7px] font-bold text-gray-500 hover:text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Limpar</button>
+ </div>
  <div class="overflow-x-auto">
  <table class="w-full text-left" id="erp-ap-table">
  <thead>
  <tr style="background:rgba(255,255,255,0.02);">
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Descrição</th>
- <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Valor</th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Valor Total</th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Valor Parcela</th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Vencimento</th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Tipo Custo</th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Status</th>
@@ -1400,7 +1290,7 @@ document.addEventListener('DOMContentLoaded', function() {
  pane.classList.remove('active');
  }
  });
- 
+
  tabButtons.forEach(btn => {
  if (btn.dataset.tab === tabId) {
  btn.classList.add('active');
@@ -1408,8 +1298,14 @@ document.addEventListener('DOMContentLoaded', function() {
  btn.classList.remove('active');
  }
  });
- 
+
  localStorage.setItem('selectedFinanceTab', tabId);
+
+ // Auto-load ERP tabs on first visit
+ if (tabId === 'receber' && window.loadReceivables) window.loadReceivables();
+ if (tabId === 'pagar' && window.loadPayables) window.loadPayables();
+ if (tabId === 'dre' && window.loadDRE) { window.loadDRE(); window.loadCashFlow(); }
+ if (tabId === 'lucro' && window.loadProfitability) window.loadProfitability();
  }
  
  tabButtons.forEach(btn => {
@@ -1418,25 +1314,10 @@ document.addEventListener('DOMContentLoaded', function() {
  });
  });
  
- // Restore persisted tab or default to 'painel'
- const savedTab = localStorage.getItem('selectedFinanceTab') || 'painel';
+ // Restore tab: URL ?tab= takes priority, then localStorage
+ const urlTab = new URLSearchParams(window.location.search).get('tab');
+ const savedTab = urlTab || localStorage.getItem('selectedFinanceTab') || 'painel';
  switchTab(savedTab);
-
- // === TRANSACTIONS SEARCH ===
- const searchInput = document.getElementById('search-transactions');
- searchInput?.addEventListener('input', function() {
- const query = this.value.toLowerCase().trim();
- const rows = document.querySelectorAll('#tab-pane-extrato tbody tr');
- 
- rows.forEach(row => {
- const text = row.textContent.toLowerCase();
- if (text.includes(query)) {
- row.style.display = '';
- } else {
- row.style.display = 'none';
- }
- });
- });
 
  // === QUERY PARAMETERS AUTOLOAD (VIA DE MÃO DUPLA) ===
  const urlParams = new URLSearchParams(window.location.search);
@@ -1460,37 +1341,6 @@ document.addEventListener('DOMContentLoaded', function() {
  }
  }
 });
-
-// === FILTROS DO EXTRATO ===
-window.filterExtrato = function() {
- const tipo = document.getElementById('filter-tipo')?.value || '';
- const status = document.getElementById('filter-status')?.value || '';
- const categoria = document.getElementById('filter-categoria')?.value || '';
- const dataDe = document.getElementById('filter-data-de')?.value || '';
- const dataAte = document.getElementById('filter-data-ate')?.value || '';
- const busca = (document.getElementById('search-transactions')?.value || '').toLowerCase();
-
- document.querySelectorAll('#extrato-tbody .transaction-row').forEach(row => {
-  let show = true;
-  if (tipo && row.dataset.type !== tipo) show = false;
-  if (status && row.dataset.status !== status) show = false;
-  if (categoria && row.dataset.category !== categoria) show = false;
-  if (dataDe && row.dataset.date && row.dataset.date < dataDe) show = false;
-  if (dataAte && row.dataset.date && row.dataset.date > dataAte + 'T23:59:59') show = false;
-  if (busca && !(row.dataset.desc || '').toLowerCase().includes(busca)) show = false;
-  row.style.display = show ? '' : 'none';
- });
-};
-
-window.clearFilters = function() {
- document.getElementById('filter-tipo').value = '';
- document.getElementById('filter-status').value = '';
- document.getElementById('filter-categoria').value = '';
- document.getElementById('filter-data-de').value = '';
- document.getElementById('filter-data-ate').value = '';
- document.getElementById('search-transactions').value = '';
- window.filterExtrato();
-};
 
 // === ABRIR DETALHE DA TRANSAÇÃO ===
 window.openTransactionDetail = async function(id) {
@@ -1633,28 +1483,175 @@ window.loadReceivables = async function() {
   const res = await fetch('/admin/api/erp/receivables');
   const data = await res.json();
   if (!data.success || !data.receivables.length) {
-   tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-[9px] text-gray-500">Nenhuma conta a receber</td></tr>';
+   tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-[9px] text-gray-500">Nenhuma conta a receber</td></tr>';
    if (summary) summary.textContent = '0 registros | R$ 0,00';
    return;
   }
   const fmt = function(n) { return 'R$ ' + parseFloat(n||0).toLocaleString('pt-BR', {minimumFractionDigits:2}); };
-  const total = data.receivables.reduce(function(s,r) { return s + parseFloat(r.totalAmount||0); }, 0);
   const pendente = data.receivables.filter(function(r) { return r.status !== 'quitado'; }).reduce(function(s,r) { return s + parseFloat(r.totalAmount||0); }, 0);
   if (summary) summary.textContent = data.receivables.length + ' registros | Pendente: ' + fmt(pendente);
 
   tbody.innerHTML = data.receivables.map(function(r) {
    var paidCount = r.installments ? r.installments.filter(function(i) { return i.status === 'pago'; }).length : 0;
    var totalInst = r.installments ? r.installments.length : 0;
+   var valorParcela = r.installmentsCount > 0 ? parseFloat(r.totalAmount) / r.installmentsCount : parseFloat(r.totalAmount);
    var statusColor = r.status === 'quitado' ? 'text-emerald-400 bg-emerald-500/10' : r.status === 'atrasado' ? 'text-red-400 bg-red-500/10' : 'text-orange-400 bg-orange-500/10';
-   return '<tr style="border-top:1px solid rgba(255,255,255,0.04);">' +
-    '<td class="px-3 py-2 text-[9px] font-bold text-white truncate max-w-[200px]">' + r.description + '</td>' +
+   // Remover prefixos desnecessários da descrição
+   var desc = (r.description||'').replace(/^Receita:\s*/i, '').replace(/^Recebível:\s*/i, '').replace(/^Venda:\s*/i, '');
+   return '<tr class="ar-row" data-status="' + r.status + '" data-payment="' + (r.paymentMethod||'') + '" data-amount="' + parseFloat(r.totalAmount||0) + '" data-desc="' + desc.toLowerCase() + '" style="border-top:1px solid rgba(255,255,255,0.04);">' +
+    '<td class="px-3 py-2 text-[9px] font-bold text-white truncate max-w-[200px]">' + desc + '</td>' +
     '<td class="px-3 py-2 text-[9px] font-black text-emerald-400">' + fmt(r.totalAmount) + '</td>' +
+    '<td class="px-3 py-2 text-[9px] font-black text-blue-400">' + fmt(valorParcela) + '</td>' +
     '<td class="px-3 py-2 text-[8px] text-gray-400">' + paidCount + '/' + totalInst + ' pagas</td>' +
     '<td class="px-3 py-2 text-[8px] text-gray-400 uppercase">' + (r.paymentMethod||'—') + '</td>' +
     '<td class="px-3 py-2"><span class="text-[7px] font-black uppercase px-1.5 py-0.5 rounded ' + statusColor + '">' + r.status + '</span></td>' +
-    '<td class="px-3 py-2 text-right"><button class="text-[8px] text-gray-400 hover:text-white">⋮</button></td></tr>';
+    '<td class="px-3 py-2 text-right"><button onclick="window.openARDetail(\'' + r.id + '\')" class="px-2 py-1 text-[7px] font-bold text-orange-400 rounded-[3px] hover:bg-orange-500/20" style="background:rgba(249,115,22,0.08); border:1px solid rgba(249,115,22,0.2);">Detalhes</button></td></tr>';
   }).join('');
  } catch(e) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-[9px] text-red-400">Erro</td></tr>'; }
+};
+
+// Filtro AR
+window.filterAR = function() {
+ var status = document.getElementById('ar-filter-status')?.value || '';
+ var payment = document.getElementById('ar-filter-payment')?.value || '';
+ var valueRange = document.getElementById('ar-filter-value')?.value || '';
+ var search = (document.getElementById('ar-filter-search')?.value || '').toLowerCase();
+ document.querySelectorAll('#erp-ar-tbody .ar-row').forEach(function(row) {
+  var show = true;
+  if (status && row.dataset.status !== status) show = false;
+  if (payment && row.dataset.payment !== payment) show = false;
+  if (valueRange) {
+   var parts = valueRange.split('-');
+   var min = parseFloat(parts[0]), max = parseFloat(parts[1]);
+   var amt = parseFloat(row.dataset.amount);
+   if (amt < min || amt > max) show = false;
+  }
+  if (search && !row.dataset.desc.includes(search)) show = false;
+  row.style.display = show ? '' : 'none';
+ });
+};
+
+// === MODAL DETALHES A RECEBER ===
+window.openARDetail = async function(id) {
+ var existing = document.getElementById('arDetailModal');
+ if (existing) existing.remove();
+ try {
+  var res = await fetch('/admin/api/erp/receivables');
+  var data = await res.json();
+  if (!data.success) { alert('Erro na API'); return; }
+  var r = data.receivables.find(function(x) { return x.id === id; });
+  if (!r) { alert('Registro não encontrado (ID: ' + id + ')'); return; }
+  var fmt = function(n) { return 'R$ ' + parseFloat(n||0).toLocaleString('pt-BR', {minimumFractionDigits:2}); };
+  var pendingAmount = r.installments ? r.installments.filter(function(i){return i.status==='pendente';}).reduce(function(s,i){return s+parseFloat(i.amount||0);},0) : 0;
+  var valorParcela = r.installmentsCount > 0 ? parseFloat(r.totalAmount) / r.installmentsCount : parseFloat(r.totalAmount);
+
+  var installmentsHtml = (r.installments||[]).sort(function(a,b){return a.installmentNumber-b.installmentNumber;}).map(function(inst) {
+   var stColor = inst.status === 'pago' ? 'text-emerald-400 bg-emerald-500/10' : inst.status === 'atrasado' ? 'text-red-400 bg-red-500/10' : 'text-orange-400 bg-orange-500/10';
+   return '<div class="flex items-center justify-between p-2.5 rounded-[4px]" style="border:1px solid rgba(255,255,255,0.04); background:rgba(255,255,255,0.015);">' +
+    '<div class="flex items-center gap-3"><span class="text-[8px] font-black text-white">P' + inst.installmentNumber + '</span><span class="text-[7px] text-gray-500">Venc: ' + (inst.dueDate||'—') + '</span>' + (inst.paidDate ? '<span class="text-[7px] text-emerald-400">Pago: ' + inst.paidDate + '</span>' : '') + '</div>' +
+    '<div class="flex items-center gap-2"><span class="text-[9px] font-black text-white">' + fmt(inst.amount) + '</span><span class="text-[7px] font-bold uppercase px-1.5 py-0.5 rounded ' + stColor + '">' + inst.status + '</span>' +
+    (inst.status === 'pendente' ? '<button onclick="window.payARInstallment(\'' + inst.id + '\')" class="px-2 py-1 text-[7px] font-bold text-emerald-400 rounded-[3px]" style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3);">Baixar</button>' : '') +
+    '</div></div>';
+  }).join('');
+
+  var modalHtml = '<div id="arDetailModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80" style="display:flex;">' +
+   '<div style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); width:100%; max-width:600px; max-height:85vh; overflow:hidden; display:flex; flex-direction:column;" class="mx-4">' +
+   '<header style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.06);" class="flex items-center justify-between shrink-0">' +
+   '<div><p class="text-[11px] font-black text-white">' + r.description + '</p><p class="text-[7px] text-gray-500 uppercase mt-0.5">Origem: ' + (r.originDate||'—') + ' | Banco: ' + (r.bankAccount?r.bankAccount.name:'—') + '</p></div>' +
+   '<button onclick="document.getElementById(\'arDetailModal\').remove()" class="w-7 h-7 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-white" style="background:rgba(255,255,255,0.05);"><span class="material-symbols-outlined text-sm">close</span></button>' +
+   '</header>' +
+   '<div style="padding:16px 20px; overflow-y:auto;" class="flex-1 space-y-3 custom-scrollbar">' +
+   '<div class="grid grid-cols-4 gap-2">' +
+   '<div class="p-2.5 rounded-[4px]" style="background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Total</p><p class="text-sm font-black text-emerald-400">' + fmt(r.totalAmount) + '</p></div>' +
+   '<div class="p-2.5 rounded-[4px]" style="background:rgba(249,115,22,0.05); border:1px solid rgba(249,115,22,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Em Aberto</p><p class="text-sm font-black text-orange-400">' + fmt(pendingAmount) + '</p></div>' +
+   '<div class="p-2.5 rounded-[4px]" style="background:rgba(59,130,246,0.05); border:1px solid rgba(59,130,246,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Vlr Parcela</p><p class="text-sm font-black text-blue-400">' + fmt(valorParcela) + '</p></div>' +
+   '<div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Status</p><p class="text-sm font-black text-white uppercase">' + r.status + '</p></div>' +
+   '</div>' +
+   '<div class="grid grid-cols-3 gap-2">' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Forma</p><p class="text-[9px] font-bold text-white uppercase">' + (r.paymentMethod||'—') + '</p></div>' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Parcelas</p><p class="text-[9px] font-bold text-white">' + r.installmentsCount + 'x</p></div>' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Cliente</p><p class="text-[9px] font-bold text-white">' + (r.client?r.client.name:'—') + '</p></div>' +
+   '</div>' +
+   '<p class="text-[8px] font-black text-gray-400 uppercase tracking-widest pt-2">Cronograma de Parcelas</p>' +
+   '<div class="space-y-1.5">' + installmentsHtml + '</div>' +
+   '</div></div></div>';
+
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+ } catch(e) { alert('Erro ao carregar detalhes: ' + e.message); }
+};
+
+window.payARInstallment = async function(instId) {
+ if (!confirm('Confirmar recebimento desta parcela?')) return;
+ try {
+  var res = await fetch('/admin/api/erp/receivables/installments/' + instId + '/pay', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ paymentMethod: 'pix' }) });
+  var data = await res.json();
+  if (data.success) {
+   if (window.showToast) window.showToast('Parcela recebida!', 'success');
+   document.getElementById('arDetailModal')?.remove();
+   window.loadReceivables();
+  } else { alert(data.error || 'Erro ao dar baixa'); }
+ } catch(e) { alert('Erro de rede: ' + e.message); }
+};
+
+// === MODAL DETALHES A PAGAR ===
+window.openAPDetail = async function(id) {
+ var existing = document.getElementById('apDetailModal');
+ if (existing) existing.remove();
+ try {
+  var res = await fetch('/admin/api/erp/payables');
+  var data = await res.json();
+  if (!data.success) { alert('Erro na API'); return; }
+  var p = data.payables.find(function(x) { return x.id === id; });
+  if (!p) { alert('Registro não encontrado'); return; }
+  var fmt = function(n) { return 'R$ ' + parseFloat(n||0).toLocaleString('pt-BR', {minimumFractionDigits:2}); };
+  var pendingAmount = p.installments ? p.installments.filter(function(i){return i.status==='pendente';}).reduce(function(s,i){return s+parseFloat(i.amount||0);},0) : 0;
+  var valorParcela = p.installmentsCount > 0 ? parseFloat(p.totalAmount) / p.installmentsCount : parseFloat(p.totalAmount);
+
+  var installmentsHtml = (p.installments||[]).sort(function(a,b){return a.installmentNumber-b.installmentNumber;}).map(function(inst) {
+   var stColor = inst.status === 'pago' ? 'text-emerald-400 bg-emerald-500/10' : inst.status === 'atrasado' ? 'text-red-400 bg-red-500/10' : 'text-orange-400 bg-orange-500/10';
+   return '<div class="flex items-center justify-between p-2.5 rounded-[4px]" style="border:1px solid rgba(255,255,255,0.04); background:rgba(255,255,255,0.015);">' +
+    '<div class="flex items-center gap-3"><span class="text-[8px] font-black text-white">P' + inst.installmentNumber + '</span><span class="text-[7px] text-gray-500">Venc: ' + (inst.dueDate||'—') + '</span>' + (inst.paidDate ? '<span class="text-[7px] text-emerald-400">Pago: ' + inst.paidDate + '</span>' : '') + '</div>' +
+    '<div class="flex items-center gap-2"><span class="text-[9px] font-black text-white">' + fmt(inst.amount) + '</span><span class="text-[7px] font-bold uppercase px-1.5 py-0.5 rounded ' + stColor + '">' + inst.status + '</span>' +
+    (inst.status === 'pendente' ? '<button onclick="window.payAPInstallment(\'' + inst.id + '\')" class="px-2 py-1 text-[7px] font-bold text-red-400 rounded-[3px]" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3);">Pagar</button>' : '') +
+    '</div></div>';
+  }).join('');
+
+  var modalHtml = '<div id="apDetailModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80" style="display:flex;">' +
+   '<div style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); width:100%; max-width:600px; max-height:85vh; overflow:hidden; display:flex; flex-direction:column;" class="mx-4">' +
+   '<header style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.06);" class="flex items-center justify-between shrink-0">' +
+   '<div><p class="text-[11px] font-black text-white">' + p.description + '</p><p class="text-[7px] text-gray-500 uppercase mt-0.5">Tipo: ' + (p.costClassification==='fixo'?'Custo Fixo':'Custo Variável') + ' | Venc: ' + (p.dueDate||'—') + '</p></div>' +
+   '<button onclick="document.getElementById(\'apDetailModal\').remove()" class="w-7 h-7 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-white" style="background:rgba(255,255,255,0.05);"><span class="material-symbols-outlined text-sm">close</span></button>' +
+   '</header>' +
+   '<div style="padding:16px 20px; overflow-y:auto;" class="flex-1 space-y-3 custom-scrollbar">' +
+   '<div class="grid grid-cols-4 gap-2">' +
+   '<div class="p-2.5 rounded-[4px]" style="background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Total</p><p class="text-sm font-black text-red-400">' + fmt(p.totalAmount) + '</p></div>' +
+   '<div class="p-2.5 rounded-[4px]" style="background:rgba(249,115,22,0.05); border:1px solid rgba(249,115,22,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Em Aberto</p><p class="text-sm font-black text-orange-400">' + fmt(pendingAmount) + '</p></div>' +
+   '<div class="p-2.5 rounded-[4px]" style="background:rgba(59,130,246,0.05); border:1px solid rgba(59,130,246,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Vlr Parcela</p><p class="text-sm font-black text-blue-400">' + fmt(valorParcela) + '</p></div>' +
+   '<div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Status</p><p class="text-sm font-black text-white uppercase">' + p.status + '</p></div>' +
+   '</div>' +
+   '<div class="grid grid-cols-2 gap-2">' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Fornecedor</p><p class="text-[9px] font-bold text-white">' + (p.freelancer?p.freelancer.name:'Geral') + '</p></div>' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Parcelas</p><p class="text-[9px] font-bold text-white">' + p.installmentsCount + 'x de ' + fmt(valorParcela) + '</p></div>' +
+   '</div>' +
+   '<p class="text-[8px] font-black text-gray-400 uppercase tracking-widest pt-2">Cronograma</p>' +
+   '<div class="space-y-1.5">' + installmentsHtml + '</div>' +
+   '</div></div></div>';
+
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+ } catch(e) { alert('Erro: ' + e.message); }
+};
+
+window.payAPInstallment = async function(instId) {
+ if (!confirm('Confirmar pagamento desta parcela?')) return;
+ try {
+  var res = await fetch('/admin/api/erp/payables/installments/' + instId + '/pay', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ paymentMethod: 'pix' }) });
+  var data = await res.json();
+  if (data.success) {
+   if (window.showToast) window.showToast('Pagamento efetuado!', 'success');
+   document.getElementById('apDetailModal')?.remove();
+   window.loadPayables();
+  } else { alert(data.error || 'Erro'); }
+ } catch(e) { alert('Erro de rede: ' + e.message); }
 };
 
 // === ERP: Carregar Contas a Pagar (Tabela) ===
@@ -1666,7 +1663,7 @@ window.loadPayables = async function() {
   const res = await fetch('/admin/api/erp/payables');
   const data = await res.json();
   if (!data.success || !data.payables.length) {
-   tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-[9px] text-gray-500">Nenhuma conta a pagar</td></tr>';
+   tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-[9px] text-gray-500">Nenhuma conta a pagar</td></tr>';
    if (summary) summary.textContent = '0 registros | R$ 0,00';
    return;
   }
@@ -1678,15 +1675,121 @@ window.loadPayables = async function() {
    var statusColor = p.status === 'quitado' ? 'text-emerald-400 bg-emerald-500/10' : p.status === 'atrasado' ? 'text-red-400 bg-red-500/10' : 'text-orange-400 bg-orange-500/10';
    var custoLabel = p.costClassification === 'fixo' ? 'Fixo' : 'Variável';
    var custoColor = p.costClassification === 'fixo' ? 'text-purple-400' : 'text-cyan-400';
-   return '<tr style="border-top:1px solid rgba(255,255,255,0.04);">' +
+   var valorParcela = p.installmentsCount > 0 ? parseFloat(p.totalAmount) / p.installmentsCount : parseFloat(p.totalAmount);
+   return '<tr class="ap-row" data-status="' + p.status + '" data-cost="' + (p.costClassification||'variavel') + '" data-amount="' + parseFloat(p.totalAmount||0) + '" data-desc="' + (p.description||'').toLowerCase() + '" style="border-top:1px solid rgba(255,255,255,0.04);">' +
     '<td class="px-3 py-2 text-[9px] font-bold text-white truncate max-w-[200px]">' + p.description + '</td>' +
     '<td class="px-3 py-2 text-[9px] font-black text-red-400">' + fmt(p.totalAmount) + '</td>' +
+    '<td class="px-3 py-2 text-[9px] font-black text-blue-400">' + fmt(valorParcela) + '</td>' +
     '<td class="px-3 py-2 text-[8px] text-gray-400">' + (p.dueDate || '—') + '</td>' +
     '<td class="px-3 py-2 text-[8px] font-bold ' + custoColor + ' uppercase">' + custoLabel + '</td>' +
     '<td class="px-3 py-2"><span class="text-[7px] font-black uppercase px-1.5 py-0.5 rounded ' + statusColor + '">' + p.status + '</span></td>' +
-    '<td class="px-3 py-2 text-right"><button class="text-[8px] text-gray-400 hover:text-white">⋮</button></td></tr>';
+    '<td class="px-3 py-2 text-right"><button onclick="window.openAPDetail(\'' + p.id + '\')" class="px-2 py-1 text-[7px] font-bold text-orange-400 rounded-[3px] hover:bg-orange-500/20" style="background:rgba(249,115,22,0.08); border:1px solid rgba(249,115,22,0.2);">Detalhes</button></td></tr>';
   }).join('');
  } catch(e) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-[9px] text-red-400">Erro</td></tr>'; }
+};
+
+// Filtro AP
+window.filterAP = function() {
+ var status = document.getElementById('ap-filter-status')?.value || '';
+ var cost = document.getElementById('ap-filter-cost')?.value || '';
+ var valueRange = document.getElementById('ap-filter-value')?.value || '';
+ var search = (document.getElementById('ap-filter-search')?.value || '').toLowerCase();
+ document.querySelectorAll('#erp-ap-tbody .ap-row').forEach(function(row) {
+  var show = true;
+  if (status && row.dataset.status !== status) show = false;
+  if (cost && row.dataset.cost !== cost) show = false;
+  if (valueRange) {
+   var parts = valueRange.split('-');
+   var min = parseFloat(parts[0]), max = parseFloat(parts[1]);
+   var amt = parseFloat(row.dataset.amount);
+   if (amt < min || amt > max) show = false;
+  }
+  if (search && !row.dataset.desc.includes(search)) show = false;
+  row.style.display = show ? '' : 'none';
+ });
+};
+
+// === MODAL DETALHES AP ===
+window.openAPDetail = async function(id) {
+ var existing = document.getElementById('apDetailModal');
+ if (existing) existing.remove();
+ try {
+  var res = await fetch('/admin/api/erp/payables');
+  var data = await res.json();
+  var p = data.payables.find(function(x) { return x.id === id; });
+  if (!p) { alert('Não encontrado'); return; }
+  var fmt = function(n) { return 'R$ ' + parseFloat(n||0).toLocaleString('pt-BR', {minimumFractionDigits:2}); };
+  var pendingAmount = p.installments ? p.installments.filter(function(i){return i.status==='pendente';}).reduce(function(s,i){return s+parseFloat(i.amount||0);},0) : 0;
+
+  var installmentsHtml = (p.installments||[]).map(function(inst) {
+   var stColor = inst.status === 'pago' ? 'text-emerald-400' : 'text-orange-400';
+   return '<div class="flex items-center justify-between p-2 rounded-[4px]" style="border:1px solid rgba(255,255,255,0.04); background:rgba(255,255,255,0.015);">' +
+    '<div><span class="text-[8px] font-bold text-white">Parcela ' + inst.installmentNumber + '</span><br><span class="text-[7px] text-gray-500">Venc: ' + (inst.dueDate||'—') + '</span></div>' +
+    '<div class="text-right"><span class="text-[9px] font-black text-white">' + fmt(inst.amount) + '</span><br><span class="text-[7px] font-bold ' + stColor + ' uppercase">' + inst.status + '</span></div>' +
+    (inst.status === 'pendente' ? '<button onclick="window.payAPInstallment(\'' + inst.id + '\')" class="ml-2 px-2 py-1 text-[7px] font-bold text-red-400 rounded-[3px]" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3);">Pagar</button>' : '') +
+    '</div>';
+  }).join('');
+
+  var modalHtml = '<div id="apDetailModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80" style="display:flex;">' +
+   '<div style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); width:100%; max-width:550px; max-height:85vh; overflow:hidden; display:flex; flex-direction:column;" class="mx-4">' +
+   '<header style="padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.06);" class="flex items-center justify-between shrink-0">' +
+   '<div><p class="text-[10px] font-black text-white uppercase tracking-wide">' + p.description + '</p><p class="text-[7px] text-gray-500 uppercase mt-0.5">Tipo: ' + (p.costClassification==='fixo'?'Custo Fixo':'Custo Variável') + '</p></div>' +
+   '<button onclick="document.getElementById(\'apDetailModal\').remove()" class="w-7 h-7 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-white" style="background:rgba(255,255,255,0.05);"><span class="material-symbols-outlined text-sm">close</span></button>' +
+   '</header>' +
+   '<div style="padding:16px 18px; overflow-y:auto;" class="flex-1 space-y-3">' +
+   '<div class="grid grid-cols-3 gap-2">' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Valor Total</p><p class="text-sm font-black text-red-400">' + fmt(p.totalAmount) + '</p></div>' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(249,115,22,0.05); border:1px solid rgba(249,115,22,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Em Aberto</p><p class="text-sm font-black text-orange-400">' + fmt(pendingAmount) + '</p></div>' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Status</p><p class="text-sm font-black text-white uppercase">' + p.status + '</p></div>' +
+   '</div>' +
+   '<div class="grid grid-cols-2 gap-2">' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Vencimento</p><p class="text-[9px] font-bold text-white">' + (p.dueDate||'—') + '</p></div>' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Fornecedor</p><p class="text-[9px] font-bold text-white">' + (p.freelancer?p.freelancer.name:'Geral') + '</p></div>' +
+   '</div>' +
+   '<p class="text-[8px] font-black text-gray-400 uppercase tracking-widest mt-2">Parcelas</p>' +
+   '<div class="space-y-1.5">' + installmentsHtml + '</div>' +
+   '</div></div></div>';
+
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+ } catch(e) { alert('Erro ao carregar detalhes'); }
+};
+
+window.payAPInstallment = async function(instId) {
+ if (!confirm('Confirmar pagamento desta parcela?')) return;
+ try {
+  var res = await fetch('/admin/api/erp/payables/installments/' + instId + '/pay', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ paymentMethod: 'pix' }) });
+  var data = await res.json();
+  if (data.success) {
+   if (window.showToast) window.showToast('Pagamento efetuado!', 'success');
+   document.getElementById('apDetailModal')?.remove();
+   window.loadPayables();
+  } else { alert(data.error || 'Erro'); }
+ } catch(e) { alert('Erro de rede'); }
+};
+
+// === ERP: Carregar Lucratividade Real ===
+window.loadProfitability = async function() {
+ try {
+  var res = await fetch('/admin/api/erp/profitability');
+  var data = await res.json();
+  if (!data.success) return;
+  var fmt = function(n) { return 'R$ ' + parseFloat(n||0).toLocaleString('pt-BR', {minimumFractionDigits:2}); };
+
+  if (document.getElementById('lucro-receita')) document.getElementById('lucro-receita').textContent = fmt(data.totalReceita);
+  if (document.getElementById('lucro-custos')) document.getElementById('lucro-custos').textContent = fmt(data.custoTotal);
+  if (document.getElementById('lucro-liquido')) document.getElementById('lucro-liquido').textContent = fmt(data.lucroLiquido);
+  if (document.getElementById('lucro-margem')) document.getElementById('lucro-margem').textContent = data.margem + '%';
+
+  var centrosEl = document.getElementById('lucro-centros');
+  if (centrosEl && data.byCostCenter) {
+   centrosEl.innerHTML = data.byCostCenter.filter(function(c){return c.custo > 0;}).map(function(c) {
+    var pct = data.custoTotal > 0 ? Math.round((c.custo / data.custoTotal) * 100) : 0;
+    return '<div class="flex items-center justify-between p-2 rounded-[4px]" style="border:1px solid rgba(255,255,255,0.04); background:rgba(255,255,255,0.015);">' +
+     '<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full" style="background:' + (c.color||'#8b5cf6') + ';"></div><span class="text-[8px] font-bold text-white">' + c.name + '</span></div>' +
+     '<div class="flex items-center gap-3"><span class="text-[8px] font-black text-red-400">' + fmt(c.custo) + '</span><span class="text-[7px] font-bold text-gray-500">' + pct + '%</span></div></div>';
+   }).join('') || '<p class="text-[8px] text-gray-500 text-center py-2">Sem custos registrados</p>';
+  }
+ } catch(e) {}
 };
 
 // === ERP: Carregar DRE + Fluxo de Caixa ===
@@ -1740,14 +1843,11 @@ window.loadCashFlow = async function() {
 };
 
 // Auto-load ERP tabs when selected
-var _erpLoaded = {};
-var origSwitchTab = switchTab;
-switchTab = function(tabId) {
- origSwitchTab(tabId);
- if (tabId === 'receber' && !_erpLoaded.receber) { _erpLoaded.receber = true; window.loadReceivables(); }
- if (tabId === 'pagar' && !_erpLoaded.pagar) { _erpLoaded.pagar = true; window.loadPayables(); }
- if (tabId === 'dre' && !_erpLoaded.dre) { _erpLoaded.dre = true; window.loadDRE(); window.loadCashFlow(); }
-};
+// Auto-load on tab restored from localStorage
+var savedTab = localStorage.getItem('selectedFinanceTab') || 'painel';
+if (savedTab === 'receber' || savedTab === 'pagar' || savedTab === 'dre') {
+ setTimeout(function() { switchTab(savedTab); }, 100);
+}
 
 // Generate Receivable modal (simplified prompt)
 window.openGenerateReceivableModal = function() {

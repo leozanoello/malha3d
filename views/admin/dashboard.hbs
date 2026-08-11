@@ -93,26 +93,35 @@
  </div>
  </div>
 
- <!-- Card 3: Previsão de Vendas -->
- <div class="ds-card flex flex-col overflow-hidden min-h-[260px]">
- <div class="ds-card-header">
- <h3 class="ds-card-title">
- <span class="material-symbols-outlined text-orange-400 text-sm">monitoring</span> Vendas
- </h3>
- <a href="/admin/crm" class="ds-action-btn ds-text-muted">Funil</a>
+ <!-- Card 3: Previsão de Vendas (Flip Card Uiverse) -->
+ <div class="uv-flip-card min-h-[260px]">
+ <div class="uv-flip-content">
+ <div class="uv-flip-back">
+ <div class="uv-flip-back-inner">
+ <span class="material-symbols-outlined text-3xl text-orange-400">monitoring</span>
+ <strong class="text-[9px] uppercase tracking-widest">Previsão de Vendas</strong>
+ <span class="text-lg font-black text-orange-400">{{formatCurrency forecast.med}}</span>
+ <span class="text-[7px] text-gray-500 uppercase">Ponderada</span>
  </div>
- <div class="ds-card-body p-4 flex flex-col gap-2.5 flex-1 justify-center">
- <div class="ds-stat-row">
- <span class="ds-stat-label">Mínima</span>
- <span class="ds-stat-value">{{formatCurrency forecast.min}}</span>
  </div>
- <div class="ds-stat-row ds-stat-row-highlight">
- <span class="ds-stat-label text-orange-400">Ponderada</span>
- <span class="ds-stat-value text-orange-400">{{formatCurrency forecast.med}}</span>
+ <div class="uv-flip-front">
+ <div class="uv-flip-img">
+ <div class="uv-circle"></div>
+ <div class="uv-circle" id="uv-right"></div>
+ <div class="uv-circle" id="uv-bottom"></div>
  </div>
- <div class="ds-stat-row">
- <span class="ds-stat-label">Máxima</span>
- <span class="ds-stat-value">{{formatCurrency forecast.max}}</span>
+ <div class="uv-flip-front-content">
+ <small class="uv-flip-badge">Forecast CRM</small>
+ <div class="uv-flip-description">
+ <div class="uv-flip-title"><p><strong>Previsão Mensal</strong></p></div>
+ <div class="space-y-1 mt-2">
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Mínima</span><span class="text-[9px] font-black">{{formatCurrency forecast.min}}</span></div>
+ <div class="flex justify-between"><span class="text-[8px] text-orange-400">Ponderada</span><span class="text-[9px] font-black text-orange-400">{{formatCurrency forecast.med}}</span></div>
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Máxima</span><span class="text-[9px] font-black">{{formatCurrency forecast.max}}</span></div>
+ </div>
+ <p class="uv-flip-footer"><a href="/admin/crm" class="text-orange-400 hover:text-white">Ver Funil →</a></p>
+ </div>
+ </div>
  </div>
  </div>
  </div>
