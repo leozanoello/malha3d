@@ -75,13 +75,20 @@
  <div class="grid grid-cols-2 gap-2">
  <div>
  <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Data Ganho Oportunidade</label>
- <input type="text" name="dataGanhoOportunidade" placeholder="DD/MM/AAAA" maxlength="10" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none date-br-mask">
+ <div class="flex gap-1">
+  <input type="text" name="dataGanhoOportunidade" placeholder="DD/MM/YYYY" maxlength="10" class="flex-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none date-br-mask" oninput="formatDateInput(this)">
+  <button type="button" class="w-10 h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all flex items-center justify-center"><span class="material-symbols-outlined text-xs">calendar_today</span></button>
+ </div>
  </div>
  <div>
  <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Expectativa de Início</label>
- <input type="text" name="expectativaInicio" placeholder="DD/MM/AAAA" maxlength="10" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none date-br-mask">
+ <div class="flex gap-1">
+  <input type="text" name="expectativaInicio" placeholder="DD/MM/YYYY" maxlength="10" class="flex-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none date-br-mask" oninput="formatDateInput(this)">
+  <button type="button" class="w-10 h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all flex items-center justify-center"><span class="material-symbols-outlined text-xs">calendar_today</span></button>
  </div>
  </div>
+ </div>
+ <div class="grid grid-cols-2 gap-2">
  <div>
  <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Origem do {{#if (eq kanbanType 'modelagem')}}Projeto{{else}}Lead{{/if}}</label>
  <select name="origemProjeto" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none appearance-none">
@@ -91,9 +98,15 @@
  <option value="LinkedIn">LinkedIn</option>
  <option value="TikTok">TikTok</option>
  <option value="E-mail">E-mail</option>
+ <option value="WhatsApp">WhatsApp</option>
  <option value="Indicação">Indicação</option>
  <option value="Outros">Outros</option>
  </select>
+ </div>
+ <div>
+ <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Prazo de Entrega (dias)</label>
+ <input type="number" name="prazoDias" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="Ex: 30" min="1">
+ </div>
  </div>
  <div>
  <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Observação</label>

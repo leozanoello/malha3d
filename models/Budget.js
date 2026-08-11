@@ -407,6 +407,10 @@ const Budget = sequelize.define('Budget', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  prazoDias: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
   observacao: {
     type: DataTypes.TEXT,
     allowNull: true

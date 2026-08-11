@@ -1663,6 +1663,29 @@
         }
       }).catch(function(){});
     }, 2000);
+
+    // === FORMATAÇÃO DE DATA COM MÁSCARA ===
+    window.formatDateInput = function(input) {
+      let value = input.value.replace(/\D/g, '');
+      if (value.length > 0) {
+        if (value.length <= 2) {
+          input.value = value;
+        } else if (value.length <= 4) {
+          input.value = value.slice(0, 2) + '/' + value.slice(2);
+        } else {
+          input.value = value.slice(0, 2) + '/' + value.slice(2, 4) + '/' + value.slice(4, 8);
+        }
+      }
+      // Validação: ao desfocar, garantir formato DD/MM/YYYY
+      input.addEventListener('blur', function() {
+        const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+        if (this.value && !regex.test(this.value)) {
+          this.value = '';
+          this.placeholder = 'DD/MM/YYYY (inválido)';
+          setTimeout(() => { this.placeholder = 'DD/MM/YYYY'; }, 2000);
+        }
+      }, { once: true });
+    };
     </script>
 
 </body>
