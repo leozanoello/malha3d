@@ -185,7 +185,7 @@
  <!-- Min / Avg / Max Cards -->
  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
  <!-- Mínima -->
- <div class="kcard-panel p-6 border-white/5 rounded-2xl bg-white/[0.02]">
+ <div class="kcard p-6 border-white/5 rounded-2xl bg-white/[0.02]">
  <div class="flex items-center justify-between mb-4">
  <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Cenário Pessimista</span>
  <span class="material-symbols-outlined text-red-400">trending_down</span>
@@ -196,7 +196,7 @@
  </div>
  
  <!-- Média -->
- <div class="kcard-panel p-6 border-orange-500/30 rounded-2xl bg-orange-500/10 shadow-[0_0_30px_rgba(249,115,22,0.15)] relative overflow-hidden">
+ <div class="kcard p-6 border-orange-500/30 rounded-2xl bg-orange-500/10 shadow-[0_0_30px_rgba(249,115,22,0.15)] relative overflow-hidden">
  <div class="absolute -right-4 -top-4 w-16 h-16 bg-orange-500/20 rounded-full blur-xl"></div>
  <div class="flex items-center justify-between mb-4 relative z-10">
  <span class="text-[10px] font-black text-orange-200 uppercase tracking-widest">Cenário Mais Provável</span>
@@ -208,7 +208,7 @@
  </div>
 
  <!-- Máxima -->
- <div class="kcard-panel p-6 border-white/5 rounded-2xl bg-white/[0.02]">
+ <div class="kcard p-6 border-white/5 rounded-2xl bg-white/[0.02]">
  <div class="flex items-center justify-between mb-4">
  <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Cenário Otimista</span>
  <span class="material-symbols-outlined text-emerald-400">trending_up</span>
@@ -220,12 +220,12 @@
  </div>
 
  <!-- Gráfico de Colunas -->
- <div class="kcard-panel p-6 border-white/5 rounded-3xl mt-6 relative h-[350px]">
+ <div class="kcard p-6 border-white/5 rounded-3xl mt-6 relative h-[350px]">
  <canvas id="forecastChart"></canvas>
  </div>
 
  <!-- AI Actionable Recommendations (Otimista) -->
- <div class="kcard-panel p-8 border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-transparent rounded-3xl space-y-4 mt-8 relative overflow-hidden">
+ <div class="kcard p-8 border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-transparent rounded-3xl space-y-4 mt-8 relative overflow-hidden">
  <div class="absolute right-0 top-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
  <h4 class="text-sm font-black text-orange-400 uppercase tracking-widest flex items-center gap-2">
  <span class="material-symbols-outlined text-orange-500 text-xl">smart_toy</span>
@@ -250,7 +250,7 @@
 
  <!-- Right Col: VGV Metrics & Probabilities -->
  <div class="space-y-6">
- <div class="kcard-panel p-6 border-white/5 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-3xl">
+ <div class="kcard p-6 border-white/5 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-3xl">
  <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">VGV Total Válido</p>
  <h4 class="text-3xl font-black text-emerald-400 tracking-tighter">R$ {{numberFormat totalVgv 2 ',' '.'}}</h4>
  <p class="text-[9px] text-gray-500 font-bold uppercase mt-3">Soma de {{length budgets}} negociacões ativas</p>
@@ -378,7 +378,7 @@
 
 <!-- Modal: Manage Lead (Ultra Advanced) -->
 <div id="manageLeadModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm" style="display: none;">
- <div class="kcard-panel w-full max-w-5xl relative rounded-[1.5rem] bg-[#0c0e12]/95 backdrop-blur-3xl overflow-hidden shadow-2xl">
+ <div class="kcard w-full max-w-5xl relative rounded-[1.5rem] bg-[#0c0e12]/95 backdrop-blur-3xl overflow-hidden shadow-2xl">
  <div class="flex flex-col" style="max-height: 90vh; height: 90vh;">
  <!-- Main Content -->
  <div class="flex-1 flex flex-col min-h-0">
@@ -1065,7 +1065,7 @@
 
 <!-- BRIEFING COMPLETO MODAL (Quick read-only view, opened directly from the card) -->
 <div id="briefingModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80 backdrop-blur-sm" style="display: none;">
- <div class="kcard-panel w-full max-w-2xl relative rounded-[1.5rem] bg-[#0c0e12]/95 backdrop-blur-3xl overflow-hidden shadow-2xl max-h-[80vh] flex flex-col">
+ <div class="kcard w-full max-w-2xl relative rounded-[1.5rem] bg-[#0c0e12]/95 backdrop-blur-3xl overflow-hidden shadow-2xl max-h-[80vh] flex flex-col">
  <div class="p-5 border-b border-white/5 flex items-center justify-between bg-white/[0.01] shrink-0">
  <div class="flex items-center gap-2">
  <span class="material-symbols-outlined text-orange-500 text-lg">description</span>
@@ -1150,7 +1150,7 @@
  .interactive-hover,
  .kanban-card-main,
  .kanban-card,
- .kcard-panel,
+ .kcard,
  .modelagem-page-tab,
  input:hover,
  select:hover {
@@ -1919,7 +1919,7 @@ document.addEventListener('DOMContentLoaded', function() {
  grid.innerHTML = '';
  templates.forEach(tpl => {
  const card = document.createElement('div');
- card.className = 'kcard-panel p-6 border-white/5 bg-white/5 hover:bg-white/10 transition-all cursor-pointer group relative overflow-hidden rounded-3xl';
+ card.className = 'kcard p-6 border-white/5 bg-white/5 hover:bg-white/10 transition-all cursor-pointer group relative overflow-hidden rounded-3xl';
  card.innerHTML = `
  <div class="relative z-10">
  <div class="flex items-center justify-between mb-4">

@@ -1,25 +1,20 @@
-<!-- Header Section -->
-<div class="mb-4 p-4" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
- <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+<!-- Header Section (.kcard template) -->
+<div class="kcard mb-3">
+ <div class="kcard-body" style="padding:14px 18px;">
+ <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div>
- <h1 class="text-4xl font-black text-white tracking-tight mb-2">
- Ecossistema de <span class="text-gradient">Contatos</span>
- </h1>
- <p class="text-gray-400 font-medium">
- Gestão centralizada de <span class="text-orange-500">Clientes, Leads e Parceiros</span>.
- </p>
+ <h1 class="kcard-title" style="font-size:1rem; white-space:normal; margin-bottom:4px;">Ecossistema de <span class="text-orange-400">Contatos</span></h1>
+ <p class="text-[9px] text-[#777] uppercase tracking-widest">Gestão centralizada de Clientes, Leads e Parceiros</p>
  </div>
- <div class="flex items-center gap-4">
- <div class="relative group">
- <span class="absolute inset-y-0 left-4 flex items-center text-gray-500">
- <span class="material-symbols-outlined text-lg">search</span>
- </span>
- <input type="text" id="contactSearchInput" placeholder="Buscar no ecossistema..." class="bg-white/5 border border-white/10 rounded-[5px] py-3 pl-12 pr-6 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 transition-all w-64" oninput="filterContacts()">
+ <div class="flex items-center gap-2">
+ <div class="relative">
+ <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-gray-500 text-[13px] pointer-events-none">search</span>
+ <input type="text" id="contactSearchInput" placeholder="Buscar..." class="pl-7 pr-3 py-1.5 text-[9px] font-bold text-white placeholder-gray-500 w-40 rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" oninput="filterContacts()">
  </div>
- <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-8 rounded-[5px] shadow-2xl shadow-orange-500/40 transition-all flex items-center gap-3" data-bs-toggle="modal" data-bs-target="#newRegistryModal">
- <span class="material-symbols-outlined">person_add</span>
- Novo Contato
+ <button class="flex items-center gap-1.5 px-4 py-2 rounded-md bg-orange-500 text-[8px] font-black uppercase tracking-wider text-white hover:bg-orange-600 transition-colors" data-bs-toggle="modal" data-bs-target="#newRegistryModal">
+ <span class="material-symbols-outlined text-[11px]">person_add</span> Novo Contato
  </button>
+ </div>
  </div>
  </div>
 </div>
@@ -56,13 +51,13 @@
 <div id="contactsMasterContainer">
  
  <!-- GRID & BLOCK VIEWS -->
- <div id="contactsGridContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+ <div id="contactsGridContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
  {{#each clients}}
- <div class="contact-card contact-item p-5 border-white/5 hover:border-orange-500/30 group transition-all duration-300 relative overflow-hidden" data-category="{{this.category}}" data-name="{{this.name}}" data-company="{{this.company}}" data-email="{{this.email}}">
+ <div class="kcard contact-card contact-item group transition-all relative overflow-hidden" data-category="{{this.category}}" data-name="{{this.name}}" data-company="{{this.company}}" data-email="{{this.email}}">
  <div class="absolute top-0 right-0 w-20 h-20 bg-orange-500/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-orange-500/10 transition-all"></div>
  <div class="flex items-start justify-between mb-4 relative z-10">
  <div class="flex items-center gap-3">
- <div class="w-12 h-12 rounded-[5px] bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center text-orange-500 font-black text-lg border border-orange-500/20 shrink-0">
+ <div class="w-12 h-12 rounded-[5px] bg-orange-500/15 flex items-center justify-center text-orange-500 font-black text-lg border border-orange-500/20 shrink-0">
  {{firstLetter this.name}}
  </div>
  <div>

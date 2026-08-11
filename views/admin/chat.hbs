@@ -1,4 +1,4 @@
-<div class="h-[calc(100vh-120px)] flex overflow-hidden" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+<div class="kcard h-[calc(100vh-120px)] flex overflow-hidden">
  <!-- Chat Sidebar -->
  <div class="w-72 border-r border-white/5 flex flex-col bg-white/[0.01]">
  <div class="p-5 border-b border-white/5">
@@ -85,7 +85,7 @@
  <div class="flex items-end gap-3 max-w-[85%] ml-auto flex-row-reverse">
  <div class="w-8 h-8 rounded-lg bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-500 font-black text-[10px]">LZ</div>
  <div class="p-4 bg-orange-500 rounded-[5px] rounded-br-none shadow-xl shadow-orange-500/20 relative group">
- <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-[5px] rounded-br-none"></div>
+ <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-[5px] rounded-br-none"></div>
  <p class="text-xs text-white font-black leading-relaxed relative z-10">Claro! Me manda o arquivo .fbx aqui que eu dou uma olhada agora mesmo no Blender.</p>
  <p class="text-[8px] text-white/50 font-black mt-2 text-right uppercase relative z-10">10:42 AM</p>
  </div>
@@ -141,7 +141,7 @@ socket.on('receive_message', (data) => {
  <span class="text-[9px] font-black text-gray-500 uppercase tracking-widest">${data.user}</span>
  <span class="text-[8px] text-gray-600">${new Date(data.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
  </div>
- <div class="p-3 rounded-[5px] text-xs font-medium ${isMe ? 'bg-orange-500 text-white rounded-tr-none' : 'kcard-panel border border-white/5 text-gray-300 rounded-tl-none'} shadow-xl max-w-[80%]">
+ <div class="p-3 rounded-[5px] text-xs font-medium ${isMe ? 'bg-orange-500 text-white rounded-tr-none' : 'kcard border border-white/5 text-gray-300 rounded-tl-none'} shadow-xl max-w-[80%]">
  ${data.text}
  </div>
  </div>

@@ -47,29 +47,29 @@
 </div>
 
 <!-- Tab Pane 1: Painel Geral -->
-<div id="tab-pane-painel" class="finance-pane active space-y-10">
+<div id="tab-pane-painel" class="finance-pane active space-y-4">
  <!-- Financial Stats -->
- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
- <div class="min-w-0 p-5 border-white/5 bg-gradient-to-br from-emerald-500/10 to-transparent">
- <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Total Receitas</p>
- <h3 class="fluid-kpi break-words font-black text-emerald-500">{{formatCurrency stats.income}}</h3>
- </div>
- <div class="min-w-0 p-5 border-white/5 bg-gradient-to-br from-red-500/10 to-transparent">
- <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Total Despesas</p>
- <h3 class="fluid-kpi break-words font-black text-red-500">{{formatCurrency stats.expense}}</h3>
- </div>
- <div class="min-w-0 p-5 border-white/5 bg-gradient-to-br from-orange-500/10 to-transparent">
- <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Saldo Projetado</p>
- <h3 class="fluid-kpi break-words font-black text-white">{{formatCurrency stats.balance}}</h3>
- </div>
- <div class="min-w-0 p-5 border-white/5 bg-gradient-to-br from-cyber-500/10 to-transparent">
- <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Margem Média Global</p>
- <h3 class="fluid-kpi break-words font-black text-cyber-500">{{bi.avgMargin}}%</h3>
- </div>
+ <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+ <div class="kcard"><div class="kcard-body" style="padding:14px;">
+ <p class="text-[8px] font-bold text-emerald-400 uppercase tracking-widest mb-1">Total Receitas</p>
+ <h3 class="text-lg font-black text-emerald-400">{{formatCurrency stats.income}}</h3>
+ </div></div>
+ <div class="kcard"><div class="kcard-body" style="padding:14px;">
+ <p class="text-[8px] font-bold text-red-400 uppercase tracking-widest mb-1">Total Despesas</p>
+ <h3 class="text-lg font-black text-red-400">{{formatCurrency stats.expense}}</h3>
+ </div></div>
+ <div class="kcard"><div class="kcard-body" style="padding:14px;">
+ <p class="text-[8px] font-bold text-orange-400 uppercase tracking-widest mb-1">Saldo Projetado</p>
+ <h3 class="text-lg font-black text-white">{{formatCurrency stats.balance}}</h3>
+ </div></div>
+ <div class="kcard"><div class="kcard-body" style="padding:14px;">
+ <p class="text-[8px] font-bold text-cyan-400 uppercase tracking-widest mb-1">Margem Média Global</p>
+ <h3 class="text-lg font-black text-cyan-400">{{bi.avgMargin}}%</h3>
+ </div></div>
  </div>
  
  <!-- Custos Fixos vs Variáveis Card (Painel Geral) -->
- <div class="kcard-panel p-5 border-white/5 bg-gradient-to-br from-purple-500/5 to-transparent relative overflow-hidden">
+ <div class="kcard p-5 border-white/5 relative overflow-hidden">
  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
  <div>
  <h4 class="text-sm font-black text-white uppercase tracking-widest mb-1">
@@ -104,7 +104,7 @@
 
  <!-- Receita Futura de Parcelas + Cash Flow Chart -->
  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
- <div class="kcard-panel p-5 border-white/5 bg-gradient-to-br from-purple-500/10 to-transparent">
+ <div class="kcard p-5 border-white/5">
  <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Receita Futura (Parcelas)</p>
  <h3 class="text-2xl font-black text-purple-400">{{formatCurrency futureInstallments}}</h3>
  <p class="text-[8px] text-gray-600 mt-2 uppercase tracking-wider">Parcelas pendentes de propostas fechadas</p>
@@ -120,13 +120,13 @@
  </div>
 
  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
- <div class="kcard-panel p-5 border-white/5">
+ <div class="kcard p-5 border-white/5">
  <h3 class="text-xs font-black text-white uppercase tracking-widest mb-6">Distribuição de Despesas</h3>
  <div class="h-[300px]">
  <canvas id="expenseChart"></canvas>
  </div>
  </div>
- <div class="kcard-panel p-5 border-white/5">
+ <div class="kcard p-5 border-white/5">
  <h3 class="text-xs font-black text-white uppercase tracking-widest mb-6">Performance de Lucratividade</h3>
  <div class="h-[300px]">
  <canvas id="profitChart"></canvas>
@@ -135,7 +135,7 @@
  </div>
 
  <!-- Centro de Custos Evoluído -->
- <div class="kcard-panel p-5 border-white/5">
+ <div class="kcard p-5 border-white/5">
  <h3 class="text-xs font-black text-white uppercase tracking-widest mb-6">
  Centro de <span class="text-gradient">Custos</span> Organizado
  </h3>
