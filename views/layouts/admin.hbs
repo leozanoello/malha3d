@@ -924,6 +924,11 @@
                                 <span class="material-symbols-outlined text-lg">view_in_ar</span> Projetos
                             </a>
                         </li>
+                        <li>
+                            <a href="/admin/portal-cliente" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'client-portal')}}bg-indigo-500/10 text-indigo-400{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">badge</span> Portal do Cliente
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
@@ -1036,11 +1041,6 @@
                         <li>
                             <a href="/admin/marketplace" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento (Etapa 2)','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'marketplace')}}bg-amber-500/10 text-amber-400{{else}}text-gray-500 hover:bg-white/5 hover:text-amber-400{{/if}}">
                                 <span class="material-symbols-outlined text-lg">shopping_bag</span> Marketplace
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/admin/portal-cliente" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'client-portal')}}bg-amber-500/10 text-amber-400{{else}}text-gray-500 hover:bg-white/5 hover:text-amber-400{{/if}}">
-                                <span class="material-symbols-outlined text-lg">badge</span> Portal do Cliente
                             </a>
                         </li>
                     </ul>
