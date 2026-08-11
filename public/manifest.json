@@ -1,0 +1,22 @@
+{
+  "name": "Malha3D — ArchViz Studio",
+  "short_name": "Malha3D",
+  "description": "Sistema integrado de CRM, Projetos e ERP para visualização arquitetônica",
+  "start_url": "/admin",
+  "display": "standalone",
+  "background_color": "#0a0c10",
+  "theme_color": "#f97316",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["business", "productivity", "design"],
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}

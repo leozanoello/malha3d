@@ -3262,6 +3262,250 @@ router.get('/entregas', requireAuth, async (req, res) => {
 
 // Rotas diretas para tabs do financeiro
 // ══════════════════════════════════════════════════════════════════
+// BLOCO 2: ESCALA, FINANCEIRO AVANÇADO, PRODUÇÃO, BI, IA
+// ══════════════════════════════════════════════════════════════════
+
+// === [1] MULTI-EMPRESA: Placeholder para future SaaS (tenant isolation já existe) ===
+// Tenant hooks já estão implementados via registerTenantHooks(sequelize)
+
+// === [2] PWA MANIFEST ===
+router.get('/manifest.json', (req, res) => {
+  res.json({
+    name: 'Malha3D ERP', short_name: 'Malha3D', start_url: '/admin/', display: 'standalone',
+    background_color: '#0a0c10', theme_color: '#f97316',
+    icons: [{ src: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }]
+  });
+});
+
+// === [3] BACKUP EXPORT ===
+router.get('/api/backup/export', requireAuth, async (req, res) => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const dbPath = path.join(__dirname, '..', 'data', 'dev.sqlite');
+    if (fs.existsSync(dbPath)) {
+      res.download(dbPath, 'malha3d-backup-' + new Date().toISOString().split('T')[0] + '.sqlite');
+    } else { res.status(404).json({ error: 'DB not found' }); }
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// === [5] CONCILIAÇÃO BANCÁRIA (Marcar parcelas como conciliadas) ===
+router.post('/api/erp/reconcile', requireAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const { installmentIds, bankAccountId } = req.body;
+    if (!installmentIds || !installmentIds.length) return res.status(400).json({ success: false });
+    for (const id of installmentIds) {
+      const arInst = await ArInstallment.findByPk(id, { transaction: t });
+      if (arInst && arInst.status === 'pago') {
+        await arInst.update({ bankAccountId, notes: (arInst.notes || '') + ' [Conciliado]' }, { transaction: t });
+      }
+    }
+    await t.commit();
+    res.json({ success: true, reconciled: installmentIds.length });
+  } catch (e) { await t.rollback(); res.status(500).json({ success: false, error: e.message }); }
+});
+
+// === [7] SPLIT DE PAGAMENTO ===
+router.post('/api/erp/split-payment', requireAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const { receivableId, splits } = req.body; // splits: [{description, amount, freelancerId}]
+    if (!splits || !splits.length) return res.status(400).json({ success: false });
+    const created = [];
+    for (const split of splits) {
+      const ap = await AccountsPayable.create({
+        description: split.description,
+        totalAmount: parseFloat(split.amount),
+        installmentsCount: 1, status: 'aberto',
+        freelancerId: split.freelancerId || null,
+        dueDate: new Date().toISOString().split('T')[0],
+        costClassification: 'variavel', approvalStatus: 'aprovado'
+      }, { transaction: t });
+      await ApInstallment.create({ payableId: ap.id, installmentNumber: 1, amount: parseFloat(split.amount), dueDate: ap.dueDate, status: 'pendente' }, { transaction: t });
+      created.push(ap.id);
+    }
+    await t.commit();
+    res.json({ success: true, created: created.length });
+  } catch (e) { await t.rollback(); res.status(500).json({ success: false, error: e.message }); }
+});
+
+// === [8] AGING DE INADIMPLÊNCIA ===
+router.get('/api/erp/aging', requireAuth, async (req, res) => {
+  try {
+    const now = new Date();
+    const overdue = await ArInstallment.findAll({ where: { status: 'pendente', dueDate: { [Op.lt]: now.toISOString().split('T')[0] } }, include: [{ model: AccountsReceivable, as: 'receivable', attributes: ['description'] }] });
+    const aging = { '1-15': { count: 0, total: 0 }, '16-30': { count: 0, total: 0 }, '31-60': { count: 0, total: 0 }, '60+': { count: 0, total: 0 } };
+    overdue.forEach(inst => {
+      const days = Math.floor((now - new Date(inst.dueDate)) / 86400000);
+      const amt = parseFloat(inst.amount || 0);
+      if (days <= 15) { aging['1-15'].count++; aging['1-15'].total += amt; }
+      else if (days <= 30) { aging['16-30'].count++; aging['16-30'].total += amt; }
+      else if (days <= 60) { aging['31-60'].count++; aging['31-60'].total += amt; }
+      else { aging['60+'].count++; aging['60+'].total += amt; }
+    });
+    res.json({ success: true, aging, totalOverdue: overdue.length });
+  } catch (e) { res.json({ success: true, aging: {}, totalOverdue: 0 }); }
+});
+
+// === [9] PIPELINE POR VENDEDOR ===
+router.get('/api/crm/pipeline-by-vendor', requireAuth, async (req, res) => {
+  try {
+    const leads = await Budget.findAll({ where: { winStatus: 'aberto', status: { [Op.ne]: 'recuperacao' } }, include: [{ model: User, as: 'assignedUser', attributes: ['id', 'name'] }] });
+    const byVendor = {};
+    leads.forEach(l => {
+      const d = l.get({ plain: true });
+      const vendor = d.assignedUser ? d.assignedUser.name : 'Sem vendedor';
+      if (!byVendor[vendor]) byVendor[vendor] = { count: 0, value: 0 };
+      byVendor[vendor].count++;
+      byVendor[vendor].value += parseFloat(d.estimatedValue) || 0;
+    });
+    res.json({ success: true, pipeline: Object.entries(byVendor).map(([name, data]) => ({ name, ...data })).sort((a, b) => b.value - a.value) });
+  } catch (e) { res.json({ success: true, pipeline: [] }); }
+});
+
+// === [11] CALCULADORA PÚBLICA DE ORÇAMENTO ===
+router.get('/orcamento-rapido', (req, res) => {
+  res.render('admin/budget-calculator', { layout: false, title: 'Orçamento Rápido — Malha3D' });
+});
+router.post('/api/public/estimate', async (req, res) => {
+  try {
+    const { name, email, phone, area, type, complexity } = req.body;
+    const avgPrice = 150; // R$/m² default
+    const mult = { 'Baixa': 0.8, 'Média': 1.0, 'Alta': 1.3, 'Ultra': 1.6 }[complexity] || 1.0;
+    const estimate = Math.round((parseFloat(area) || 100) * avgPrice * mult);
+    // Create lead automatically
+    if (name) {
+      await Budget.create({ name: name + ' — Orçamento Rápido', clientName: name, email, phone, estimatedValue: estimate, projectType: type || 'Renderização', totalArea: parseFloat(area) || 100, complexity: complexity || 'Média', status: 'novo_lead', winStatus: 'aberto', source: 'calculadora_publica', priority: 'media', probability: 30 });
+    }
+    res.json({ success: true, estimate, formula: `${area}m² × R$${avgPrice}/m² × ${mult} (${complexity})` });
+  } catch (e) { res.json({ success: true, estimate: 0 }); }
+});
+
+// === [15] LIVE TIMER (Start/Stop tracking) ===
+router.post('/api/freelancers/:id/start-timer', requireAuth, async (req, res) => {
+  try {
+    const f = await Freelancer.findByPk(req.params.id);
+    if (!f) return res.status(404).json({ success: false });
+    await f.update({ startTimestamp: new Date() });
+    res.json({ success: true, started: true });
+  } catch (e) { res.status(500).json({ success: false }); }
+});
+router.post('/api/freelancers/:id/stop-timer', requireAuth, async (req, res) => {
+  try {
+    const f = await Freelancer.findByPk(req.params.id);
+    if (!f || !f.startTimestamp) return res.status(400).json({ success: false });
+    const hours = (Date.now() - new Date(f.startTimestamp).getTime()) / 3600000;
+    await f.update({ startTimestamp: null, monthlyHours: parseFloat(f.monthlyHours || 0) + hours });
+    res.json({ success: true, hoursAdded: hours.toFixed(2), totalMonthly: (parseFloat(f.monthlyHours || 0) + hours).toFixed(2) });
+  } catch (e) { res.status(500).json({ success: false }); }
+});
+
+// === [17] RENTABILIDADE POR CLIENTE ===
+router.get('/api/erp/client-profitability', requireAuth, async (req, res) => {
+  try {
+    const clients = await Client.findAll({ include: [{ model: Budget, as: 'budgets', attributes: ['id', 'estimatedValue', 'winStatus'] }] });
+    const result = clients.map(c => {
+      const d = c.get({ plain: true });
+      const won = (d.budgets || []).filter(b => b.winStatus === 'ganho');
+      const totalSpent = won.reduce((s, b) => s + (parseFloat(b.estimatedValue) || 0), 0);
+      return { id: d.id, name: d.name, company: d.company, projects: won.length, totalSpent, avgTicket: won.length > 0 ? Math.round(totalSpent / won.length) : 0 };
+    }).filter(c => c.projects > 0).sort((a, b) => b.totalSpent - a.totalSpent);
+    res.json({ success: true, clients: result });
+  } catch (e) { res.json({ success: true, clients: [] }); }
+});
+
+// === [18] FORECAST DE CAPACIDADE ===
+router.get('/api/capacity-forecast', requireAuth, async (req, res) => {
+  try {
+    const freelancers = await Freelancer.findAll({ where: { status: 'active' } });
+    const totalHoursAvailable = freelancers.length * 160; // 160h/month per freelancer
+    const totalHoursUsed = freelancers.reduce((s, f) => s + (parseFloat(f.monthlyHours) || 0), 0);
+    const capacity = totalHoursAvailable > 0 ? Math.round((totalHoursUsed / totalHoursAvailable) * 100) : 0;
+    const activeProjects = await Budget.count({ where: { winStatus: 'aberto', status: { [Op.ne]: 'recuperacao' } } });
+    res.json({ success: true, totalHoursAvailable, totalHoursUsed: Math.round(totalHoursUsed), capacity, freelancersActive: freelancers.length, activeProjects, canAcceptMore: capacity < 80 });
+  } catch (e) { res.json({ success: true, capacity: 0 }); }
+});
+
+// === [19] MAPA GEOGRÁFICO (dados para plotar) ===
+router.get('/api/projects/geo', requireAuth, async (req, res) => {
+  try {
+    const projects = await Budget.findAll({ where: { state: { [Op.ne]: null } }, attributes: ['id', 'name', 'state', 'city', 'estimatedValue'] });
+    const byState = {};
+    projects.forEach(p => {
+      const d = p.get({ plain: true });
+      const key = d.state || 'ND';
+      if (!byState[key]) byState[key] = { state: key, count: 0, value: 0, cities: [] };
+      byState[key].count++;
+      byState[key].value += parseFloat(d.estimatedValue) || 0;
+      if (d.city && !byState[key].cities.includes(d.city)) byState[key].cities.push(d.city);
+    });
+    res.json({ success: true, geo: Object.values(byState).sort((a, b) => b.count - a.count) });
+  } catch (e) { res.json({ success: true, geo: [] }); }
+});
+
+// === [20] EXPORT CSV ===
+router.get('/api/export/:type', requireAuth, async (req, res) => {
+  try {
+    let data = [], headers = [];
+    if (req.params.type === 'receivables') {
+      data = (await AccountsReceivable.findAll({ raw: true }));
+      headers = ['description', 'totalAmount', 'installmentsCount', 'paymentMethod', 'status', 'originDate'];
+    } else if (req.params.type === 'payables') {
+      data = (await AccountsPayable.findAll({ raw: true }));
+      headers = ['description', 'totalAmount', 'dueDate', 'costClassification', 'status'];
+    } else if (req.params.type === 'leads') {
+      data = (await Budget.findAll({ raw: true, attributes: ['name', 'clientName', 'estimatedValue', 'probability', 'status', 'projectType', 'createdAt'] }));
+      headers = ['name', 'clientName', 'estimatedValue', 'probability', 'status', 'projectType', 'createdAt'];
+    }
+    const csv = [headers.join(';')].concat(data.map(row => headers.map(h => (row[h] || '').toString().replace(/;/g, ',')).join(';'))).join('\n');
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename=' + req.params.type + '-' + new Date().toISOString().split('T')[0] + '.csv');
+    res.send('﻿' + csv); // BOM for Excel
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// === [22] RESUMO SEMANAL POR IA (CEO Report) ===
+router.get('/api/ai/weekly-summary', requireAuth, async (req, res) => {
+  try {
+    const now = new Date();
+    const weekAgo = new Date(now); weekAgo.setDate(weekAgo.getDate() - 7);
+
+    const newLeads = await Budget.count({ where: { createdAt: { [Op.gte]: weekAgo } } });
+    const conversions = await Budget.count({ where: { winStatus: 'ganho', updatedAt: { [Op.gte]: weekAgo } } });
+    const arPaid = await ArInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.gte]: weekAgo.toISOString().split('T')[0] } } });
+    const weekRevenue = arPaid.reduce((s, i) => s + parseFloat(i.paidAmount || i.amount || 0), 0);
+    const apPaid = await ApInstallment.findAll({ where: { status: 'pago', paidDate: { [Op.gte]: weekAgo.toISOString().split('T')[0] } } });
+    const weekExpense = apPaid.reduce((s, i) => s + parseFloat(i.paidAmount || i.amount || 0), 0);
+
+    const summary = `Semana encerrada: ${newLeads} novos leads, ${conversions} conversões. Receita: R$${weekRevenue.toLocaleString('pt-BR')}. Despesas: R$${weekExpense.toLocaleString('pt-BR')}. Saldo: R$${(weekRevenue - weekExpense).toLocaleString('pt-BR')}.`;
+
+    res.json({ success: true, summary, data: { newLeads, conversions, weekRevenue, weekExpense, netCash: weekRevenue - weekExpense } });
+  } catch (e) { res.json({ success: true, summary: 'Erro ao gerar resumo', data: {} }); }
+});
+
+// === [24] DETECÇÃO DE ANOMALIAS ===
+router.get('/api/ai/anomalies', requireAuth, async (req, res) => {
+  try {
+    const anomalies = [];
+    // Check if any cost center spiked > 200% vs average
+    const centers = await CostCenter.findAll();
+    const payables = await AccountsPayable.findAll({ where: { status: 'quitado' } });
+    centers.forEach(c => {
+      const items = payables.filter(p => p.costCenterId === c.id);
+      if (items.length < 3) return;
+      const amounts = items.map(p => parseFloat(p.totalAmount));
+      const avg = amounts.reduce((s, v) => s + v, 0) / amounts.length;
+      const last = amounts[amounts.length - 1];
+      if (last > avg * 2) {
+        anomalies.push({ type: 'spike', message: `${c.name}: último pagamento (R$${last}) é ${Math.round(last/avg*100)}% da média`, severity: 'high' });
+      }
+    });
+    res.json({ success: true, anomalies });
+  } catch (e) { res.json({ success: true, anomalies: [] }); }
+});
+
+// ══════════════════════════════════════════════════════════════════
 // BLOCO DE INTELIGÊNCIA — Lead Scoring, Comparativo, Deadlines, IA
 // ══════════════════════════════════════════════════════════════════
 
@@ -6526,6 +6770,83 @@ router.delete('/api/users/:id', requireAuth, checkPermission('admin'), async (re
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
+});
+
+// =============================================================
+// PÁGINAS ADICIONAIS — Notificações, Busca, BI, Export, Timeline
+// =============================================================
+
+router.get('/notifications', requireAuth, (req, res) => {
+  res.render('admin/notifications', { layout: 'layouts/admin', title: 'Notificações' });
+});
+
+router.get('/buscar', requireAuth, (req, res) => {
+  res.render('admin/search', {
+    layout: 'layouts/admin',
+    title: 'Busca Global',
+    query: req.query.q || ''
+  });
+});
+
+router.get('/bi', requireAuth, checkPermission('bi'), (req, res) => {
+  res.render('admin/bi', { layout: 'layouts/admin', title: 'BI — Business Intelligence' });
+});
+
+router.get('/export', requireAuth, checkPermission('admin'), (req, res) => {
+  res.render('admin/export', { layout: 'layouts/admin', title: 'Central de Exportações' });
+});
+
+router.get('/timeline', requireAuth, (req, res) => {
+  res.render('admin/timeline', { layout: 'layouts/admin', title: 'Linha do Tempo' });
+});
+
+// PWA Manifest
+router.get('/manifest.json', (req, res) => {
+  res.json({
+    name: 'Malha3D — ArchViz Studio',
+    short_name: 'Malha3D',
+    description: 'Sistema integrado de CRM, Projetos e ERP para visualização arquitetônica',
+    start_url: '/admin',
+    display: 'standalone',
+    background_color: '#0a0c10',
+    theme_color: '#f97316',
+    orientation: 'portrait-primary',
+    icons: [
+      { src: '/favicon.ico', sizes: '64x64 32x32 24x24 16x16', type: 'image/x-icon' }
+    ],
+    categories: ['business', 'productivity', 'design'],
+    lang: 'pt-BR',
+    dir: 'ltr',
+    scope: '/',
+    prefer_related_applications: false
+  });
+});
+
+// Service Worker (PWA offline básico)
+router.get('/sw.js', (req, res) => {
+  res.set('Content-Type', 'application/javascript');
+  res.send(`
+const CACHE = 'malha3d-v1';
+self.addEventListener('install', e => {
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/favicon.ico', '/manifest.json'])));
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(clients.claim());
+});
+self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
+  e.respondWith(
+    caches.match(e.request).then(r => r || fetch(e.request).then(resp => {
+      if (resp.ok && resp.status === 200) {
+        const clone = resp.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+      }
+      return resp;
+    }).catch(() => caches.match('/admin')))
+  );
+});
+  `);
 });
 
 module.exports = router;

@@ -1,0 +1,211 @@
+<!-- Central de Notificacoes — Malha3D ArchViz Admin -->
+<div class="p-4 md:p-5 space-y-4" style="background:#0a0c10;">
+
+ <!-- Header (.kcard) -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:20px;">
+ <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+ <div class="min-w-0">
+ <div class="flex items-center gap-2 mb-2 flex-wrap">
+ <span class="kcard-badge kcard-badge-orange">
+ <span class="material-symbols-outlined text-[10px] align-middle mr-0.5">notifications</span> Alertas
+ </span>
+ <span class="kcard-badge">Tempo Real</span>
+ </div>
+ <h1 class="text-2xl font-black text-white tracking-tight mb-1">
+ Central de <span class="text-orange-400">Notificacoes</span>
+ </h1>
+ <p class="text-gray-400 text-[11px] font-medium max-w-2xl">
+ Alertas e pendencias consolidadas em tempo real
+ </p>
+ </div>
+ <div class="flex items-center gap-2 flex-wrap shrink-0">
+ <button id="refreshNow" class="kcard flex items-center gap-1.5 px-3 h-[36px] cursor-pointer hover:border-orange-500/40 transition-all" style="border-color:rgba(249,115,22,0.25);" type="button">
+ <span class="material-symbols-outlined text-[14px] text-orange-400">refresh</span>
+ <span class="text-[8px] uppercase tracking-widest font-black text-orange-400">Atualizar</span>
+ </button>
+ <div class="kcard flex items-center gap-1.5 px-3 h-[36px]" style="border-color:rgba(16,185,129,0.25);">
+ <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+ <span class="text-[8px] uppercase tracking-widest font-black text-emerald-400">Auto 60s</span>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Resumo Consolidado (.kcard) -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:16px 20px;">
+ <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+ <div>
+ <p class="text-[8px] font-bold text-red-400 uppercase tracking-widest mb-1">A Receber Vencidas</p>
+ <h3 class="text-lg font-black text-red-400" id="count-overdue_ar">0</h3>
+ </div>
+ <div>
+ <p class="text-[8px] font-bold text-orange-400 uppercase tracking-widest mb-1">A Pagar Proximas</p>
+ <h3 class="text-lg font-black text-orange-400" id="count-upcoming_ap">0</h3>
+ </div>
+ <div>
+ <p class="text-[8px] font-bold text-yellow-400 uppercase tracking-widest mb-1">Leads Parados</p>
+ <h3 class="text-lg font-black text-yellow-400" id="count-stale_leads">0</h3>
+ </div>
+ <div>
+ <p class="text-[8px] font-bold text-red-400 uppercase tracking-widest mb-1">Tarefas Atrasadas</p>
+ <h3 class="text-lg font-black text-red-400" id="count-overdue_tasks">0</h3>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Grid de 4 colunas (1 por grupo) -->
+ <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+ {{#each groups}}
+ <div class="kcard notif-group" data-type="{{this.type}}">
+ <!-- Header do Grupo -->
+ <div class="kcard-body" style="padding:14px 16px; border-bottom:1px solid rgba(255,255,255,0.06);">
+ <div class="flex items-center justify-between gap-2">
+ <div class="flex items-center gap-2 min-w-0">
+ <span class="w-8 h-8 rounded-[4px] flex items-center justify-center shrink-0 notif-icon-wrap" data-color="{{this.color}}">
+ <span class="material-symbols-outlined text-[16px] notif-icon">{{this.icon}}</span>
+ </span>
+ <h4 class="kcard-title text-[12px] font-black uppercase tracking-widest truncate" style="white-space:normal;">{{this.label}}</h4>
+ </div>
+ <span class="kcard-badge notif-count-badge" data-type="{{this.type}}">0</span>
+ </div>
+ </div>
+
+ <!-- Lista de Itens -->
+ <div class="notif-items-list">
+ {{#each this.items}}
+ <a href="{{this.link}}" class="block notif-item px-4 py-3 hover:bg-white/[0.03] transition-colors border-b border-white/[0.04] last:border-b-0">
+ <div class="flex items-start gap-3">
+ <div class="min-w-0 flex-1">
+ <p class="text-[11px] font-bold text-white truncate">{{this.title}}</p>
+ <p class="text-[9px] text-gray-500 mt-0.5 line-clamp-2">{{this.subtitle}}</p>
+ <div class="flex items-center justify-between gap-2 mt-2">
+ <span class="text-[9px] text-gray-600 font-bold">{{this.date}}</span>
+ {{#if this.value}}
+ <span class="text-[10px] font-black text-orange-400">{{this.value}}</span>
+ {{/if}}
+ </div>
+ </div>
+ <span class="material-symbols-outlined text-gray-600 text-[14px] mt-0.5 shrink-0">chevron_right</span>
+ </div>
+ </a>
+ {{/each}}
+ </div>
+
+ <!-- Empty State -->
+ <div class="notif-empty hidden p-6 text-center" style="display:none;">
+ <span class="material-symbols-outlined text-gray-600 text-[28px]">check_circle</span>
+ <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold mt-2">Nenhum alerta no momento</p>
+ </div>
+ </div>
+ {{/each}}
+
+ </div>
+</div>
+
+<!-- CSS local para estados de cor e empty state -->
+<style>
+ .notif-icon-wrap[data-color="red"] { background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.25); }
+ .notif-icon-wrap[data-color="red"] .notif-icon { color:#fca5a5; }
+ .notif-icon-wrap[data-color="orange"] { background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.25); }
+ .notif-icon-wrap[data-color="orange"] .notif-icon { color:#fdba74; }
+ .notif-icon-wrap[data-color="yellow"] { background:rgba(234,179,8,0.12); border:1px solid rgba(234,179,8,0.25); }
+ .notif-icon-wrap[data-color="yellow"] .notif-icon { color:#fde047; }
+ .notif-empty { padding:28px 16px; }
+ .notif-empty:not(.hidden) { display:block !important; }
+ .notif-items-list:empty + .notif-empty,
+ .notif-items-list.is-empty + .notif-empty { display:block !important; }
+
+ body.theme-light .notif-item:hover { background:rgba(0,0,0,0.02); }
+ body.theme-light .notif-item { border-color:rgba(0,0,0,0.05); }
+</style>
+
+<!-- JavaScript: fetch + render + auto-refresh -->
+<script>
+(function() {
+ const REFRESH_MS = 60000;
+ const COLOR_BADGE = {
+ overdue_ar: 'red',
+ upcoming_ap: 'orange',
+ stale_leads: 'yellow',
+ overdue_tasks: 'red'
+ };
+
+ function escapeHtml(s) {
+ if (s == null) return '';
+ return String(s).replace(/[&<>"']/g, function(c) {
+ return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+ });
+ }
+
+ function renderGroup(group) {
+ const card = document.querySelector('.notif-group[data-type="' + group.type + '"]');
+ if (!card) return;
+ const list = card.querySelector('.notif-items-list');
+ const empty = card.querySelector('.notif-empty');
+ const badge = card.querySelector('.notif-count-badge');
+ const items = Array.isArray(group.items) ? group.items : [];
+
+ if (badge) badge.textContent = items.length;
+ list.innerHTML = '';
+
+ if (items.length === 0) {
+ list.classList.add('is-empty');
+ if (empty) empty.classList.remove('hidden');
+ return;
+ }
+ list.classList.remove('is-empty');
+ if (empty) empty.classList.add('hidden');
+
+ items.forEach(function(item) {
+ const a = document.createElement('a');
+ a.href = item.link || '#';
+ a.className = 'block notif-item px-4 py-3 hover:bg-white/[0.03] transition-colors border-b border-white/[0.04] last:border-b-0';
+ const valueHtml = item.value ? '<span class="text-[10px] font-black text-orange-400">' + escapeHtml(item.value) + '</span>' : '';
+ a.innerHTML = '<div class="flex items-start gap-3"><div class="min-w-0 flex-1">'
+ + '<p class="text-[11px] font-bold text-white truncate">' + escapeHtml(item.title) + '</p>'
+ + '<p class="text-[9px] text-gray-500 mt-0.5 line-clamp-2">' + escapeHtml(item.subtitle) + '</p>'
+ + '<div class="flex items-center justify-between gap-2 mt-2">'
+ + '<span class="text-[9px] text-gray-600 font-bold">' + escapeHtml(item.date) + '</span>'
+ + valueHtml
+ + '</div></div>'
+ + '<span class="material-symbols-outlined text-gray-600 text-[14px] mt-0.5 shrink-0">chevron_right</span>'
+ + '</div>';
+ list.appendChild(a);
+ });
+ }
+
+ function renderAll(groups) {
+ const counts = { overdue_ar: 0, upcoming_ap: 0, stale_leads: 0, overdue_tasks: 0 };
+ groups.forEach(function(g) {
+ renderGroup(g);
+ if (counts.hasOwnProperty(g.type)) counts[g.type] = (g.items || []).length;
+ });
+ Object.keys(counts).forEach(function(k) {
+ const el = document.getElementById('count-' + k);
+ if (el) el.textContent = counts[k];
+ });
+ }
+
+ async function loadNotifications() {
+ try {
+ const res = await fetch('/admin/api/notifications', { headers: { 'Accept': 'application/json' } });
+ if (!res.ok) throw new Error('HTTP ' + res.status);
+ const data = await res.json();
+ renderAll(data.groups || []);
+ } catch (err) {
+ console.warn('[notifications] fetch failed', err);
+ }
+ }
+
+ const refreshBtn = document.getElementById('refreshNow');
+ if (refreshBtn) refreshBtn.addEventListener('click', loadNotifications);
+
+ loadNotifications();
+ setInterval(loadNotifications, REFRESH_MS);
+})();
+</script>

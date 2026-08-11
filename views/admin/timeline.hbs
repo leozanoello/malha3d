@@ -1,0 +1,583 @@
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- TIMELINE — LINHA DO TEMPO (consolidação de eventos de todos os módulos)    -->
+<!-- Layout padrão kcard (#151515 / radius 5px / shadow 0 2px 8px rgba 0,0,0,.6) -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<div class="mb-4 p-5 relative overflow-hidden" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+ <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[100px] -mr-32 -mt-32 pointer-events-none"></div>
+
+ <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+  <div class="min-w-0">
+   <div class="flex items-center gap-3 mb-2">
+    <span class="material-symbols-outlined text-orange-400 text-3xl">timeline</span>
+    <h1 class="text-2xl font-black text-white tracking-tight">
+     Linha do <span class="text-orange-400">Tempo</span>
+    </h1>
+   </div>
+   <p class="text-gray-400 font-medium max-w-2xl break-words">
+    Eventos consolidados de todos os módulos — financeiro, projetos e alertas inteligentes.
+    <span class="text-orange-500 font-bold">Atualização automática a cada 5 minutos.</span>
+   </p>
+  </div>
+
+  <div class="flex items-center gap-3 flex-wrap shrink-0">
+   <div class="flex items-center gap-2 px-3 py-2 rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="timeline-pulse"></span>
+    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest" id="timeline-status">Sincronizando</span>
+   </div>
+   <div class="flex items-center gap-2 px-3 py-2 rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);">
+    <span class="material-symbols-outlined text-gray-500 text-sm">schedule</span>
+    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest" id="timeline-last-update">—</span>
+   </div>
+   <button id="timeline-refresh-btn" class="kcard flex items-center justify-center gap-1.5 w-auto h-auto px-4 py-2 cursor-pointer hover:border-orange-500/40" style="border-color:rgba(249,115,22,0.2);">
+    <span class="material-symbols-outlined text-orange-400 text-sm">refresh</span>
+    <span class="text-[9px] uppercase tracking-widest font-black text-orange-400">Atualizar</span>
+   </button>
+  </div>
+ </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- STATS RÁPIDOS (4 KPIs derivados dos eventos carregados)                   -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+ <div class="kcard"><div class="kcard-body" style="padding:14px;">
+  <p class="text-[8px] font-bold text-orange-400 uppercase tracking-widest mb-1">Total Eventos</p>
+  <h3 class="text-lg font-black text-white" id="kpi-total">0</h3>
+ </div></div>
+ <div class="kcard"><div class="kcard-body" style="padding:14px;">
+  <p class="text-[8px] font-bold text-emerald-400 uppercase tracking-widest mb-1">Financeiro</p>
+  <h3 class="text-lg font-black text-emerald-400" id="kpi-finance">0</h3>
+ </div></div>
+ <div class="kcard"><div class="kcard-body" style="padding:14px;">
+  <p class="text-[8px] font-bold text-cyan-400 uppercase tracking-widest mb-1">Projetos</p>
+  <h3 class="text-lg font-black text-cyan-400" id="kpi-projects">0</h3>
+ </div></div>
+ <div class="kcard"><div class="kcard-body" style="padding:14px;">
+  <p class="text-[8px] font-bold text-red-400 uppercase tracking-widest mb-1">Alertas</p>
+  <h3 class="text-lg font-black text-red-400" id="kpi-alerts">0</h3>
+ </div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- BARRA DE FILTROS STICKY                                                   -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="timeline-filter-bar" class="sticky top-0 z-30 mb-4 p-2 flex items-center gap-2 overflow-x-auto" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); backdrop-filter: blur(12px);">
+ <span class="material-symbols-outlined text-gray-500 text-sm ml-2">filter_alt</span>
+ <button class="timeline-chip active" data-filter="all">
+  <span class="material-symbols-outlined text-[14px]">layers</span>
+  <span>Todos</span>
+  <span class="chip-count" id="chip-count-all">0</span>
+ </button>
+ <button class="timeline-chip" data-filter="finance">
+  <span class="material-symbols-outlined text-[14px]">payments</span>
+  <span>Financeiro</span>
+  <span class="chip-count" id="chip-count-finance">0</span>
+ </button>
+ <button class="timeline-chip" data-filter="projects">
+  <span class="material-symbols-outlined text-[14px]">view_in_ar</span>
+  <span>Projetos</span>
+  <span class="chip-count" id="chip-count-projects">0</span>
+ </button>
+ <button class="timeline-chip" data-filter="alerts">
+  <span class="material-symbols-outlined text-[14px]">warning</span>
+  <span>Alertas</span>
+  <span class="chip-count" id="chip-count-alerts">0</span>
+ </button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- TIMELINE VERTICAL (linha à esquerda, eventos à direita)                    -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="kcard p-5 relative" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+ <div class="flex items-center justify-between mb-5">
+  <h2 class="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+   <span class="material-symbols-outlined text-orange-400 text-base">event_stream</span>
+   Eventos Recentes
+  </h2>
+  <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest" id="timeline-counter">0 eventos</span>
+ </div>
+
+ <!-- Linha vertical + container dos eventos -->
+ <div class="relative pl-10">
+  <!-- Linha contínua -->
+  <div class="absolute left-[14px] top-0 bottom-0 w-px" style="background:linear-gradient(to bottom, rgba(249,115,22,0.4), rgba(255,255,255,0.06) 30%, rgba(255,255,255,0.06) 70%, rgba(239,68,68,0.4));"></div>
+
+  <!-- LOADING STATE -->
+  <div id="timeline-loading" class="flex flex-col items-center justify-center py-16 gap-3">
+   <span class="material-symbols-outlined text-orange-400 text-4xl animate-spin" style="animation-duration:1.5s;">progress_activity</span>
+   <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest">Agregando eventos dos módulos...</p>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div id="timeline-empty" class="hidden flex-col items-center justify-center py-16 gap-3">
+   <span class="material-symbols-outlined text-gray-600 text-5xl">history_toggle_off</span>
+   <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Nenhum evento encontrado</p>
+   <p class="text-[9px] text-gray-600">Os eventos aparecerão aqui conforme surgirem nos módulos.</p>
+  </div>
+
+  <!-- CONTAINER DE EVENTOS (populado via JS) -->
+  <div id="timeline-events" class="space-y-4"></div>
+ </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- TEMPLATE OCULTO — usado pelo JS para renderizar cada evento                -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<template id="timeline-event-template">
+ <div class="timeline-event relative" data-event-type="" data-event-cat="">
+  <!-- Dot na linha vertical -->
+  <div class="timeline-dot absolute -left-10 top-4 w-7 h-7 rounded-full flex items-center justify-center z-10" style="background:#151515; border:2px solid #f97316;">
+   <span class="material-symbols-outlined text-[14px] text-orange-400">event</span>
+  </div>
+
+  <div class="kcard hover:border-white/20" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+   <div class="kcard-body" style="padding:14px;">
+    <div class="flex items-start gap-4">
+     <!-- Ícone tipo -->
+     <div class="timeline-icon shrink-0 w-10 h-10 rounded-full flex items-center justify-center" style="background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.25);">
+      <span class="material-symbols-outlined text-orange-400 text-lg">event</span>
+     </div>
+
+     <!-- Conteúdo -->
+     <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2 mb-1 flex-wrap">
+       <span class="timeline-badge timeline-cat-badge"></span>
+       <span class="timeline-badge timeline-type-badge"></span>
+      </div>
+      <h3 class="timeline-title text-[13px] font-black text-white truncate"></h3>
+      <p class="timeline-subtitle text-[10px] text-gray-400 mt-1 break-words"></p>
+      <p class="timeline-date text-[8px] font-bold text-gray-500 uppercase tracking-widest mt-2"></p>
+     </div>
+
+     <!-- Link externo -->
+     <a href="#" class="timeline-link shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:text-orange-400 hover:bg-orange-500/10" title="Abrir origem">
+      <span class="material-symbols-outlined text-base">arrow_outward</span>
+     </a>
+    </div>
+   </div>
+  </div>
+ </div>
+</template>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ESTILOS ESPECÍFICOS DA TIMELINE                                            -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<style>
+  /* Filter chips */
+  .timeline-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.55);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .timeline-chip:hover { background: rgba(255,255,255,0.07); color: #fff; }
+  .timeline-chip.active {
+    background: rgba(249,115,22,0.12);
+    border-color: rgba(249,115,22,0.35);
+    color: #fb923c;
+  }
+  .timeline-chip .chip-count {
+    background: rgba(255,255,255,0.08);
+    color: inherit;
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+  }
+  .timeline-chip.active .chip-count { background: rgba(249,115,22,0.25); }
+
+  /* Event badges */
+  .timeline-badge {
+    font-size: 7px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 2px 7px;
+    border-radius: 10px;
+    border: 1px solid;
+  }
+  .timeline-cat-badge.cat-finance { color: #6ee7b7; background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.25); }
+  .timeline-cat-badge.cat-projects { color: #67e8f9; background: rgba(6,182,212,0.12); border-color: rgba(6,182,212,0.25); }
+  .timeline-cat-badge.cat-alerts { color: #fca5a5; background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.25); }
+
+  .timeline-type-badge.t-ar_created { color: #fb923c; background: rgba(249,115,22,0.12); border-color: rgba(249,115,22,0.25); }
+  .timeline-type-badge.t-ar_paid { color: #6ee7b7; background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.25); }
+  .timeline-type-badge.t-project_deadline { color: #fcd34d; background: rgba(234,179,8,0.12); border-color: rgba(234,179,8,0.25); }
+  .timeline-type-badge.t-task_overdue { color: #fca5a5; background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.25); }
+  .timeline-type-badge.t-anomaly { color: #f9a8d4; background: rgba(236,72,153,0.12); border-color: rgba(236,72,153,0.25); }
+
+  /* Color variants for icon & dot */
+  .timeline-icon.icon-orange { background: rgba(249,115,22,0.12); border-color: rgba(249,115,22,0.25); }
+  .timeline-icon.icon-orange .material-symbols-outlined { color: #fb923c; }
+  .timeline-icon.icon-green { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.25); }
+  .timeline-icon.icon-green .material-symbols-outlined { color: #34d399; }
+  .timeline-icon.icon-yellow { background: rgba(234,179,8,0.12); border-color: rgba(234,179,8,0.25); }
+  .timeline-icon.icon-yellow .material-symbols-outlined { color: #fcd34d; }
+  .timeline-icon.icon-red { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.25); }
+  .timeline-icon.icon-red .material-symbols-outlined { color: #fca5a5; }
+  .timeline-icon.icon-pink { background: rgba(236,72,153,0.12); border-color: rgba(236,72,153,0.25); }
+  .timeline-icon.icon-pink .material-symbols-outlined { color: #f9a8d4; }
+
+  .timeline-dot.dot-orange { border-color: #f97316; }
+  .timeline-dot.dot-green { border-color: #10b981; }
+  .timeline-dot.dot-yellow { border-color: #eab308; }
+  .timeline-dot.dot-red { border-color: #ef4444; }
+  .timeline-dot.dot-pink { border-color: #ec4899; }
+
+  /* AOS-like entry animation */
+  @keyframes tl-fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .timeline-event { animation: tl-fade-in 0.3s ease-out both; }
+
+  /* Hide filtered-out events */
+  .timeline-event.hidden-event { display: none; }
+
+  /* Modo claro */
+  body.theme-light .timeline-chip { background: #f1f5f9; border-color: #e2e8f0; color: #475569; }
+  body.theme-light .timeline-chip:hover { background: #ffffff; color: #0f172a; }
+  body.theme-light .timeline-chip.active { background: rgba(249,115,22,0.10); border-color: rgba(249,115,22,0.35); color: #c2410c; }
+  body.theme-light #timeline-filter-bar { background: #ffffff !important; }
+  body.theme-light .timeline-event .kcard { background: #ffffff; border-color: #e2e8f0; box-shadow: 0 1px 4px rgba(15,23,42,0.08); }
+  body.theme-light .timeline-event .kcard .timeline-title { color: #0f172a; }
+  body.theme-light .timeline-event .kcard .timeline-subtitle { color: #475569; }
+  body.theme-light .timeline-dot { background: #ffffff !important; }
+  body.theme-light .timeline-icon { background: rgba(0,0,0,0.04) !important; border-color: rgba(0,0,0,0.08) !important; }
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- JS — agregação dos endpoints e renderização da timeline                    -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  // ─── Configuração dos tipos de evento ────────────────────────────────────
+  const TYPE_CONFIG = {
+    ar_created:      { icon: 'receipt_long',  cat: 'finance',  color: 'orange', label: 'Conta a Receber' },
+    ar_paid:         { icon: 'check_circle',  cat: 'finance',  color: 'green',  label: 'Recebimento' },
+    project_deadline:{ icon: 'event_busy',    cat: 'projects', color: 'yellow', label: 'Prazo de Projeto' },
+    task_overdue:    { icon: 'pending_actions', cat: 'alerts', color: 'red',    label: 'Tarefa Atrasada' },
+    anomaly:         { icon: 'psychology',    cat: 'alerts',   color: 'pink',   label: 'Anomalia IA' }
+  };
+
+  // ─── Estado ──────────────────────────────────────────────────────────────
+  let allEvents = [];
+  let activeFilter = 'all';
+  let refreshTimer = null;
+
+  // ─── Elementos DOM ───────────────────────────────────────────────────────
+  const els = {
+    loading:  document.getElementById('timeline-loading'),
+    empty:    document.getElementById('timeline-empty'),
+    list:     document.getElementById('timeline-events'),
+    tpl:      document.getElementById('timeline-event-template'),
+    counter:  document.getElementById('timeline-counter'),
+    status:   document.getElementById('timeline-status'),
+    pulse:    document.getElementById('timeline-pulse'),
+    lastUpd:  document.getElementById('timeline-last-update'),
+    refreshBtn: document.getElementById('timeline-refresh-btn'),
+    kpiTotal:    document.getElementById('kpi-total'),
+    kpiFinance:  document.getElementById('kpi-finance'),
+    kpiProjects: document.getElementById('kpi-projects'),
+    kpiAlerts:   document.getElementById('kpi-alerts'),
+    chips: document.querySelectorAll('.timeline-chip')
+  };
+
+  // ─── Utilitários ─────────────────────────────────────────────────────────
+  function safeText(v) {
+    if (v === null || v === undefined) return '';
+    return String(v);
+  }
+
+  function formatCurrency(v) {
+    var n = Number(v);
+    if (isNaN(n)) return '';
+    try {
+      return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 });
+    } catch (e) {
+      return 'R$ ' + n.toFixed(0);
+    }
+  }
+
+  function formatDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return safeText(iso);
+    var now = new Date();
+    var diffMs = now - d;
+    var diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    var dateStr = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+    var timeStr = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    if (diffDays === 0) return 'Hoje, ' + timeStr;
+    if (diffDays === 1) return 'Ontem, ' + timeStr;
+    if (diffDays > 1 && diffDays < 7) return diffDays + ' dias atrás, ' + dateStr;
+    return dateStr + ' · ' + timeStr;
+  }
+
+  function formatTimestamp(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    return d.toISOString();
+  }
+
+  function setStatus(text, color) {
+    if (!els.status) return;
+    els.status.textContent = text;
+    if (els.pulse) {
+      els.pulse.classList.remove('bg-emerald-400', 'bg-orange-400', 'bg-red-400');
+      els.pulse.classList.add(color || 'bg-emerald-400');
+    }
+  }
+
+  // ─── Fetch com fallback silencioso ───────────────────────────────────────
+  async function safeFetch(url) {
+    try {
+      var r = await fetch(url, { credentials: 'same-origin', headers: { 'Accept': 'application/json' } });
+      if (!r.ok) return null;
+      return await r.json();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // ─── Normalização dos dados de cada endpoint ──────────────────────────────
+  function normalizeAging(data) {
+    if (!data || !Array.isArray(data.ar)) return [];
+    return data.ar.map(function (item) {
+      var paid = safeText(item.status).toLowerCase() === 'paid' || safeText(item.status).toLowerCase() === 'pago';
+      return {
+        id: 'ar-' + safeText(item.id),
+        type: paid ? 'ar_paid' : 'ar_created',
+        title: paid ? 'Recebimento confirmado' : 'Conta a receber criada',
+        subtitle: safeText(item.description) + (item.client ? ' · ' + safeText(item.client) : '') + (item.amount ? ' · ' + formatCurrency(item.amount) : ''),
+        date: safeText(item.dueDate) || new Date().toISOString(),
+        link: '/admin/financeiro',
+        raw: item
+      };
+    });
+  }
+
+  function normalizeAlerts(data) {
+    if (!data || !Array.isArray(data.alerts)) return [];
+    return data.alerts.map(function (a) {
+      var t = safeText(a.type).toLowerCase();
+      var type = 'task_overdue';
+      if (t.indexOf('deadline') !== -1 || t.indexOf('prazo') !== -1) type = 'project_deadline';
+      var daysLeft = (typeof a.daysLeft === 'number') ? a.daysLeft : null;
+      var dateRef = new Date();
+      if (daysLeft !== null) dateRef.setDate(dateRef.getDate() + daysLeft);
+      return {
+        id: 'alert-' + safeText(a.id),
+        type: type,
+        title: safeText(a.title) || 'Alerta de Prazo',
+        subtitle: safeText(a.severity).toUpperCase() + (daysLeft !== null ? ' · ' + (daysLeft < 0 ? Math.abs(daysLeft) + 'd atrasado' : daysLeft + 'd restantes') : ''),
+        date: dateRef.toISOString(),
+        link: '/admin/projetos',
+        raw: a
+      };
+    });
+  }
+
+  function normalizeAnomalies(data) {
+    if (!data || !Array.isArray(data.anomalies)) return [];
+    return data.anomalies.map(function (a) {
+      return {
+        id: 'anomaly-' + safeText(a.id),
+        type: 'anomaly',
+        title: safeText(a.description) || 'Anomalia detectada',
+        subtitle: safeText(a.type).toUpperCase() + ' · Severidade ' + safeText(a.severity),
+        date: safeText(a.createdAt) || new Date().toISOString(),
+        link: '/admin/financeiro',
+        raw: a
+      };
+    });
+  }
+
+  // ─── Carregar tudo ───────────────────────────────────────────────────────
+  async function loadAll() {
+    setStatus('Sincronizando', 'bg-orange-400');
+    if (els.loading) els.loading.classList.remove('hidden');
+
+    var results = await Promise.all([
+      safeFetch('/admin/api/erp/aging'),
+      safeFetch('/admin/api/deadline-alerts'),
+      safeFetch('/admin/api/ai/anomalies')
+    ]);
+
+    allEvents = []
+      .concat(normalizeAging(results[0]))
+      .concat(normalizeAlerts(results[1]))
+      .concat(normalizeAnomalies(results[2]));
+
+    allEvents.sort(function (a, b) {
+      return new Date(b.date) - new Date(a.date);
+    });
+
+    updateKpis();
+    updateChips();
+    render();
+
+    if (els.loading) els.loading.classList.add('hidden');
+    setStatus('Sincronizado', 'bg-emerald-400');
+    if (els.lastUpd) els.lastUpd.textContent = formatDate(new Date().toISOString());
+  }
+
+  // ─── Atualizar KPIs ──────────────────────────────────────────────────────
+  function updateKpis() {
+    var cats = { finance: 0, projects: 0, alerts: 0 };
+    allEvents.forEach(function (e) {
+      var cfg = TYPE_CONFIG[e.type] || {};
+      if (cfg.cat && cats.hasOwnProperty(cfg.cat)) cats[cfg.cat]++;
+    });
+    if (els.kpiTotal)    els.kpiTotal.textContent = allEvents.length;
+    if (els.kpiFinance)  els.kpiFinance.textContent = cats.finance;
+    if (els.kpiProjects) els.kpiProjects.textContent = cats.projects;
+    if (els.kpiAlerts)   els.kpiAlerts.textContent = cats.alerts;
+  }
+
+  function updateChips() {
+    var counts = { all: allEvents.length, finance: 0, projects: 0, alerts: 0 };
+    allEvents.forEach(function (e) {
+      var cfg = TYPE_CONFIG[e.type] || {};
+      if (cfg.cat && counts.hasOwnProperty(cfg.cat)) counts[cfg.cat]++;
+    });
+    var ids = { all: 'chip-count-all', finance: 'chip-count-finance', projects: 'chip-count-projects', alerts: 'chip-count-alerts' };
+    Object.keys(ids).forEach(function (k) {
+      var el = document.getElementById(ids[k]);
+      if (el) el.textContent = counts[k];
+    });
+  }
+
+  // ─── Renderização ────────────────────────────────────────────────────────
+  function render() {
+    if (!els.list || !els.tpl) return;
+    els.list.innerHTML = '';
+
+    if (allEvents.length === 0) {
+      if (els.empty) els.empty.classList.remove('hidden');
+      els.empty.style.display = 'flex';
+      if (els.counter) els.counter.textContent = '0 eventos';
+      return;
+    }
+    if (els.empty) {
+      els.empty.classList.add('hidden');
+      els.empty.style.display = 'none';
+    }
+
+    var visible = 0;
+    allEvents.forEach(function (ev, idx) {
+      var cfg = TYPE_CONFIG[ev.type] || { icon: 'event', cat: 'alerts', color: 'orange', label: ev.type };
+      var matchesFilter = (activeFilter === 'all') || (cfg.cat === activeFilter);
+      if (!matchesFilter) return;
+      visible++;
+
+      var node = els.tpl.content.cloneNode(true);
+      var wrap = node.querySelector('.timeline-event');
+      wrap.setAttribute('data-event-type', ev.type);
+      wrap.setAttribute('data-event-cat', cfg.cat);
+      wrap.style.animationDelay = (idx * 30) + 'ms';
+
+      // Dot
+      var dot = node.querySelector('.timeline-dot');
+      dot.classList.add('dot-' + cfg.color);
+      var dotIcon = dot.querySelector('.material-symbols-outlined');
+      dotIcon.textContent = cfg.icon;
+
+      // Icon container
+      var iconBox = node.querySelector('.timeline-icon');
+      iconBox.classList.add('icon-' + cfg.color);
+      var iconEl = iconBox.querySelector('.material-symbols-outlined');
+      iconEl.textContent = cfg.icon;
+
+      // Badges
+      var catBadge = node.querySelector('.timeline-cat-badge');
+      catBadge.textContent = cfg.cat.toUpperCase();
+      catBadge.classList.add('cat-' + cfg.cat);
+
+      var typeBadge = node.querySelector('.timeline-type-badge');
+      typeBadge.textContent = cfg.label;
+      typeBadge.classList.add('t-' + ev.type);
+
+      // Title / subtitle / date
+      node.querySelector('.timeline-title').textContent = ev.title;
+      node.querySelector('.timeline-subtitle').textContent = ev.subtitle;
+      node.querySelector('.timeline-date').textContent = formatDate(ev.date);
+
+      // Link
+      var linkEl = node.querySelector('.timeline-link');
+      if (ev.link) {
+        linkEl.setAttribute('href', ev.link);
+      } else {
+        linkEl.removeAttribute('href');
+        linkEl.style.opacity = '0.3';
+        linkEl.style.pointerEvents = 'none';
+      }
+
+      els.list.appendChild(node);
+    });
+
+    if (els.counter) els.counter.textContent = visible + ' ' + (visible === 1 ? 'evento' : 'eventos');
+  }
+
+  // ─── Filtros ─────────────────────────────────────────────────────────────
+  function bindFilters() {
+    els.chips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        els.chips.forEach(function (c) { c.classList.remove('active'); });
+        chip.classList.add('active');
+        activeFilter = chip.getAttribute('data-filter') || 'all';
+        render();
+      });
+    });
+  }
+
+  // ─── Auto-refresh ────────────────────────────────────────────────────────
+  function startAutoRefresh() {
+    if (refreshTimer) clearInterval(refreshTimer);
+    refreshTimer = setInterval(loadAll, 5 * 60 * 1000); // 5 minutos
+  }
+
+  function bindRefresh() {
+    if (!els.refreshBtn) return;
+    els.refreshBtn.addEventListener('click', function () {
+      var icon = els.refreshBtn.querySelector('.material-symbols-outlined');
+      if (icon) icon.classList.add('animate-spin');
+      loadAll().finally(function () {
+        setTimeout(function () { if (icon) icon.classList.remove('animate-spin'); }, 600);
+      });
+    });
+  }
+
+  // ─── Init ────────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function () {
+    bindFilters();
+    bindRefresh();
+    loadAll();
+    startAutoRefresh();
+  });
+
+  // Fallback: se DOMContentLoaded já disparou
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    bindFilters();
+    bindRefresh();
+    loadAll();
+    startAutoRefresh();
+  }
+})();
+</script>

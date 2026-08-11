@@ -1,0 +1,221 @@
+<!-- Busca Global — Malha3D ArchViz Admin -->
+<div class="p-4 md:p-5 space-y-4" style="background:#0a0c10;">
+
+ <!-- Header (.kcard) -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:20px;">
+ <div class="flex flex-col gap-4">
+ <div>
+ <div class="flex items-center gap-2 mb-2 flex-wrap">
+ <span class="kcard-badge kcard-badge-orange">
+ <span class="material-symbols-outlined text-[10px] align-middle mr-0.5">search</span> Busca Global
+ </span>
+ <span class="kcard-badge">Ecossistema</span>
+ </div>
+ <h1 class="text-2xl font-black text-white tracking-tight mb-1">
+ Busca <span class="text-orange-400">Global</span>
+ </h1>
+ <p class="text-gray-400 text-[11px] font-medium max-w-2xl">
+ Resultados para: <span class="text-orange-400 font-bold search-term-display">"{{query}}"</span>
+ </p>
+ </div>
+
+ <!-- Search Input -->
+ <form id="globalSearchForm" action="/admin/buscar" method="get" class="flex items-center gap-2 w-full">
+ <div class="relative flex-1">
+ <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-[16px] pointer-events-none">search</span>
+ <input type="text" id="searchInput" name="q" value="{{query}}" autocomplete="off" autofocus placeholder="Buscar projetos, leads, clientes, tarefas..."
+ class="w-full pl-10 pr-4 py-3 text-[12px] font-bold text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/50 transition-colors"
+ style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:5px;" />
+ </div>
+ <button type="submit" class="kcard flex items-center gap-1.5 px-4 h-[44px] cursor-pointer hover:border-orange-500/50 transition-all shrink-0" style="border-color:rgba(249,115,22,0.3);">
+ <span class="material-symbols-outlined text-[16px] text-orange-400">search</span>
+ <span class="text-[9px] uppercase tracking-widest font-black text-orange-400">Buscar</span>
+ </button>
+ </form>
+ </div>
+ </div>
+ </div>
+
+ <!-- Contador de Resultados (.kcard) -->
+ <div id="resultsBar" class="kcard hidden">
+ <div class="kcard-body" style="padding:12px 20px;">
+ <div class="flex items-center justify-between gap-3 flex-wrap">
+ <p class="text-[10px] uppercase tracking-widest font-black text-gray-400">
+ Mostrando <span class="text-white font-black" id="totalResults">0</span> resultados
+ </p>
+ <div class="flex items-center gap-1.5 flex-wrap" id="typeSummary"></div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Estado Vazio Inicial -->
+ <div id="emptyInitial" class="kcard">
+ <div class="kcard-body text-center" style="padding:48px 24px;">
+ <span class="material-symbols-outlined text-gray-600 text-[40px]">manage_search</span>
+ <h3 class="text-sm font-black text-white mt-3 uppercase tracking-widest">Comece sua busca</h3>
+ <p class="text-[10px] text-gray-500 mt-2 max-w-md mx-auto">
+ Digite um termo no campo acima para localizar registros em todo o ecossistema Malha3D.
+ </p>
+ </div>
+ </div>
+
+ <!-- Sem Resultados -->
+ <div id="noResults" class="kcard hidden">
+ <div class="kcard-body text-center" style="padding:48px 24px;">
+ <span class="material-symbols-outlined text-gray-600 text-[40px]">search_off</span>
+ <h3 class="text-sm font-black text-white mt-3 uppercase tracking-widest">Nenhum resultado encontrado</h3>
+ <p class="text-[10px] text-gray-500 mt-2 max-w-md mx-auto">
+ Tente termos mais curtos ou verifique a ortografia. A busca considera projetos, leads, clientes e tarefas.
+ </p>
+ </div>
+ </div>
+
+ <!-- Resultados Agrupados por Tipo -->
+ <div id="resultsContainer" class="space-y-4 hidden"></div>
+
+</div>
+
+<!-- CSS local para grupos de resultados -->
+<style>
+ .search-type-card { transition: border-color .15s ease; }
+ .search-type-card:hover { border-color: rgba(249,115,22,0.35) !important; }
+ .result-icon-wrap { width:36px; height:36px; border-radius:4px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+ .result-icon-wrap[data-type="projeto"] { background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.25); }
+ .result-icon-wrap[data-type="projeto"] .material-symbols-outlined { color:#fdba74; }
+ .result-icon-wrap[data-type="lead"] { background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); }
+ .result-icon-wrap[data-type="lead"] .material-symbols-outlined { color:#93c5fd; }
+ .result-icon-wrap[data-type="cliente"] { background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.25); }
+ .result-icon-wrap[data-type="cliente"] .material-symbols-outlined { color:#6ee7b7; }
+ .result-icon-wrap[data-type="tarefa"] { background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.25); }
+ .result-icon-wrap[data-type="tarefa"] .material-symbols-outlined { color:#d8b4fe; }
+ .search-highlight { background:rgba(249,115,22,0.18); color:#fdba74; padding:0 2px; border-radius:2px; font-weight:900; }
+ body.theme-light .search-highlight { background:rgba(249,115,22,0.15); color:#c2410c; }
+ body.theme-light .result-item:hover { background:rgba(0,0,0,0.02); }
+</style>
+
+<!-- JavaScript: agrupar resultados, highlight, renderizar -->
+<script>
+(function() {
+ const TYPE_ORDER = [
+ { type: 'projeto', label: 'Projetos', icon: 'view_in_ar' },
+ { type: 'lead', label: 'Leads', icon: 'person' },
+ { type: 'cliente', label: 'Clientes', icon: 'business' },
+ { type: 'tarefa', label: 'Tarefas', icon: 'task' }
+ ];
+
+ function escapeHtml(s) {
+ if (s == null) return '';
+ return String(s).replace(/[&<>"']/g, function(c) {
+ return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+ });
+ }
+
+ function escapeRegExp(s) {
+ return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+ }
+
+ function highlight(text, query) {
+ const safe = escapeHtml(text);
+ if (!query) return safe;
+ try {
+ const re = new RegExp('(' + escapeRegExp(escapeHtml(query)) + ')', 'gi');
+ return safe.replace(re, '<span class="search-highlight">$1</span>');
+ } catch (e) {
+ return safe;
+ }
+ }
+
+ function renderResults(data) {
+ const container = document.getElementById('resultsContainer');
+ const noResults = document.getElementById('noResults');
+ const emptyInit = document.getElementById('emptyInitial');
+ const resultsBar = document.getElementById('resultsBar');
+ const totalEl = document.getElementById('totalResults');
+ const summary = document.getElementById('typeSummary');
+
+ const initial = window.__SEARCH_INITIAL__ || { query: '', total: 0, results: [] };
+ const query = (data && data.query) || initial.query || '';
+ const results = (data && Array.isArray(data.results)) ? data.results : initial.results;
+ const total = (data && typeof data.total === 'number') ? data.total : initial.total;
+
+ if (!query) {
+ container.innerHTML = '';
+ container.classList.add('hidden');
+ resultsBar.classList.add('hidden');
+ noResults.classList.add('hidden');
+ emptyInit.classList.remove('hidden');
+ return;
+ }
+ emptyInit.classList.add('hidden');
+
+ if (!results || results.length === 0) {
+ container.innerHTML = '';
+ container.classList.add('hidden');
+ noResults.classList.remove('hidden');
+ resultsBar.classList.add('hidden');
+ return;
+ }
+ noResults.classList.add('hidden');
+ resultsBar.classList.remove('hidden');
+
+ if (totalEl) totalEl.textContent = total;
+
+ const grouped = {};
+ TYPE_ORDER.forEach(function(t) { grouped[t.type] = []; });
+ results.forEach(function(r) {
+ if (grouped[r.type]) grouped[r.type].push(r);
+ });
+
+ if (summary) {
+ summary.innerHTML = TYPE_ORDER
+ .map(function(t) { return { t: t, n: (grouped[t.type] || []).length }; })
+ .filter(function(x) { return x.n > 0; })
+ .map(function(x) {
+ return '<span class="kcard-badge">' + escapeHtml(x.n + ' ' + x.t.label.slice(0, -1) + (x.n > 1 ? 's' : '')) + '</span>';
+ })
+ .join('');
+ }
+
+ container.innerHTML = '';
+ TYPE_ORDER.forEach(function(t) {
+ const list = grouped[t.type];
+ if (!list || list.length === 0) return;
+ const section = document.createElement('div');
+ section.className = 'kcard search-type-card';
+ const itemsHtml = list.map(function(r) {
+ const icon = r.icon || t.icon;
+ return '<a href="' + escapeHtml(r.link || '#') + '" class="result-item flex items-center gap-3 px-4 py-3 hover:bg-white/[0.03] transition-colors border-b border-white/[0.04] last:border-b-0">'
+ + '<div class="result-icon-wrap" data-type="' + escapeHtml(r.type) + '">'
+ + '<span class="material-symbols-outlined text-[18px]">' + escapeHtml(icon) + '</span>'
+ + '</div>'
+ + '<div class="min-w-0 flex-1">'
+ + '<p class="text-[12px] font-black text-white truncate">' + highlight(r.title || '', query) + '</p>'
+ + '<p class="text-[10px] text-gray-500 mt-0.5 truncate">' + highlight(r.subtitle || '', query) + '</p>'
+ + '</div>'
+ + '<span class="kcard-badge shrink-0">' + escapeHtml(r.typeLabel || t.label) + '</span>'
+ + '<span class="flex items-center gap-1 px-3 h-[28px] rounded-[4px] shrink-0" style="background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.25);">'
+ + '<span class="text-[9px] uppercase tracking-widest font-black text-orange-400">Abrir</span>'
+ + '<span class="material-symbols-outlined text-[12px] text-orange-400">arrow_forward</span>'
+ + '</span>'
+ + '</a>';
+ }).join('');
+ section.innerHTML = '<div class="kcard-body" style="padding:14px 16px; border-bottom:1px solid rgba(255,255,255,0.06);">'
+ + '<div class="flex items-center gap-2">'
+ + '<span class="material-symbols-outlined text-[14px] text-orange-400">' + escapeHtml(t.icon) + '</span>'
+ + '<h4 class="kcard-title text-[12px] font-black uppercase tracking-widest" style="white-space:normal;">' + escapeHtml(t.label) + '</h4>'
+ + '<span class="kcard-badge">' + escapeHtml(list.length) + '</span>'
+ + '</div>'
+ + '</div>'
+ + '<div>' + itemsHtml + '</div>';
+ container.appendChild(section);
+ });
+ container.classList.remove('hidden');
+ }
+
+ const initialTerm = {{#if query}}"{{query}}"{{else}}""{{/if}};
+ window.__SEARCH_INITIAL__ = { query: initialTerm, total: {{#if total}}{{total}}{{else}}0{{/if}}, results: {{#if results}}{{{json results}}}{{else}}[]{{/if}} };
+
+ renderResults(window.__SEARCH_INITIAL__);
+})();
+</script>

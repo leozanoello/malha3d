@@ -1,0 +1,154 @@
+<div class="p-4 md:p-6 flex flex-col gap-4" style="background:#0a0c10;">
+
+ <!-- ============ HEADER ============ -->
+ <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+ <div>
+ <div class="flex items-center gap-2 mb-2">
+ <span class="px-2.5 py-0.5 rounded-full bg-orange-500/15 text-orange-400 text-[9px] font-black uppercase tracking-widest border border-orange-500/30">Central de Dados</span>
+ <span class="px-2.5 py-0.5 rounded-full bg-white/5 text-white/60 text-[9px] font-black uppercase tracking-widest border border-white/10">CSV · XLSX · JSON</span>
+ </div>
+ <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight leading-none">Central de <span class="text-orange-400">Exportações</span></h1>
+ <p class="text-[10px] text-gray-500 mt-1">Baixe relatórios e dados em CSV/XLSX</p>
+ </div>
+ </div>
+
+ <!-- ============ EXPORT CARDS GRID ============ -->
+ <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+
+ <!-- 1. Projetos -->
+ <div class="kcard p-5 border-white/5 flex flex-col gap-3 hover:border-orange-500/30 transition-colors">
+ <div class="flex items-start gap-3">
+ <div class="shrink-0 w-12 h-12 rounded-md flex items-center justify-center" style="background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.3);">
+ <span class="material-symbols-outlined text-orange-400 text-2xl">view_in_ar</span>
+ </div>
+ <div class="flex-1 min-w-0">
+ <h3 class="text-sm font-black text-white tracking-tight">Projetos</h3>
+ <p class="text-[10px] text-gray-400 leading-snug mt-1">Todos os projetos com status, valor, prazo</p>
+ </div>
+ </div>
+ <div class="flex items-center justify-between pt-3 border-t border-white/5">
+ <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">CSV / XLSX</span>
+ <button onclick="window.location.href='/admin/api/export/projetos'" class="flex items-center gap-1.5 px-4 py-2 rounded-md bg-emerald-500 hover:bg-emerald-600 text-[9px] font-black uppercase tracking-wider text-white transition-colors">
+ <span class="material-symbols-outlined text-[12px]">download</span> Baixar CSV
+ </button>
+ </div>
+ </div>
+
+ <!-- 2. Leads -->
+ <div class="kcard p-5 border-white/5 flex flex-col gap-3 hover:border-orange-500/30 transition-colors">
+ <div class="flex items-start gap-3">
+ <div class="shrink-0 w-12 h-12 rounded-md flex items-center justify-center" style="background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.3);">
+ <span class="material-symbols-outlined text-orange-400 text-2xl">person</span>
+ </div>
+ <div class="flex-1 min-w-0">
+ <h3 class="text-sm font-black text-white tracking-tight">Leads</h3>
+ <p class="text-[10px] text-gray-400 leading-snug mt-1">Pipeline completo de leads</p>
+ </div>
+ </div>
+ <div class="flex items-center justify-between pt-3 border-t border-white/5">
+ <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">CSV / XLSX</span>
+ <button onclick="window.location.href='/admin/api/export/leads'" class="flex items-center gap-1.5 px-4 py-2 rounded-md bg-emerald-500 hover:bg-emerald-600 text-[9px] font-black uppercase tracking-wider text-white transition-colors">
+ <span class="material-symbols-outlined text-[12px]">download</span> Baixar CSV
+ </button>
+ </div>
+ </div>
+
+ <!-- 3. Contas a Receber -->
+ <div class="kcard p-5 border-white/5 flex flex-col gap-3 hover:border-orange-500/30 transition-colors">
+ <div class="flex items-start gap-3">
+ <div class="shrink-0 w-12 h-12 rounded-md flex items-center justify-center" style="background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.3);">
+ <span class="material-symbols-outlined text-orange-400 text-2xl">trending_down</span>
+ </div>
+ <div class="flex-1 min-w-0">
+ <h3 class="text-sm font-black text-white tracking-tight">Contas a Receber</h3>
+ <p class="text-[10px] text-gray-400 leading-snug mt-1">Títulos a receber em aberto e pagos</p>
+ </div>
+ </div>
+ <div class="flex items-center justify-between pt-3 border-t border-white/5">
+ <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">CSV / XLSX</span>
+ <button onclick="window.location.href='/admin/api/export/ar'" class="flex items-center gap-1.5 px-4 py-2 rounded-md bg-emerald-500 hover:bg-emerald-600 text-[9px] font-black uppercase tracking-wider text-white transition-colors">
+ <span class="material-symbols-outlined text-[12px]">download</span> Baixar CSV
+ </button>
+ </div>
+ </div>
+
+ <!-- 4. Contas a Pagar -->
+ <div class="kcard p-5 border-white/5 flex flex-col gap-3 hover:border-orange-500/30 transition-colors">
+ <div class="flex items-start gap-3">
+ <div class="shrink-0 w-12 h-12 rounded-md flex items-center justify-center" style="background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.3);">
+ <span class="material-symbols-outlined text-orange-400 text-2xl">trending_up</span>
+ </div>
+ <div class="flex-1 min-w-0">
+ <h3 class="text-sm font-black text-white tracking-tight">Contas a Pagar</h3>
+ <p class="text-[10px] text-gray-400 leading-snug mt-1">Títulos a pagar vencidos e a vencer</p>
+ </div>
+ </div>
+ <div class="flex items-center justify-between pt-3 border-t border-white/5">
+ <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">CSV / XLSX</span>
+ <button onclick="window.location.href='/admin/api/export/ap'" class="flex items-center gap-1.5 px-4 py-2 rounded-md bg-emerald-500 hover:bg-emerald-600 text-[9px] font-black uppercase tracking-wider text-white transition-colors">
+ <span class="material-symbols-outlined text-[12px]">download</span> Baixar CSV
+ </button>
+ </div>
+ </div>
+
+ <!-- 5. DRE -->
+ <div class="kcard p-5 border-white/5 flex flex-col gap-3 hover:border-orange-500/30 transition-colors">
+ <div class="flex items-start gap-3">
+ <div class="shrink-0 w-12 h-12 rounded-md flex items-center justify-center" style="background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.3);">
+ <span class="material-symbols-outlined text-orange-400 text-2xl">receipt_long</span>
+ </div>
+ <div class="flex-1 min-w-0">
+ <h3 class="text-sm font-black text-white tracking-tight">DRE</h3>
+ <p class="text-[10px] text-gray-400 leading-snug mt-1">Demonstrativo de Resultados</p>
+ </div>
+ </div>
+ <div class="flex items-center justify-between pt-3 border-t border-white/5">
+ <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">CSV / XLSX</span>
+ <button onclick="window.location.href='/admin/api/export/dre'" class="flex items-center gap-1.5 px-4 py-2 rounded-md bg-emerald-500 hover:bg-emerald-600 text-[9px] font-black uppercase tracking-wider text-white transition-colors">
+ <span class="material-symbols-outlined text-[12px]">download</span> Baixar CSV
+ </button>
+ </div>
+ </div>
+
+ <!-- 6. Backup Completo (JSON) -->
+ <div class="kcard p-5 flex flex-col gap-3 hover:border-orange-500/30 transition-colors" style="border-color:rgba(249,115,22,0.25);">
+ <div class="flex items-start gap-3">
+ <div class="shrink-0 w-12 h-12 rounded-md flex items-center justify-center" style="background:rgba(249,115,22,0.18); border:1px solid rgba(249,115,22,0.4);">
+ <span class="material-symbols-outlined text-orange-400 text-2xl">cloud_download</span>
+ </div>
+ <div class="flex-1 min-w-0">
+ <div class="flex items-center gap-2">
+ <h3 class="text-sm font-black text-white tracking-tight">Backup Completo</h3>
+ <span class="px-1.5 py-0.5 rounded text-[7px] font-black uppercase tracking-widest bg-orange-500/15 text-orange-400 border border-orange-500/30">JSON</span>
+ </div>
+ <p class="text-[10px] text-gray-400 leading-snug mt-1">Snapshot JSON de todas as tabelas</p>
+ </div>
+ </div>
+ <div class="flex items-center justify-between pt-3 border-t border-white/5">
+ <span class="text-[8px] font-black text-gray-500 uppercase tracking-widest">Snapshot Completo</span>
+ <button onclick="window.location.href='/admin/api/backup/export'" class="flex items-center gap-1.5 px-4 py-2 rounded-md bg-orange-500 hover:bg-orange-600 text-[9px] font-black uppercase tracking-wider text-white transition-colors">
+ <span class="material-symbols-outlined text-[12px]">cloud_download</span> Baixar JSON
+ </button>
+ </div>
+ </div>
+
+ </div>
+
+ <!-- ============ FOOTER NOTE ============ -->
+ <div class="kcard p-4 border-white/5">
+ <div class="flex items-start gap-3">
+ <span class="material-symbols-outlined text-orange-400 text-base shrink-0 mt-0.5">info</span>
+ <div class="flex-1">
+ <h4 class="text-[10px] font-black text-white uppercase tracking-widest mb-1">Sobre as exportações</h4>
+ <p class="text-[10px] text-gray-400 leading-relaxed">
+ {{#if lastExport}}
+ Última exportação realizada em <strong class="text-white">{{lastExport}}</strong>.
+ {{else}}
+ Os arquivos CSV/XLSX contêm os dados filtrados conforme suas permissões. O backup completo gera um snapshot JSON de todas as tabelas do sistema para fins de migração ou disaster recovery.
+ {{/if}}
+ </p>
+ </div>
+ </div>
+ </div>
+
+</div>

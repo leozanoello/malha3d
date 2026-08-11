@@ -1,0 +1,520 @@
+<div class="p-4 md:p-6 flex flex-col gap-4" style="background:#0a0c10;">
+
+ <!-- ============ HEADER ============ -->
+ <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+ <div>
+ <div class="flex items-center gap-2 mb-2">
+ <span class="px-2.5 py-0.5 rounded-full bg-orange-500/15 text-orange-400 text-[9px] font-black uppercase tracking-widest border border-orange-500/30">Business Intelligence</span>
+ <span class="px-2.5 py-0.5 rounded-full bg-white/5 text-white/60 text-[9px] font-black uppercase tracking-widest border border-white/10">Malha3D</span>
+ </div>
+ <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight leading-none">BI <span class="text-orange-400">Antigravity</span></h1>
+ <p class="text-[10px] text-gray-500 mt-1">Painel analítico com KPIs financeiros, previsão de caixa, pipeline de vendas, capacidade de produção e anomalias detectadas por IA.</p>
+ </div>
+ <button id="refreshBI" class="self-start md:self-end flex items-center gap-1.5 px-4 py-2 rounded-md bg-orange-500 text-[9px] font-black uppercase tracking-wider text-white hover:bg-orange-600 transition-colors">
+ <span class="material-symbols-outlined text-[12px]">refresh</span> Atualizar
+ </button>
+ </div>
+
+ <!-- ============ ROW 1: KPI CARDS (4 cols) ============ -->
+ <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+ <!-- KPI: Receita Mês -->
+ <div class="kcard p-5 border-white/5">
+ <div class="flex items-start justify-between mb-3">
+ <div class="flex items-center gap-2">
+ <span class="material-symbols-outlined text-emerald-400 text-base">payments</span>
+ <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Receita Mês</span>
+ </div>
+ <span id="kpiRevenueBadge" class="text-[8px] font-black px-1.5 py-0.5 rounded bg-white/5 text-gray-400">—</span>
+ </div>
+ <p id="kpiRevenue" class="text-2xl font-black text-white tracking-tight">R$ 0,00</p>
+ <p class="text-[8px] text-gray-500 uppercase tracking-widest mt-2" id="kpiRevenueMonth">—</p>
+ </div>
+
+ <!-- KPI: Despesa Mês -->
+ <div class="kcard p-5 border-white/5">
+ <div class="flex items-start justify-between mb-3">
+ <div class="flex items-center gap-2">
+ <span class="material-symbols-outlined text-rose-400 text-base">receipt_long</span>
+ <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Despesa Mês</span>
+ </div>
+ <span id="kpiExpenseBadge" class="text-[8px] font-black px-1.5 py-0.5 rounded bg-white/5 text-gray-400">—</span>
+ </div>
+ <p id="kpiExpense" class="text-2xl font-black text-white tracking-tight">R$ 0,00</p>
+ <p class="text-[8px] text-gray-500 uppercase tracking-widest mt-2" id="kpiExpenseMonth">—</p>
+ </div>
+
+ <!-- KPI: Lucro Mês -->
+ <div class="kcard p-5 border-white/5">
+ <div class="flex items-start justify-between mb-3">
+ <div class="flex items-center gap-2">
+ <span class="material-symbols-outlined text-orange-400 text-base">savings</span>
+ <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Lucro Mês</span>
+ </div>
+ <span id="kpiProfitBadge" class="text-[8px] font-black px-1.5 py-0.5 rounded bg-white/5 text-gray-400">—</span>
+ </div>
+ <p id="kpiProfit" class="text-2xl font-black text-white tracking-tight">R$ 0,00</p>
+ <p class="text-[8px] text-gray-500 uppercase tracking-widest mt-2" id="kpiProfitMonth">—</p>
+ </div>
+
+ <!-- KPI: Variação YoY -->
+ <div class="kcard p-5 border-white/5">
+ <div class="flex items-start justify-between mb-3">
+ <div class="flex items-center gap-2">
+ <span class="material-symbols-outlined text-cyan-400 text-base">compare_arrows</span>
+ <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Variação YoY</span>
+ </div>
+ <span id="kpiYoyBadge" class="text-[8px] font-black px-1.5 py-0.5 rounded bg-white/5 text-gray-400">—</span>
+ </div>
+ <p id="kpiYoy" class="text-2xl font-black text-white tracking-tight">0.0%</p>
+ <p class="text-[8px] text-gray-500 uppercase tracking-widest mt-2">vs. mês anterior</p>
+ </div>
+ </div>
+
+ <!-- ============ ROW 2: FORECAST (8) + ANOMALIES (4) ============ -->
+ <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+ <!-- LEFT: Previsão de Caixa (IA) -->
+ <div class="kcard lg:col-span-8">
+ <div class="kcard-body" style="padding:16px 20px;">
+ <div class="flex items-center justify-between mb-3">
+ <div class="flex items-center gap-2">
+ <span class="material-symbols-outlined text-orange-400 text-base">auto_graph</span>
+ <h3 class="text-[10px] font-black text-white uppercase tracking-[0.15em]">Previsão de Caixa (IA)</h3>
+ </div>
+ <div class="flex items-center gap-2">
+ <span id="forecastTrend" class="text-[8px] font-black px-2 py-1 rounded bg-white/5 text-gray-400 uppercase tracking-widest">—</span>
+ <span id="forecastConfidence" class="text-[8px] font-black px-2 py-1 rounded bg-orange-500/15 text-orange-400 border border-orange-500/30">Confiança —</span>
+ </div>
+ </div>
+
+ <!-- SVG Trend Chart -->
+ <div class="relative w-full" style="height:240px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:5px;">
+ <svg id="forecastSvg" viewBox="0 0 800 240" preserveAspectRatio="none" class="w-full h-full">
+ <!-- Grid lines -->
+ <line x1="0" y1="60" x2="800" y2="60" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+ <line x1="0" y1="120" x2="800" y2="120" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+ <line x1="0" y1="180" x2="800" y2="180" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+ <!-- Upper bound -->
+ <path id="forecastUpper" d="" fill="none" stroke="rgba(249,115,22,0.35)" stroke-width="1.5" stroke-dasharray="4,4"/>
+ <!-- Lower bound -->
+ <path id="forecastLower" d="" fill="none" stroke="rgba(249,115,22,0.35)" stroke-width="1.5" stroke-dasharray="4,4"/>
+ <!-- Main line -->
+ <path id="forecastLine" d="" fill="none" stroke="#f97316" stroke-width="2.5"/>
+ <!-- Confidence band fill -->
+ <path id="forecastBand" d="" fill="rgba(249,115,22,0.12)"/>
+ </svg>
+ <div id="forecastEmpty" class="absolute inset-0 flex items-center justify-center">
+ <p class="text-[10px] text-gray-500">Renderize via Chart.js aqui com data.forecast</p>
+ </div>
+ </div>
+
+ <!-- Footer note -->
+ <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
+ <p class="text-[8px] text-gray-500 uppercase tracking-widest">Linha sólida = projeção · tracejado = intervalo de confiança</p>
+ <p id="forecastPoints" class="text-[8px] text-gray-500 uppercase tracking-widest">0 pontos</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- RIGHT: Anomalias Detectadas -->
+ <div class="kcard lg:col-span-4">
+ <div class="kcard-body" style="padding:16px 20px;">
+ <div class="flex items-center justify-between mb-3">
+ <div class="flex items-center gap-2">
+ <span class="material-symbols-outlined text-rose-400 text-base">warning</span>
+ <h3 class="text-[10px] font-black text-white uppercase tracking-[0.15em]">Anomalias Detectadas</h3>
+ </div>
+ <span id="anomaliesCount" class="text-[8px] font-black px-2 py-0.5 rounded bg-white/5 text-gray-400">0</span>
+ </div>
+ <div id="anomaliesList" class="space-y-2 max-h-[260px] overflow-y-auto custom-scrollbar">
+ <div class="text-center py-6">
+ <span class="material-symbols-outlined text-gray-600 text-3xl">check_circle</span>
+ <p class="text-[10px] text-gray-500 mt-2">Nenhuma anomalia detectada</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ============ ROW 3: PIPELINE (6) + CAPACITY (6) ============ -->
+ <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+ <!-- LEFT: Pipeline por Vendedor -->
+ <div class="kcard lg:col-span-6">
+ <div class="kcard-body" style="padding:16px 20px;">
+ <div class="flex items-center justify-between mb-3">
+ <div class="flex items-center gap-2">
+ <span class="material-symbols-outlined text-orange-400 text-base">groups</span>
+ <h3 class="text-[10px] font-black text-white uppercase tracking-[0.15em]">Pipeline por Vendedor</h3>
+ </div>
+ <span id="pipelineCount" class="text-[8px] font-black px-2 py-0.5 rounded bg-white/5 text-gray-400">0 vendedores</span>
+ </div>
+ <div class="overflow-x-auto custom-scrollbar">
+ <table class="w-full text-left text-[10px]">
+ <thead>
+ <tr class="text-[8px] font-black text-gray-500 uppercase tracking-widest border-b border-white/10">
+ <th class="py-2 pr-2">Vendedor</th>
+ <th class="py-2 pr-2 text-center">Qtd</th>
+ <th class="py-2 pr-2 text-right">Valor Total</th>
+ <th class="py-2 pr-2 text-right">Ponderado</th>
+ <th class="py-2 text-right">Conversão</th>
+ </tr>
+ </thead>
+ <tbody id="pipelineTableBody">
+ {{#each vendorPlaceholders}}
+ <tr class="border-b border-white/5">
+ <td class="py-3 pr-2 text-white/80">{{this.name}}</td>
+ <td class="py-3 pr-2 text-center text-gray-400">{{this.count}}</td>
+ <td class="py-3 pr-2 text-right text-gray-400">{{this.totalValue}}</td>
+ <td class="py-3 pr-2 text-right text-gray-400">{{this.weightedValue}}</td>
+ <td class="py-3 text-right text-gray-400">{{this.conversionRate}}</td>
+ </tr>
+ {{/each}}
+ {{#unless vendorPlaceholders}}
+ <tr id="pipelineEmpty">
+ <td colspan="5" class="py-6 text-center">
+ <span class="material-symbols-outlined text-gray-600 text-2xl">inbox</span>
+ <p class="text-[10px] text-gray-500 mt-2">Carregando pipeline...</p>
+ </td>
+ </tr>
+ {{/unless}}
+ </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+
+ <!-- RIGHT: Capacidade de Produção -->
+ <div class="kcard lg:col-span-6">
+ <div class="kcard-body" style="padding:16px 20px;">
+ <div class="flex items-center justify-between mb-3">
+ <div class="flex items-center gap-2">
+ <span class="material-symbols-outlined text-cyan-400 text-base">build_circle</span>
+ <h3 class="text-[10px] font-black text-white uppercase tracking-[0.15em]">Capacidade de Produção</h3>
+ </div>
+ <span id="capacityActive" class="text-[8px] font-black px-2 py-0.5 rounded bg-white/5 text-gray-400">— ativos</span>
+ </div>
+
+ <!-- Gauge visual -->
+ <div class="flex flex-col items-center mb-4">
+ <div class="relative w-40 h-40">
+ <svg viewBox="0 0 120 120" class="w-full h-full -rotate-90">
+ <!-- Background ring -->
+ <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+ <!-- Utilisation ring -->
+ <circle id="capacityRing" cx="60" cy="60" r="50" fill="none" stroke="#f97316" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 314"/>
+ </svg>
+ <div class="absolute inset-0 flex flex-col items-center justify-center">
+ <span id="capacityUtil" class="text-2xl font-black text-white">0%</span>
+ <span class="text-[8px] text-gray-500 uppercase tracking-widest">Utilização</span>
+ </div>
+ </div>
+ <p class="text-[9px] text-gray-400 mt-2"><span id="capacityActiveText">0</span> ativos / <span id="capacityTotal">0</span> capacidade</p>
+ </div>
+
+ <!-- Forecast periods -->
+ <div class="grid grid-cols-4 gap-2 pt-3 border-t border-white/5">
+ <div class="text-center p-2 rounded" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <p class="text-[7px] text-gray-500 uppercase tracking-widest">7 dias</p>
+ <p id="capNext7" class="text-base font-black text-orange-400 mt-1">—</p>
+ </div>
+ <div class="text-center p-2 rounded" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <p class="text-[7px] text-gray-500 uppercase tracking-widest">15 dias</p>
+ <p id="capNext15" class="text-base font-black text-orange-400 mt-1">—</p>
+ </div>
+ <div class="text-center p-2 rounded" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <p class="text-[7px] text-gray-500 uppercase tracking-widest">30 dias</p>
+ <p id="capNext30" class="text-base font-black text-orange-400 mt-1">—</p>
+ </div>
+ <div class="text-center p-2 rounded" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <p class="text-[7px] text-gray-500 uppercase tracking-widest">60 dias</p>
+ <p id="capNext60" class="text-base font-black text-orange-400 mt-1">—</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+</div>
+
+<style>
+/* Custom scrollbar (dark) */
+.bi-scrollbar::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+ width: 6px;
+ height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+ background: rgba(255,255,255,0.02);
+ border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+ background: rgba(249,115,22,0.3);
+ border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+ background: rgba(249,115,22,0.6);
+}
+
+/* Anomaly card */
+.anomaly-item {
+ border: 1px solid rgba(255,255,255,0.06);
+ background: rgba(255,255,255,0.02);
+ border-radius: 5px;
+ padding: 10px 12px;
+ transition: all 0.2s;
+}
+.anomaly-item:hover {
+ background: rgba(255,255,255,0.04);
+}
+.anomaly-item.severity-high {
+ border-left: 3px solid #f43f5e;
+}
+.anomaly-item.severity-medium {
+ border-left: 3px solid #f59e0b;
+}
+.anomaly-item.severity-low {
+ border-left: 3px solid #06b6d4;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+ 'use strict';
+
+ var fmtBRL = function (v) {
+ if (v === null || v === undefined || isNaN(v)) return 'R$ 0,00';
+ return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(v));
+ };
+
+ var fmtPct = function (v) {
+ if (v === null || v === undefined || isNaN(v)) return '0.0%';
+ var n = Number(v);
+ var sign = n > 0 ? '+' : '';
+ return sign + n.toFixed(1) + '%';
+ };
+
+ var trendIcon = function (trend) {
+ if (trend === 'up') return '<span class="material-symbols-outlined text-[10px]">trending_up</span>';
+ if (trend === 'down') return '<span class="material-symbols-outlined text-[10px]">trending_down</span>';
+ return '<span class="material-symbols-outlined text-[10px]">trending_flat</span>';
+ };
+
+ var pctClass = function (v) {
+ var n = Number(v);
+ if (n > 0) return 'text-emerald-400 bg-emerald-500/10';
+ if (n < 0) return 'text-rose-400 bg-rose-500/10';
+ return 'text-gray-400 bg-white/5';
+ };
+
+ // ===== KPI: Monthly comparison =====
+ function renderMonthlyComparison(data) {
+ if (!data) return;
+ var cur = data.current || {};
+ var prev = data.previous || {};
+ var var_ = data.variation || {};
+
+ document.getElementById('kpiRevenue').textContent = fmtBRL(cur.revenue);
+ document.getElementById('kpiExpense').textContent = fmtBRL(cur.expense);
+ document.getElementById('kpiProfit').textContent = fmtBRL(cur.profit);
+ document.getElementById('kpiRevenueMonth').textContent = cur.month || 'Mês atual';
+ document.getElementById('kpiExpenseMonth').textContent = cur.month || 'Mês atual';
+ document.getElementById('kpiProfitMonth').textContent = cur.month || 'Mês atual';
+
+ var revBadge = document.getElementById('kpiRevenueBadge');
+ revBadge.className = 'text-[8px] font-black px-1.5 py-0.5 rounded ' + pctClass(var_.revenue);
+ revBadge.innerHTML = fmtPct(var_.revenue);
+
+ var expBadge = document.getElementById('kpiExpenseBadge');
+ expBadge.className = 'text-[8px] font-black px-1.5 py-0.5 rounded ' + pctClass(var_.expense);
+ expBadge.innerHTML = fmtPct(var_.expense);
+
+ var proBadge = document.getElementById('kpiProfitBadge');
+ proBadge.className = 'text-[8px] font-black px-1.5 py-0.5 rounded ' + pctClass(var_.profit);
+ proBadge.innerHTML = fmtPct(var_.profit);
+
+ // Variation YoY = lucro
+ var yoyBadge = document.getElementById('kpiYoyBadge');
+ yoyBadge.className = 'text-[8px] font-black px-1.5 py-0.5 rounded ' + pctClass(var_.profit);
+ yoyBadge.innerHTML = fmtPct(var_.profit);
+
+ var yoyEl = document.getElementById('kpiYoy');
+ yoyEl.textContent = fmtPct(var_.profit);
+ yoyEl.className = 'text-2xl font-black tracking-tight ' + (Number(var_.profit) > 0 ? 'text-emerald-400' : (Number(var_.profit) < 0 ? 'text-rose-400' : 'text-white'));
+ }
+
+ // ===== KPI: Forecast =====
+ function renderForecast(data) {
+ if (!data) return;
+ var forecast = data.forecast || [];
+ var trend = data.trend || 'stable';
+ var confidence = data.confidence;
+
+ document.getElementById('forecastTrend').innerHTML = trendIcon(trend) + ' ' + trend;
+ document.getElementById('forecastTrend').className = 'text-[8px] font-black px-2 py-1 rounded uppercase tracking-widest ' +
+ (trend === 'up' ? 'bg-emerald-500/15 text-emerald-400' : trend === 'down' ? 'bg-rose-500/15 text-rose-400' : 'bg-white/5 text-gray-400');
+ document.getElementById('forecastConfidence').textContent = 'Confiança ' + (confidence != null ? confidence + '%' : '—');
+ document.getElementById('forecastPoints').textContent = forecast.length + ' pontos';
+
+ var empty = document.getElementById('forecastEmpty');
+ if (!forecast.length) {
+ empty.style.display = 'flex';
+ return;
+ }
+ empty.style.display = 'none';
+
+ var W = 800, H = 240, padX = 10, padY = 20;
+ var xs = forecast.map(function (_, i) { return i; });
+ var ys = forecast.map(function (p) { return p.projected || 0; });
+ var ls = forecast.map(function (p) { return p.lower || 0; });
+ var us = forecast.map(function (p) { return p.upper || 0; });
+
+ var minY = Math.min.apply(null, ls.concat(ys));
+ var maxY = Math.max.apply(null, us.concat(ys));
+ var rangeY = (maxY - minY) || 1;
+ var minX = 0, maxX = (forecast.length - 1) || 1;
+
+ var toX = function (i) { return padX + (i - minX) / (maxX - minX) * (W - padX * 2); };
+ var toY = function (v) { return H - padY - ((v - minY) / rangeY) * (H - padY * 2); };
+
+ var linePath = forecast.map(function (p, i) { return (i === 0 ? 'M' : 'L') + toX(i).toFixed(1) + ',' + toY(p.projected || 0).toFixed(1); }).join(' ');
+ var upperPath = forecast.map(function (p, i) { return (i === 0 ? 'M' : 'L') + toX(i).toFixed(1) + ',' + toY(p.upper || 0).toFixed(1); }).join(' ');
+ var lowerPath = forecast.map(function (p, i) { return (i === 0 ? 'M' : 'L') + toX(i).toFixed(1) + ',' + toY(p.lower || 0).toFixed(1); }).join(' ');
+ var bandPath = linePath + ' L' + toX(forecast.length - 1).toFixed(1) + ',' + toY(forecast[forecast.length - 1].lower || 0).toFixed(1) +
+ ' ' + forecast.slice().reverse().map(function (p, ri) {
+ var i = forecast.length - 1 - ri;
+ return 'L' + toX(i).toFixed(1) + ',' + toY(p.lower || 0).toFixed(1);
+ }).join(' ') + ' Z';
+
+ document.getElementById('forecastLine').setAttribute('d', linePath);
+ document.getElementById('forecastUpper').setAttribute('d', upperPath);
+ document.getElementById('forecastLower').setAttribute('d', lowerPath);
+ document.getElementById('forecastBand').setAttribute('d', bandPath);
+ }
+
+ // ===== Anomalies =====
+ function renderAnomalies(data) {
+ var list = document.getElementById('anomaliesList');
+ var count = document.getElementById('anomaliesCount');
+ var items = (data && data.anomalies) || [];
+ count.textContent = items.length;
+
+ if (!items.length) {
+ list.innerHTML = '<div class="text-center py-6">' +
+ '<span class="material-symbols-outlined text-gray-600 text-3xl">check_circle</span>' +
+ '<p class="text-[10px] text-gray-500 mt-2">Nenhuma anomalia detectada</p>' +
+ '</div>';
+ return;
+ }
+
+ list.innerHTML = items.map(function (a) {
+ var sev = (a.severity || 'low').toLowerCase();
+ var iconMap = { high: 'priority_high', medium: 'error', low: 'info' };
+ var icon = iconMap[sev] || 'info';
+ var colorMap = { high: 'text-rose-400', medium: 'text-amber-400', low: 'text-cyan-400' };
+ var color = colorMap[sev] || 'text-cyan-400';
+ var pct = a.deviation != null ? ((Number(a.deviation) >= 0 ? '+' : '') + Number(a.deviation).toFixed(1) + '%') : '—';
+ return '<div class="anomaly-item severity-' + sev + '">' +
+ '<div class="flex items-start justify-between gap-2 mb-1">' +
+ '<div class="flex items-center gap-1.5">' +
+ '<span class="material-symbols-outlined ' + color + ' text-xs">' + icon + '</span>' +
+ '<span class="text-[9px] font-black text-white uppercase tracking-widest">' + (a.type || 'Anomalia') + '</span>' +
+ '</div>' +
+ '<span class="text-[8px] font-black px-1.5 py-0.5 rounded ' + color + ' bg-white/5 uppercase tracking-widest">' + sev + '</span>' +
+ '</div>' +
+ '<p class="text-[10px] text-gray-300 leading-snug">' + (a.description || '') + '</p>' +
+ '<div class="flex items-center justify-between mt-2 pt-2 border-t border-white/5">' +
+ '<span class="text-[8px] text-gray-500">Esperado: <strong class="text-white/80">' + (a.expected != null ? fmtBRL(a.expected) : '—') + '</strong></span>' +
+ '<span class="text-[8px] text-gray-500">Atual: <strong class="' + color + '">' + (a.value != null ? fmtBRL(a.value) : '—') + '</strong></span>' +
+ '<span class="text-[8px] font-black ' + color + '">' + pct + '</span>' +
+ '</div>' +
+ '</div>';
+ }).join('');
+ }
+
+ // ===== Pipeline =====
+ function renderPipeline(data) {
+ var tbody = document.getElementById('pipelineTableBody');
+ var countEl = document.getElementById('pipelineCount');
+ var vendors = (data && data.vendors) || [];
+ countEl.textContent = vendors.length + ' vendedores';
+
+ if (!vendors.length) {
+ tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center">' +
+ '<span class="material-symbols-outlined text-gray-600 text-2xl">inbox</span>' +
+ '<p class="text-[10px] text-gray-500 mt-2">Nenhum vendedor no pipeline</p>' +
+ '</td></tr>';
+ return;
+ }
+
+ tbody.innerHTML = vendors.map(function (v) {
+ var conv = v.conversionRate != null ? Number(v.conversionRate).toFixed(1) + '%' : '—';
+ var convColor = Number(v.conversionRate) >= 30 ? 'text-emerald-400' : (Number(v.conversionRate) >= 15 ? 'text-orange-400' : 'text-rose-400');
+ return '<tr class="border-b border-white/5 hover:bg-white/[0.02] transition-colors">' +
+ '<td class="py-2.5 pr-2 text-white/90 font-semibold">' + (v.name || '—') + '</td>' +
+ '<td class="py-2.5 pr-2 text-center"><span class="px-2 py-0.5 rounded bg-white/5 text-gray-300 text-[9px] font-bold">' + (v.count || 0) + '</span></td>' +
+ '<td class="py-2.5 pr-2 text-right font-bold text-emerald-400">' + fmtBRL(v.totalValue) + '</td>' +
+ '<td class="py-2.5 pr-2 text-right font-bold text-orange-400">' + fmtBRL(v.weightedValue) + '</td>' +
+ '<td class="py-2.5 text-right font-black ' + convColor + '">' + conv + '</td>' +
+ '</tr>';
+ }).join('');
+ }
+
+ // ===== Capacity =====
+ function renderCapacity(data) {
+ if (!data) return;
+ var cur = data.current || {};
+ var fc = data.forecast || {};
+
+ var active = cur.active || 0;
+ var cap = cur.capacity || 1;
+ var util = cur.utilization != null ? Number(cur.utilization) : Math.round((active / cap) * 100);
+ util = Math.max(0, Math.min(100, util));
+
+ document.getElementById('capacityActive').textContent = active + ' ativos';
+ document.getElementById('capacityActiveText').textContent = active;
+ document.getElementById('capacityTotal').textContent = cap;
+ document.getElementById('capacityUtil').textContent = util + '%';
+ document.getElementById('capacityUtil').className = 'text-2xl font-black ' + (util >= 85 ? 'text-rose-400' : util >= 60 ? 'text-orange-400' : 'text-emerald-400');
+
+ // Ring (circumference = 2*PI*50 = 314.159)
+ var circ = 2 * Math.PI * 50;
+ var ring = document.getElementById('capacityRing');
+ ring.setAttribute('stroke-dasharray', ((util / 100) * circ).toFixed(1) + ' ' + circ.toFixed(1));
+ ring.setAttribute('stroke', util >= 85 ? '#f43f5e' : util >= 60 ? '#f97316' : '#10b981');
+
+ document.getElementById('capNext7').textContent = fc.next7 != null ? fc.next7 : '—';
+ document.getElementById('capNext15').textContent = fc.next15 != null ? fc.next15 : '—';
+ document.getElementById('capNext30').textContent = fc.next30 != null ? fc.next30 : '—';
+ document.getElementById('capNext60').textContent = fc.next60 != null ? fc.next60 : '—';
+ }
+
+ // ===== Fetch all 5 endpoints =====
+ function loadAll() {
+ var endpoints = {
+ monthly: '/admin/api/erp/monthly-comparison',
+ pipeline: '/admin/api/crm/pipeline-by-vendor',
+ forecast: '/admin/api/erp/cash-forecast-ai',
+ capacity: '/admin/api/crm/capacity-forecast',
+ anomalies: '/admin/api/ai/anomalies'
+ };
+
+ Promise.all([
+ fetch(endpoints.monthly).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }),
+ fetch(endpoints.pipeline).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }),
+ fetch(endpoints.forecast).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }),
+ fetch(endpoints.capacity).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }),
+ fetch(endpoints.anomalies).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; })
+ ]).then(function (results) {
+ renderMonthlyComparison(results[0]);
+ renderPipeline(results[1]);
+ renderForecast(results[2]);
+ renderCapacity(results[3]);
+ renderAnomalies(results[4]);
+ });
+ }
+
+ var refreshBtn = document.getElementById('refreshBI');
+ if (refreshBtn) refreshBtn.addEventListener('click', loadAll);
+
+ loadAll();
+});
+</script>
