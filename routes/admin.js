@@ -3261,6 +3261,90 @@ router.get('/entregas', requireAuth, async (req, res) => {
 // ==========================================
 
 // Rotas diretas para tabs do financeiro
+// === BUSCA GLOBAL ===
+router.get('/api/search', requireAuth, async (req, res) => {
+  try {
+    const q = (req.query.q || '').trim().toLowerCase();
+    if (q.length < 2) return res.json({ success: true, results: [] });
+
+    const results = [];
+
+    // Buscar em Budgets (CRM + Projetos)
+    const budgets = await Budget.findAll({ attributes: ['id', 'name', 'clientName', 'status', 'estimatedValue'] });
+    budgets.forEach(b => {
+      const d = b.get({ plain: true });
+      if ((d.name || '').toLowerCase().includes(q) || (d.clientName || '').toLowerCase().includes(q)) {
+        results.push({ title: d.name, type: 'Lead/Projeto', icon: 'view_kanban', url: '/admin/crm?leadId=' + d.id });
+      }
+    });
+
+    // Buscar em Clientes
+    const clients = await Client.findAll({ attributes: ['id', 'name', 'email', 'company'] });
+    clients.forEach(c => {
+      const d = c.get({ plain: true });
+      if ((d.name || '').toLowerCase().includes(q) || (d.email || '').toLowerCase().includes(q) || (d.company || '').toLowerCase().includes(q)) {
+        results.push({ title: d.name + (d.company ? ' (' + d.company + ')' : ''), type: 'Contato', icon: 'person', url: '/admin/contatos' });
+      }
+    });
+
+    // Buscar em AR
+    const receivables = await AccountsReceivable.findAll({ attributes: ['id', 'description', 'totalAmount'] });
+    receivables.forEach(r => {
+      const d = r.get({ plain: true });
+      if ((d.description || '').toLowerCase().includes(q)) {
+        results.push({ title: d.description, type: 'A Receber', icon: 'arrow_downward', url: '/admin/financeiro?tab=receber' });
+      }
+    });
+
+    // Buscar em AP
+    const payables = await AccountsPayable.findAll({ attributes: ['id', 'description', 'totalAmount'] });
+    payables.forEach(p => {
+      const d = p.get({ plain: true });
+      if ((d.description || '').toLowerCase().includes(q)) {
+        results.push({ title: d.description, type: 'A Pagar', icon: 'arrow_upward', url: '/admin/financeiro?tab=pagar' });
+      }
+    });
+
+    res.json({ success: true, results: results.slice(0, 15) });
+  } catch (e) { res.json({ success: true, results: [] }); }
+});
+
+// === NOTIFICAÇÕES ===
+router.get('/api/notifications', requireAuth, async (req, res) => {
+  try {
+    const items = [];
+    const now = new Date();
+
+    // Parcelas AR vencidas (atrasadas)
+    const overdueAR = await ArInstallment.findAll({ where: { status: 'pendente', dueDate: { [Op.lt]: now.toISOString().split('T')[0] } } });
+    if (overdueAR.length > 0) {
+      items.push({ title: overdueAR.length + ' parcelas em atraso', message: 'Contas a receber com vencimento ultrapassado', type: 'warning' });
+    }
+
+    // Parcelas AP vencendo em 7 dias
+    const soon = new Date(now); soon.setDate(soon.getDate() + 7);
+    const upcomingAP = await ApInstallment.findAll({ where: { status: 'pendente', dueDate: { [Op.between]: [now.toISOString().split('T')[0], soon.toISOString().split('T')[0]] } } });
+    if (upcomingAP.length > 0) {
+      items.push({ title: upcomingAP.length + ' pagamentos nos próximos 7 dias', message: 'Contas a pagar com vencimento próximo', type: 'info' });
+    }
+
+    // Leads sem ação há 5+ dias
+    const fiveDaysAgo = new Date(now); fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+    const staleLeads = await Budget.count({ where: { winStatus: 'aberto', status: { [Op.ne]: 'recuperacao' }, updatedAt: { [Op.lt]: fiveDaysAgo } } });
+    if (staleLeads > 0) {
+      items.push({ title: staleLeads + ' leads sem follow-up', message: 'Leads sem atualização há mais de 5 dias', type: 'alert' });
+    }
+
+    // Tarefas atrasadas
+    const overdueTasks = await CRMTask.count({ where: { status: 'ativa', dueDate: { [Op.lt]: now } } });
+    if (overdueTasks > 0) {
+      items.push({ title: overdueTasks + ' tarefas atrasadas', message: 'Tarefas com deadline vencida', type: 'warning' });
+    }
+
+    res.json({ success: true, items });
+  } catch (e) { res.json({ success: true, items: [] }); }
+});
+
 // Rotas diretas removidas — tab switching é feito via JS no frontend
 
 router.get('/financeiro', requireAuth, checkPermission('finance'), async (req, res) => {

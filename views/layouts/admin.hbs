@@ -1072,6 +1072,25 @@
 
     <!-- Main Content -->
     <div class="sm:ml-64 h-screen flex flex-col overflow-hidden">
+        <!-- Topbar: Busca Global + Notificações -->
+        <div class="shrink-0 px-4 py-2 flex items-center justify-end gap-3" style="border-bottom:1px solid rgba(255,255,255,0.04);">
+            <!-- Busca Global (Ctrl+K) -->
+            <button onclick="window.openGlobalSearch()" class="flex items-center gap-2 px-3 py-1.5 rounded-[4px] text-[8px] font-bold text-gray-500 hover:text-white transition-colors" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" title="Busca Global (Ctrl+K)">
+                <span class="material-symbols-outlined text-[12px]">search</span>
+                <span class="hidden sm:inline">Buscar...</span>
+                <kbd class="hidden sm:inline text-[7px] px-1 py-0.5 rounded bg-white/10 text-gray-500 ml-2">Ctrl+K</kbd>
+            </button>
+            <!-- Sino de Notificações -->
+            <button onclick="window.openNotificationsPanel()" class="relative w-8 h-8 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-white transition-colors" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" id="notif-bell">
+                <span class="material-symbols-outlined text-[16px]">notifications</span>
+                <span id="notif-badge" class="hidden absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[7px] font-black text-white flex items-center justify-center">0</span>
+            </button>
+            <!-- Avatar -->
+            <div class="w-8 h-8 rounded-[4px] bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-[10px] font-black text-orange-400">
+                {{firstLetter user.name}}
+            </div>
+        </div>
+
         <div class="flex-1 min-h-0 {{#if (eq currentPage 'dashboard')}}flex flex-col p-2 sm:p-4 md:p-6 overflow-y-auto 2xl:overflow-hidden h-full{{else}}p-3 sm:p-6 overflow-y-auto{{/if}}">
             {{#if error}}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -1580,6 +1599,70 @@
                 observer.observe(document.body, { childList: true, subtree: true });
             });
         })();
+    </script>
+
+    <!-- Global Search + Notifications System -->
+    <script>
+    // === BUSCA GLOBAL (Ctrl+K) ===
+    window.openGlobalSearch = function() {
+      var existing = document.getElementById('globalSearchModal');
+      if (existing) { existing.remove(); return; }
+      var modal = '<div id="globalSearchModal" class="fixed inset-0 z-[300] flex items-start justify-center pt-[15vh] bg-black/70" onclick="if(event.target===this) this.remove();">' +
+        '<div class="w-full max-w-lg mx-4" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">' +
+        '<div class="flex items-center gap-2 p-3" style="border-bottom:1px solid rgba(255,255,255,0.06);">' +
+        '<span class="material-symbols-outlined text-gray-500">search</span>' +
+        '<input type="text" id="globalSearchInput" autofocus placeholder="Buscar leads, projetos, contatos, transações..." class="flex-1 bg-transparent text-sm text-white placeholder-gray-500 outline-none">' +
+        '<kbd class="text-[7px] px-1.5 py-0.5 rounded text-gray-500" style="background:rgba(255,255,255,0.05);">ESC</kbd>' +
+        '</div>' +
+        '<div id="globalSearchResults" class="p-3 max-h-[50vh] overflow-y-auto custom-scrollbar">' +
+        '<p class="text-[9px] text-gray-500 text-center py-4">Digite para buscar...</p>' +
+        '</div></div></div>';
+      document.body.insertAdjacentHTML('beforeend', modal);
+      document.getElementById('globalSearchInput').focus();
+      document.getElementById('globalSearchInput').addEventListener('input', function() {
+        var q = this.value.trim();
+        if (q.length < 2) { document.getElementById('globalSearchResults').innerHTML = '<p class="text-[9px] text-gray-500 text-center py-4">Digite ao menos 2 caracteres...</p>'; return; }
+        fetch('/admin/api/search?q=' + encodeURIComponent(q)).then(function(r){return r.json();}).then(function(data) {
+          var el = document.getElementById('globalSearchResults');
+          if (!data.success || !data.results.length) { el.innerHTML = '<p class="text-[9px] text-gray-500 text-center py-4">Nenhum resultado</p>'; return; }
+          el.innerHTML = data.results.map(function(r) {
+            return '<a href="' + r.url + '" class="flex items-center gap-2 p-2 rounded-[4px] hover:bg-white/5 transition-colors" style="border-bottom:1px solid rgba(255,255,255,0.03);">' +
+              '<span class="material-symbols-outlined text-sm text-orange-400">' + r.icon + '</span>' +
+              '<div class="flex-1 min-w-0"><p class="text-[9px] font-bold text-white truncate">' + r.title + '</p><p class="text-[7px] text-gray-500 uppercase">' + r.type + '</p></div></a>';
+          }).join('');
+        }).catch(function() {});
+      });
+    };
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); window.openGlobalSearch(); }
+      if (e.key === 'Escape') { var m = document.getElementById('globalSearchModal'); if (m) m.remove(); }
+    });
+
+    // === NOTIFICAÇÕES ===
+    window.openNotificationsPanel = function() {
+      var existing = document.getElementById('notifPanel');
+      if (existing) { existing.remove(); return; }
+      var panel = '<div id="notifPanel" class="fixed top-12 right-4 z-[250] w-80" style="background:#151515; border-radius:5px; box-shadow:0 4px 20px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">' +
+        '<div class="p-3 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.06);"><p class="text-[9px] font-black text-white uppercase tracking-widest">Notificações</p><button onclick="document.getElementById(\'notifPanel\').remove()" class="text-gray-400 hover:text-white"><span class="material-symbols-outlined text-sm">close</span></button></div>' +
+        '<div id="notifPanelList" class="p-2 max-h-[400px] overflow-y-auto custom-scrollbar"><p class="text-[9px] text-gray-500 text-center py-4">Carregando...</p></div></div>';
+      document.body.insertAdjacentHTML('beforeend', panel);
+      fetch('/admin/api/notifications').then(function(r){return r.json();}).then(function(data) {
+        var el = document.getElementById('notifPanelList');
+        if (!data.success || !data.items.length) { el.innerHTML = '<p class="text-[9px] text-gray-500 text-center py-4">Sem notificações</p>'; return; }
+        el.innerHTML = data.items.map(function(n) {
+          return '<div class="p-2 rounded-[4px] mb-1" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04);"><p class="text-[9px] font-bold text-white">' + n.title + '</p><p class="text-[7px] text-gray-500">' + n.message + '</p></div>';
+        }).join('');
+      }).catch(function() {});
+    };
+    // Check notifications on load
+    setTimeout(function() {
+      fetch('/admin/api/notifications').then(function(r){return r.json();}).then(function(data) {
+        if (data.success && data.items && data.items.length > 0) {
+          var badge = document.getElementById('notif-badge');
+          if (badge) { badge.textContent = data.items.length; badge.classList.remove('hidden'); }
+        }
+      }).catch(function(){});
+    }, 2000);
     </script>
 
 </body>
