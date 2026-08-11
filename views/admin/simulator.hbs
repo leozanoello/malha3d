@@ -1,0 +1,612 @@
+<!-- Simulador de Cenarios — Malha3D ArchViz Admin -->
+<div class="p-4 md:p-5 space-y-4" style="background:#0a0c10;">
+
+ <!-- ============ HEADER ============ -->
+ <div class="kcard">
+  <div class="kcard-body" style="padding:20px;">
+   <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div class="min-w-0">
+     <div class="flex items-center gap-2 mb-2 flex-wrap">
+      <span class="kcard-badge kcard-badge-orange">
+       <span class="material-symbols-outlined text-[10px] align-middle mr-0.5">calculate</span> What-If
+      </span>
+      <span class="kcard-badge">Projecao Financeira</span>
+     </div>
+     <h1 class="text-2xl font-black text-white tracking-tight mb-1">
+      Simulador de <span class="text-orange-400">Cenarios</span>
+     </h1>
+     <p class="text-gray-400 text-[11px] font-medium max-w-2xl">
+      Projete o impacto financeiro de decisoes
+     </p>
+    </div>
+    <div class="flex items-center gap-2 flex-wrap shrink-0">
+     <div class="kcard flex items-center gap-1.5 px-3 h-[36px]" style="border-color:rgba(59,130,246,0.25);">
+      <span class="material-symbols-outlined text-[14px] text-blue-400">history</span>
+      <span class="text-[8px] uppercase tracking-widest font-black text-blue-400" id="baselinePeriod">Carregando...</span>
+     </div>
+     <button id="resetSimBtn" class="kcard flex items-center gap-1.5 px-3 h-[36px] cursor-pointer hover:border-orange-500/40 transition-all" style="border-color:rgba(249,115,22,0.25);" type="button">
+      <span class="material-symbols-outlined text-[14px] text-orange-400">restart_alt</span>
+      <span class="text-[8px] uppercase tracking-widest font-black text-orange-400">Reset</span>
+     </button>
+    </div>
+   </div>
+  </div>
+ </div>
+
+ <!-- ============ CONTROL PANEL ============ -->
+ <div class="kcard">
+  <div class="kcard-body" style="padding:20px;">
+   <div class="flex items-center gap-2 mb-4">
+    <span class="w-8 h-8 rounded-[4px] flex items-center justify-center" style="background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25);">
+     <span class="material-symbols-outlined text-blue-400 text-[16px]">tune</span>
+    </span>
+    <h2 class="kcard-title text-[12px] font-black uppercase tracking-widest">Variaveis do Cenario</h2>
+   </div>
+
+   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+
+    <!-- 1. Ajuste de Preco -->
+    <div class="kcard" style="background:rgba(255,255,255,0.02);">
+     <div class="kcard-body" style="padding:14px;">
+      <div class="flex items-center justify-between mb-2">
+       <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Ajuste de Preco</span>
+       <span class="text-[12px] font-black text-orange-400" id="priceAdjLabel">0%</span>
+      </div>
+      <input type="range" id="priceAdj" min="-50" max="100" step="1" value="0" class="sim-slider" style="width:100%; accent-color:#f97316;" />
+      <div class="flex items-center justify-between mt-1">
+       <span class="text-[7px] text-gray-600 font-bold">-50%</span>
+       <span class="text-[7px] text-gray-600 font-bold">+100%</span>
+      </div>
+     </div>
+    </div>
+
+    <!-- 2. Projetos Perdidos -->
+    <div class="kcard" style="background:rgba(255,255,255,0.02);">
+     <div class="kcard-body" style="padding:14px;">
+      <div class="flex items-center justify-between mb-2">
+       <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Projetos Perdidos</span>
+       <span class="text-[12px] font-black text-red-400" id="lostLabel">0</span>
+      </div>
+      <input type="range" id="lostProjects" min="0" max="10" step="1" value="0" class="sim-slider" style="width:100%; accent-color:#ef4444;" />
+      <div class="flex items-center justify-between mt-1">
+       <span class="text-[7px] text-gray-600 font-bold">0</span>
+       <span class="text-[7px] text-gray-600 font-bold">10</span>
+      </div>
+     </div>
+    </div>
+
+    <!-- 3. Novos Projetos -->
+    <div class="kcard" style="background:rgba(255,255,255,0.02);">
+     <div class="kcard-body" style="padding:14px;">
+      <div class="flex items-center justify-between mb-2">
+       <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Novos Projetos</span>
+       <span class="text-[12px] font-black text-emerald-400" id="newLabel">0</span>
+      </div>
+      <input type="range" id="newProjects" min="0" max="20" step="1" value="0" class="sim-slider" style="width:100%; accent-color:#10b981;" />
+      <div class="flex items-center justify-between mt-1">
+       <span class="text-[7px] text-gray-600 font-bold">0</span>
+       <span class="text-[7px] text-gray-600 font-bold">20</span>
+      </div>
+     </div>
+    </div>
+
+    <!-- 4. Variacao de Custos -->
+    <div class="kcard" style="background:rgba(255,255,255,0.02);">
+     <div class="kcard-body" style="padding:14px;">
+      <div class="flex items-center justify-between mb-2">
+       <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Variacao de Custos</span>
+       <span class="text-[12px] font-black text-yellow-400" id="costAdjLabel">0%</span>
+      </div>
+      <input type="range" id="costAdj" min="-30" max="50" step="1" value="0" class="sim-slider" style="width:100%; accent-color:#eab308;" />
+      <div class="flex items-center justify-between mt-1">
+       <span class="text-[7px] text-gray-600 font-bold">-30%</span>
+       <span class="text-[7px] text-gray-600 font-bold">+50%</span>
+      </div>
+     </div>
+    </div>
+
+   </div>
+  </div>
+ </div>
+
+ <!-- ============ RESULTS GRID ============ -->
+ <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+  <!-- Faturamento Projetado -->
+  <div class="kcard">
+   <div class="kcard-body" style="padding:18px;">
+    <div class="flex items-center justify-between mb-2">
+     <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Faturamento Projetado</span>
+     <span class="kcard-badge" id="revenueBadge">0%</span>
+    </div>
+    <div class="flex items-baseline gap-1">
+     <span class="text-[10px] text-gray-500 font-bold">R$</span>
+     <h3 class="text-2xl font-black text-white" id="revenueValue">0</h3>
+    </div>
+    <div class="flex items-center gap-1 mt-1">
+     <span class="text-[8px] text-gray-500 font-bold">Atual: R$ <span id="revenueBase">0</span></span>
+    </div>
+   </div>
+  </div>
+
+  <!-- Lucro Projetado -->
+  <div class="kcard">
+   <div class="kcard-body" style="padding:18px;">
+    <div class="flex items-center justify-between mb-2">
+     <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Lucro Projetado</span>
+     <span class="kcard-badge" id="profitBadge">0%</span>
+    </div>
+    <div class="flex items-baseline gap-1">
+     <span class="text-[10px] text-gray-500 font-bold">R$</span>
+     <h3 class="text-2xl font-black text-white" id="profitValue">0</h3>
+    </div>
+    <div class="flex items-center gap-1 mt-1">
+     <span class="text-[8px] text-gray-500 font-bold">Atual: R$ <span id="profitBase">0</span></span>
+    </div>
+   </div>
+  </div>
+
+  <!-- Margem Projetada -->
+  <div class="kcard">
+   <div class="kcard-body" style="padding:18px;">
+    <div class="flex items-center justify-between mb-2">
+     <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Margem Projetada</span>
+     <span class="kcard-badge" id="marginBadge">0%</span>
+    </div>
+    <div class="flex items-baseline gap-1">
+     <h3 class="text-2xl font-black text-white" id="marginValue">0%</h3>
+    </div>
+    <!-- Gauge bar -->
+    <div class="mt-3">
+     <div style="background:rgba(255,255,255,0.06); height:8px; border-radius:4px; overflow:hidden; position:relative;">
+      <div id="marginGauge" style="background:linear-gradient(90deg, #ef4444 0%, #eab308 50%, #10b981 100%); height:100%; width:0%; border-radius:4px; transition:width 0.4s ease;"></div>
+      <div id="marginCursor" style="position:absolute; top:-3px; width:4px; height:14px; background:#fff; border-radius:2px; transition:left 0.4s ease; box-shadow:0 0 0 2px rgba(249,115,22,0.5); left:0%;"></div>
+     </div>
+     <div class="flex items-center justify-between mt-1">
+      <span class="text-[7px] text-gray-600 font-bold">0%</span>
+      <span class="text-[7px] text-gray-600 font-bold">Atual: <span id="marginBase">0%</span></span>
+      <span class="text-[7px] text-gray-600 font-bold">100%</span>
+     </div>
+    </div>
+   </div>
+  </div>
+
+ </div>
+
+ <!-- ============ CHART AREA ============ -->
+ <div class="kcard">
+  <div class="kcard-body" style="padding:20px;">
+   <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-2">
+     <span class="w-8 h-8 rounded-[4px] flex items-center justify-center" style="background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.25);">
+      <span class="material-symbols-outlined text-orange-400 text-[16px]">bar_chart</span>
+     </span>
+     <h2 class="kcard-title text-[12px] font-black uppercase tracking-widest">Comparativo: Atual vs Projetado</h2>
+    </div>
+    <div class="flex items-center gap-3 text-[8px] uppercase tracking-widest font-black">
+     <span class="flex items-center gap-1"><span style="width:10px; height:10px; background:#6b7280; border-radius:2px;"></span> Receita</span>
+     <span class="flex items-center gap-1"><span style="width:10px; height:10px; background:#ef4444; border-radius:2px;"></span> Despesa</span>
+     <span class="flex items-center gap-1"><span style="width:10px; height:10px; background:#10b981; border-radius:2px;"></span> Lucro</span>
+    </div>
+   </div>
+
+   <div id="chartContainer" style="width:100%; height:280px; background:rgba(255,255,255,0.02); border-radius:5px; padding:16px; border:1px solid rgba(255,255,255,0.04);">
+    <svg id="simChart" viewBox="0 0 800 240" preserveAspectRatio="xMidYMid meet" style="width:100%; height:100%; display:block;">
+     <!-- Grid lines -->
+     <line x1="60" y1="20" x2="60" y2="200" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+     <line x1="60" y1="200" x2="780" y2="200" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+     <line x1="60" y1="140" x2="780" y2="140" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="2,4" />
+     <line x1="60" y1="80" x2="780" y2="80" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="2,4" />
+     <line x1="60" y1="20" x2="780" y2="20" stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="2,4" />
+
+     <!-- Y axis labels -->
+     <text id="yMax" x="50" y="24" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="9" font-weight="700">0</text>
+     <text id="yMid" x="50" y="84" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="9" font-weight="700">0</text>
+     <text id="yMin" x="50" y="144" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="9" font-weight="700">0</text>
+     <text x="50" y="204" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="9" font-weight="700">0</text>
+
+     <!-- Section labels -->
+     <text x="220" y="218" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="11" font-weight="900" text-transform="uppercase">Mes Atual</text>
+     <text x="580" y="218" text-anchor="middle" fill="rgba(249,115,22,0.85)" font-size="11" font-weight="900" text-transform="uppercase">Mes Projetado</text>
+
+     <!-- CURRENT bars -->
+     <g id="currentBars">
+      <rect x="120" y="200" width="50" height="0" fill="#6b7280" rx="2" />
+      <rect x="190" y="200" width="50" height="0" fill="#ef4444" rx="2" />
+      <rect x="260" y="200" width="50" height="0" fill="#10b981" rx="2" />
+     </g>
+
+     <!-- PROJECTED bars -->
+     <g id="projectedBars">
+      <rect x="480" y="200" width="50" height="0" fill="#6b7280" rx="2" opacity="0.55" />
+      <rect x="550" y="200" width="50" height="0" fill="#ef4444" rx="2" opacity="0.55" />
+      <rect x="620" y="200" width="50" height="0" fill="#10b981" rx="2" opacity="0.55" />
+     </g>
+
+     <!-- Bar labels (current) -->
+     <text id="currentRevLabel" x="145" y="195" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9" font-weight="700">R$ 0</text>
+     <text id="currentExpLabel" x="215" y="195" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9" font-weight="700">R$ 0</text>
+     <text id="currentProfLabel" x="285" y="195" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9" font-weight="700">R$ 0</text>
+
+     <!-- Bar labels (projected) -->
+     <text id="projRevLabel" x="505" y="195" text-anchor="middle" fill="rgba(249,115,22,0.95)" font-size="9" font-weight="700">R$ 0</text>
+     <text id="projExpLabel" x="575" y="195" text-anchor="middle" fill="rgba(249,115,22,0.95)" font-size="9" font-weight="700">R$ 0</text>
+     <text id="projProfLabel" x="645" y="195" text-anchor="middle" fill="rgba(249,115,22,0.95)" font-size="9" font-weight="700">R$ 0</text>
+    </svg>
+   </div>
+  </div>
+ </div>
+
+ <!-- ============ BOTTOM SUMMARY ============ -->
+ <div class="kcard">
+  <div class="kcard-body" style="padding:20px;">
+   <div class="flex items-center gap-2 mb-3">
+    <span class="w-8 h-8 rounded-[4px] flex items-center justify-center" style="background:rgba(249,115,22,0.12); border:1px solid rgba(249,115,22,0.25);">
+     <span class="material-symbols-outlined text-orange-400 text-[16px]">summarize</span>
+    </span>
+    <h2 class="kcard-title text-[12px] font-black uppercase tracking-widest">Resumo do Cenario</h2>
+   </div>
+
+   <div id="scenarioSummary" class="text-[12px] text-gray-300 leading-relaxed" style="background:rgba(255,255,255,0.03); padding:16px 18px; border-radius:5px; border-left:3px solid #f97316;">
+    <p class="text-gray-400">Ajuste os controles acima para projetar o impacto financeiro do seu cenario.</p>
+   </div>
+
+   <div id="impactInsights" class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3">
+    <div class="kcard" style="background:rgba(255,255,255,0.02);">
+     <div class="kcard-body" style="padding:12px;">
+      <div class="flex items-center gap-2 mb-1">
+       <span class="material-symbols-outlined text-emerald-400 text-[14px]">trending_up</span>
+       <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Melhor Caso</span>
+      </div>
+      <p class="text-[10px] text-gray-400" id="bestCase">—</p>
+     </div>
+    </div>
+    <div class="kcard" style="background:rgba(255,255,255,0.02);">
+     <div class="kcard-body" style="padding:12px;">
+      <div class="flex items-center gap-2 mb-1">
+       <span class="material-symbols-outlined text-yellow-400 text-[14px]">balance</span>
+       <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Cenario Base</span>
+      </div>
+      <p class="text-[10px] text-gray-400" id="baseCase">—</p>
+     </div>
+    </div>
+    <div class="kcard" style="background:rgba(255,255,255,0.02);">
+     <div class="kcard-body" style="padding:12px;">
+      <div class="flex items-center gap-2 mb-1">
+       <span class="material-symbols-outlined text-red-400 text-[14px]">trending_down</span>
+       <span class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Pior Caso</span>
+      </div>
+      <p class="text-[10px] text-gray-400" id="worstCase">—</p>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+
+</div>
+
+<!-- ============ STYLES ============ -->
+<style>
+ .sim-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+ }
+ .sim-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #f97316;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #151515;
+  box-shadow: 0 0 0 1px rgba(249,115,22,0.3);
+  transition: transform 0.1s ease;
+ }
+ .sim-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+ .sim-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #f97316;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #151515;
+ }
+ body.theme-light .sim-slider { background: rgba(0,0,0,0.08); }
+</style>
+
+<!-- ============ JAVASCRIPT ============ -->
+<script>
+(function() {
+ 'use strict';
+
+ function fmtBRL(n) {
+  const v = Number(n) || 0;
+  return v.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+ }
+ function fmtBRLShort(n) {
+  const v = Number(n) || 0;
+  return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+ }
+ function fmtPct(n) {
+  const v = Number(n) || 0;
+  const sign = v > 0 ? '+' : '';
+  return sign + v.toFixed(1) + '%';
+ }
+ function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+ function clampPct(n) { return clamp(n, 0, 100); }
+
+ // State
+ const state = {
+  baseRevenue: 0,
+  baseExpense: 0,
+  baseProfit: 0,
+  baseMargin: 0,
+  avgProjectValue: 0,
+  period: 'mes atual',
+  loaded: false
+ };
+
+ // Elements
+ const els = {
+  priceAdj: document.getElementById('priceAdj'),
+  priceAdjLabel: document.getElementById('priceAdjLabel'),
+  lostProjects: document.getElementById('lostProjects'),
+  lostLabel: document.getElementById('lostLabel'),
+  newProjects: document.getElementById('newProjects'),
+  newLabel: document.getElementById('newLabel'),
+  costAdj: document.getElementById('costAdj'),
+  costAdjLabel: document.getElementById('costAdjLabel'),
+
+  revenueValue: document.getElementById('revenueValue'),
+  revenueBase: document.getElementById('revenueBase'),
+  revenueBadge: document.getElementById('revenueBadge'),
+
+  profitValue: document.getElementById('profitValue'),
+  profitBase: document.getElementById('profitBase'),
+  profitBadge: document.getElementById('profitBadge'),
+
+  marginValue: document.getElementById('marginValue'),
+  marginBase: document.getElementById('marginBase'),
+  marginBadge: document.getElementById('marginBadge'),
+  marginGauge: document.getElementById('marginGauge'),
+  marginCursor: document.getElementById('marginCursor'),
+
+  scenarioSummary: document.getElementById('scenarioSummary'),
+  bestCase: document.getElementById('bestCase'),
+  baseCase: document.getElementById('baseCase'),
+  worstCase: document.getElementById('worstCase'),
+  baselinePeriod: document.getElementById('baselinePeriod'),
+
+  resetBtn: document.getElementById('resetSimBtn'),
+
+  // Chart
+  currentBars: document.getElementById('currentBars'),
+  projectedBars: document.getElementById('projectedBars'),
+  yMax: document.getElementById('yMax'),
+  yMid: document.getElementById('yMid'),
+  yMin: document.getElementById('yMin'),
+  currentRevLabel: document.getElementById('currentRevLabel'),
+  currentExpLabel: document.getElementById('currentExpLabel'),
+  currentProfLabel: document.getElementById('currentProfLabel'),
+  projRevLabel: document.getElementById('projRevLabel'),
+  projExpLabel: document.getElementById('projExpLabel'),
+  projProfLabel: document.getElementById('projProfLabel')
+ };
+
+ function getNumber(v) {
+  const n = Number(v);
+  return isFinite(n) ? n : 0;
+ }
+
+ function badgeClass(change) {
+  if (change > 0.5) return 'kcard-badge';
+  if (change < -0.5) return 'kcard-badge';
+  return 'kcard-badge';
+ }
+
+ function colorizeBadge(badge, change) {
+  if (!badge) return;
+  if (change > 0.5) {
+   badge.style.background = 'rgba(16,185,129,0.15)';
+   badge.style.borderColor = 'rgba(16,185,129,0.35)';
+   badge.style.color = '#10b981';
+  } else if (change < -0.5) {
+   badge.style.background = 'rgba(239,68,68,0.15)';
+   badge.style.borderColor = 'rgba(239,68,68,0.35)';
+   badge.style.color = '#ef4444';
+  } else {
+   badge.style.background = 'rgba(107,114,128,0.15)';
+   badge.style.borderColor = 'rgba(107,114,128,0.35)';
+   badge.style.color = '#9ca3af';
+  }
+ }
+
+ function buildSummary(priceAdj, lost, news, costAdj, newRev, newExp, newProf, newMargin) {
+  const parts = [];
+  parts.push('Se voce <strong class="text-orange-400">' + (priceAdj >= 0 ? 'aumentar' : 'reduzir') + ' precos em ' + priceAdj + '%</strong>,');
+  if (lost > 0) parts.push('perder <strong class="text-red-400">' + lost + ' projeto' + (lost > 1 ? 's' : '') + '</strong>,');
+  if (news > 0) parts.push('ganhar <strong class="text-emerald-400">' + news + ' novo' + (news > 1 ? 's' : '') + ' projeto' + (news > 1 ? 's' : '') + '</strong>,');
+  if (costAdj !== 0) parts.push('os custos <strong class="text-yellow-400">variam ' + (costAdj >= 0 ? '+' : '') + costAdj + '%</strong>,');
+  parts.push('seu faturamento seria <strong class="text-white">R$ ' + fmtBRL(newRev) + '</strong> (vs R$ ' + fmtBRL(state.baseRevenue) + ' atual),');
+  parts.push('lucro de <strong class="text-emerald-400">R$ ' + fmtBRL(newProf) + '</strong> (margem <strong class="text-orange-400">' + newMargin.toFixed(1) + '%</strong>).');
+  return parts.join(' ');
+ }
+
+ function updateScenario() {
+  const priceAdj = getNumber(els.priceAdj.value);
+  const lost = getNumber(els.lostProjects.value);
+  const news = getNumber(els.newProjects.value);
+  const costAdj = getNumber(els.costAdj.value);
+
+  els.priceAdjLabel.textContent = (priceAdj >= 0 ? '+' : '') + priceAdj + '%';
+  els.lostLabel.textContent = lost;
+  els.newLabel.textContent = news;
+  els.costAdjLabel.textContent = (costAdj >= 0 ? '+' : '') + costAdj + '%';
+
+  // Calculation
+  const newRevenue = state.baseRevenue * (1 + priceAdj / 100)
+   - (lost * state.avgProjectValue)
+   + (news * state.avgProjectValue * (1 + priceAdj / 100));
+
+  const newExpense = state.baseExpense * (1 + costAdj / 100);
+  const newProfit = newRevenue - newExpense;
+  const newMargin = newRevenue > 0 ? (newProfit / newRevenue) * 100 : 0;
+
+  const revenueChange = state.baseRevenue > 0 ? ((newRevenue - state.baseRevenue) / state.baseRevenue) * 100 : 0;
+  const profitChange = state.baseProfit !== 0 ? ((newProfit - state.baseProfit) / Math.abs(state.baseProfit)) * 100 : 0;
+  const marginChange = newMargin - state.baseMargin;
+
+  // Revenue card
+  els.revenueValue.textContent = fmtBRL(newRevenue);
+  els.revenueBase.textContent = fmtBRL(state.baseRevenue);
+  els.revenueBadge.textContent = fmtPct(revenueChange);
+  colorizeBadge(els.revenueBadge, revenueChange);
+
+  // Profit card
+  els.profitValue.textContent = fmtBRL(newProfit);
+  els.profitBase.textContent = fmtBRL(state.baseProfit);
+  els.profitBadge.textContent = fmtPct(profitChange);
+  colorizeBadge(els.profitBadge, profitChange);
+
+  // Margin card
+  els.marginValue.textContent = newMargin.toFixed(1) + '%';
+  els.marginBase.textContent = state.baseMargin.toFixed(1) + '%';
+  els.marginBadge.textContent = (marginChange >= 0 ? '+' : '') + marginChange.toFixed(1) + 'pp';
+  colorizeBadge(els.marginBadge, marginChange);
+
+  // Gauge — clamp 0..100
+  const gaugePct = clampPct(newMargin);
+  els.marginGauge.style.width = gaugePct + '%';
+  els.marginCursor.style.left = gaugePct + '%';
+
+  // Summary text
+  els.scenarioSummary.innerHTML = '<p>' + buildSummary(priceAdj, lost, news, costAdj, newRevenue, newExpense, newProfit, newMargin) + '</p>';
+
+  // Edge case insights
+  // Best case: +price, +new (no lost), -cost
+  const bestRev = state.baseRevenue * 1.5 + (5 * state.avgProjectValue * 1.5);
+  const bestExp = state.baseExpense * 0.7;
+  const bestProf = bestRev - bestExp;
+  els.bestCase.textContent = 'Preco +50%, +5 projetos, custo -30%: lucro ' + fmtBRLShort(bestProf);
+
+  // Base case
+  els.baseCase.textContent = 'Cenario atual: lucro ' + fmtBRLShort(state.baseProfit) + ' (' + state.baseMargin.toFixed(1) + '% margem)';
+
+  // Worst case: -price, -lost, +cost
+  const worstRev = state.baseRevenue * 0.5 - (5 * state.avgProjectValue);
+  const worstExp = state.baseExpense * 1.5;
+  const worstProf = worstRev - worstExp;
+  els.worstCase.textContent = 'Preco -50%, -5 projetos, custo +50%: lucro ' + fmtBRLShort(worstProf);
+
+  // Update chart
+  updateChart(newRevenue, newExpense, newProfit);
+ }
+
+ function updateChart(newRev, newExp, newProf) {
+  const maxVal = Math.max(state.baseRevenue, state.baseExpense, Math.abs(state.baseExpense), newRev, newExp, Math.abs(newExp), 1);
+  const yMax = maxVal;
+  const yScale = 180 / yMax; // pixels
+
+  const curRevH = state.baseRevenue * yScale;
+  const curExpH = state.baseExpense * yScale;
+  const curProfH = Math.abs(state.baseProfit) * yScale;
+  const projRevH = newRev * yScale;
+  const projExpH = newExp * yScale;
+  const projProfH = Math.abs(newProf) * yScale;
+
+  // Y axis labels
+  if (els.yMax) els.yMax.textContent = 'R$ ' + fmtBRL(yMax);
+  if (els.yMid) els.yMid.textContent = 'R$ ' + fmtBRL(yMax / 2);
+  if (els.yMin) els.yMin.textContent = 'R$ ' + fmtBRL(0);
+
+  // Bars
+  const cb = els.currentBars.children;
+  if (cb[0]) { cb[0].setAttribute('height', curRevH); cb[0].setAttribute('y', 200 - curRevH); }
+  if (cb[1]) { cb[1].setAttribute('height', curExpH); cb[1].setAttribute('y', 200 - curExpH); }
+  if (cb[2]) { cb[2].setAttribute('height', curProfH); cb[2].setAttribute('y', 200 - curProfH); }
+
+  const pb = els.projectedBars.children;
+  if (pb[0]) { pb[0].setAttribute('height', projRevH); pb[0].setAttribute('y', 200 - projRevH); }
+  if (pb[1]) { pb[1].setAttribute('height', projExpH); pb[1].setAttribute('y', 200 - projExpH); }
+  if (pb[2]) { pb[2].setAttribute('height', projProfH); pb[2].setAttribute('y', 200 - projProfH); }
+
+  // Labels
+  if (els.currentRevLabel) els.currentRevLabel.textContent = 'R$ ' + fmtBRL(state.baseRevenue);
+  if (els.currentExpLabel) els.currentExpLabel.textContent = 'R$ ' + fmtBRL(state.baseExpense);
+  if (els.currentProfLabel) els.currentProfLabel.textContent = 'R$ ' + fmtBRL(state.baseProfit);
+  if (els.projRevLabel) els.projRevLabel.textContent = 'R$ ' + fmtBRL(newRev);
+  if (els.projExpLabel) els.projExpLabel.textContent = 'R$ ' + fmtBRL(newExp);
+  if (els.projProfLabel) els.projProfLabel.textContent = 'R$ ' + fmtBRL(newProf);
+ }
+
+ function bindSliders() {
+  ['priceAdj','lostProjects','newProjects','costAdj'].forEach(function(id) {
+   const el = document.getElementById(id);
+   if (el) el.addEventListener('input', updateScenario);
+  });
+  if (els.resetBtn) {
+   els.resetBtn.addEventListener('click', function() {
+    if (els.priceAdj) els.priceAdj.value = 0;
+    if (els.lostProjects) els.lostProjects.value = 0;
+    if (els.newProjects) els.newProjects.value = 0;
+    if (els.costAdj) els.costAdj.value = 0;
+    updateScenario();
+   });
+  }
+ }
+
+ function applyDefaultIfNoData() {
+  // Sensible defaults if endpoint is unreachable
+  if (!state.loaded) {
+   state.baseRevenue = 50000;
+   state.baseExpense = 30000;
+   state.baseProfit = 20000;
+   state.baseMargin = (state.baseProfit / state.baseRevenue) * 100;
+   state.avgProjectValue = 5000;
+   state.period = 'demo (sem dados)';
+   if (els.baselinePeriod) els.baselinePeriod.textContent = 'Cenario Demo';
+  }
+ }
+
+ async function loadBaseline() {
+  try {
+   const res = await fetch('/admin/api/erp/monthly-comparison', { headers: { 'Accept':'application/json' } });
+   if (!res.ok) throw new Error('HTTP ' + res.status);
+   const data = await res.json();
+   // Expected shape: { current: { revenue, expense, profit }, previous: {...}, avgProjectValue, period }
+   const cur = data.current || data.month || data;
+   state.baseRevenue = getNumber(cur.revenue || cur.totalRevenue || cur.total_revenue || cur.receitas);
+   state.baseExpense = getNumber(cur.expense || cur.totalExpense || cur.total_expense || cur.despesas);
+   state.baseProfit = state.baseRevenue - state.baseExpense;
+   if (typeof cur.profit !== 'undefined') state.baseProfit = getNumber(cur.profit);
+   state.baseMargin = state.baseRevenue > 0 ? (state.baseProfit / state.baseRevenue) * 100 : 0;
+   state.avgProjectValue = getNumber(data.avgProjectValue || data.avg_project_value || (state.baseRevenue > 0 ? state.baseRevenue / 12 : 0));
+   if (state.avgProjectValue <= 0) state.avgProjectValue = state.baseRevenue / 10;
+   state.period = data.period || cur.period || 'mes atual';
+   state.loaded = true;
+   if (els.baselinePeriod) els.baselinePeriod.textContent = state.period;
+  } catch (err) {
+   console.warn('[simulator] fetch failed, using defaults', err);
+   applyDefaultIfNoData();
+  }
+  updateScenario();
+ }
+
+ function init() {
+  bindSliders();
+  loadBaseline();
+ }
+
+ if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+ } else {
+  init();
+ }
+})();
+</script>

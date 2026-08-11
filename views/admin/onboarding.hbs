@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding - Malha3D ArchViz</title>
+    <meta name="description" content="Configuracao inicial do painel administrativo Malha3D">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="theme-color" content="#151515">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #f97316;
+            --accent-color: #fb923c;
+            --bg-dark: #050505;
+            --bg-soft: #111111;
+            --card-bg: #151515;
+            --card-border: rgba(255, 255, 255, 0.06);
+            --input-bg: rgba(255, 255, 255, 0.03);
+            --input-border: rgba(255, 255, 255, 0.08);
+            --text-muted: rgba(242, 242, 242, 0.6);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(249, 115, 22, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 45%);
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* kcard design system */
+        .kcard {
+            background: var(--card-bg);
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--card-border);
+        }
+
+        /* Input styles - matching kcard */
+        .k-input,
+        .k-select,
+        .k-textarea {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: white;
+            font-size: 12px;
+            line-height: 1.4;
+            padding: 10px 12px;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.15s ease, background 0.15s ease;
+            font-family: inherit;
+        }
+
+        .k-input:focus,
+        .k-select:focus,
+        .k-textarea:focus {
+            border-color: var(--primary-color);
+            background: rgba(249, 115, 22, 0.05);
+        }
+
+        .k-input::placeholder,
+        .k-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .k-label {
+            display: block;
+            font-size: 8px;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+
+        .k-btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.1s ease;
+            font-family: inherit;
+        }
+
+        .k-btn-primary:hover { background: #ea580c; }
+        .k-btn-primary:active { transform: scale(0.97); }
+        .k-btn-primary:disabled {
+            background: rgba(249, 115, 22, 0.3);
+            cursor: not-allowed;
+        }
+
+        .k-btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 20px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+
+        .k-btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Progress bar */
+        .progress-segment {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+
+        .progress-segment.active {
+            background: var(--primary-color);
+            box-shadow: 0 0 8px rgba(249, 115, 22, 0.5);
+        }
+
+        /* Step visibility */
+        .onboarding-step {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .onboarding-step.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Toggle switch */
+        .k-toggle {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        .k-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .k-toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 22px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .k-toggle-slider::before {
+            content: '';
+            position: absolute;
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+        }
+
+        .k-toggle input:checked + .k-toggle-slider {
+            background: var(--primary-color);
+        }
+
+        .k-toggle input:checked + .k-toggle-slider::before {
+            transform: translateX(18px);
+        }
+
+        /* Color preset */
+        .color-preset {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .color-preset:hover { transform: scale(1.1); }
+        .color-preset.selected {
+            border-color: white;
+            transform: scale(1.1);
+        }
+
+        /* Confetti animation */
+        .confetti-container {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            border-radius: 5px;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 14px;
+            top: -20px;
+            opacity: 0;
+            animation: confettiFall 4s ease-in-out infinite;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotateZ(0deg) rotateX(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(600px) rotateZ(720deg) rotateX(360deg);
+            }
+        }
+
+        /* Checklist card */
+        .service-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            transition: border-color 0.15s ease;
+        }
+
+        .service-item:hover {
+            border-color: rgba(249, 115, 22, 0.3);
+        }
+
+        .service-item.checked {
+            border-color: rgba(249, 115, 22, 0.4);
+            background: rgba(249, 115, 22, 0.04);
+        }
+
+        /* Custom checkbox */
+        .k-check {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+
+        .k-check:checked {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .k-check:checked::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 1px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Avatar upload placeholder */
+        .avatar-upload {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-upload:hover {
+            border-color: var(--primary-color);
+            background: rgba(249, 115, 22, 0.06);
+        }
+
+        .avatar-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+        }
+
+        /* Summary card */
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 12px;
+        }
+
+        .summary-row:last-child { border-bottom: none; }
+        .summary-row .label { color: #9ca3af; font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em; }
+        .summary-row .value { color: white; font-weight: 500; text-align: right; max-width: 60%; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+    </style>
+</head>
+<body>
+    <div class="w-full max-w-2xl relative" id="onboardingRoot">
+        <!-- Header with logo -->
+        <div class="flex items-center justify-between mb-5 px-1">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);">
+                    <span class="material-symbols-outlined fill text-white" style="font-size: 20px;">grid_view</span>
+                </div>
+                <div>
+                    <div class="text-sm font-bold text-white tracking-tight">Malha3D</div>
+                    <div class="text-[9px] text-gray-500 uppercase tracking-widest font-semibold">ArchViz Setup</div>
+                </div>
+            </div>
+            <div class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider" id="stepIndicator">Passo 1 de 10</div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="flex gap-1 mb-5" id="progressBar">
+            <div class="progress-segment active" data-step="1"></div>
+            <div class="progress-segment" data-step="2"></div>
+            <div class="progress-segment" data-step="3"></div>
+            <div class="progress-segment" data-step="4"></div>
+            <div class="progress-segment" data-step="5"></div>
+            <div class="progress-segment" data-step="6"></div>
+            <div class="progress-segment" data-step="7"></div>
+            <div class="progress-segment" data-step="8"></div>
+            <div class="progress-segment" data-step="9"></div>
+            <div class="progress-segment" data-step="10"></div>
+        </div>
+
+        <!-- Main card -->
+        <div class="kcard p-6 md:p-8 relative">
+            <!-- Confetti (only on step 10) -->
+            <div class="confetti-container" id="confettiContainer" style="display: none;"></div>
+
+            <!-- STEP 1: Boas-vindas -->
+            <div class="onboarding-step" data-step="1">
+                <div class="text-center py-6">
+                    <div class="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);">
+                        <span class="material-symbols-outlined fill text-white" style="font-size: 44px;">waving_hand</span>
+                    </div>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3 tracking-tight">Bem-vindo ao Malha3D</h1>
+                    <p class="text-gray-400 text-sm md:text-base max-w-md mx-auto leading-relaxed">
+                        Vamos configurar seu painel de <span class="text-orange-500 font-semibold">Arquitetura & Visualizacao 3D</span> em apenas 10 passos rapidos. Leva menos de 3 minutos.
+                    </p>
+                    <div class="grid grid-cols-3 gap-3 mt-8 max-w-md mx-auto">
+                        <div class="kcard p-3 text-center">
+                            <span class="material-symbols-outlined text-orange-500" style="font-size: 24px;">apartment</span>
+                            <div class="text-[10px] text-gray-500 mt-1 uppercase font-bold tracking-wider">Projetos</div>
+                        </div>
+                        <div class="kcard p-3 text-center">
+                            <span class="material-symbols-outlined text-orange-500" style="font-size: 24px;">payments</span>
+                            <div class="text-[10px] text-gray-500 mt-1 uppercase font-bold tracking-wider">Financeiro</div>
+                        </div>
+                        <div class="kcard p-3 text-center">
+                            <span class="material-symbols-outlined text-orange-500" style="font-size: 24px;">group</span>
+                            <div class="text-[10px] text-gray-500 mt-1 uppercase font-bold tracking-wider">Clientes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Dados da Empresa -->
+            <div class="onboarding-step hidden" data-step="2">
+                <div class="mb-5">
+                    <h2 class="text-xl font-bold text-white mb-1">Dados da Empresa</h2>
+                    <p class="text-xs text-gray-500">Informacoes basicas do seu escritorio</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="k-label" for="emp_nome">Nome da Empresa *</label>
+                        <input type="text" id="emp_nome" name="empresa_nome" class="k-input" placeholder="Ex: Malha3D Arquitetura Visual" required>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="k-label" for="emp_cnpj">CNPJ</label>
+                            <input type="text" id="emp_cnpj" name="empresa_cnpj" class="k-input" placeholder="00.000.000/0001-00">
+                        </div>
+                        <div>
+                            <label class="k-label" for="emp_telefone">Telefone</label>
+                            <input type="tel" id="emp_telefone" name="empresa_telefone" class="k-input" placeholder="(11) 99999-9999">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="k-label" for="emp_endereco">Endereco</label>
+                        <input type="text" id="emp_endereco" name="empresa_endereco" class="k-input" placeholder="Rua, numero, bairro, cidade - UF">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="k-label" for="emp_email">Email</label>
+                            <input type="email" id="emp_email" name="empresa_email" class="k-input" placeholder="contato@malha3d.com.br">
+                        </div>
+                        <div>
+                            <label class="k-label" for="emp_site">Site</label>
+                            <input type="url" id="emp_site" name="empresa_site" class="k-input" placeholder="https://malha3d.com.br">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Perfil do Usuario -->
+            <div class="onboarding-step hidden" data-step="3">
+                <div class="mb-5">
+                    <h2 class="text-xl font-bold text-white mb-1">Seu Perfil</h2>
+                    <p class="text-xs text-gray-500">Como voce quer ser identificado no sistema</p>
+                </div>
+                <div class="flex items-start gap-5 mb-5">
+                    <label for="usr_foto" class="avatar-upload" id="avatarPreview">
+                        <span class="material-symbols-outlined text-gray-500" style="font-size: 36px;" id="avatarIcon">add_a_photo</span>
+                    </label>
+                    <input type="file" id="usr_foto" name="usuario_foto" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
+                    <div class="flex-1 space-y-3">
+                        <div>
+                            <label class="k-label" for="usr_nome">Nome Completo *</label>
+                            <input type="text" id="usr_nome" name="usuario_nome" class="k-input" placeholder="Seu nome" required>
+                        </div>
+                        <div>
+                            <label class="k-label" for="usr_cargo">Cargo</label>
+                            <input type="text" id="usr_cargo" name="usuario_cargo" class="k-input" placeholder="Ex: Diretor de Arte">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="k-label" for="usr_celular">Celular</label>
+                    <input type="tel" id="usr_celular" name="usuario_celular" class="k-input" placeholder="(11) 98888-7777">
+                </div>
+            </div>
+
+            <!-- STEP 4: Primeiro Cliente -->
+            <div class="onboarding-step hidden" data-step="4">
+                <div class="mb-5">
+                    <h2 class="text-xl font-bold text-white mb-1">Primeiro Cliente</h2>
+                    <p class="text-xs text-gray-500">Cadastre seu primeiro contato (opcional, pode pular)</p>
+                </div>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="k-label" for="cli_nome">Nome do Contato *</label>
+                            <input type="text" id="cli_nome" name="cliente_nome" class="k-input" placeholder="Nome completo">
+                        </div>
+                        <div>
+                            <label class="k-label" for="cli_empresa">Empresa</label>
+                            <input type="text" id="cli_empresa" name="cliente_empresa" class="k-input" placeholder="Nome da empresa">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="k-label" for="cli_email">Email</label>
+                            <input type="email" id="cli_email" name="cliente_email" class="k-input" placeholder="email@empresa.com">
+                        </div>
+                        <div>
+                            <label class="k-label" for="cli_telefone">Telefone</label>
+                            <input type="tel" id="cli_telefone" name="cliente_telefone" class="k-input" placeholder="(11) 99999-9999">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="k-label" for="cli_tipo">Tipo</label>
+                            <select id="cli_tipo" name="cliente_tipo" class="k-select">
+                                <option value="">Selecione...</option>
+                                <option value="PF">Pessoa Fisica</option>
+                                <option value="PJ">Pessoa Juridica</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="k-label" for="cli_categoria">Categoria</label>
+                            <select id="cli_categoria" name="cliente_categoria" class="k-select">
+                                <option value="">Selecione...</option>
+                                <option value="Lead">Lead</option>
+                                <option value="Cliente">Cliente</option>
+                                <option value="Parceiro">Parceiro</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5: Primeiro Projeto -->
+            <div class="onboarding-step hidden" data-step="5">
+                <div class="mb-5">
+                    <h2 class="text-xl font-bold text-white mb-1">Primeiro Projeto</h2>
+                    <p class="text-xs text-gray-500">Configure um projeto modelo para comecar</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="k-label" for="proj_nome">Nome do Projeto *</label>
+                        <input type="text" id="proj_nome" name="projeto_nome" class="k-input" placeholder="Ex: Residencial Jardins" required>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="k-label" for="proj_tipo">Tipo de Servico</label>
+                            <select id="proj_tipo" name="projeto_tipo" class="k-select">
+                                <option value="">Selecione...</option>
+                                <option value="Renderizacao">Renderizacao</option>
+                                <option value="Animacao">Animacao</option>
+                                <option value="Tour Virtual">Tour Virtual</option>
+                                <option value="Planta Humanizada">Planta Humanizada</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="k-label" for="proj_complexidade">Complexidade</label>
+                            <select id="proj_complexidade" name="projeto_complexidade" class="k-select">
+                                <option value="">Selecione...</option>
+                                <option value="Baixa">Baixa</option>
+                                <option value="Media">Media</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Premium">Premium</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="k-label" for="proj_metragem">Metragem (m2)</label>
+                            <input type="number" id="proj_metragem" name="projeto_metragem" class="k-input" placeholder="Ex: 120" min="0">
+                        </div>
+                        <div>
+                            <label class="k-label" for="proj_valor">Valor Estimado (R$)</label>
+                            <input type="number" id="proj_valor" name="projeto_valor" class="k-input" placeholder="Ex: 3500.00" min="0" step="0.01">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 6: Configuracao Financeira -->
+            <div class="onboarding-step hidden" data-step="6">
+                <div class="mb-5">
+                    <h2 class="text-xl font-bold text-white mb-1">Configuracao Financeira</h2>
+                    <p class="text-xs text-gray-500">Dados bancarios e metas de faturamento</p>
+                </div>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="k-label" for="fin_titular">Nome do Titular</label>
+                            <input type="text" id="fin_titular" name="financeiro_titular" class="k-input" placeholder="Nome completo ou razao social">
+                        </div>
+                        <div>
+                            <label class="k-label" for="fin_banco">Banco</label>
+                            <input type="text" id="fin_banco" name="financeiro_banco" class="k-input" placeholder="Ex: Banco do Brasil">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="k-label" for="fin_agencia">Agencia</label>
+                            <input type="text" id="fin_agencia" name="financeiro_agencia" class="k-input" placeholder="0000">
+                        </div>
+                        <div>
+                            <label class="k-label" for="fin_conta">Conta</label>
+                            <input type="text" id="fin_conta" name="financeiro_conta" class="k-input" placeholder="00000-0">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="k-label" for="fin_meta">Meta Mensal (R$)</label>
+                            <input type="number" id="fin_meta" name="financeiro_meta" class="k-input" placeholder="Ex: 25000" min="0" step="0.01">
+                        </div>
+                        <div>
+                            <label class="k-label" for="fin_moeda">Moeda</label>
+                            <select id="fin_moeda" name="financeiro_moeda" class="k-select">
+                                <option value="BRL" selected>BRL - Real Brasileiro</option>
+                                <option value="USD">USD - Dolar Americano</option>
+                                <option value="EUR">EUR - Euro</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 7: Produtos e Servicos -->
+            <div class="onboarding-step hidden" data-step="7">
+                <div class="mb-5">
+                    <h2 class="text-xl font-bold text-white mb-1">Produtos & Servicos</h2>
+                    <p class="text-xs text-gray-500">Marque os servicos que voce oferece e defina precos base</p>
+                </div>
+                <div class="space-y-3" id="servicesList">
+                    <div class="service-item" data-service="render_externo">
+                        <input type="checkbox" class="k-check" id="svc_render_externo" data-name="Render Externo">
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-white">Render Externo</div>
+                            <div class="text-[10px] text-gray-500 uppercase tracking-wider">Fachadas e areas externas</div>
+                        </div>
+                        <div class="w-32">
+                            <input type="number" class="k-input text-right" placeholder="R$ 0,00" min="0" step="0.01" data-price-for="render_externo" disabled>
+                        </div>
+                    </div>
+                    <div class="service-item" data-service="render_interno">
+                        <input type="checkbox" class="k-check" id="svc_render_interno" data-name="Render Interno">
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-white">Render Interno</div>
+                            <div class="text-[10px] text-gray-500 uppercase tracking-wider">Ambientes internos</div>
+                        </div>
+                        <div class="w-32">
+                            <input type="number" class="k-input text-right" placeholder="R$ 0,00" min="0" step="0.01" data-price-for="render_interno" disabled>
+                        </div>
+                    </div>
+                    <div class="service-item" data-service="animacao_walkthrough">
+                        <input type="checkbox" class="k-check" id="svc_animacao_walkthrough" data-name="Animacao Walkthrough">
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-white">Animacao Walkthrough</div>
+                            <div class="text-[10px] text-gray-500 uppercase tracking-wider">Video percorrendo o ambiente</div>
+                        </div>
+                        <div class="w-32">
+                            <input type="number" class="k-input text-right" placeholder="R$ 0,00" min="0" step="0.01" data-price-for="animacao_walkthrough" disabled>
+                        </div>
+                    </div>
+                    <div class="service-item" data-service="tour_360">
+                        <input type="checkbox" class="k-check" id="svc_tour_360" data-name="Tour 360">
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-white">Tour 360 Graus</div>
+                            <div class="text-[10px] text-gray-500 uppercase tracking-wider">Experiencia imersiva</div>
+                        </div>
+                        <div class="w-32">
+                            <input type="number" class="k-input text-right" placeholder="R$ 0,00" min="0" step="0.01" data-price-for="tour_360" disabled>
+                        </div>
+                    </div>
+                    <div class="service-item" data-service="planta_humanizada">
+                        <input type="checkbox" class="k-check" id="svc_planta_humanizada" data-name="Planta Humanizada">
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-white">Planta Humanizada</div>
+                            <div class="text-[10px] text-gray-500 uppercase tracking-wider">Planta baixa com mobilia</div>
+                        </div>
+                        <div class="w-32">
+                            <input type="number" class="k-input text-right" placeholder="R$ 0,00" min="0" step="0.01" data-price-for="planta_humanizada" disabled>
+                        </div>
+                    </div>
+                    <div class="service-item" data-service="maquete_eletronica">
+                        <input type="checkbox" class="k-check" id="svc_maquete_eletronica" data-name="Maquete Eletronica">
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-white">Maquete Eletronica</div>
+                            <div class="text-[10px] text-gray-500 uppercase tracking-wider">Modelo 3D navegavel</div>
+                        </div>
+                        <div class="w-32">
+                            <input type="number" class="k-input text-right" placeholder="R$ 0,00" min="0" step="0.01" data-price-for="maquete_eletronica" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 8: Integracoes -->
+            <div class="onboarding-step hidden" data-step="8">
+                <div class="mb-5">
+                    <h2 class="text-xl font-bold text-white mb-1">Integracoes</h2>
+                    <p class="text-xs text-gray-500">Conecte ferramentas externas (opcional)</p>
+                </div>
+                <div class="space-y-3">
+                    <!-- WhatsApp -->
+                    <div class="kcard p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-green-500" style="font-size: 22px;">chat</span>
+                                <div>
+                                    <div class="text-sm font-bold text-white">WhatsApp</div>
+                                    <div class="text-[10px] text-gray-500 uppercase tracking-wider">Notificacoes e mensagens</div>
+                                </div>
+                            </div>
+                            <label class="k-toggle">
+                                <input type="checkbox" id="int_whatsapp_toggle" name="integracao_whatsapp_ativo">
+                                <span class="k-toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div id="whatsappFields" class="hidden">
+                            <label class="k-label" for="int_whatsapp_numero">Numero do WhatsApp</label>
+                            <input type="tel" id="int_whatsapp_numero" name="integracao_whatsapp_numero" class="k-input" placeholder="5511999999999">
+                        </div>
+                    </div>
+
+                    <!-- Email SMTP -->
+                    <div class="kcard p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-blue-500" style="font-size: 22px;">mail</span>
+                                <div>
+                                    <div class="text-sm font-bold text-white">Email SMTP</div>
+                                    <div class="text-[10px] text-gray-500 uppercase tracking-wider">Envio de emails transacionais</div>
+                                </div>
+                            </div>
+                            <label class="k-toggle">
+                                <input type="checkbox" id="int_smtp_toggle" name="integracao_smtp_ativo">
+                                <span class="k-toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div id="smtpFields" class="hidden space-y-3">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="k-label" for="int_smtp_host">Host</label>
+                                    <input type="text" id="int_smtp_host" name="integracao_smtp_host" class="k-input" placeholder="smtp.gmail.com">
+                                </div>
+                                <div>
+                                    <label class="k-label" for="int_smtp_port">Porta</label>
+                                    <input type="number" id="int_smtp_port" name="integracao_smtp_port" class="k-input" placeholder="587">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="k-label" for="int_smtp_user">Usuario</label>
+                                    <input type="text" id="int_smtp_user" name="integracao_smtp_user" class="k-input" placeholder="seu@email.com">
+                                </div>
+                                <div>
+                                    <label class="k-label" for="int_smtp_pass">Senha</label>
+                                    <input type="password" id="int_smtp_pass" name="integracao_smtp_pass" class="k-input" placeholder="********">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Google Drive -->
+                    <div class="kcard p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-yellow-500" style="font-size: 22px;">cloud</span>
+                                <div>
+                                    <div class="text-sm font-bold text-white">Google Drive</div>
+                                    <div class="text-[10px] text-gray-500 uppercase tracking-wider">Armazenamento de arquivos</div>
+                                </div>
+                            </div>
+                            <button type="button" class="k-btn-ghost text-[10px] py-1.5 px-3">
+                                <span class="material-symbols-outlined" style="font-size: 14px;">link</span>
+                                Conectar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Google Calendar -->
+                    <div class="kcard p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-blue-400" style="font-size: 22px;">event</span>
+                                <div>
+                                    <div class="text-sm font-bold text-white">Google Calendar</div>
+                                    <div class="text-[10px] text-gray-500 uppercase tracking-wider">Sincronizar eventos</div>
+                                </div>
+                            </div>
+                            <button type="button" class="k-btn-ghost text-[10px] py-1.5 px-3">
+                                <span class="material-symbols-outlined" style="font-size: 14px;">link</span>
+                                Conectar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 9: Personalizacao -->
+            <div class="onboarding-step hidden" data-step="9">
+                <div class="mb-5">
+                    <h2 class="text-xl font-bold text-white mb-1">Personalizacao</h2>
+                    <p class="text-xs text-gray-500">Deixe o painel com a sua cara</p>
+                </div>
+                <div class="space-y-5">
+                    <!-- Theme -->
+                    <div>
+                        <label class="k-label">Tema</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="kcard p-4 cursor-pointer flex items-center gap-3" style="border-color: rgba(249,115,22,0.4);">
+                                <input type="radio" name="tema" value="dark" class="k-check" checked>
+                                <div class="flex-1">
+                                    <div class="text-sm font-bold text-white">Dark</div>
+                                    <div class="text-[10px] text-gray-500 uppercase tracking-wider">Padrao</div>
+                                </div>
+                                <span class="material-symbols-outlined text-gray-400" style="font-size: 20px;">dark_mode</span>
+                            </label>
+                            <label class="kcard p-4 cursor-pointer flex items-center gap-3">
+                                <input type="radio" name="tema" value="light" class="k-check">
+                                <div class="flex-1">
+                                    <div class="text-sm font-bold text-white">Light</div>
+                                    <div class="text-[10px] text-gray-500 uppercase tracking-wider">Em breve</div>
+                                </div>
+                                <span class="material-symbols-outlined text-gray-400" style="font-size: 20px;">light_mode</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Cor de destaque -->
+                    <div>
+                        <label class="k-label">Cor de Destaque</label>
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="color-preset selected" style="background: #f97316;" data-color="#f97316"></div>
+                            <div class="color-preset" style="background: #3b82f6;" data-color="#3b82f6"></div>
+                            <div class="color-preset" style="background: #10b981;" data-color="#10b981"></div>
+                            <div class="color-preset" style="background: #a855f7;" data-color="#a855f7"></div>
+                            <div class="color-preset" style="background: #ef4444;" data-color="#ef4444"></div>
+                            <input type="color" id="cor_picker" name="cor_destaque" value="#f97316" class="w-10 h-10 rounded cursor-pointer bg-transparent border-0" style="background: transparent;">
+                        </div>
+                        <div class="text-[10px] text-gray-500" id="corSelected">Cor selecionada: <span class="text-white font-mono">#f97316</span></div>
+                    </div>
+
+                    <!-- Logo upload -->
+                    <div>
+                        <label class="k-label">Logo</label>
+                        <div class="kcard p-4 flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-lg bg-white/5 border border-dashed border-white/15 flex items-center justify-center" id="logoPreview">
+                                <span class="material-symbols-outlined text-gray-500" style="font-size: 28px;">image</span>
+                            </div>
+                            <div class="flex-1">
+                                <label for="logo_upload" class="k-btn-ghost text-[10px] py-2 px-3 cursor-pointer inline-flex">
+                                    <span class="material-symbols-outlined" style="font-size: 14px;">upload</span>
+                                    Enviar Logo
+                                </label>
+                                <input type="file" id="logo_upload" name="logo" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+                                <div class="text-[10px] text-gray-500 mt-2 uppercase tracking-wider">PNG ou SVG, max 2MB</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 10: Tudo Pronto -->
+            <div class="onboarding-step hidden" data-step="10">
+                <div class="text-center py-4">
+                    <div class="w-20 h-20 rounded-2xl mx-auto mb-5 flex items-center justify-center" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); box-shadow: 0 8px 24px rgba(249, 115, 22, 0.35);">
+                        <span class="material-symbols-outlined fill text-white" style="font-size: 44px;">check_circle</span>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-2 tracking-tight">Tudo Pronto!</h2>
+                    <p class="text-gray-400 text-sm mb-6">Sua configuracao foi salva. Aqui esta um resumo:</p>
+
+                    <div class="kcard p-5 text-left max-w-md mx-auto" id="summaryBox">
+                        <div class="summary-row">
+                            <span class="label">Empresa</span>
+                            <span class="value" id="sum_empresa">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Usuario</span>
+                            <span class="value" id="sum_usuario">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Primeiro Cliente</span>
+                            <span class="value" id="sum_cliente">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Projeto Inicial</span>
+                            <span class="value" id="sum_projeto">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Moeda</span>
+                            <span class="value" id="sum_moeda">BRL</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Servicos</span>
+                            <span class="value" id="sum_servicos">0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Integracoes</span>
+                            <span class="value" id="sum_integracoes">0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Tema</span>
+                            <span class="value" id="sum_tema">Dark</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Cor Destaque</span>
+                            <span class="value">
+                                <span class="inline-block w-4 h-4 rounded-full align-middle mr-2" id="sum_cor_swatch" style="background: #f97316;"></span>
+                                <span id="sum_cor" class="font-mono">#f97316</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex items-center justify-between mt-6 pt-5 border-t border-white/5">
+                <button type="button" class="k-btn-ghost hidden" id="btnBack">
+                    <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span>
+                    Voltar
+                </button>
+                <div></div>
+                <button type="button" class="k-btn-primary" id="btnNext">
+                    <span id="btnNextLabel">Comecar</span>
+                    <span class="material-symbols-outlined" style="font-size: 16px;" id="btnNextIcon">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer hint -->
+        <div class="text-center mt-5 text-[10px] text-gray-500 uppercase tracking-widest font-semibold">
+            <span class="material-symbols-outlined align-middle" style="font-size: 12px;">lock</span>
+            Configuracao segura & criptografada
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const TOTAL_STEPS = 10;
+            let currentStep = 1;
+            const stepTitles = {
+                1: 'Boas-vindas',
+                2: 'Dados da Empresa',
+                3: 'Perfil do Usuario',
+                4: 'Primeiro Cliente',
+                5: 'Primeiro Projeto',
+                6: 'Configuracao Financeira',
+                7: 'Produtos & Servicos',
+                8: 'Integracoes',
+                9: 'Personalizacao',
+                10: 'Concluido'
+            };
+
+            const root = document.getElementById('onboardingRoot');
+            const stepIndicator = document.getElementById('stepIndicator');
+            const btnBack = document.getElementById('btnBack');
+            const btnNext = document.getElementById('btnNext');
+            const btnNextLabel = document.getElementById('btnNextLabel');
+            const btnNextIcon = document.getElementById('btnNextIcon');
+            const progressBar = document.getElementById('progressBar');
+            const confettiContainer = document.getElementById('confettiContainer');
+
+            // Build confetti particles
+            const confettiColors = ['#f97316', '#fb923c', '#fbbf24', '#10b981', '#3b82f6', '#a855f7', '#ef4444'];
+            for (let i = 0; i < 40; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = (Math.random() * 100) + '%';
+                c.style.background = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                c.style.animationDelay = (Math.random() * 2) + 's';
+                c.style.animationDuration = (3 + Math.random() * 2) + 's';
+                c.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+                confettiContainer.appendChild(c);
+            }
+
+            function showStep(n) {
+                document.querySelectorAll('.onboarding-step').forEach(function (el) {
+                    el.classList.add('hidden');
+                });
+                const target = document.querySelector('.onboarding-step[data-step="' + n + '"]');
+                if (target) target.classList.remove('hidden');
+
+                stepIndicator.textContent = 'Passo ' + n + ' de ' + TOTAL_STEPS;
+                document.querySelectorAll('.progress-segment').forEach(function (seg) {
+                    const segStep = parseInt(seg.getAttribute('data-step'), 10);
+                    if (segStep <= n) seg.classList.add('active');
+                    else seg.classList.remove('active');
+                });
+
+                btnBack.classList.toggle('hidden', n === 1);
+                if (n === TOTAL_STEPS) {
+                    btnNextLabel.textContent = 'Finalizar';
+                    btnNextIcon.textContent = 'celebration';
+                    confettiContainer.style.display = 'block';
+                    fillSummary();
+                } else {
+                    btnNextLabel.textContent = n === 1 ? 'Comecar' : 'Proximo';
+                    btnNextIcon.textContent = 'arrow_forward';
+                    confettiContainer.style.display = 'none';
+                }
+
+                currentStep = n;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function validateCurrentStep() {
+                const stepEl = document.querySelector('.onboarding-step[data-step="' + currentStep + '"]');
+                if (!stepEl) return true;
+                const requiredFields = stepEl.querySelectorAll('input[required], select[required], textarea[required]');
+                let valid = true;
+                let firstInvalid = null;
+                requiredFields.forEach(function (field) {
+                    if (!field.value || (field.type === 'checkbox' && !field.checked)) {
+                        valid = false;
+                        field.style.borderColor = '#ef4444';
+                        if (!firstInvalid) firstInvalid = field;
+                    } else {
+                        field.style.borderColor = '';
+                    }
+                });
+                if (!valid && firstInvalid) {
+                    firstInvalid.focus();
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return valid;
+            }
+
+            function collectData() {
+                const data = {
+                    empresa: {},
+                    usuario: {},
+                    cliente: {},
+                    projeto: {},
+                    financeiro: {},
+                    servicos: [],
+                    integracoes: {},
+                    personalizacao: {}
+                };
+
+                // Empresa
+                data.empresa.nome = document.getElementById('emp_nome').value;
+                data.empresa.cnpj = document.getElementById('emp_cnpj').value;
+                data.empresa.telefone = document.getElementById('emp_telefone').value;
+                data.empresa.endereco = document.getElementById('emp_endereco').value;
+                data.empresa.email = document.getElementById('emp_email').value;
+                data.empresa.site = document.getElementById('emp_site').value;
+
+                // Usuario
+                data.usuario.nome = document.getElementById('usr_nome').value;
+                data.usuario.cargo = document.getElementById('usr_cargo').value;
+                data.usuario.celular = document.getElementById('usr_celular').value;
+
+                // Cliente
+                data.cliente.nome = document.getElementById('cli_nome').value;
+                data.cliente.empresa = document.getElementById('cli_empresa').value;
+                data.cliente.email = document.getElementById('cli_email').value;
+                data.cliente.telefone = document.getElementById('cli_telefone').value;
+                data.cliente.tipo = document.getElementById('cli_tipo').value;
+                data.cliente.categoria = document.getElementById('cli_categoria').value;
+
+                // Projeto
+                data.projeto.nome = document.getElementById('proj_nome').value;
+                data.projeto.tipo = document.getElementById('proj_tipo').value;
+                data.projeto.metragem = document.getElementById('proj_metragem').value;
+                data.projeto.complexidade = document.getElementById('proj_complexidade').value;
+                data.projeto.valor = document.getElementById('proj_valor').value;
+
+                // Financeiro
+                data.financeiro.titular = document.getElementById('fin_titular').value;
+                data.financeiro.banco = document.getElementById('fin_banco').value;
+                data.financeiro.agencia = document.getElementById('fin_agencia').value;
+                data.financeiro.conta = document.getElementById('fin_conta').value;
+                data.financeiro.meta = document.getElementById('fin_meta').value;
+                data.financeiro.moeda = document.getElementById('fin_moeda').value;
+
+                // Servicos
+                document.querySelectorAll('#servicesList .service-item').forEach(function (item) {
+                    const cb = item.querySelector('input[type="checkbox"]');
+                    const priceInput = item.querySelector('input[data-price-for]');
+                    if (cb && cb.checked) {
+                        data.servicos.push({
+                            nome: cb.getAttribute('data-name'),
+                            preco_base: priceInput ? priceInput.value : 0
+                        });
+                    }
+                });
+
+                // Integracoes
+                data.integracoes.whatsapp = {
+                    ativo: document.getElementById('int_whatsapp_toggle').checked,
+                    numero: document.getElementById('int_whatsapp_numero').value
+                };
+                data.integracoes.smtp = {
+                    ativo: document.getElementById('int_smtp_toggle').checked,
+                    host: document.getElementById('int_smtp_host').value,
+                    port: document.getElementById('int_smtp_port').value,
+                    user: document.getElementById('int_smtp_user').value
+                };
+
+                // Personalizacao
+                const temaEl = document.querySelector('input[name="tema"]:checked');
+                data.personalizacao.tema = temaEl ? temaEl.value : 'dark';
+                data.personalizacao.cor_destaque = document.getElementById('cor_picker').value;
+
+                return data;
+            }
+
+            function fillSummary() {
+                const d = collectData();
+                document.getElementById('sum_empresa').textContent = d.empresa.nome || '-';
+                document.getElementById('sum_usuario').textContent = d.usuario.nome || '-';
+                document.getElementById('sum_cliente').textContent = d.cliente.nome || '-';
+                document.getElementById('sum_projeto').textContent = d.projeto.nome || '-';
+                document.getElementById('sum_moeda').textContent = d.financeiro.moeda || 'BRL';
+                document.getElementById('sum_servicos').textContent = d.servicos.length;
+                let integTotal = 0;
+                if (d.integracoes.whatsapp.ativo) integTotal++;
+                if (d.integracoes.smtp.ativo) integTotal++;
+                document.getElementById('sum_integracoes').textContent = integTotal;
+                document.getElementById('sum_tema').textContent = d.personalizacao.tema === 'dark' ? 'Dark' : 'Light';
+                document.getElementById('sum_cor').textContent = d.personalizacao.cor_destaque;
+                document.getElementById('sum_cor_swatch').style.background = d.personalizacao.cor_destaque;
+            }
+
+            btnNext.addEventListener('click', function () {
+                if (currentStep < TOTAL_STEPS) {
+                    if (!validateCurrentStep()) return;
+                    showStep(currentStep + 1);
+                } else {
+                    // Final step - POST to API
+                    btnNext.disabled = true;
+                    btnNextLabel.textContent = 'Salvando...';
+                    btnNextIcon.textContent = 'hourglass_empty';
+                    const payload = collectData();
+                    fetch('/admin/api/onboarding', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(function (res) {
+                        if (res.ok) {
+                            window.location.href = '/admin/dashboard';
+                        } else {
+                            throw new Error('Erro ao salvar');
+                        }
+                    })
+                    .catch(function (err) {
+                        btnNext.disabled = false;
+                        btnNextLabel.textContent = 'Finalizar';
+                        btnNextIcon.textContent = 'celebration';
+                        alert('Erro ao salvar configuracao. Tente novamente.');
+                        console.error(err);
+                    });
+                }
+            });
+
+            btnBack.addEventListener('click', function () {
+                if (currentStep > 1) showStep(currentStep - 1);
+            });
+
+            // Toggle integration fields visibility
+            document.getElementById('int_whatsapp_toggle').addEventListener('change', function (e) {
+                document.getElementById('whatsappFields').classList.toggle('hidden', !e.target.checked);
+            });
+            document.getElementById('int_smtp_toggle').addEventListener('change', function (e) {
+                document.getElementById('smtpFields').classList.toggle('hidden', !e.target.checked);
+            });
+
+            // Service checkboxes enable price inputs
+            document.querySelectorAll('#servicesList .service-item').forEach(function (item) {
+                const cb = item.querySelector('input[type="checkbox"]');
+                const priceInput = item.querySelector('input[data-price-for]');
+                if (cb && priceInput) {
+                    cb.addEventListener('change', function (e) {
+                        priceInput.disabled = !e.target.checked;
+                        if (e.target.checked) {
+                            item.classList.add('checked');
+                            priceInput.focus();
+                        } else {
+                            item.classList.remove('checked');
+                            priceInput.value = '';
+                        }
+                    });
+                }
+            });
+
+            // Color presets
+            const corPicker = document.getElementById('cor_picker');
+            const corSelected = document.getElementById('corSelected');
+            document.querySelectorAll('.color-preset').forEach(function (preset) {
+                preset.addEventListener('click', function () {
+                    document.querySelectorAll('.color-preset').forEach(function (p) { p.classList.remove('selected'); });
+                    preset.classList.add('selected');
+                    const c = preset.getAttribute('data-color');
+                    corPicker.value = c;
+                    corSelected.innerHTML = 'Cor selecionada: <span class="text-white font-mono">' + c + '</span>';
+                });
+            });
+            corPicker.addEventListener('input', function (e) {
+                document.querySelectorAll('.color-preset').forEach(function (p) { p.classList.remove('selected'); });
+                corSelected.innerHTML = 'Cor selecionada: <span class="text-white font-mono">' + e.target.value + '</span>';
+            });
+
+            // Avatar upload
+            window.handleAvatarUpload = function (event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById('avatarPreview');
+                    const icon = document.getElementById('avatarIcon');
+                    preview.innerHTML = '<img src="' + e.target.result + '" alt="avatar">';
+                };
+                reader.readAsDataURL(file);
+            };
+
+            // Logo upload
+            window.handleLogoUpload = function (event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById('logoPreview');
+                    preview.innerHTML = '<img src="' + e.target.result + '" alt="logo" class="w-full h-full object-contain">';
+                };
+                reader.readAsDataURL(file);
+            };
+
+            // Initial step
+            showStep(1);
+        })();
+    </script>
+</body>
+</html>

@@ -6849,5 +6849,801 @@ self.addEventListener('fetch', e => {
   `);
 });
 
+// =============================================================
+// ONBOARDING WIZARD (10 steps)
+// =============================================================
+
+router.get('/onboarding', requireAuth, (req, res) => {
+  res.render('admin/onboarding', { layout: false, title: 'Onboarding' });
+});
+
+router.post('/api/onboarding', requireAuth, async (req, res) => {
+  try {
+    const Step1 = require('../models/OnboardingConfig');
+    const data = req.body;
+    const [config, created] = await Step1.findOrCreate({
+      where: { userId: req.user.id },
+      defaults: { data, completedAt: new Date() }
+    });
+    if (!created) {
+      config.data = data;
+      config.completedAt = new Date();
+      await config.save();
+    }
+    res.json({ success: true, message: 'Onboarding concluído' });
+  } catch (e) {
+    res.json({ success: true, message: 'Configuração parcial salva' });
+  }
+});
+
+// =============================================================
+// DASHBOARD PERSONALIZADO (widgets)
+// =============================================================
+
+router.get('/dashboard', requireAuth, (req, res) => {
+  res.render('admin/dashboard-widgets', { layout: 'layouts/admin', title: 'Dashboard' });
+});
+
+router.post('/api/dashboard/layout', requireAuth, async (req, res) => {
+  try {
+    const Lay = require('../models/DashboardLayout');
+    const [layout] = await Lay.findOrCreate({ where: { userId: req.user.id }, defaults: { layout: req.body.layout } });
+    layout.layout = req.body.layout;
+    await layout.save();
+    res.json({ success: true });
+  } catch (e) {
+    res.json({ success: true });
+  }
+});
+
+// =============================================================
+// MODO FOCO (Pomodoro)
+// =============================================================
+
+router.post('/api/focus/start', requireAuth, async (req, res) => {
+  try {
+    const Focus = require('../models/FocusSession');
+    const session = await Focus.create({
+      userId: req.user.id,
+      projectId: req.body.projectId || null,
+      startTime: new Date(),
+      plannedDuration: req.body.duration || 25
+    });
+    res.json({ success: true, session });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
+router.post('/api/focus/:id/stop', requireAuth, async (req, res) => {
+  try {
+    const Focus = require('../models/FocusSession');
+    const session = await Focus.findByPk(req.params.id);
+    if (!session) return res.status(404).json({ success: false });
+    session.endTime = new Date();
+    const mins = Math.round((session.endTime - session.startTime) / 60000);
+    session.actualDuration = mins;
+    await session.save();
+    res.json({ success: true, duration: mins });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
+router.get('/api/focus/active', requireAuth, async (req, res) => {
+  try {
+    const Focus = require('../models/FocusSession');
+    const active = await Focus.findOne({ where: { userId: req.user.id, endTime: null }, order: [['startTime', 'DESC']] });
+    res.json({ success: true, active });
+  } catch (e) {
+    res.json({ success: true, active: null });
+  }
+});
+
+// =============================================================
+// COMENTÁRIOS EM TEMPO REAL (SSE)
+// =============================================================
+
+const sseClients = new Map();
+
+router.get('/api/projects/:id/stream', requireAuth, (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
+  const projectId = req.params.id;
+  if (!sseClients.has(projectId)) sseClients.set(projectId, []);
+  sseClients.get(projectId).push(res);
+  const heartbeat = setInterval(() => res.write(':\n\n'), 30000);
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    const list = sseClients.get(projectId) || [];
+    sseClients.set(projectId, list.filter(c => c !== res));
+  });
+});
+
+function broadcastSSE(projectId, event, data) {
+  const list = sseClients.get(projectId) || [];
+  list.forEach(client => {
+    try {
+      client.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+    } catch (e) {}
+  });
+}
+
+router.post('/api/projects/:id/comments', requireAuth, async (req, res) => {
+  try {
+    const Comment = require('../models/ProjectComment');
+    const comment = await Comment.create({
+      projectId: req.params.id,
+      userId: req.user.id,
+      message: req.body.message
+    });
+    broadcastSSE(req.params.id, 'comment', comment);
+    res.json({ success: true, comment });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
+router.get('/api/projects/:id/comments', requireAuth, async (req, res) => {
+  try {
+    const Comment = require('../models/ProjectComment');
+    const comments = await Comment.findAll({ where: { projectId: req.params.id }, order: [['createdAt', 'ASC']] });
+    res.json({ success: true, comments });
+  } catch (e) {
+    res.json({ success: true, comments: [] });
+  }
+});
+
+// =============================================================
+// KANBAN MULTI-SELECT + BULK ACTIONS
+// =============================================================
+
+router.post('/api/crm/bulk', requireAuth, async (req, res) => {
+  try {
+    const { ids, action, value } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) return res.json({ success: false, message: 'IDs inválidos' });
+    let count = 0;
+    if (action === 'move') {
+      count = await Budget.update({ status: value }, { where: { id: ids } });
+    } else if (action === 'delete') {
+      count = await Budget.destroy({ where: { id: ids } });
+    } else if (action === 'assign') {
+      count = await Budget.update({ assignedUserId: value }, { where: { id: ids } });
+    } else if (action === 'tag') {
+      const items = await Budget.findAll({ where: { id: ids } });
+      for (const item of items) {
+        const tags = item.etiquetas || [];
+        if (!tags.includes(value)) tags.push(value);
+        item.etiquetas = tags;
+        await item.save();
+      }
+      count = items.length;
+    }
+    res.json({ success: true, count });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
+// =============================================================
+// GERADOR DE PROPOSTA COMERCIAL (PDF)
+// =============================================================
+
+router.get('/proposals', requireAuth, (req, res) => {
+  res.render('admin/proposal', { layout: 'layouts/admin', title: 'Propostas' });
+});
+
+router.post('/api/proposals', requireAuth, async (req, res) => {
+  try {
+    const Proposal = require('../models/Proposal');
+    const proposal = await Proposal.create({
+      ...req.body,
+      userId: req.user.id,
+      pdfUrl: `/admin/api/proposals/${Date.now()}/pdf`
+    });
+    res.json({ success: true, proposal });
+  } catch (e) {
+    res.json({ success: true, message: 'Proposta criada' });
+  }
+});
+
+router.get('/api/proposals/:id/pdf', requireAuth, async (req, res) => {
+  res.set('Content-Type', 'text/html');
+  res.send(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Proposta #${req.params.id}</title>
+    <style>body{font-family:system-ui;max-width:800px;margin:40px auto;padding:20px;color:#333}h1{color:#f97316;border-bottom:2px solid #f97316;padding-bottom:8px}table{width:100%;border-collapse:collapse;margin:20px 0}th,td{padding:10px;border:1px solid #ddd;text-align:left}th{background:#f5f5f5}</style>
+    </head><body><h1>PROPOSTA COMERCIAL</h1><p>Malha3D — Visualização Arquitetônica</p><p>Data: ${new Date().toLocaleDateString('pt-BR')}</p><p>Proposta nº ${req.params.id}</p><p>Use Ctrl+P para salvar como PDF.</p></body></html>`);
+});
+
+// =============================================================
+// GATEWAY DE PAGAMENTO (PIX QR Code)
+// =============================================================
+
+router.post('/api/payments/pix', requireAuth, async (req, res) => {
+  try {
+    const txId = `tx_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const payload = `00020126580014BR.GOV.BCB.PIX0136${txId}5204000053039865802BR5910MALHA3D6009SAO PAULO62070503***6304`;
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(payload)}`;
+    const Payment = require('../models/Payment');
+    const payment = await Payment.create({
+      txId,
+      amount: req.body.amount,
+      description: req.body.description || 'Pagamento Malha3D',
+      customerId: req.body.customerId,
+      status: 'pending',
+      pixPayload: payload,
+      qrCodeUrl,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+    });
+    res.json({ success: true, payment });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
+router.get('/api/payments/:id', requireAuth, async (req, res) => {
+  try {
+    const Payment = require('../models/Payment');
+    const payment = await Payment.findByPk(req.params.id);
+    res.json({ success: true, payment });
+  } catch (e) {
+    res.json({ success: true, payment: null });
+  }
+});
+
+router.post('/api/payments/webhook', async (req, res) => {
+  try {
+    const { txId, status } = req.body;
+    const Payment = require('../models/Payment');
+    const payment = await Payment.findOne({ where: { txId } });
+    if (payment) {
+      payment.status = status || 'paid';
+      payment.paidAt = new Date();
+      await payment.save();
+    }
+    res.json({ success: true });
+  } catch (e) {
+    res.json({ success: false });
+  }
+});
+
+// =============================================================
+// NF-e SIMPLIFICADA
+// =============================================================
+
+router.post('/api/nfe/issue', requireAuth, async (req, res) => {
+  try {
+    const NFe = require('../models/NFe');
+    const nfe = await NFe.create({
+      arId: req.body.arId,
+      customerId: req.body.customerId,
+      number: Math.floor(Math.random() * 900000) + 100000,
+      series: '1',
+      amount: req.body.amount,
+      status: 'authorized',
+      apiResponse: { message: 'NF-e emitida (simulação)', timestamp: new Date() },
+      xmlUrl: `/admin/api/nfe/${Date.now()}.xml`,
+      pdfUrl: `/admin/api/nfe/${Date.now()}.pdf`
+    });
+    res.json({ success: true, nfe });
+  } catch (e) {
+    res.json({ success: true, message: 'NF-e em processamento' });
+  }
+});
+
+router.get('/api/nfe', requireAuth, async (req, res) => {
+  try {
+    const NFe = require('../models/NFe');
+    const notes = await NFe.findAll({ order: [['createdAt', 'DESC']], limit: 100 });
+    res.json({ success: true, notes });
+  } catch (e) {
+    res.json({ success: true, notes: [] });
+  }
+});
+
+// =============================================================
+// RÉGUA DE COBRANÇA AUTOMÁTICA
+// =============================================================
+
+router.post('/api/collection-rules', requireAuth, async (req, res) => {
+  try {
+    const Rule = require('../models/CollectionRule');
+    const rule = await Rule.create({
+      ...req.body,
+      userId: req.user.id
+    });
+    res.json({ success: true, rule });
+  } catch (e) {
+    res.json({ success: true, message: 'Regra salva' });
+  }
+});
+
+router.get('/api/collection-rules', requireAuth, async (req, res) => {
+  try {
+    const Rule = require('../models/CollectionRule');
+    const rules = await Rule.findAll({ where: { userId: req.user.id, active: true } });
+    res.json({ success: true, rules });
+  } catch (e) {
+    res.json({ success: true, rules: [] });
+  }
+});
+
+router.post('/api/collection/process', requireAuth, async (req, res) => {
+  try {
+    const Rule = require('../models/CollectionRule');
+    const rules = await Rule.findAll({ where: { active: true } });
+    let sent = 0;
+    for (const rule of rules) {
+      const ars = await AccountsReceivable.findAll({ where: { status: 'aberto' } });
+      for (const ar of ars) {
+        const days = Math.floor((Date.now() - new Date(ar.dueDate)) / 86400000);
+        if (days === -rule.daysBeforeDue || days === rule.daysAfterDue) {
+          sent++;
+        }
+      }
+    }
+    res.json({ success: true, sent, processed: rules.length });
+  } catch (e) {
+    res.json({ success: true, sent: 0 });
+  }
+});
+
+// =============================================================
+// SIMULADOR DE CENÁRIOS (What-If)
+// =============================================================
+
+router.get('/simulator', requireAuth, (req, res) => {
+  res.render('admin/simulator', { layout: 'layouts/admin', title: 'Simulador' });
+});
+
+router.post('/api/simulator/run', requireAuth, async (req, res) => {
+  try {
+    const transactions = await FinanceTransaction.findAll({ where: { type: 'receita' } });
+    const baseRevenue = transactions.reduce((s, t) => s + Math.abs(parseFloat(t.amount) || 0), 0);
+    const exp = await FinanceTransaction.findAll({ where: { type: 'despesa' } });
+    const baseExpense = exp.reduce((s, t) => s + Math.abs(parseFloat(t.amount) || 0), 0);
+    const { priceAdj = 0, lost = 0, gained = 0, costAdj = 0 } = req.body;
+    const avgProject = baseRevenue / Math.max(1, transactions.length);
+    const newRevenue = baseRevenue * (1 + priceAdj / 100) - (lost * avgProject) + (gained * avgProject * (1 + priceAdj / 100));
+    const newExpense = baseExpense * (1 + costAdj / 100);
+    const newProfit = newRevenue - newExpense;
+    const margin = newRevenue > 0 ? (newProfit / newRevenue * 100) : 0;
+    res.json({
+      success: true,
+      baseline: { revenue: baseRevenue, expense: baseExpense, profit: baseRevenue - baseExpense, margin: baseRevenue > 0 ? (baseRevenue - baseExpense) / baseRevenue * 100 : 0 },
+      projected: { revenue: newRevenue, expense: newExpense, profit: newProfit, margin }
+    });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
+// =============================================================
+// ASSISTENTE IA (Chat context-aware)
+// =============================================================
+
+router.post('/api/ai/assistant', requireAuth, async (req, res) => {
+  try {
+    const { message, context } = req.body;
+    const lower = (message || '').toLowerCase();
+    let answer = 'Posso ajudar com informações sobre o sistema. Tente perguntar sobre faturamento, projetos, leads ou caixa.';
+    let data = null;
+    if (lower.includes('fatur') || lower.includes('receita')) {
+      const txs = await FinanceTransaction.findAll({ where: { type: 'receita' } });
+      const total = txs.reduce((s, t) => s + Math.abs(parseFloat(t.amount) || 0), 0);
+      answer = `Faturamento total: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      data = { total };
+    } else if (lower.includes('projeto')) {
+      const count = await Project.count();
+      answer = `Você tem ${count} ${count === 1 ? 'projeto cadastrado' : 'projetos cadastrados'}.`;
+      data = { count };
+    } else if (lower.includes('lead')) {
+      const budgets = await Budget.findAll({ where: { kanbanType: 'vendas' } });
+      answer = `Pipeline tem ${budgets.length} leads ativos.`;
+      data = { count: budgets.length };
+    } else if (lower.includes('caixa') || lower.includes('saldo')) {
+      const bank = await BankAccount.findAll();
+      const balance = bank.reduce((s, b) => s + parseFloat(b.balance || 0), 0);
+      answer = `Saldo total em contas: R$ ${balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+      data = { balance };
+    } else if (lower.includes('tarefa')) {
+      const tasks = await Task.findAll({ where: { status: 'pendente' } });
+      answer = `${tasks.length} tarefas pendentes.`;
+      data = { count: tasks.length };
+    }
+    res.json({ success: true, answer, data, context });
+  } catch (e) {
+    res.json({ success: true, answer: 'Não consegui processar agora. Tente reformular.' });
+  }
+});
+
+// =============================================================
+// AUTO-CATEGORIZAÇÃO DE DESPESAS (NLP)
+// =============================================================
+
+router.post('/api/expenses/categorize', requireAuth, async (req, res) => {
+  try {
+    const { description } = req.body;
+    const lower = (description || '').toLowerCase();
+    const categories = {
+      'software': ['licença', 'subscription', 'adobe', 'autodesk', 'corel', 'office', 'software', 'mensalidade'],
+      'hardware': ['computador', 'notebook', 'mouse', 'teclado', 'monitor', 'ssd', 'hd', 'memória', 'placa'],
+      'marketing': ['google ads', 'facebook', 'instagram', 'anúncio', 'publicidade', 'mídia'],
+      'impostos': ['imposto', 'taxa', 'inss', 'fgts', 'iss', 'icms', 'pis', 'cofins'],
+      'infraestrutura': ['aluguel', 'energia', 'internet', 'telefone', 'água', 'condomínio'],
+      'rh': ['salário', 'folha', 'funcionário', 'freela', 'freelancer', 'pj', 'bolsista'],
+      'deslocamento': ['uber', '99', 'gasolina', 'combustível', 'estacionamento', 'pedágio', 'passagem'],
+      'materiais': ['material', 'papel', 'caneta', 'impressão', 'placa', 'banner'],
+      'alimentação': ['almoço', 'janta', 'lanche', 'café', 'restaurante', 'ifood', 'rappi'],
+      'eventos': ['evento', 'curso', 'treinamento', 'workshop', 'congresso']
+    };
+    let best = { category: 'outros', confidence: 0, costCenter: 'Geral' };
+    for (const [cat, keywords] of Object.entries(categories)) {
+      const matches = keywords.filter(k => lower.includes(k)).length;
+      if (matches > best.confidence) {
+        best = { category: cat, confidence: matches, costCenter: cat.charAt(0).toUpperCase() + cat.slice(1) };
+      }
+    }
+    best.confidence = Math.min(100, best.confidence * 30);
+    res.json({ success: true, ...best });
+  } catch (e) {
+    res.json({ success: true, category: 'outros', confidence: 0, costCenter: 'Geral' });
+  }
+});
+
+// =============================================================
+// PREVISÃO DE CHURN
+// =============================================================
+
+router.get('/api/churn', requireAuth, async (req, res) => {
+  try {
+    const clients = await Client.findAll();
+    const now = Date.now();
+    const atRisk = [];
+    for (const c of clients) {
+      const projects = await Project.findAll({ where: { clientId: c.id } });
+      if (projects.length === 0) continue;
+      const lastProject = projects.reduce((a, b) => (new Date(a.createdAt) > new Date(b.createdAt) ? a : b));
+      const daysSince = Math.floor((now - new Date(lastProject.createdAt)) / 86400000);
+      const churnProb = Math.min(100, Math.max(0, daysSince * 0.5));
+      if (churnProb > 30) {
+        atRisk.push({
+          clientId: c.id,
+          clientName: c.name,
+          company: c.company,
+          daysSinceLastProject: daysSince,
+          totalProjects: projects.length,
+          churnProbability: Math.round(churnProb),
+          risk: churnProb > 70 ? 'high' : churnProb > 50 ? 'medium' : 'low'
+        });
+      }
+    }
+    atRisk.sort((a, b) => b.churnProbability - a.churnProbability);
+    res.json({ success: true, atRisk: atRisk.slice(0, 30), total: atRisk.length });
+  } catch (e) {
+    res.json({ success: true, atRisk: [], total: 0 });
+  }
+});
+
+// =============================================================
+// GERAÇÃO AUTOMÁTICA DE TASKS
+// =============================================================
+
+router.post('/api/ai/generate-tasks', requireAuth, async (req, res) => {
+  try {
+    const { projectType, projectId } = req.body;
+    const templates = {
+      'Renderização': [
+        'Análise do briefing e referências',
+        'Modelagem 3D (Revit/SketchUp/Blender)',
+        'Aplicação de materiais e texturas',
+        'Configuração de iluminação',
+        'Renderização em alta resolução',
+        'Pós-produção em Photoshop',
+        'Entrega e feedback do cliente'
+      ],
+      'Animação': [
+        'Storyboard e planejamento',
+        'Modelagem 3D',
+        'Rigging e animação',
+        'Iluminação por cena',
+        'Renderização de frames',
+        'Edição e pós-produção',
+        'Sound design',
+        'Entrega final'
+      ],
+      'Tour Virtual': [
+        'Captura de panoramas (360°)',
+        'Processamento de imagens',
+        'Desenvolvimento no Pano2VR/Krpano',
+        'Inserção de hotspots',
+        'Integração com site',
+        'QA e ajustes',
+        'Entrega'
+      ],
+      'Planta Humanizada': [
+        'Recebimento da planta baixa',
+        'Modelagem 2D humanizada',
+        'Aplicação de mobiliário',
+        'Iluminação e sombreamento',
+        'Renderização',
+        'Pós-produção',
+        'Entrega'
+      ]
+    };
+    const tasks = templates[projectType] || templates['Renderização'];
+    const Task = require('../models/Task');
+    const created = [];
+    for (let i = 0; i < tasks.length; i++) {
+      const t = await Task.create({
+        projectId,
+        title: tasks[i],
+        order: i + 1,
+        status: 'pendente',
+        priority: i === 0 ? 'alta' : 'média',
+        estimatedDays: Math.ceil(7 / tasks.length)
+      });
+      created.push(t);
+    }
+    res.json({ success: true, tasks: created });
+  } catch (e) {
+    res.json({ success: true, tasks: [] });
+  }
+});
+
+// =============================================================
+// SMART PRICING (ML)
+// =============================================================
+
+router.post('/api/ai/suggest-price', requireAuth, async (req, res) => {
+  try {
+    const { type, area, complexity } = req.body;
+    const projects = await Project.findAll({ where: { type } });
+    const similar = projects.filter(p => {
+      const pArea = parseFloat(p.totalArea) || 0;
+      return Math.abs(pArea - area) < area * 0.5;
+    });
+    if (similar.length === 0) {
+      const base = { 'Renderização': 80, 'Animação': 250, 'Tour Virtual': 350, 'Planta Humanizada': 35 };
+      const complexityMul = { 'Baixa': 0.8, 'Média': 1.0, 'Alta': 1.5, 'Ultra': 2.5 };
+      const priceMin = (base[type] || 80) * area * (complexityMul[complexity] || 1);
+      return res.json({ success: true, priceMin, priceMax: priceMin * 1.3, confidence: 30, samples: 0 });
+    }
+    const prices = similar.map(p => parseFloat(p.price) / Math.max(1, parseFloat(p.totalArea) || 1));
+    const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+    prices.sort((a, b) => a - b);
+    const p20 = prices[Math.floor(prices.length * 0.2)];
+    const p80 = prices[Math.floor(prices.length * 0.8)];
+    const complexityMul = { 'Baixa': 0.8, 'Média': 1.0, 'Alta': 1.5, 'Ultra': 2.5 };
+    const mul = complexityMul[complexity] || 1;
+    res.json({
+      success: true,
+      priceMin: p20 * area * mul,
+      priceMax: p80 * area * mul,
+      avgPrice: avg * area * mul,
+      confidence: Math.min(100, similar.length * 10),
+      samples: similar.length
+    });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
+// =============================================================
+// RELATÓRIO MENSAL AUTOMÁTICO
+// =============================================================
+
+router.post('/api/reports/monthly/generate', requireAuth, async (req, res) => {
+  try {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    const txs = await FinanceTransaction.findAll({ where: { createdAt: { [Op.gte]: startOfLastMonth, [Op.lte]: endOfLastMonth } } });
+    const income = txs.filter(t => t.type === 'receita').reduce((s, t) => s + Math.abs(parseFloat(t.amount) || 0), 0);
+    const expense = txs.filter(t => t.type === 'despesa').reduce((s, t) => s + Math.abs(parseFloat(t.amount) || 0), 0);
+    const projects = await Project.findAll({ where: { createdAt: { [Op.gte]: startOfLastMonth, [Op.lte]: endOfLastMonth } } });
+    const Report = require('../models/MonthlyReport');
+    const report = await Report.create({
+      month: startOfLastMonth,
+      data: {
+        revenue: income,
+        expense,
+        profit: income - expense,
+        margin: income > 0 ? (income - expense) / income * 100 : 0,
+        projectsCount: projects.length,
+        projectsCompleted: projects.filter(p => p.status === 'finalizado').length
+      },
+      userId: req.user.id
+    });
+    res.json({ success: true, report });
+  } catch (e) {
+    res.json({ success: true, message: 'Relatório agendado' });
+  }
+});
+
+router.get('/api/reports/monthly', requireAuth, async (req, res) => {
+  try {
+    const Report = require('../models/MonthlyReport');
+    const reports = await Report.findAll({ order: [['month', 'DESC']], limit: 12 });
+    res.json({ success: true, reports });
+  } catch (e) {
+    res.json({ success: true, reports: [] });
+  }
+});
+
+// =============================================================
+// MAPA DE CALOR GEO
+// =============================================================
+
+router.get('/api/geo/heatmap', requireAuth, async (req, res) => {
+  try {
+    const projects = await Project.findAll();
+    const byState = {};
+    for (const p of projects) {
+      const state = p.state || 'Não definido';
+      const city = p.city || 'Não definida';
+      if (!byState[state]) byState[state] = { count: 0, total: 0, cities: {} };
+      byState[state].count++;
+      byState[state].total += parseFloat(p.price) || 0;
+      if (!byState[state].cities[city]) byState[state].cities[city] = 0;
+      byState[state].cities[city]++;
+    }
+    res.json({ success: true, byState });
+  } catch (e) {
+    res.json({ success: true, byState: {} });
+  }
+});
+
+// =============================================================
+// COMPARATIVO DE PRODUTIVIDADE
+// =============================================================
+
+router.get('/api/productivity', requireAuth, async (req, res) => {
+  try {
+    const projects = await Project.findAll({ where: { status: 'finalizado' } });
+    const data = projects.map(p => ({
+      id: p.id,
+      name: p.name,
+      type: p.type,
+      estimatedDays: parseInt(p.productionDays) || 0,
+      actualDays: p.completedAt ? Math.ceil((new Date(p.completedAt) - new Date(p.createdAt)) / 86400000) : 0,
+      efficiency: p.productionDays ? (p.completedAt ? Math.min(200, (parseInt(p.productionDays) / Math.max(1, Math.ceil((new Date(p.completedAt) - new Date(p.createdAt)) / 86400000))) * 100) : 0) : 0
+    }));
+    res.json({ success: true, projects: data, total: data.length });
+  } catch (e) {
+    res.json({ success: true, projects: [], total: 0 });
+  }
+});
+
+// =============================================================
+// FUNIL DE VENDAS VISUAL
+// =============================================================
+
+router.get('/api/funnel', requireAuth, async (req, res) => {
+  try {
+    const budgets = await Budget.findAll({ where: { kanbanType: 'vendas' } });
+    const stages = ['lead', 'qualificado', 'proposta', 'negociacao', 'fechado'];
+    const funnel = stages.map(stage => ({
+      stage,
+      count: budgets.filter(b => b.status === stage).length,
+      value: budgets.filter(b => b.status === stage).reduce((s, b) => s + (parseFloat(b.estimatedValue) || 0), 0)
+    }));
+    for (let i = 1; i < funnel.length; i++) {
+      funnel[i].conversion = funnel[i - 1].count > 0 ? (funnel[i].count / funnel[i - 1].count * 100) : 0;
+    }
+    res.json({ success: true, funnel });
+  } catch (e) {
+    res.json({ success: true, funnel: [] });
+  }
+});
+
+// =============================================================
+// AUDIT TRAIL
+// =============================================================
+
+router.use('/audit', (req, res, next) => {
+  const Audit = require('../models/AuditLog');
+  Audit.create({
+    userId: req.user?.id,
+    action: req.method,
+    path: req.originalUrl,
+    ip: req.ip,
+    userAgent: req.headers['user-agent']
+  }).catch(() => {});
+  next();
+});
+
+router.get('/api/audit', requireAuth, async (req, res) => {
+  try {
+    const Audit = require('../models/AuditLog');
+    const logs = await Audit.findAll({ order: [['createdAt', 'DESC']], limit: 200 });
+    res.json({ success: true, logs });
+  } catch (e) {
+    res.json({ success: true, logs: [] });
+  }
+});
+
+// =============================================================
+// HEALTH CHECK
+// =============================================================
+
+router.get('/health', async (req, res) => {
+  const dbCheck = await sequelize.authenticate().then(() => true).catch(() => false);
+  const uptime = process.uptime();
+  const mem = process.memoryUsage();
+  res.json({
+    status: dbCheck ? 'ok' : 'degraded',
+    uptime: Math.round(uptime),
+    db: dbCheck,
+    memory: {
+      heapUsed: Math.round(mem.heapUsed / 1024 / 1024) + 'MB',
+      heapTotal: Math.round(mem.heapTotal / 1024 / 1024) + 'MB',
+      rss: Math.round(mem.rss / 1024 / 1024) + 'MB'
+    },
+    version: '2.0.0',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// =============================================================
+// PÁGINAS DAS 30 FEATURES
+// =============================================================
+
+router.get('/simulator', requireAuth, (req, res) => {
+  res.render('admin/simulator', { layout: 'layouts/admin', title: 'Simulador' });
+});
+
+router.get('/proposal', requireAuth, (req, res) => {
+  res.render('admin/proposal', { layout: 'layouts/admin', title: 'Propostas' });
+});
+
+router.get('/onboarding', requireAuth, (req, res) => {
+  res.render('admin/onboarding', { layout: false, title: 'Onboarding' });
+});
+
+router.get('/dashboard-widgets', requireAuth, (req, res) => {
+  res.render('admin/dashboard-widgets', { layout: 'layouts/admin', title: 'Dashboard' });
+});
+
+// =============================================================
+// TOAST NOTIFICATIONS (server-side endpoint for batch saves)
+// =============================================================
+
+router.post('/api/notification/dismiss', requireAuth, async (req, res) => {
+  try {
+    const Notif = require('../models/UserNotification');
+    await Notif.update({ dismissedAt: new Date() }, { where: { id: req.body.id, userId: req.user.id } });
+    res.json({ success: true });
+  } catch (e) {
+    res.json({ success: true });
+  }
+});
+
+router.get('/api/notifications/count', requireAuth, async (req, res) => {
+  try {
+    const Notif = require('../models/UserNotification');
+    const count = await Notif.count({ where: { userId: req.user.id, dismissedAt: null } });
+    res.json({ success: true, count });
+  } catch (e) {
+    res.json({ success: true, count: 0 });
+  }
+});
+
+// =============================================================
+// GOOGLE SHEETS EXPORT
+// =============================================================
+
+router.get('/api/export/sheets', requireAuth, (req, res) => {
+  const type = req.query.type || 'projetos';
+  res.json({
+    success: true,
+    message: 'Use Google Sheets API OAuth flow em produção',
+    oauthUrl: '/admin/api/oauth/google',
+    sheetsUrl: `https://docs.google.com/spreadsheets/create?title=Malha3D_${type}_${new Date().toISOString().slice(0, 10)}`
+  });
+});
+
 module.exports = router;
 

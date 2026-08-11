@@ -1,0 +1,645 @@
+<div class="flex flex-col h-full p-3 sm:p-4 md:p-6 gap-4 overflow-y-auto">
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- DASHBOARD WIDGETS — Customizable grid, native HTML5 drag/drop  -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- Header row: title + Reset Layout button -->
+    <div class="flex items-center justify-between shrink-0">
+        <div>
+            <div class="flex items-center gap-2 mb-1">
+                <span class="px-2.5 py-0.5 rounded-full bg-orange-500/15 text-orange-400 text-[9px] font-black uppercase tracking-widest border border-orange-500/30">Live Intelligence</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight leading-none">
+                Dashboard <span class="text-orange-400">Widgets</span>
+            </h1>
+            <p class="text-[10px] text-gray-500 mt-1 font-bold uppercase tracking-widest">Arraste os blocos pelo ícone &nbsp;·&nbsp; layout salvo automaticamente</p>
+        </div>
+        <button id="resetLayoutBtn" class="ds-action-btn flex items-center gap-2" type="button" title="Restaurar layout padrão">
+            <span class="material-symbols-outlined text-[12px]">restart_alt</span>
+            <span>Reset Layout</span>
+        </button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- WIDGETS GRID — 12 columns, gap-4, mobile-first 1 col            -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <div id="widgetsGrid" class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-4 auto-rows-min">
+
+        <!-- ╔══ 1. KPI BAR (col-span-12) ═════════════════════════════════════ -->
+        <section class="widget kcard lg:col-span-12" draggable="true" data-widget-id="kpi" data-col-span="12">
+            <div class="flex items-center justify-between px-4 pt-3 pb-2" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-orange-400 text-sm">monitoring</span> KPIs Rápidos
+                </h3>
+                <span class="drag-handle material-symbols-outlined text-gray-600 hover:text-orange-400 cursor-grab active:cursor-grabbing" draggable="true">drag_indicator</span>
+            </div>
+            <div id="kpiContent" class="grid grid-cols-2 md:grid-cols-4 gap-3 p-4">
+                <!-- Mini KPI 1 -->
+                <div class="kcard p-3 flex flex-col gap-1" style="background:rgba(255,255,255,0.02);">
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-orange-400 text-lg">payments</span>
+                        <span id="kpiFaturamentoDelta" class="text-[9px] font-black text-emerald-400">—</span>
+                    </div>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-2">Faturamento Mês</p>
+                    <p id="kpiFaturamento" class="fluid-kpi-lg font-black text-white">R$ 0,00</p>
+                </div>
+                <!-- Mini KPI 2 -->
+                <div class="kcard p-3 flex flex-col gap-1" style="background:rgba(255,255,255,0.02);">
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-blue-400 text-lg">view_in_ar</span>
+                        <span id="kpiProjetosDelta" class="text-[9px] font-black text-emerald-400">—</span>
+                    </div>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-2">Projetos Ativos</p>
+                    <p id="kpiProjetos" class="fluid-kpi-lg font-black text-white">0</p>
+                </div>
+                <!-- Mini KPI 3 -->
+                <div class="kcard p-3 flex flex-col gap-1" style="background:rgba(255,255,255,0.02);">
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-cyan-400 text-lg">group</span>
+                        <span id="kpiLeadsDelta" class="text-[9px] font-black text-emerald-400">—</span>
+                    </div>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-2">Leads Abertos</p>
+                    <p id="kpiLeads" class="fluid-kpi-lg font-black text-white">0</p>
+                </div>
+                <!-- Mini KPI 4 -->
+                <div class="kcard p-3 flex flex-col gap-1" style="background:rgba(255,255,255,0.02);">
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-emerald-400 text-lg">trending_up</span>
+                        <span id="kpiConversaoDelta" class="text-[9px] font-black text-emerald-400">—</span>
+                    </div>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-2">Taxa de Conversão</p>
+                    <p id="kpiConversao" class="fluid-kpi-lg font-black text-white">0%</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ╔══ 2. PIPELINE RESUMO (col-span-4) ══════════════════════════════ -->
+        <section class="widget kcard lg:col-span-4" draggable="true" data-widget-id="pipeline" data-col-span="4">
+            <div class="flex items-center justify-between px-4 pt-3 pb-2" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-cyan-400 text-sm">view_kanban</span> Pipeline Resumo
+                </h3>
+                <span class="drag-handle material-symbols-outlined text-gray-600 hover:text-orange-400 cursor-grab active:cursor-grabbing" draggable="true">drag_indicator</span>
+            </div>
+            <div id="pipelineContent" class="p-3 space-y-2 min-h-[120px]">
+                <div class="flex items-center justify-between p-2 rounded" style="background:rgba(255,255,255,0.02);">
+                    <span class="text-[10px] font-bold text-gray-400">Carregando...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ╔══ 3. TAREFAS DO DIA (col-span-4) ════════════════════════════════ -->
+        <section class="widget kcard lg:col-span-4" draggable="true" data-widget-id="tasks" data-col-span="4">
+            <div class="flex items-center justify-between px-4 pt-3 pb-2" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-amber-400 text-sm">task_alt</span> Tarefas do Dia
+                </h3>
+                <span class="drag-handle material-symbols-outlined text-gray-600 hover:text-orange-400 cursor-grab active:cursor-grabbing" draggable="true">drag_indicator</span>
+            </div>
+            <div id="tasksContent" class="p-3 space-y-1.5 min-h-[120px]">
+                <p class="text-[10px] text-gray-500 text-center py-4">Carregando tarefas...</p>
+            </div>
+        </section>
+
+        <!-- ╔══ 4. CAIXA RÁPIDO (col-span-4) ═════════════════════════════════ -->
+        <section class="widget kcard lg:col-span-4" draggable="true" data-widget-id="cash" data-col-span="4">
+            <div class="flex items-center justify-between px-4 pt-3 pb-2" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-emerald-400 text-sm">account_balance_wallet</span> Caixa Rápido
+                </h3>
+                <span class="drag-handle material-symbols-outlined text-gray-600 hover:text-orange-400 cursor-grab active:cursor-grabbing" draggable="true">drag_indicator</span>
+            </div>
+            <div class="p-4">
+                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Saldo Atual</p>
+                <p id="cashBalance" class="fluid-kpi-lg font-black text-emerald-400 mb-3">R$ 0,00</p>
+                <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-2 pb-1" style="border-bottom:1px solid rgba(255,255,255,0.06);">Últimas Transações</p>
+                <div id="cashTxList" class="space-y-1.5 max-h-[160px] overflow-y-auto custom-scrollbar">
+                    <p class="text-[10px] text-gray-500 text-center py-3">Carregando...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ╔══ 5. PRÓXIMOS VENCIMENTOS (col-span-6) ════════════════════════ -->
+        <section class="widget kcard lg:col-span-6" draggable="true" data-widget-id="aging" data-col-span="6">
+            <div class="flex items-center justify-between px-4 pt-3 pb-2" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-red-400 text-sm">event_upcoming</span> Próximos Vencimentos
+                </h3>
+                <span class="drag-handle material-symbols-outlined text-gray-600 hover:text-orange-400 cursor-grab active:cursor-grabbing" draggable="true">drag_indicator</span>
+            </div>
+            <div id="agingContent" class="p-3 space-y-1.5 min-h-[140px]">
+                <p class="text-[10px] text-gray-500 text-center py-4">Carregando...</p>
+            </div>
+        </section>
+
+        <!-- ╔══ 6. ANOMALIAS (col-span-6) ═════════════════════════════════════ -->
+        <section class="widget kcard lg:col-span-6" draggable="true" data-widget-id="anomalies" data-col-span="6">
+            <div class="flex items-center justify-between px-4 pt-3 pb-2" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-purple-400 text-sm">psychology</span> Anomalias (IA)
+                </h3>
+                <span class="drag-handle material-symbols-outlined text-gray-600 hover:text-orange-400 cursor-grab active:cursor-grabbing" draggable="true">drag_indicator</span>
+            </div>
+            <div id="anomaliesContent" class="p-3 space-y-2 min-h-[140px]">
+                <p class="text-[10px] text-gray-500 text-center py-4">Carregando anomalias...</p>
+            </div>
+        </section>
+
+        <!-- ╔══ 7. CALENDÁRIO MINI (col-span-4) ══════════════════════════════ -->
+        <section class="widget kcard lg:col-span-4" draggable="true" data-widget-id="calendar" data-col-span="4">
+            <div class="flex items-center justify-between px-4 pt-3 pb-2" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-400 text-sm">calendar_month</span>
+                    <span id="calendarTitle">Calendário</span>
+                </h3>
+                <span class="drag-handle material-symbols-outlined text-gray-600 hover:text-orange-400 cursor-grab active:cursor-grabbing" draggable="true">drag_indicator</span>
+            </div>
+            <div class="p-3">
+                <!-- Day-of-week header -->
+                <div id="calendarWeekdays" class="grid grid-cols-7 gap-1 mb-1 text-center text-[8px] font-black text-gray-500 uppercase">
+                    <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+                </div>
+                <!-- 6 rows × 7 cols (max 42 days) -->
+                <div id="calendarGrid" class="grid grid-cols-7 gap-1 text-center"></div>
+                <!-- Legend -->
+                <div class="flex items-center justify-end gap-3 mt-3 pt-2" style="border-top:1px solid rgba(255,255,255,0.06);">
+                    <div class="flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                        <span class="text-[8px] font-bold text-gray-500 uppercase">Prazo</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                        <span class="text-[8px] font-bold text-gray-500 uppercase">Hoje</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ╔══ 8. NOTIFICAÇÕES (col-span-8) ═════════════════════════════════ -->
+        <section class="widget kcard lg:col-span-8" draggable="true" data-widget-id="notifications" data-col-span="8">
+            <div class="flex items-center justify-between px-4 pt-3 pb-2" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+                <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                    <span class="material-symbols-outlined text-orange-400 text-sm">notifications_active</span> Notificações Recentes
+                </h3>
+                <span class="drag-handle material-symbols-outlined text-gray-600 hover:text-orange-400 cursor-grab active:cursor-grabbing" draggable="true">drag_indicator</span>
+            </div>
+            <div id="notifContent" class="p-3 space-y-1.5 min-h-[140px]">
+                <p class="text-[10px] text-gray-500 text-center py-4">Carregando notificações...</p>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- DASHBOARD WIDGETS — JS (bottom, no Handlebars tokens in script)   -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+    'use strict';
+
+    var STORAGE_KEY = 'malha3d_dashboard_layout';
+    var grid = document.getElementById('widgetsGrid');
+    if (!grid) return;
+
+    // ─── 1. Drag & Drop (Native HTML5 API) ────────────────────────────
+    var draggedEl = null;
+
+    function getWidgetEls() {
+        return Array.prototype.slice.call(grid.querySelectorAll('.widget'));
+    }
+
+    function getDefaultOrder() {
+        // DOM order as defined = default
+        return getWidgetEls().map(function(el) { return el.dataset.widgetId; });
+    }
+
+    function applyLayout(order) {
+        order.forEach(function(id) {
+            var el = grid.querySelector('[data-widget-id="' + id + '"]');
+            if (el) grid.appendChild(el);
+        });
+    }
+
+    function saveLayout() {
+        var order = getWidgetEls().map(function(el) { return el.dataset.widgetId; });
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(order)); } catch (e) {}
+    }
+
+    function loadLayout() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return false;
+            var order = JSON.parse(raw);
+            if (!Array.isArray(order) || order.length === 0) return false;
+            applyLayout(order);
+            return true;
+        } catch (e) { return false; }
+    }
+
+    function getDragAfterElement(container, y) {
+        // Find the widget whose midpoint the cursor is below
+        var els = getWidgetEls().filter(function(el) {
+            return el !== draggedEl && !el.classList.contains('dragging-source');
+        });
+        var closest = { offset: Number.NEGATIVE_INFINITY, element: null };
+        els.forEach(function(el) {
+            var box = el.getBoundingClientRect();
+            var offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                closest = { offset: offset, element: el };
+            }
+        });
+        return closest.element;
+    }
+
+    getWidgetEls().forEach(function(widget) {
+        widget.addEventListener('dragstart', function(e) {
+            // Ignore drags that started on inner inputs/textareas (so users can still select text)
+            draggedEl = widget;
+            widget.classList.add('dragging-source');
+            try {
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', widget.dataset.widgetId);
+            } catch (err) {}
+        });
+
+        widget.addEventListener('dragover', function(e) {
+            if (!draggedEl) return;
+            e.preventDefault();
+            try { e.dataTransfer.dropEffect = 'move'; } catch (err) {}
+            widget.classList.add('drag-hover-target');
+        });
+
+        widget.addEventListener('dragleave', function() {
+            widget.classList.remove('drag-hover-target');
+        });
+
+        widget.addEventListener('drop', function(e) {
+            e.preventDefault();
+            widget.classList.remove('drag-hover-target');
+            if (!draggedEl || draggedEl === widget) return;
+            var afterEl = getDragAfterElement(grid, e.clientY);
+            if (afterEl == null) {
+                grid.appendChild(draggedEl);
+            } else {
+                grid.insertBefore(draggedEl, afterEl);
+            }
+            saveLayout();
+        });
+
+        widget.addEventListener('dragend', function() {
+            if (draggedEl) draggedEl.classList.remove('dragging-source');
+            getWidgetEls().forEach(function(el) { el.classList.remove('drag-hover-target'); });
+            draggedEl = null;
+        });
+    });
+
+    // Reset button
+    var resetBtn = document.getElementById('resetLayoutBtn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+            try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+            applyLayout(getDefaultOrder());
+            if (typeof window.showToast === 'function') {
+                window.showToast('Layout restaurado para o padrão.', 'success');
+            }
+        });
+    }
+
+    // Apply saved order on first paint
+    loadLayout();
+
+    // ─── 2. Format helpers ────────────────────────────────────────────
+    function brl(n) {
+        if (n == null || isNaN(n)) return 'R$ 0,00';
+        return 'R$ ' + Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function pct(n) {
+        if (n == null || isNaN(n)) return '0%';
+        return Number(n).toFixed(1).replace('.', ',') + '%';
+    }
+    function escapeHTML(s) {
+        if (s == null) return '';
+        return String(s).replace(/[&<>"']/g, function(c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
+    // ─── 3. Parallel fetchers ──────────────────────────────────────────
+    var fetches = {
+        monthlyComparison: fetch('/admin/api/erp/monthly-comparison').then(function(r){ return r.json(); }).catch(function(){ return {}; }),
+        pipelineByVendor:  fetch('/admin/api/crm/pipeline-by-vendor').then(function(r){ return r.json(); }).catch(function(){ return {}; }),
+        deadlineAlerts:    fetch('/admin/api/deadline-alerts').then(function(r){ return r.json(); }).catch(function(){ return { tasks: [] }; }),
+        erpAging:          fetch('/admin/api/erp/aging').then(function(r){ return r.json(); }).catch(function(){ return { items: [] }; }),
+        aiAnomalies:       fetch('/admin/api/ai/anomalies').then(function(r){ return r.json(); }).catch(function(){ return { items: [] }; }),
+        notifications:     fetch('/admin/api/notifications').then(function(r){ return r.json(); }).catch(function(){ return { items: [] }; })
+    };
+
+    Promise.all(Object.keys(fetches).map(function(k){ return fetches[k]; })).then(function(results) {
+        var monthly  = results[0] || {};
+        var pipeline = results[1] || {};
+        var tasks    = results[2] || {};
+        var aging    = results[3] || {};
+        var anom     = results[4] || {};
+        var notif    = results[5] || {};
+
+        renderKPIs(monthly, pipeline);
+        renderPipeline(pipeline);
+        renderTasks(tasks);
+        renderCash(monthly);
+        renderAging(aging);
+        renderAnomalies(anom);
+        renderNotifications(notif);
+        renderCalendar(tasks);
+    });
+
+    // ─── 4. Renderers ──────────────────────────────────────────────────
+
+    function renderKPIs(monthly, pipeline) {
+        var current = Number(monthly.currentRevenue || monthly.receitas || monthly.totalReceitas || 0);
+        var previous = Number(monthly.previousRevenue || monthly.receitasAnterior || 0);
+        if (document.getElementById('kpiFaturamento')) {
+            document.getElementById('kpiFaturamento').textContent = brl(current);
+        }
+        var deltaEl = document.getElementById('kpiFaturamentoDelta');
+        if (deltaEl) {
+            if (previous > 0) {
+                var diff = ((current - previous) / previous) * 100;
+                deltaEl.textContent = (diff >= 0 ? '+' : '') + diff.toFixed(1).replace('.', ',') + '%';
+                deltaEl.className = 'text-[9px] font-black ' + (diff >= 0 ? 'text-emerald-400' : 'text-red-400');
+            } else { deltaEl.textContent = '—'; }
+        }
+
+        // Projetos Ativos
+        var projectsActive = monthly.activeProjects || pipeline.activeProjects || 0;
+        var projectsEl = document.getElementById('kpiProjetos');
+        if (projectsEl) projectsEl.textContent = String(projectsActive);
+
+        // Leads Abertos
+        var openLeads = pipeline.openLeads || pipeline.totalOpen || 0;
+        var leadsEl = document.getElementById('kpiLeads');
+        if (leadsEl) leadsEl.textContent = String(openLeads);
+
+        // Taxa de Conversão
+        var conv = pipeline.conversionRate || monthly.conversionRate || 0;
+        var convEl = document.getElementById('kpiConversao');
+        if (convEl) convEl.textContent = pct(conv);
+    }
+
+    function renderPipeline(pipeline) {
+        var el = document.getElementById('pipelineContent');
+        if (!el) return;
+        var cols = pipeline.columns || pipeline.byVendor || [];
+        if (!Array.isArray(cols) || cols.length === 0) {
+            el.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">Sem dados de pipeline.</p>';
+            return;
+        }
+        // Aggregate by status if we received byVendor
+        var byStatus = {};
+        if (cols.length && cols[0].status != null) {
+            cols.forEach(function(row) {
+                byStatus[row.status] = (byStatus[row.status] || 0) + (row.count || 1);
+            });
+        } else {
+            cols.slice(0, 6).forEach(function(c, i) {
+                byStatus[c.name || c.label || ('Coluna ' + (i + 1))] = c.count || c.total || 0;
+            });
+        }
+        var statusColors = {
+            'novo': 'bg-cyan-500', 'novo lead': 'bg-cyan-500',
+            'qualificado': 'bg-blue-500', 'proposta': 'bg-amber-500',
+            'negociacao': 'bg-orange-500', 'negociação': 'bg-orange-500',
+            'fechado': 'bg-emerald-500', 'ganho': 'bg-emerald-500',
+            'perdido': 'bg-red-500'
+        };
+        var html = '';
+        Object.keys(byStatus).forEach(function(status) {
+            var color = statusColors[status.toLowerCase()] || 'bg-gray-500';
+            html += '<div class="flex items-center justify-between p-2 rounded" style="background:rgba(255,255,255,0.02);">' +
+                '<div class="flex items-center gap-2">' +
+                '<span class="w-2 h-2 rounded-full ' + color + '"></span>' +
+                '<span class="text-[10px] font-bold text-gray-300 capitalize">' + escapeHTML(status) + '</span>' +
+                '</div>' +
+                '<span class="text-[10px] font-black text-white">' + byStatus[status] + '</span>' +
+                '</div>';
+        });
+        if (!html) html = '<p class="text-[10px] text-gray-500 text-center py-4">Sem dados de pipeline.</p>';
+        el.innerHTML = html;
+    }
+
+    function renderTasks(data) {
+        var el = document.getElementById('tasksContent');
+        if (!el) return;
+        var tasks = Array.isArray(data.tasks) ? data.tasks : (Array.isArray(data.items) ? data.items : []);
+        if (tasks.length === 0) {
+            el.innerHTML = '<div class="flex flex-col items-center justify-center py-6 text-gray-500">' +
+                '<span class="material-symbols-outlined text-2xl mb-1">check_circle</span>' +
+                '<p class="text-[10px] font-bold uppercase tracking-widest">Tudo em dia!</p></div>';
+            return;
+        }
+        var html = '';
+        tasks.slice(0, 6).forEach(function(t) {
+            var title = t.title || t.name || t.description || 'Tarefa sem título';
+            var dueDate = t.dueDate || t.deadline || t.due_date;
+            var overdue = t.overdue === true || (dueDate && new Date(dueDate) < new Date());
+            var badge = overdue
+                ? '<span class="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded bg-red-500/15 text-red-400 border border-red-500/30">Atrasada</span>'
+                : '<span class="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">Hoje</span>';
+            var dateStr = '';
+            if (dueDate) {
+                try { dateStr = new Date(dueDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }); } catch (e) {}
+            }
+            html += '<div class="flex items-center gap-3 p-2 rounded" style="background:rgba(255,255,255,0.02);">' +
+                '<span class="material-symbols-outlined text-orange-400 text-base">task</span>' +
+                '<div class="flex-1 min-w-0">' +
+                '<p class="text-[10px] font-bold text-white truncate">' + escapeHTML(title) + '</p>' +
+                '<p class="text-[8px] text-gray-500">' + dateStr + '</p>' +
+                '</div>' + badge + '</div>';
+        });
+        el.innerHTML = html;
+    }
+
+    function renderCash(monthly) {
+        var balEl = document.getElementById('cashBalance');
+        var balance = Number(monthly.balance || monthly.currentBalance || monthly.saldo || 0);
+        if (balEl) {
+            balEl.textContent = brl(balance);
+            balEl.className = 'fluid-kpi-lg font-black ' + (balance >= 0 ? 'text-emerald-400' : 'text-red-400') + ' mb-3';
+        }
+        var listEl = document.getElementById('cashTxList');
+        if (!listEl) return;
+        var txs = Array.isArray(monthly.recentTransactions) ? monthly.recentTransactions : [];
+        if (txs.length === 0) {
+            listEl.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-3">Sem transações recentes.</p>';
+            return;
+        }
+        var html = '';
+        txs.slice(0, 5).forEach(function(tx) {
+            var desc = tx.description || tx.descricao || tx.title || 'Transação';
+            var amt = Number(tx.amount || tx.valor || 0);
+            var dateStr = '';
+            if (tx.date || tx.data) {
+                try { dateStr = new Date(tx.date || tx.data).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }); } catch (e) {}
+            }
+            var isIncome = amt >= 0;
+            html += '<div class="flex items-center justify-between text-[10px] py-1">' +
+                '<span class="text-gray-300 truncate flex-1 min-w-0">' + escapeHTML(desc) + '</span>' +
+                '<span class="font-black ml-2 ' + (isIncome ? 'text-emerald-400' : 'text-red-400') + '">' +
+                (isIncome ? '+' : '−') + brl(Math.abs(amt)).replace('R$ ', 'R$') +
+                '</span>' +
+                '<span class="text-gray-500 ml-2 w-12 text-right">' + dateStr + '</span>' +
+                '</div>';
+        });
+        listEl.innerHTML = html;
+    }
+
+    function renderAging(data) {
+        var el = document.getElementById('agingContent');
+        if (!el) return;
+        var items = Array.isArray(data.items) ? data.items : (Array.isArray(data.aging) ? data.aging : []);
+        if (items.length === 0) {
+            el.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">Nenhum vencimento próximo.</p>';
+            return;
+        }
+        var html = '';
+        items.slice(0, 5).forEach(function(it) {
+            var title = it.description || it.cliente || it.title || 'Vencimento';
+            var amount = Number(it.amount || it.valor || 0);
+            var type = (it.type || it.tipo || '').toLowerCase();
+            var isAP = type === 'ap' || type === 'pagar' || type === 'despesa';
+            var daysLeft = it.daysUntil || it.diasRestantes;
+            var daysStr = (daysLeft == null) ? '' : (
+                daysLeft < 0 ? '<span class="text-red-400">' + Math.abs(daysLeft) + 'd atraso</span>' :
+                daysLeft === 0 ? '<span class="text-orange-400">hoje</span>' :
+                '<span class="text-gray-400">em ' + daysLeft + 'd</span>'
+            );
+            html += '<div class="flex items-center justify-between p-2 rounded" style="background:rgba(255,255,255,0.02);">' +
+                '<div class="flex items-center gap-2 min-w-0 flex-1">' +
+                '<span class="material-symbols-outlined text-base ' + (isAP ? 'text-red-400' : 'text-emerald-400') + '">' +
+                (isAP ? 'arrow_outward' : 'arrow_downward') + '</span>' +
+                '<p class="text-[10px] font-bold text-white truncate">' + escapeHTML(title) + '</p>' +
+                '</div>' +
+                '<span class="text-[10px] font-black ' + (isAP ? 'text-red-400' : 'text-emerald-400') + ' ml-2">' +
+                brl(amount) + '</span>' +
+                '<span class="text-[9px] ml-3 w-16 text-right">' + daysStr + '</span>' +
+                '</div>';
+        });
+        el.innerHTML = html;
+    }
+
+    function renderAnomalies(data) {
+        var el = document.getElementById('anomaliesContent');
+        if (!el) return;
+        var items = Array.isArray(data.items) ? data.items : (Array.isArray(data.anomalies) ? data.anomalies : []);
+        if (items.length === 0) {
+            el.innerHTML = '<div class="flex flex-col items-center justify-center py-4 text-gray-500">' +
+                '<span class="material-symbols-outlined text-2xl mb-1">check_circle</span>' +
+                '<p class="text-[10px] font-bold uppercase tracking-widest">Nenhuma anomalia detectada</p></div>';
+            return;
+        }
+        var sevColors = {
+            'high':    { bar: 'bg-red-500',    text: 'text-red-400' },
+            'critical':{ bar: 'bg-red-500',    text: 'text-red-400' },
+            'medium':  { bar: 'bg-amber-500',  text: 'text-amber-400' },
+            'low':     { bar: 'bg-blue-500',   text: 'text-blue-400' }
+        };
+        var html = '';
+        items.slice(0, 3).forEach(function(a) {
+            var sev = (a.severity || a.nivel || 'medium').toLowerCase();
+            var palette = sevColors[sev] || sevColors.medium;
+            var title = a.title || a.titulo || 'Anomalia';
+            var desc  = a.description || a.descricao || '';
+            html += '<div class="p-2 rounded flex gap-2" style="background:rgba(255,255,255,0.02);">' +
+                '<span class="w-1 self-stretch rounded-full ' + palette.bar + '"></span>' +
+                '<div class="flex-1 min-w-0">' +
+                '<p class="text-[10px] font-bold text-white">' + escapeHTML(title) + '</p>' +
+                '<p class="text-[9px] text-gray-500 line-clamp-2">' + escapeHTML(desc) + '</p>' +
+                '</div>' +
+                '<span class="text-[8px] font-black uppercase tracking-widest ' + palette.text + '">' + escapeHTML(sev) + '</span>' +
+                '</div>';
+        });
+        el.innerHTML = html;
+    }
+
+    function renderNotifications(data) {
+        var el = document.getElementById('notifContent');
+        if (!el) return;
+        var items = Array.isArray(data.items) ? data.items : [];
+        if (items.length === 0) {
+            el.innerHTML = '<p class="text-[10px] text-gray-500 text-center py-4">Sem notificações.</p>';
+            return;
+        }
+        var html = '';
+        items.slice(0, 5).forEach(function(n) {
+            var title = n.title || n.subject || 'Notificação';
+            var msg = n.message || n.body || '';
+            var time = n.createdAt || n.time || n.date;
+            var timeStr = '';
+            if (time) {
+                try { timeStr = new Date(time).toLocaleString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) {}
+            }
+            html += '<div class="flex items-center gap-3 p-2 rounded" style="background:rgba(255,255,255,0.02);">' +
+                '<span class="material-symbols-outlined text-orange-400 text-base">notifications</span>' +
+                '<div class="flex-1 min-w-0">' +
+                '<p class="text-[10px] font-bold text-white truncate">' + escapeHTML(title) + '</p>' +
+                '<p class="text-[8px] text-gray-500 truncate">' + escapeHTML(msg) + '</p>' +
+                '</div>' +
+                '<span class="text-[8px] text-gray-600 whitespace-nowrap">' + timeStr + '</span>' +
+                '</div>';
+        });
+        el.innerHTML = html;
+    }
+
+    function renderCalendar(tasks) {
+        var gridEl = document.getElementById('calendarGrid');
+        var titleEl = document.getElementById('calendarTitle');
+        if (!gridEl) return;
+
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = now.getMonth();
+        var today = now.getDate();
+
+        if (titleEl) {
+            titleEl.textContent = now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        }
+
+        // Collect days with deadlines (from tasks data already fetched)
+        var taskDays = {};
+        var list = Array.isArray(tasks.tasks) ? tasks.tasks : (Array.isArray(tasks.items) ? tasks.items : []);
+        list.forEach(function(t) {
+            var d = t.dueDate || t.deadline || t.due_date;
+            if (!d) return;
+            var dd = new Date(d);
+            if (dd.getFullYear() === year && dd.getMonth() === month) {
+                taskDays[dd.getDate()] = true;
+            }
+        });
+
+        var firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        var html = '';
+        // Leading blanks
+        for (var i = 0; i < firstDay; i++) html += '<span></span>';
+        // Days
+        for (var d = 1; d <= daysInMonth; d++) {
+            var isToday = (d === today);
+            var hasDeadline = taskDays[d] === true;
+            var classes = 'relative h-8 flex items-center justify-center text-[10px] font-bold rounded ';
+            if (isToday) classes += 'bg-orange-500 text-black shadow-lg shadow-orange-500/30';
+            else if (hasDeadline) classes += 'bg-white/5 text-white border border-amber-500/30';
+            else classes += 'text-gray-500';
+            html += '<div class="' + classes + '">' + d;
+            if (hasDeadline && !isToday) html += '<span class="absolute bottom-1 w-1 h-1 rounded-full bg-amber-400"></span>';
+            if (isToday) html += '<span class="absolute bottom-1 w-1 h-1 rounded-full bg-black"></span>';
+            html += '</div>';
+        }
+        gridEl.innerHTML = html;
+    }
+
+})();
+</script>

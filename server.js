@@ -154,6 +154,23 @@ const hbs = exphbs.create({
     json: (obj) => {
       return JSON.stringify(obj);
     },
+    kebab: (str) => {
+      if (str == null) {return '';}
+      // Strip diacritics using regex with explicit Unicode escapes
+      // (combining diacritical marks U+0300 to U+036F)
+      return String(str)
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    },
+    len: (val) => {
+      if (val == null) {return 0;}
+      if (typeof val === 'string' || Array.isArray(val)) {return val.length;}
+      if (typeof val === 'object') {return Object.keys(val).length;}
+      return 0;
+    },
     statusBadge: (status) => {
       const badges = {
         'novo': '<span class="badge bg-primary">Novo</span>',
