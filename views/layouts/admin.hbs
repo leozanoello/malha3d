@@ -1686,6 +1686,48 @@
         }
       }, { once: true });
     };
+
+    // === GERADOR DE DADOS DE TESTE (Beta) ===
+    window.generateTestData = async function(module) {
+      var qty = document.getElementById('testDataQty') ? document.getElementById('testDataQty').value : 10;
+      if (!confirm('Criar ' + qty + ' registros de teste em "' + module + '"?\n\nDados serão marcados como teste e podem ser deletados depois.')) return;
+      try {
+        var res = await fetch('/admin/api/test-data/generate', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ module: module, quantity: parseInt(qty) })
+        });
+        var data = await res.json();
+        if (data.success) {
+          var msg = 'Criados com sucesso: ' + Object.entries(data.created).map(function(e) { return e[1] + ' ' + e[0]; }).join(', ');
+          if (window.showToast) window.showToast(msg, 'success');
+          else alert(msg);
+          setTimeout(function() { location.reload(); }, 1000);
+        } else {
+          alert('Erro: ' + (data.message || 'Falha ao gerar'));
+        }
+      } catch(e) { alert('Erro de conexão: ' + e.message); }
+    };
+
+    window.clearTestData = async function(module) {
+      if (!confirm('⚠️ DELETAR todos os dados de teste em "' + module + '"?\n\nApenas dados marcados como teste serão removidos.\nDados reais NÃO serão afetados.')) return;
+      try {
+        var res = await fetch('/admin/api/test-data/clear', {
+          method: 'DELETE',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ module: module })
+        });
+        var data = await res.json();
+        if (data.success) {
+          var msg = 'Deletados: ' + Object.entries(data.deleted).map(function(e) { return e[1] + ' ' + e[0]; }).join(', ');
+          if (window.showToast) window.showToast(msg, 'info');
+          else alert(msg);
+          setTimeout(function() { location.reload(); }, 1000);
+        } else {
+          alert('Erro: ' + (data.message || 'Falha ao deletar'));
+        }
+      } catch(e) { alert('Erro de conexão: ' + e.message); }
+    };
     </script>
 
 </body>

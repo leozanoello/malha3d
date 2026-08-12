@@ -7590,6 +7590,180 @@ router.get('/api/audit', requireAuth, async (req, res) => {
 });
 
 // =============================================================
+// GERADOR DE DADOS DE TESTE (Beta)
+// =============================================================
+
+const TEST_DATA_POOLS = {
+  projectNames: ['Residência Pérola Negra','Torre Comercial Alpha','Loft Industrial São Paulo','Mansão Jardins Europa','Edifício Horizonte','Residencial Bosque','Flat Design Studio','Casa Moderna Alphaville','Prédio Corporate Center','Villa Toscana','Cobertura Skyline','Estúdio Criativo','Condomínio Parque das Flores','Escritório Premium Tower','Residência Minimalista','Casa Container Eco','Penthouse Vista Mar','Galpão Coworking','Hotel Boutique Charme','Shopping Center Novo Mundo','Clínica Wellness','Restaurante Gourmet Space','Galeria de Arte Contemporânea','Apartamento Compact Living','Casa de Campo Serenity'],
+  clientNames: ['Carlos Mendes','Ana Beatriz Oliveira','Roberto Nascimento','Juliana Costa Silva','Marcos Antônio Pereira','Fernanda Rodrigues','Pedro Henrique Santos','Camila Ferreira Lima','Lucas Gabriel Almeida','Patrícia Souza Campos','Thiago Ribeiro','Mariana Cavalcanti','Daniel Barbosa','Larissa Montenegro','Eduardo Dias','Construtora Horizonte Ltda','Incorporadora Visão S/A','Arquitetura Viva Projetos','Studio Concept Design','JB Empreendimentos','MRV Construções Regionais','Patrimar Engenharia','Grupo Cyrela Interior','Direcional Engenharia SP','Lavvi Incorporadora'],
+  emails: ['carlos@email.com','ana.oliveira@gmail.com','roberto@empresa.com','juliana.costa@outlook.com','marcos@construtora.com','fernanda@studio.com','pedro@arq.com','camila@incorporadora.com','lucas@projetista.com','patricia@design.com'],
+  phones: ['(11) 99876-5432','(21) 98765-4321','(41) 99654-3210','(43) 98543-2109','(31) 97432-1098','(48) 96321-0987','(51) 95210-9876','(27) 94109-8765','(62) 93098-7654','(85) 92087-6543'],
+  cities: [{state:'SP',city:'São Paulo'},{state:'SP',city:'Campinas'},{state:'RJ',city:'Rio de Janeiro'},{state:'PR',city:'Curitiba'},{state:'PR',city:'Londrina'},{state:'SC',city:'Florianópolis'},{state:'MG',city:'Belo Horizonte'},{state:'RS',city:'Porto Alegre'},{state:'DF',city:'Brasília'},{state:'BA',city:'Salvador'}],
+  types: ['Renderização','Animação','Tour Virtual','Planta Humanizada','Modelagem 3D'],
+  softwares: ['D5 Render','3ds Max + Corona','V-Ray','Lumion','Blender + Cycles','SketchUp + Enscape','Unreal Engine','Twinmotion'],
+  complexity: ['Baixa','Média','Alta','Ultra'],
+  colors: ['#f97316','#3b82f6','#10b981','#8b5cf6','#ef4444','#06b6d4','#f59e0b','#ec4899','#14b8a6','#6366f1'],
+  statuses_crm: ['novo','qualificado','proposta','negociacao'],
+  statuses_proj: ['parado','em_producao','entregando'],
+  categories: ['Residencial','Comercial','Institucional','Hotelaria','Varejo'],
+  freelancerNames: ['Rafael Coder','Bianca Modeler','João Texture Artist','Marina Lighter','Igor Animator','Priscila Compositor','Vinícius Rigger','Débora Archviz','Henrique Materials','Camille Post-Prod'],
+  freelancerSkills: ['Modelagem 3D','Texturização','Iluminação','Renderização','Pós-produção','Animação','Composição','Rigging','Scripting','Fotografia 360']
+};
+
+function randomFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function randomBetween(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randomPrice() { return randomBetween(3, 80) * 1000; }
+function randomDate(daysBack, daysForward) {
+  const now = Date.now();
+  const offset = randomBetween(-daysBack, daysForward) * 86400000;
+  return new Date(now + offset);
+}
+
+router.post('/api/test-data/generate', requireAuth, async (req, res) => {
+  try {
+    const { module, quantity } = req.body;
+    const qty = Math.min(50, Math.max(1, parseInt(quantity) || 10));
+    const userId = req.user.id;
+    const created = {};
+    const P = TEST_DATA_POOLS;
+
+    if (module === 'crm') {
+      created.clients = 0; created.budgets = 0;
+      for (let i = 0; i < qty; i++) {
+        const loc = randomFrom(P.cities);
+        const client = await Client.create({ name: randomFrom(P.clientNames), email: randomFrom(P.emails), phone: randomFrom(P.phones), category: 'Lead', type: Math.random() > 0.5 ? 'PF' : 'PJ', city: loc.city, state: loc.state, source: 'test_data', userId });
+        created.clients++;
+        const columns = await KanbanColumn.findAll({ where: { type: 'vendas' } });
+        const firstStatus = columns.length > 0 ? columns[Math.floor(Math.random() * Math.min(3, columns.length))].statusKey : 'novo';
+        await Budget.create({ name: randomFrom(P.projectNames), clientId: client.id, email: client.email, phone: client.phone, projectType: randomFrom(P.types), targetSoftware: randomFrom(P.softwares), complexity: randomFrom(P.complexity), estimatedValue: randomPrice(), totalArea: randomBetween(50, 500), kanbanType: 'vendas', status: firstStatus, winStatus: 'aberto', source: 'test_data', color: randomFrom(P.colors), probability: randomBetween(10, 95), priority: randomFrom(['baixa','média','alta']), state: loc.state, city: loc.city, userId });
+        created.budgets++;
+      }
+    }
+
+    else if (module === 'projetos') {
+      created.clients = 0; created.budgets = 0; created.tasks = 0;
+      for (let i = 0; i < qty; i++) {
+        const loc = randomFrom(P.cities);
+        const client = await Client.create({ name: randomFrom(P.clientNames), email: randomFrom(P.emails), phone: randomFrom(P.phones), category: 'Cliente', type: Math.random() > 0.4 ? 'PJ' : 'PF', city: loc.city, state: loc.state, source: 'test_data', userId });
+        created.clients++;
+        const columns = await KanbanColumn.findAll({ where: { type: 'modelagem' } });
+        const status = columns.length > 0 ? columns[Math.floor(Math.random() * columns.length)].statusKey : 'modelagem_novo_lead';
+        const budget = await Budget.create({ name: randomFrom(P.projectNames), clientId: client.id, email: client.email, phone: client.phone, projectType: randomFrom(P.types), targetSoftware: randomFrom(P.softwares), complexity: randomFrom(P.complexity), estimatedValue: randomPrice(), totalArea: randomBetween(80, 600), kanbanType: 'modelagem', status, winStatus: 'ganho', source: 'test_data', color: randomFrom(P.colors), probability: randomBetween(60, 100), priority: randomFrom(['baixa','média','alta']), productionDays: randomBetween(7, 45), state: loc.state, city: loc.city, userId });
+        created.budgets++;
+        // Create 3-5 tasks per project
+        const taskCount = randomBetween(3, 5);
+        const taskNames = ['Modelagem 3D','Texturização','Iluminação','Renderização','Pós-produção','Review Cliente','Entrega Final'];
+        for (let t = 0; t < taskCount; t++) {
+          await Task.create({ projectId: budget.id, title: taskNames[t % taskNames.length], status: t < 2 ? 'concluida' : 'pendente', priority: t === 0 ? 'alta' : 'média', order: t + 1, userId });
+          created.tasks = (created.tasks || 0) + 1;
+        }
+      }
+    }
+
+    else if (module === 'financeiro') {
+      created.transactions = 0; created.ar = 0; created.ap = 0;
+      for (let i = 0; i < qty; i++) {
+        const isReceita = Math.random() > 0.4;
+        const amount = randomBetween(500, 30000);
+        const desc = isReceita ? `Recebimento ${randomFrom(P.projectNames)}` : `Despesa ${randomFrom(['Software','Hardware','Freelancer','Marketing','Infraestrutura','Impostos'])}`;
+        await FinanceTransaction.create({ type: isReceita ? 'receita' : 'despesa', description: `[TESTE] ${desc}`, amount, status: Math.random() > 0.3 ? 'pago' : 'pendente', category: isReceita ? 'Projetos' : randomFrom(['Software','Marketing','RH','Infraestrutura']), dueDate: randomDate(30, 60), paymentMethod: randomFrom(['Pix','Boleto','Cartão','Transferência']), source: 'test_data', userId });
+        created.transactions++;
+        if (isReceita) {
+          await AccountsReceivable.create({ description: `[TESTE] AR - ${desc}`, amount, dueDate: randomDate(0, 45), status: Math.random() > 0.5 ? 'pago' : 'aberto', clientId: null, source: 'test_data', userId });
+          created.ar++;
+        } else {
+          await AccountsPayable.create({ description: `[TESTE] AP - ${desc}`, amount, dueDate: randomDate(0, 30), status: Math.random() > 0.5 ? 'pago' : 'aberto', source: 'test_data', userId });
+          created.ap++;
+        }
+      }
+    }
+
+    else if (module === 'contatos') {
+      created.clients = 0;
+      for (let i = 0; i < qty; i++) {
+        const loc = randomFrom(P.cities);
+        await Client.create({ name: randomFrom(P.clientNames), email: randomFrom(P.emails), phone: randomFrom(P.phones), company: Math.random() > 0.5 ? randomFrom(['Construtora Horizonte','Studio Concept','JB Empreendimentos','Arquitetura Viva','MRV Regional']) : null, category: randomFrom(['Cliente','Lead','Parceiro']), type: Math.random() > 0.5 ? 'PF' : 'PJ', city: loc.city, state: loc.state, source: 'test_data', userId });
+        created.clients++;
+      }
+    }
+
+    else if (module === 'agenda') {
+      created.events = 0;
+      const eventTypes = ['reuniao','deadline','entrega','briefing','revisao'];
+      const eventNames = ['Reunião de Briefing','Deadline de Entrega','Revisão com Cliente','Apresentação de Proposta','Call de Follow-up','Alinhamento de Projeto','Entrega Parcial','Review de Renderização','Kickoff Meeting','Aprovação Final'];
+      for (let i = 0; i < qty; i++) {
+        const startTime = randomDate(-5, 30);
+        const endTime = new Date(startTime.getTime() + randomBetween(30, 120) * 60000);
+        await CalendarEvent.create({ title: `[TESTE] ${randomFrom(eventNames)}`, startTime, endTime, type: randomFrom(eventTypes), description: 'Evento de teste gerado automaticamente', userId });
+        created.events++;
+      }
+    }
+
+    else if (module === 'freelancers') {
+      created.freelancers = 0;
+      for (let i = 0; i < qty; i++) {
+        await Freelancer.create({ name: `[TESTE] ${randomFrom(P.freelancerNames)}`, email: `teste${Date.now()}${i}@freelancer.com`, phone: randomFrom(P.phones), status: randomFrom(['active','active','active','on_project','inactive']), expertise: P.freelancerSkills.slice(0, randomBetween(2, 5)).join(', '), hourlyRate: randomBetween(50, 200), rating: randomBetween(3, 5), availability: randomFrom(['disponivel','ocupado','parcial']), softwares: randomFrom(P.softwares), remunerationModel: randomFrom(['hora','projeto','fixo']), userId });
+        created.freelancers++;
+      }
+    }
+
+    else if (module === 'chat') {
+      created.messages = 0;
+      const msgs = ['Bom dia! Tudo certo com o render?','Preciso das referências até sexta','O cliente aprovou a V2!','Pode fazer uma revisão na iluminação?','Entrega confirmada para segunda','Excelente trabalho no projeto!','Vamos marcar call amanhã?','Os materiais ficaram perfeitos','Precisamos ajustar o ângulo 3','Feedback do cliente: aprovado!'];
+      const budgets = await Budget.findAll({ limit: 10, order: [['createdAt', 'DESC']] });
+      for (let i = 0; i < qty; i++) {
+        const budgetId = budgets.length > 0 ? budgets[i % budgets.length].id : null;
+        await CRMLeadMessage.create({ budgetId, userId, message: `[TESTE] ${randomFrom(msgs)}`, senderId: userId, recipientId: userId });
+        created.messages++;
+      }
+    }
+
+    res.json({ success: true, module, quantity: qty, created });
+  } catch (error) {
+    console.error('Test data generation error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/api/test-data/clear', requireAuth, async (req, res) => {
+  try {
+    const { module } = req.body;
+    const deleted = {};
+    const userId = req.user.id;
+
+    if (module === 'crm' || module === 'all') {
+      deleted.budgets = await Budget.destroy({ where: { source: 'test_data', kanbanType: 'vendas' } });
+    }
+    if (module === 'projetos' || module === 'all') {
+      deleted.budgets_proj = await Budget.destroy({ where: { source: 'test_data', kanbanType: 'modelagem' } });
+      deleted.tasks = await Task.destroy({ where: { title: { [Op.like]: '%[TESTE]%' } } });
+    }
+    if (module === 'financeiro' || module === 'all') {
+      deleted.transactions = await FinanceTransaction.destroy({ where: { source: 'test_data' } });
+      deleted.ar = await AccountsReceivable.destroy({ where: { source: 'test_data' } });
+      deleted.ap = await AccountsPayable.destroy({ where: { source: 'test_data' } });
+    }
+    if (module === 'contatos' || module === 'all') {
+      deleted.clients = await Client.destroy({ where: { source: 'test_data' } });
+    }
+    if (module === 'agenda' || module === 'all') {
+      deleted.events = await CalendarEvent.destroy({ where: { title: { [Op.like]: '%[TESTE]%' } } });
+    }
+    if (module === 'freelancers' || module === 'all') {
+      deleted.freelancers = await Freelancer.destroy({ where: { name: { [Op.like]: '%[TESTE]%' } } });
+    }
+    if (module === 'chat' || module === 'all') {
+      deleted.messages = await CRMLeadMessage.destroy({ where: { message: { [Op.like]: '%[TESTE]%' } } });
+    }
+
+    res.json({ success: true, module, deleted });
+  } catch (error) {
+    console.error('Test data clear error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// =============================================================
 // HEALTH CHECK
 // =============================================================
 

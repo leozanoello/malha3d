@@ -73,6 +73,8 @@
  <span class="material-symbols-outlined text-[11px]">add</span> Coluna
  </button>
 
+ {{> testDataButtons module="crm"}}
+
  <!-- Novo Lead -->
  <button class="py-1.5 px-4 rounded-[4px] bg-orange-500 text-white font-black text-[8px] uppercase tracking-wider shadow-sm hover:bg-orange-600 transition-all flex items-center gap-1.5" onclick="if(typeof window.openNewLeadModal === 'function'){ window.openNewLeadModal(); } else { const m = document.getElementById('newLeadModal'); if(m){ m.classList.remove('hidden'); m.style.display='flex'; } }">
  <span class="material-symbols-outlined text-[11px]">person_add</span> Novo Lead

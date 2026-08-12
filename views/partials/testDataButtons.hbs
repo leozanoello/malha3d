@@ -1,0 +1,13 @@
+{{!-- Partial: Botões de Dados de Teste (Beta) --}}
+<div class="flex items-center gap-2">
+ <div class="flex items-center gap-1.5 px-2 py-1.5 rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+  <input type="range" id="testDataQty" min="5" max="50" value="10" step="5" class="w-14 h-1 accent-orange-500 cursor-pointer" oninput="document.getElementById('testDataQtyLabel').textContent=this.value">
+  <span id="testDataQtyLabel" class="text-[9px] font-black text-white w-5 text-center">10</span>
+ </div>
+ <button onclick="window.generateTestData('{{module}}')" class="flex items-center gap-1 px-2.5 py-1.5 rounded-[4px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[8px] font-black uppercase tracking-widest hover:bg-emerald-500/20 transition-colors">
+  <span class="material-symbols-outlined text-[11px]">add_circle</span> Criar
+ </button>
+ <button onclick="window.clearTestData('{{module}}')" class="flex items-center gap-1 px-2.5 py-1.5 rounded-[4px] bg-red-500/10 border border-red-500/30 text-red-400 text-[8px] font-black uppercase tracking-widest hover:bg-red-500/20 transition-colors">
+  <span class="material-symbols-outlined text-[11px]">delete_sweep</span> Limpar
+ </button>
+</div>
