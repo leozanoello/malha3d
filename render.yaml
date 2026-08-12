@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: malha3d
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm install --production
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: SUPABASE_DB_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+    healthCheckPath: /admin/health
+    autoDeploy: true
