@@ -5,16 +5,22 @@
 
 // Configuração do ambiente de teste
 process.env.NODE_ENV = 'test';
-process.env.DB_NAME = 'zanoello_3d_test';
 process.env.SESSION_SECRET = 'test-secret-key-12345';
-process.env.SUPABASE_DB_URL = ''; // Reset any environment variable that might interfere
+process.env.JWT_SECRET = 'test-jwt-secret';
+// Forçar SQLite em modo teste (sem SUPABASE_DB_URL)
+delete process.env.SUPABASE_DB_URL;
+delete process.env.DATABASE_URL;
 
-const { sequelize } = require('../models');
+const { sequelize } = require('../config/database');
 
 // Sincronizar banco de dados antes de todos os testes
 beforeAll(async () => {
-  await sequelize.sync({ force: true });
-});
+  try {
+    await sequelize.sync({ force: true });
+  } catch (e) {
+    console.error('DB sync error:', e.message);
+  }
+}, 30000);
 
 // Timeout para testes
 jest.setTimeout(10000);

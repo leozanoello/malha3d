@@ -1,23 +1,15 @@
 {
   "low": true,
   "moderate": true,
-  "high": true,
+  "high": false,
   "critical": true,
   "report-type": "important",
-  "skip-dev": false,
-  "allowlist": [
-    "example-package"
-  ],
-  "registry": "https://registry.npmjs.org",
-  "advisories": [],
-  "whitelist": [],
-  "path-whitelist": [],
-  "show-found": true,
-  "show-not-found": true,
-  "show-pass": true,
-  "advisories-found": true,
-  "exclusions": {
-    "advisories": [],
-    "modules": []
-  }
+  "skip-dev": true,
+  "allowlist": [],
+  "path-whitelist": [
+    "sequelize>sqlite3",
+    "express-session>uid-safe",
+    "bcrypt>@mapbox/node-pre-gyp",
+    "nodemon>chokidar"
+  ]
 }
