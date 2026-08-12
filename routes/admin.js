@@ -7405,7 +7405,7 @@ router.post('/api/ai/generate-tasks', requireAuth, async (req, res) => {
         title: tasks[i],
         order: i + 1,
         status: 'pendente',
-        priority: i === 0 ? 'alta' : 'média',
+        priority: i === 0 ? 'alta' : 'media',
         estimatedDays: Math.ceil(7 / tasks.length)
       });
       created.push(t);
@@ -7599,7 +7599,7 @@ const TEST_DATA_POOLS = {
   emails: ['carlos@email.com','ana.oliveira@gmail.com','roberto@empresa.com','juliana.costa@outlook.com','marcos@construtora.com','fernanda@studio.com','pedro@arq.com','camila@incorporadora.com','lucas@projetista.com','patricia@design.com'],
   phones: ['(11) 99876-5432','(21) 98765-4321','(41) 99654-3210','(43) 98543-2109','(31) 97432-1098','(48) 96321-0987','(51) 95210-9876','(27) 94109-8765','(62) 93098-7654','(85) 92087-6543'],
   cities: [{state:'SP',city:'São Paulo'},{state:'SP',city:'Campinas'},{state:'RJ',city:'Rio de Janeiro'},{state:'PR',city:'Curitiba'},{state:'PR',city:'Londrina'},{state:'SC',city:'Florianópolis'},{state:'MG',city:'Belo Horizonte'},{state:'RS',city:'Porto Alegre'},{state:'DF',city:'Brasília'},{state:'BA',city:'Salvador'}],
-  types: ['Renderização','Animação','Tour Virtual','Planta Humanizada','Modelagem 3D'],
+  types: ['Renderização','Animação','Visita Virtual','Modelagem 3D','Arquitetônico','Interiores','Comercial'],
   softwares: ['D5 Render','3ds Max + Corona','V-Ray','Lumion','Blender + Cycles','SketchUp + Enscape','Unreal Engine','Twinmotion'],
   complexity: ['Baixa','Média','Alta','Ultra'],
   colors: ['#f97316','#3b82f6','#10b981','#8b5cf6','#ef4444','#06b6d4','#f59e0b','#ec4899','#14b8a6','#6366f1'],
@@ -7635,7 +7635,7 @@ router.post('/api/test-data/generate', requireAuth, async (req, res) => {
         created.clients++;
         const columns = await KanbanColumn.findAll({ where: { type: 'vendas' } });
         const firstStatus = columns.length > 0 ? columns[Math.floor(Math.random() * Math.min(3, columns.length))].statusKey : 'novo';
-        await Budget.create({ name: randomFrom(P.projectNames), clientId: client.id, email: client.email, phone: client.phone, projectType: randomFrom(P.types), targetSoftware: randomFrom(P.softwares), complexity: randomFrom(P.complexity), estimatedValue: randomPrice(), totalArea: randomBetween(50, 500), kanbanType: 'vendas', status: firstStatus, winStatus: 'aberto', source: 'test_data', color: randomFrom(P.colors), probability: randomBetween(10, 95), priority: randomFrom(['baixa','média','alta']), state: loc.state, city: loc.city, userId });
+        await Budget.create({ name: randomFrom(P.projectNames), clientId: client.id, email: client.email, phone: client.phone, projectType: randomFrom(P.types), targetSoftware: randomFrom(P.softwares), complexity: randomFrom(P.complexity), estimatedValue: randomPrice(), totalArea: randomBetween(50, 500), kanbanType: 'vendas', status: firstStatus, winStatus: 'aberto', source: 'test_data', color: randomFrom(P.colors), probability: randomBetween(10, 95), priority: randomFrom(['baixa','media','alta']), state: loc.state, city: loc.city, userId });
         created.budgets++;
       }
     }
@@ -7648,15 +7648,10 @@ router.post('/api/test-data/generate', requireAuth, async (req, res) => {
         created.clients++;
         const columns = await KanbanColumn.findAll({ where: { type: 'modelagem' } });
         const status = columns.length > 0 ? columns[Math.floor(Math.random() * columns.length)].statusKey : 'modelagem_novo_lead';
-        const budget = await Budget.create({ name: randomFrom(P.projectNames), clientId: client.id, email: client.email, phone: client.phone, projectType: randomFrom(P.types), targetSoftware: randomFrom(P.softwares), complexity: randomFrom(P.complexity), estimatedValue: randomPrice(), totalArea: randomBetween(80, 600), kanbanType: 'modelagem', status, winStatus: 'ganho', source: 'test_data', color: randomFrom(P.colors), probability: randomBetween(60, 100), priority: randomFrom(['baixa','média','alta']), productionDays: randomBetween(7, 45), state: loc.state, city: loc.city, userId });
+        const budget = await Budget.create({ name: randomFrom(P.projectNames), clientId: client.id, email: client.email, phone: client.phone, projectType: randomFrom(P.types), targetSoftware: randomFrom(P.softwares), complexity: randomFrom(P.complexity), estimatedValue: randomPrice(), totalArea: randomBetween(80, 600), kanbanType: 'modelagem', status, winStatus: 'ganho', source: 'test_data', color: randomFrom(P.colors), probability: randomBetween(60, 100), priority: randomFrom(['baixa','media','alta']), productionDays: randomBetween(7, 45), state: loc.state, city: loc.city, userId });
         created.budgets++;
         // Create 3-5 tasks per project
-        const taskCount = randomBetween(3, 5);
-        const taskNames = ['Modelagem 3D','Texturização','Iluminação','Renderização','Pós-produção','Review Cliente','Entrega Final'];
-        for (let t = 0; t < taskCount; t++) {
-          await Task.create({ projectId: budget.id, title: taskNames[t % taskNames.length], status: t < 2 ? 'concluida' : 'pendente', priority: t === 0 ? 'alta' : 'média', order: t + 1, userId });
-          created.tasks = (created.tasks || 0) + 1;
-        }
+        created.tasks = 0; // tasks requerem entry na tabela projects (criada separadamente)
       }
     }
 
@@ -7669,10 +7664,10 @@ router.post('/api/test-data/generate', requireAuth, async (req, res) => {
         await FinanceTransaction.create({ type: isReceita ? 'receita' : 'despesa', description: `[TESTE] ${desc}`, amount, status: Math.random() > 0.3 ? 'pago' : 'pendente', category: isReceita ? 'Projetos' : randomFrom(['Software','Marketing','RH','Infraestrutura']), dueDate: randomDate(30, 60), paymentMethod: randomFrom(['Pix','Boleto','Cartão','Transferência']), source: 'test_data', userId });
         created.transactions++;
         if (isReceita) {
-          await AccountsReceivable.create({ description: `[TESTE] AR - ${desc}`, amount, dueDate: randomDate(0, 45), status: Math.random() > 0.5 ? 'pago' : 'aberto', clientId: null, source: 'test_data', userId });
+          await AccountsReceivable.create({ description: `[TESTE] AR - ${desc}`, totalAmount: amount, dueDate: randomDate(0, 45), status: Math.random() > 0.5 ? 'quitado' : 'aberto', clientId: null, source: 'test_data', userId });
           created.ar++;
         } else {
-          await AccountsPayable.create({ description: `[TESTE] AP - ${desc}`, amount, dueDate: randomDate(0, 30), status: Math.random() > 0.5 ? 'pago' : 'aberto', source: 'test_data', userId });
+          await AccountsPayable.create({ description: `[TESTE] AP - ${desc}`, totalAmount: amount, dueDate: randomDate(0, 30), status: Math.random() > 0.5 ? 'quitado' : 'aberto', source: 'test_data', userId });
           created.ap++;
         }
       }
@@ -7713,7 +7708,7 @@ router.post('/api/test-data/generate', requireAuth, async (req, res) => {
       const budgets = await Budget.findAll({ limit: 10, order: [['createdAt', 'DESC']] });
       for (let i = 0; i < qty; i++) {
         const budgetId = budgets.length > 0 ? budgets[i % budgets.length].id : null;
-        await CRMLeadMessage.create({ budgetId, userId, message: `[TESTE] ${randomFrom(msgs)}`, senderId: userId, recipientId: userId });
+        await CRMLeadMessage.create({ budgetId, userId, content: `[TESTE] ${randomFrom(msgs)}`, senderId: userId, recipientId: userId });
         created.messages++;
       }
     }
@@ -7732,11 +7727,12 @@ router.delete('/api/test-data/clear', requireAuth, async (req, res) => {
     const userId = req.user.id;
 
     if (module === 'crm' || module === 'all') {
-      deleted.budgets = await Budget.destroy({ where: { source: 'test_data', kanbanType: 'vendas' } });
+      deleted.budgets = await Budget.destroy({ where: { source: 'test_data' } });
     }
     if (module === 'projetos' || module === 'all') {
-      deleted.budgets_proj = await Budget.destroy({ where: { source: 'test_data', kanbanType: 'modelagem' } });
-      deleted.tasks = await Task.destroy({ where: { title: { [Op.like]: '%[TESTE]%' } } });
+      deleted.budgets_proj = await Budget.destroy({ where: { source: 'test_data' } });
+      const { ProjectTask } = require('../models');
+      deleted.tasks = await ProjectTask.destroy({ where: { title: { [Op.like]: '%[TESTE]%' } } }).catch(() => 0);
     }
     if (module === 'financeiro' || module === 'all') {
       deleted.transactions = await FinanceTransaction.destroy({ where: { source: 'test_data' } });
@@ -7753,7 +7749,7 @@ router.delete('/api/test-data/clear', requireAuth, async (req, res) => {
       deleted.freelancers = await Freelancer.destroy({ where: { name: { [Op.like]: '%[TESTE]%' } } });
     }
     if (module === 'chat' || module === 'all') {
-      deleted.messages = await CRMLeadMessage.destroy({ where: { message: { [Op.like]: '%[TESTE]%' } } });
+      deleted.messages = await CRMLeadMessage.destroy({ where: { content: { [Op.like]: '%[TESTE]%' } } });
     }
 
     res.json({ success: true, module, deleted });

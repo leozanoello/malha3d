@@ -41,6 +41,11 @@ const Budget = sequelize.define('Budget', {
     type: DataTypes.TEXT,
     allowNull: true
   },
+  kanbanType: {
+    type: DataTypes.STRING,
+    defaultValue: 'vendas',
+    field: 'kanban_type'
+  },
   status: {
     type: DataTypes.STRING,
     defaultValue: 'novo'

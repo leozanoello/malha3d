@@ -28,7 +28,7 @@
  </header>
 
  <div class="flex-1 overflow-y-auto p-6 custom-scrollbar" style="max-height: calc(85vh - 70px);">
- <form id="newLeadForm" action="/admin/negociacoes/novo" method="POST" class="space-y-4 text-sm">
+ <form id="newLeadForm" action="/admin/negociacoes/novo" method="POST" class="space-y-4 text-sm" data-autosave="1">
  <input type="hidden" name="contacts" id="hiddenContactsJson" value="[]">
  <input type="hidden" name="leadImage" id="hiddenLeadImage" value="/assets/0e36b4cd-1981-46d7-8e91-d4183a39f14a_3840w.webp">
  <input type="hidden" name="kanbanType" id="hiddenKanbanType" value="{{kanbanType}}">
@@ -56,326 +56,430 @@
  </div>
 
  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
- <!-- COLUNA 1: DETALHES DO CARD -->
- <div class="space-y-3">
- <div class="p-3 rounded-xl border border-orange-500/20 bg-orange-500/5">
- <h5 class="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
- <span class="material-symbols-outlined text-xs">info</span> Detalhes do {{#if (eq kanbanType 'modelagem')}}Projeto{{else}}Lead{{/if}}
- </h5>
- <div class="space-y-2">
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Nome {{#if (eq kanbanType 'modelagem')}}do Projeto{{else}}do Lead{{/if}} *</label>
- <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="{{#if (eq kanbanType 'modelagem')}}Ex: Projeto 3D - Prédio Comercial{{else}}Ex: Novo Lead - Construtora Horizonte{{/if}}">
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Metragem (m²)</label>
- <input type="number" step="0.01" name="totalArea" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="350.00">
+ <!-- COLUNA 1: DETALHES + CONTATO + ENDEREÇO + EQUIPE -->
+ <div class="space-y-4">
+
+ <!-- ═══════════ FLIP CARD: DETALHES DO LEAD ═══════════ -->
+ <div class="uv-flip-card uv-flip-card--form">
+  <div class="uv-flip-content">
+   <div class="uv-flip-back">
+    <div class="uv-flip-back-inner">
+     <span class="material-symbols-outlined text-2xl">info</span>
+     <strong class="text-[9px] uppercase tracking-widest">Detalhes do {{#if (eq kanbanType 'modelagem')}}Projeto{{else}}Lead{{/if}}</strong>
+    </div>
+   </div>
+   <div class="uv-flip-front">
+    <div class="uv-flip-img">
+     <div class="uv-circle"></div>
+     <div class="uv-circle uv-circle-right"></div>
+     <div class="uv-circle uv-circle-bottom"></div>
+    </div>
+    <div class="uv-flip-front-content">
+     <small class="uv-flip-badge mb-2">
+      <span class="material-symbols-outlined text-[10px] align-middle">info</span> Detalhes do {{#if (eq kanbanType 'modelagem')}}Projeto{{else}}Lead{{/if}}
+     </small>
+     <div class="space-y-2">
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Nome {{#if (eq kanbanType 'modelagem')}}do Projeto{{else}}do Lead{{/if}} *</label>
+       <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="{{#if (eq kanbanType 'modelagem')}}Ex: Projeto 3D - Prédio Comercial{{else}}Ex: Novo Lead - Construtora Horizonte{{/if}}">
+      </div>
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Metragem (m²)</label>
+       <input type="number" step="0.01" name="totalArea" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="350.00">
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Data Ganho Oportunidade</label>
+        <div class="flex gap-1">
+         <input type="text" name="dataGanhoOportunidade" placeholder="DD/MM/YYYY" maxlength="10" class="flex-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none date-br-mask" oninput="formatDateInput(this)">
+         <button type="button" class="w-10 h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all flex items-center justify-center"><span class="material-symbols-outlined text-xs">calendar_today</span></button>
+        </div>
+       </div>
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Expectativa de Início</label>
+        <div class="flex gap-1">
+         <input type="text" name="expectativaInicio" placeholder="DD/MM/YYYY" maxlength="10" class="flex-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none date-br-mask" oninput="formatDateInput(this)">
+         <button type="button" class="w-10 h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all flex items-center justify-center"><span class="material-symbols-outlined text-xs">calendar_today</span></button>
+        </div>
+       </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Origem do {{#if (eq kanbanType 'modelagem')}}Projeto{{else}}Lead{{/if}}</label>
+        <select name="origemProjeto" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none appearance-none">
+         <option value="">Selecione a origem...</option>
+         <option value="Instagram">Instagram</option>
+         <option value="Facebook">Facebook</option>
+         <option value="LinkedIn">LinkedIn</option>
+         <option value="TikTok">TikTok</option>
+         <option value="E-mail">E-mail</option>
+         <option value="WhatsApp">WhatsApp</option>
+         <option value="Indicação">Indicação</option>
+         <option value="Outros">Outros</option>
+        </select>
+       </div>
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Prazo de Entrega (dias)</label>
+        <input type="number" name="prazoDias" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="Ex: 30" min="1">
+       </div>
+      </div>
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Observação</label>
+       <textarea name="observacao" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="Anotações livres..."></textarea>
+      </div>
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Etiquetas (pressione Enter para adicionar)</label>
+       <div class="flex flex-wrap gap-1 mb-1" id="newProjectTagsContainer"></div>
+       <input type="text" id="newProjectTagInput" placeholder="Digite e pressione Enter..." class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" onkeydown="if(event.key==='Enter'){event.preventDefault();window.addProjectTag(this.value);this.value='';}">
+       <input type="hidden" name="etiquetas" id="newProjectTagsHidden" value="[]">
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
  </div>
 
- <div class="grid grid-cols-2 gap-2">
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Data Ganho Oportunidade</label>
- <div class="flex gap-1">
-  <input type="text" name="dataGanhoOportunidade" placeholder="DD/MM/YYYY" maxlength="10" class="flex-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none date-br-mask" oninput="formatDateInput(this)">
-  <button type="button" class="w-10 h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all flex items-center justify-center"><span class="material-symbols-outlined text-xs">calendar_today</span></button>
- </div>
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Expectativa de Início</label>
- <div class="flex gap-1">
-  <input type="text" name="expectativaInicio" placeholder="DD/MM/YYYY" maxlength="10" class="flex-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none date-br-mask" oninput="formatDateInput(this)">
-  <button type="button" class="w-10 h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all flex items-center justify-center"><span class="material-symbols-outlined text-xs">calendar_today</span></button>
- </div>
- </div>
- </div>
- <div class="grid grid-cols-2 gap-2">
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Origem do {{#if (eq kanbanType 'modelagem')}}Projeto{{else}}Lead{{/if}}</label>
- <select name="origemProjeto" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none appearance-none">
- <option value="">Selecione a origem...</option>
- <option value="Instagram">Instagram</option>
- <option value="Facebook">Facebook</option>
- <option value="LinkedIn">LinkedIn</option>
- <option value="TikTok">TikTok</option>
- <option value="E-mail">E-mail</option>
- <option value="WhatsApp">WhatsApp</option>
- <option value="Indicação">Indicação</option>
- <option value="Outros">Outros</option>
- </select>
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Prazo de Entrega (dias)</label>
- <input type="number" name="prazoDias" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="Ex: 30" min="1">
- </div>
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Observação</label>
- <textarea name="observacao" rows="2" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="Anotações livres..."></textarea>
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Etiquetas (pressione Enter para adicionar)</label>
- <div class="flex flex-wrap gap-1 mb-1" id="newProjectTagsContainer"></div>
- <input type="text" id="newProjectTagInput" placeholder="Digite e pressione Enter..." class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" onkeydown="if(event.key==='Enter'){event.preventDefault();window.addProjectTag(this.value);this.value='';}">
- <input type="hidden" name="etiquetas" id="newProjectTagsHidden" value="[]">
- </div>
- </div>
- </div>
-
- <!-- CARD CONTATO -->
- <div class="p-3 rounded-xl border border-white/10 bg-white/[0.02] space-y-2">
- <div class="flex items-center justify-between mb-1">
- <h5 class="text-[9px] font-black text-cyan-400 uppercase tracking-widest flex items-center gap-1.5">
- <span class="material-symbols-outlined text-xs">contact_page</span> Contato
- </h5>
- <div class="flex items-center gap-1">
- <button type="button" onclick="window.openAddContactOptions()" class="text-[7px] font-black uppercase tracking-wider px-2 py-1 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500 hover:text-white transition-all flex items-center gap-1">
- <span class="material-symbols-outlined text-[10px]">search</span> Vincular Cliente
- </button>
- <button type="button" onclick="window.savePrimaryContactToDatabase()" class="text-[7px] font-black uppercase tracking-wider px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500 hover:text-black transition-all flex items-center gap-1">
- <span class="material-symbols-outlined text-[10px]">person_add</span> Salvar Novo
- </button>
- </div>
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Nome do Contato *</label>
- <input type="text" name="clientName" id="mainClientName" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="Nome do Cliente">
- </div>
- <div class="grid grid-cols-2 gap-2">
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Email</label>
- <input type="email" name="email" id="mainClientEmail" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="email@exemplo.com">
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Telefone</label>
- <input type="text" name="phone" id="mainClientPhone" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="(xx) xxxxx-xxxx">
- </div>
- </div>
- <div class="grid grid-cols-2 gap-2">
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Estado</label>
- <select id="newLeadState" name="state" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
- <option value="">Carregando...</option>
- </select>
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Cidade</label>
- <select id="newLeadCity" name="city" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none" disabled>
- <option value="">Selecione o Estado...</option>
- </select>
- </div>
- </div>
- <div id="extraContactsContainer" class="space-y-2"></div>
- <button type="button" onclick="window.openAddContactOptions()" class="text-[8px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg flex items-center gap-1 bg-orange-500/10 text-orange-400 border border-orange-500/30 hover:bg-orange-500/20 transition-all">
- <span class="material-symbols-outlined text-xs">add</span> Adicionar Contato (<span id="contactCountBadge">1</span>/5)
- </button>
+ <!-- ═══════════ FLIP CARD: CONTATO ═══════════ -->
+ <div class="uv-flip-card uv-flip-card--form">
+  <div class="uv-flip-content">
+   <div class="uv-flip-back">
+    <div class="uv-flip-back-inner">
+     <span class="material-symbols-outlined text-2xl">contact_page</span>
+     <strong class="text-[9px] uppercase tracking-widest">Contato</strong>
+    </div>
+   </div>
+   <div class="uv-flip-front">
+    <div class="uv-flip-img">
+     <div class="uv-circle"></div>
+     <div class="uv-circle uv-circle-right"></div>
+     <div class="uv-circle uv-circle-bottom"></div>
+    </div>
+    <div class="uv-flip-front-content">
+     <div class="flex items-center justify-between mb-2">
+      <small class="uv-flip-badge">
+       <span class="material-symbols-outlined text-[10px] align-middle">contact_page</span> Contato
+      </small>
+      <div class="flex items-center gap-1">
+       <button type="button" onclick="window.openAddContactOptions()" class="text-[7px] font-black uppercase tracking-wider px-2 py-1 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500 hover:text-white transition-all flex items-center gap-1">
+        <span class="material-symbols-outlined text-[10px]">search</span> Vincular Cliente
+       </button>
+       <button type="button" onclick="window.savePrimaryContactToDatabase()" class="text-[7px] font-black uppercase tracking-wider px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500 hover:text-black transition-all flex items-center gap-1">
+        <span class="material-symbols-outlined text-[10px]">person_add</span> Salvar Novo
+       </button>
+      </div>
+     </div>
+     <div class="space-y-2">
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Nome do Contato *</label>
+       <input type="text" name="clientName" id="mainClientName" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="Nome do Cliente">
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Email</label>
+        <input type="email" name="email" id="mainClientEmail" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="email@exemplo.com">
+       </div>
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Telefone</label>
+        <input type="text" name="phone" id="mainClientPhone" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="(xx) xxxxx-xxxx">
+       </div>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Estado</label>
+        <select id="newLeadState" name="state" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
+         <option value="">Carregando...</option>
+        </select>
+       </div>
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Cidade</label>
+        <select id="newLeadCity" name="city" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none" disabled>
+         <option value="">Selecione o Estado...</option>
+        </select>
+       </div>
+      </div>
+      <div id="extraContactsContainer" class="space-y-2"></div>
+      <button type="button" onclick="window.openAddContactOptions()" class="text-[8px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg flex items-center gap-1 bg-orange-500/10 text-orange-400 border border-orange-500/30 hover:bg-orange-500/20 transition-all">
+       <span class="material-symbols-outlined text-xs">add</span> Adicionar Contato (<span id="contactCountBadge">1</span>/5)
+      </button>
+     </div>
+    </div>
+   </div>
+  </div>
  </div>
 
- <!-- CARD ENDEREÇO DO CARD (ViaCEP) -->
- <div class="p-3 rounded-xl border border-purple-500/20 bg-purple-500/5 space-y-2">
- <div class="flex items-center justify-between mb-1">
- <h5 class="text-[9px] font-black text-purple-400 uppercase tracking-widest flex items-center gap-1.5">
- <span class="material-symbols-outlined text-xs">location_on</span> Endereço
- </h5>
- <label class="relative inline-flex items-center cursor-pointer">
-  <input type="checkbox" id="toggleAddressBlock" class="sr-only peer" checked onchange="document.getElementById('addressBlockContent').classList.toggle('hidden', !this.checked);">
-  <div class="w-8 h-4 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 peer-checked:bg-purple-500"></div>
- </label>
- </div>
- <div id="addressBlockContent">
- <div class="grid grid-cols-3 gap-2">
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">CEP</label>
- <input type="text" name="cep" id="newProjectCep" maxlength="9" placeholder="00000-000" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" oninput="var v=this.value.replace(/\D/g,''); if(v.length>5) this.value=v.substring(0,5)+'-'+v.substring(5,8); else this.value=v; window.autoFillCep(this.value, 'newProject');">
- </div>
- <div class="col-span-2">
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Rua</label>
- <input type="text" name="rua" id="newProjectRua" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Preenchido via CEP ou digite manualmente">
- </div>
- </div>
- <div class="grid grid-cols-3 gap-2">
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Número</label>
- <input type="text" name="numero" id="newProjectNumero" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Nº">
- </div>
- <div class="col-span-2">
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Complemento</label>
- <input type="text" name="complemento" id="newProjectComplemento" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Apto, Sala...">
- </div>
- </div>
- <div class="grid grid-cols-3 gap-2">
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Bairro</label>
- <input type="text" name="bairro" id="newProjectBairro" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Preenchido via CEP ou digite">
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Estado (UF)</label>
- <input type="text" name="state" id="newProjectEstado" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Ex: PR" maxlength="2">
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Cidade</label>
- <input type="text" name="city" id="newProjectCidade" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Ex: Curitiba">
- </div>
- </div>
- </div>
+ <!-- ═══════════ FLIP CARD: ENDEREÇO ═══════════ -->
+ <div class="uv-flip-card uv-flip-card--form">
+  <div class="uv-flip-content">
+   <div class="uv-flip-back">
+    <div class="uv-flip-back-inner">
+     <span class="material-symbols-outlined text-2xl">location_on</span>
+     <strong class="text-[9px] uppercase tracking-widest">Endereço</strong>
+    </div>
+   </div>
+   <div class="uv-flip-front">
+    <div class="uv-flip-img">
+     <div class="uv-circle"></div>
+     <div class="uv-circle uv-circle-right"></div>
+     <div class="uv-circle uv-circle-bottom"></div>
+    </div>
+    <div class="uv-flip-front-content">
+     <div class="flex items-center justify-between mb-2">
+      <small class="uv-flip-badge">
+       <span class="material-symbols-outlined text-[10px] align-middle">location_on</span> Endereço
+      </small>
+      <label class="relative inline-flex items-center cursor-pointer">
+       <input type="checkbox" id="toggleAddressBlock" class="sr-only peer" checked onchange="document.getElementById('addressBlockContent').classList.toggle('hidden', !this.checked);">
+       <div class="w-8 h-4 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 peer-checked:bg-purple-500"></div>
+      </label>
+     </div>
+     <div id="addressBlockContent" class="space-y-2">
+      <div class="grid grid-cols-3 gap-2">
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">CEP</label>
+        <input type="text" name="cep" id="newProjectCep" maxlength="9" placeholder="00000-000" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" oninput="var v=this.value.replace(/\D/g,''); if(v.length>5) this.value=v.substring(0,5)+'-'+v.substring(5,8); else this.value=v; window.autoFillCep(this.value, 'newProject');">
+       </div>
+       <div class="col-span-2">
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Rua</label>
+        <input type="text" name="rua" id="newProjectRua" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Preenchido via CEP ou digite manualmente">
+       </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Número</label>
+        <input type="text" name="numero" id="newProjectNumero" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Nº">
+       </div>
+       <div class="col-span-2">
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Complemento</label>
+        <input type="text" name="complemento" id="newProjectComplemento" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Apto, Sala...">
+       </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Bairro</label>
+        <input type="text" name="bairro" id="newProjectBairro" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Preenchido via CEP ou digite">
+       </div>
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Estado (UF)</label>
+        <input type="text" name="state" id="newProjectEstado" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Ex: PR" maxlength="2">
+       </div>
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Cidade</label>
+        <input type="text" name="city" id="newProjectCidade" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none" placeholder="Ex: Curitiba">
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
  </div>
 
- <!-- CARD EQUIPE / RESPONSÁVEIS -->
- <div class="p-3 rounded-xl border border-white/10 bg-white/[0.02] space-y-2">
- <div class="flex items-center justify-between mb-1">
- <h5 class="text-[9px] font-black text-cyan-400 uppercase tracking-widest flex items-center gap-1.5">
- <span class="material-symbols-outlined text-xs">groups</span> Equipe / Responsáveis
- </h5>
- <button type="button" onclick="window.addModelagemResponsavel()" class="w-5 h-5 rounded-md bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center hover:bg-cyan-500 hover:text-black transition-all" title="Adicionar Responsável">
- <span class="material-symbols-outlined text-xs text-cyan-400">add</span>
- </button>
- </div>
- <div id="modelagemResponsaveisList" class="space-y-1.5">
- <div class="flex items-center gap-2 p-2 rounded-lg bg-black/30 border border-white/5 modelagem-resp-item">
- <select name="assignedUserId[]" class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
- <option value="">Selecione um responsável...</option>
- {{#each users}}
- <option value="{{this.id}}">{{this.name}}</option>
- {{/each}}
- </select>
- <button type="button" onclick="this.closest('.modelagem-resp-item').remove(); window.reindexModelagemResps();" class="w-6 h-6 rounded-md bg-red-500/10 border border-red-500/30 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all" title="Remover">
- <span class="material-symbols-outlined text-xs text-red-400">close</span>
- </button>
- </div>
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Etapa (Kanban)</label>
- <select name="status" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
- {{#each columns}}
- <option value="{{this.statusKey}}">{{this.title}}</option>
- {{/each}}
- </select>
- </div>
+ <!-- ═══════════ FLIP CARD: EQUIPE / RESPONSÁVEIS ═══════════ -->
+ <div class="uv-flip-card uv-flip-card--form">
+  <div class="uv-flip-content">
+   <div class="uv-flip-back">
+    <div class="uv-flip-back-inner">
+     <span class="material-symbols-outlined text-2xl">groups</span>
+     <strong class="text-[9px] uppercase tracking-widest">Equipe / Responsáveis</strong>
+    </div>
+   </div>
+   <div class="uv-flip-front">
+    <div class="uv-flip-img">
+     <div class="uv-circle"></div>
+     <div class="uv-circle uv-circle-right"></div>
+     <div class="uv-circle uv-circle-bottom"></div>
+    </div>
+    <div class="uv-flip-front-content">
+     <div class="flex items-center justify-between mb-2">
+      <small class="uv-flip-badge">
+       <span class="material-symbols-outlined text-[10px] align-middle">groups</span> Equipe / Responsáveis
+      </small>
+      <button type="button" onclick="window.addModelagemResponsavel()" class="w-5 h-5 rounded-md bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center hover:bg-cyan-500 hover:text-black transition-all" title="Adicionar Responsável">
+       <span class="material-symbols-outlined text-xs text-cyan-400">add</span>
+      </button>
+     </div>
+     <div class="space-y-2">
+      <div id="modelagemResponsaveisList" class="space-y-1.5">
+       <div class="flex items-center gap-2 p-2 rounded-lg bg-black/30 border border-white/5 modelagem-resp-item">
+        <select name="assignedUserId[]" class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
+         <option value="">Selecione um responsável...</option>
+         {{#each users}}
+         <option value="{{this.id}}">{{this.name}}</option>
+         {{/each}}
+        </select>
+        <button type="button" onclick="this.closest('.modelagem-resp-item').remove(); window.reindexModelagemResps();" class="w-6 h-6 rounded-md bg-red-500/10 border border-red-500/30 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all" title="Remover">
+         <span class="material-symbols-outlined text-xs text-red-400">close</span>
+        </button>
+       </div>
+      </div>
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Etapa (Kanban)</label>
+       <select name="status" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
+        {{#each columns}}
+        <option value="{{this.statusKey}}">{{this.title}}</option>
+        {{/each}}
+       </select>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
  </div>
 
  </div>
 
  <!-- COLUNA 2: ENTREGÁVEIS -->
- <div class="space-y-3">
- <div class="p-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
- <h5 class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
- <span class="material-symbols-outlined text-xs">inventory_2</span> Informações do Card
- </h5>
- <div class="space-y-2">
- <div class="grid grid-cols-2 gap-2">
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Tipologia</label>
- <div class="flex items-center gap-1.5">
- <select name="projectType" id="newLeadProjectType" class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
- <option value="Renderização" selected>Renderização</option>
- <option value="Modelagem 3D">Modelagem 3D</option>
- <option value="Animação">Animação</option>
- <option value="Visita Virtual">Visita Virtual 360°</option>
- <option value="Interiores">Interiores</option>
- <option value="Arquitetônico">Arquitetônico</option>
- <option value="Comercial">Comercial</option>
- <option value="Outro">Outro</option>
- </select>
- <button type="button" onclick="window.addDynamicOption('newLeadProjectType')" title="Adicionar Tipologia" class="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500 hover:text-white flex items-center justify-center transition-all shrink-0">
- <span class="material-symbols-outlined text-xs">add</span>
- </button>
- </div>
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Cor de Destaque</label>
- <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">
- <input type="color" name="color" value="#f97316" class="w-5 h-5 rounded cursor-pointer bg-transparent border-0">
- <span class="text-[10px] text-gray-400">Card Color</span>
- </div>
- </div>
+ <div class="space-y-4">
+
+ <!-- ═══════════ FLIP CARD: INFORMAÇÕES DO CARD ═══════════ -->
+ <div class="uv-flip-card uv-flip-card--form">
+  <div class="uv-flip-content">
+   <div class="uv-flip-back">
+    <div class="uv-flip-back-inner">
+     <span class="material-symbols-outlined text-2xl">inventory_2</span>
+     <strong class="text-[9px] uppercase tracking-widest">Informações do Card</strong>
+    </div>
+   </div>
+   <div class="uv-flip-front">
+    <div class="uv-flip-img">
+     <div class="uv-circle"></div>
+     <div class="uv-circle uv-circle-right"></div>
+     <div class="uv-circle uv-circle-bottom"></div>
+    </div>
+    <div class="uv-flip-front-content">
+     <small class="uv-flip-badge mb-2">
+      <span class="material-symbols-outlined text-[10px] align-middle">inventory_2</span> Informações do Card
+     </small>
+     <div class="space-y-2">
+      <div class="grid grid-cols-2 gap-2">
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Tipologia</label>
+        <div class="flex items-center gap-1.5">
+         <select name="projectType" id="newLeadProjectType" class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
+          <option value="Renderização" selected>Renderização</option>
+          <option value="Modelagem 3D">Modelagem 3D</option>
+          <option value="Animação">Animação</option>
+          <option value="Visita Virtual">Visita Virtual 360°</option>
+          <option value="Interiores">Interiores</option>
+          <option value="Arquitetônico">Arquitetônico</option>
+          <option value="Comercial">Comercial</option>
+          <option value="Outro">Outro</option>
+         </select>
+         <button type="button" onclick="window.addDynamicOption('newLeadProjectType')" title="Adicionar Tipologia" class="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500 hover:text-white flex items-center justify-center transition-all shrink-0">
+          <span class="material-symbols-outlined text-xs">add</span>
+         </button>
+        </div>
+       </div>
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Cor de Destaque</label>
+        <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">
+         <input type="color" name="color" value="#f97316" class="w-5 h-5 rounded cursor-pointer bg-transparent border-0">
+         <span class="text-[10px] text-gray-400">Card Color</span>
+        </div>
+       </div>
+      </div>
+
+      <!-- VALOR ESTIMADO + PROBABILIDADE -->
+      <div class="grid grid-cols-2 gap-2">
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Valor Estimado (R$)</label>
+        <input type="number" step="0.01" name="estimatedValue" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="0.00">
+       </div>
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Probabilidade (%)</label>
+        <input type="number" min="0" max="100" name="probability" value="50" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all">
+       </div>
+      </div>
+
+      <!-- PRIORIDADE -->
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Prioridade</label>
+       <select name="priority" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
+        <option value="baixa">Baixa</option>
+        <option value="media" selected>Média</option>
+        <option value="alta">Alta</option>
+       </select>
+      </div>
+
+      <!-- ENTREGÁVEIS (sub-card com circles internos) -->
+      <div class="uv-flip-card uv-flip-card--form">
+       <div class="uv-flip-content">
+        <div class="uv-flip-front">
+         <div class="uv-flip-img">
+          <div class="uv-circle"></div>
+          <div class="uv-circle uv-circle-right"></div>
+          <div class="uv-circle uv-circle-bottom"></div>
+         </div>
+         <div class="uv-flip-front-content">
+          <small class="uv-flip-badge mb-2">
+           <span class="material-symbols-outlined text-[10px] align-middle">inventory_2</span> Entregáveis
+          </small>
+          <div class="grid grid-cols-3 gap-2">
+           <div>
+            <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Imagens</label>
+            <input type="number" name="imagesCount" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
+           </div>
+           <div>
+            <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Animação (s)</label>
+            <input type="number" name="animationSeconds" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
+           </div>
+           <div>
+            <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Plantas Hum.</label>
+            <input type="number" name="floorPlansCount" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+
+      <!-- PRAZOS -->
+      <div class="grid grid-cols-2 gap-2">
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Prazo (Dias)</label>
+        <input type="number" name="productionDays" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="Ex: 15">
+       </div>
+       <div>
+        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Deadline (Data)</label>
+        <input type="date" name="deadline" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all">
+       </div>
+      </div>
+
+      <!-- REVISÕES -->
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Revisões Inclusas</label>
+       <input type="number" name="revisionsIncluded" min="0" max="10" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="2">
+      </div>
+
+      <!-- LINK DRIVE -->
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Link Drive/Moodboard</label>
+       <input type="url" name="driveLink" placeholder="https://" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all">
+      </div>
+
+      <!-- SOFTWARE ALVO -->
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Software Alvo</label>
+       <select name="targetSoftware" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none appearance-none">
+        <option value="D5 Render">D5 Render</option>
+        <option value="Corona">Corona Renderer</option>
+        <option value="V-Ray" selected>V-Ray</option>
+        <option value="3ds Max">3ds Max</option>
+        <option value="Blender">Blender</option>
+        <option value="Unreal Engine 5">Unreal Engine 5</option>
+       </select>
+      </div>
+
+      <!-- FORMATO DE ARQUIVO -->
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Formato de Arquivo</label>
+       <input type="text" name="visualStyle" placeholder="Ex: SketchUp, DWG, PDF" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none">
+      </div>
+     </div><!-- /space-y-2 -->
+    </div>
+   </div>
+  </div>
  </div>
 
- <!-- VALOR ESTIMADO + PROBABILIDADE -->
- <div class="grid grid-cols-2 gap-2">
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Valor Estimado (R$)</label>
- <input type="number" step="0.01" name="estimatedValue" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="0.00">
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Probabilidade (%)</label>
- <input type="number" min="0" max="100" name="probability" value="50" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all">
- </div>
- </div>
-
- <!-- PRIORIDADE -->
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Prioridade</label>
- <select name="priority" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
- <option value="baixa">Baixa</option>
- <option value="media" selected>Média</option>
- <option value="alta">Alta</option>
- </select>
- </div>
-
- <!-- ENTREGÁVEIS -->
- <div class="p-3 rounded-xl border border-white/10 bg-white/[0.02] space-y-2">
- <h5 class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
- <span class="material-symbols-outlined text-xs">inventory_2</span> Entregáveis
- </h5>
- <div class="grid grid-cols-3 gap-2">
- <div>
- <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Imagens</label>
- <input type="number" name="imagesCount" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
- </div>
- <div>
- <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Animação (s)</label>
- <input type="number" name="animationSeconds" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
- </div>
- <div>
- <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Plantas Hum.</label>
- <input type="number" name="floorPlansCount" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
- </div>
- </div>
- </div>
-
- <!-- PRAZOS -->
- <div class="grid grid-cols-2 gap-2">
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Prazo (Dias)</label>
- <input type="number" name="productionDays" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="Ex: 15">
- </div>
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Deadline (Data)</label>
- <input type="date" name="deadline" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all">
- </div>
- </div>
-
- <!-- REVISÕES -->
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Revisões Inclusas</label>
- <input type="number" name="revisionsIncluded" min="0" max="10" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="2">
- </div>
-
- <!-- LINK DRIVE -->
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Link Drive/Moodboard</label>
- <input type="url" name="driveLink" placeholder="https://" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all">
- </div>
-
- <!-- SOFTWARE ALVO -->
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Software Alvo</label>
- <select name="targetSoftware" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none appearance-none">
- <option value="D5 Render">D5 Render</option>
- <option value="Corona">Corona Renderer</option>
- <option value="V-Ray" selected>V-Ray</option>
- <option value="3ds Max">3ds Max</option>
- <option value="Blender">Blender</option>
- <option value="Unreal Engine 5">Unreal Engine 5</option>
- </select>
- </div>
-
- <!-- FORMATO DE ARQUIVO -->
- <div>
- <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Formato de Arquivo</label>
- <input type="text" name="visualStyle" placeholder="Ex: SketchUp, DWG, PDF" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none">
- </div>
- </div><!-- /space-y-2 -->
- </div><!-- /card info principal -->
  </div><!-- /coluna 2 -->
  </div><!-- /grid -->
 
