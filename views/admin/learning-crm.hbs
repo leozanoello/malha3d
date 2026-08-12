@@ -1,0 +1,561 @@
+<!-- Aprendizado — CRM — Vendas -->
+<div class="mb-4 flex items-center gap-3">
+ <a href="/admin/aprendizado" class="flex items-center gap-2 px-4 py-2 rounded-[5px] bg-white/5 hover:bg-white/10 border border-white/10 transition text-gray-300 hover:text-white">
+  <span class="material-symbols-outlined text-sm">arrow_back</span>
+  <span class="text-xs font-bold">Centro</span>
+ </a>
+ <div class="flex items-center gap-2 text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+  <span>Aprendizado</span>
+  <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+  <span class="text-orange-400">CRM — Vendas</span>
+ </div>
+</div>
+
+<!-- Header kcard: módulo + progresso -->
+<div class="kcard p-5 mb-4">
+ <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+  <div class="flex items-center gap-4">
+   <div class="w-14 h-14 rounded-[5px] bg-orange-500/15 border border-orange-500/20 flex items-center justify-center shrink-0">
+    <span class="material-symbols-outlined text-orange-400 text-2xl">rocket_launch</span>
+   </div>
+   <div>
+    <h1 class="text-2xl font-black text-white tracking-tight mb-1">CRM — <span class="text-orange-400">Vendas</span></h1>
+    <p class="text-gray-400 font-medium text-xs">Aprenda a gerenciar leads, pipeline e conversões em 7 lições práticas.</p>
+   </div>
+  </div>
+  <div class="flex items-center gap-3">
+   <div class="flex items-center gap-2 px-4 py-2 rounded-[5px] bg-white/5 border border-white/10">
+    <span class="material-symbols-outlined text-orange-400 text-sm">emoji_events</span>
+    <span class="text-[10px] font-black text-white" id="crmProgressLabel">0 de 7 concluídas</span>
+   </div>
+  </div>
+ </div>
+ <div class="h-2 rounded-full bg-white/5 overflow-hidden">
+  <div id="crmProgressBar" class="h-full rounded-full bg-gradient-to-r from-orange-500 to-amber-400 transition-all duration-500" style="width:0%"></div>
+ </div>
+</div>
+
+<!-- LIÇÃO 1: O que é o CRM -->
+<section class="lesson-step" data-step="1">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(0)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-[11px] font-bold transition opacity-50 cursor-not-allowed" disabled>← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 1 de 7</span>
+   <button onclick="goStep(2)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-orange-500 hover:bg-orange-600 text-white text-[11px] font-black transition">Próximo →</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">O que é o CRM</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">O <strong class="text-orange-400">CRM</strong> (Customer Relationship Management) é o módulo onde você gerencia todo o seu pipeline de vendas — do primeiro contato até o fechamento do projeto.</p>
+    <p class="text-sm text-gray-300 leading-relaxed">Tudo é organizado em um <strong class="text-white">Kanban visual</strong> com colunas que representam as etapas do funil. Você arrasta os cards de uma coluna para outra conforme o lead avança.</p>
+    <ol class="list-decimal list-inside text-sm text-gray-300 space-y-2">
+     <li>Visão geral de todos os leads ativos</li>
+     <li>Histórico centralizado de cada negociação</li>
+     <li>Métricas de conversão em tempo real</li>
+     <li>Integração direta com Projetos e Financeiro</li>
+    </ol>
+    <div class="p-3 rounded bg-orange-500/10 border border-orange-500/20">
+     <p class="text-[11px] text-orange-200 leading-relaxed"><strong>💡 Dica:</strong> pense no Kanban como uma "mesa de negociações" — cada coluna é uma etapa e cada card é uma oportunidade.</p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs space-y-2">
+     <p class="text-xs font-black text-orange-400 uppercase mb-2">Preview do Kanban</p>
+     <div class="bg-black/50 rounded-[5px] border border-white/10 p-2">
+      <p class="text-[10px] font-black text-gray-500 uppercase mb-1.5">Novo Lead</p>
+      <div class="bg-orange-500/10 border border-orange-500/30 rounded p-2 mb-1.5">
+       <p class="text-xs font-bold text-white">Restaurante Sushi</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">R$ 4.500</p>
+      </div>
+      <div class="bg-orange-500/10 border border-orange-500/30 rounded p-2">
+       <p class="text-xs font-bold text-white">Padaria Center</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">R$ 2.800</p>
+      </div>
+     </div>
+     <div class="bg-black/50 rounded-[5px] border border-white/10 p-2">
+      <p class="text-[10px] font-black text-gray-500 uppercase mb-1.5">Em Contato</p>
+      <div class="bg-amber-500/10 border border-amber-500/30 rounded p-2">
+       <p class="text-xs font-bold text-white">Academia Fit</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">R$ 7.200</p>
+      </div>
+     </div>
+     <div class="bg-black/50 rounded-[5px] border border-white/10 p-2">
+      <p class="text-[10px] font-black text-gray-500 uppercase mb-1.5">Fechamento</p>
+      <div class="bg-emerald-500/10 border border-emerald-500/30 rounded p-2">
+       <p class="text-xs font-bold text-white">Hotel Vista</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">R$ 12.000</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="crm-completion w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 focus:ring-orange-500 focus:ring-offset-0" data-step="1" onchange="markComplete('crm', 1)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <button onclick="goStep(2)" class="px-4 py-2 rounded bg-orange-500 hover:bg-orange-600 text-white text-xs font-black transition">Próximo →</button>
+  </div>
+ </div>
+</section>
+
+<!-- LIÇÃO 2: Criando um Lead -->
+<section class="lesson-step hidden" data-step="2">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(1)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold transition">← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 2 de 7</span>
+   <button onclick="goStep(3)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-orange-500 hover:bg-orange-600 text-white text-[11px] font-black transition">Próximo →</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">Criando um Lead</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">Adicionar um novo lead leva menos de 1 minuto. Você pode criar um lead manualmente ou capturar automaticamente de contatos existentes.</p>
+    <ol class="list-decimal list-inside text-sm text-gray-300 space-y-2">
+     <li>No Kanban, clique no botão <strong class="text-orange-400">"+ Novo Lead"</strong> no canto superior direito</li>
+     <li>Preencha os campos obrigatórios: <strong class="text-white">Nome</strong> e <strong class="text-white">Contato</strong></li>
+     <li>Adicione informações extras: valor estimado, tipologia, prazo</li>
+     <li>Clique em <strong class="text-white">"Salvar Lead"</strong> — ele aparecerá na primeira coluna</li>
+    </ol>
+    <div class="p-3 rounded bg-orange-500/10 border border-orange-500/20">
+     <p class="text-[11px] text-orange-200 leading-relaxed"><strong>💡 Dica:</strong> leads podem ser criados a partir de qualquer Contato existente — basta abrir o contato e clicar em "Promover para Lead".</p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs bg-black/50 rounded-[5px] border border-white/10 p-3">
+     <p class="text-xs font-black text-orange-400 uppercase mb-3">Formulário de Lead</p>
+     <div class="space-y-2">
+      <div>
+       <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Nome</p>
+       <div class="bg-white/5 border border-white/10 rounded px-2 py-1.5">
+        <p class="text-xs text-gray-300">Restaurante Sushi</p>
+       </div>
+      </div>
+      <div>
+       <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Email</p>
+       <div class="bg-white/5 border border-white/10 rounded px-2 py-1.5">
+        <p class="text-xs text-gray-300">contato@sushi.com</p>
+       </div>
+      </div>
+      <div>
+       <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Telefone</p>
+       <div class="bg-white/5 border border-white/10 rounded px-2 py-1.5">
+        <p class="text-xs text-gray-300">(11) 98765-4321</p>
+       </div>
+      </div>
+      <div>
+       <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Valor Estimado</p>
+       <div class="bg-white/5 border border-white/10 rounded px-2 py-1.5">
+        <p class="text-xs text-gray-300">R$ 4.500,00</p>
+       </div>
+      </div>
+      <button class="w-full mt-2 px-3 py-2 rounded bg-orange-500 text-white text-xs font-black">Salvar Lead</button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="crm-completion w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 focus:ring-orange-500 focus:ring-offset-0" data-step="2" onchange="markComplete('crm', 2)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <button onclick="goStep(3)" class="px-4 py-2 rounded bg-orange-500 hover:bg-orange-600 text-white text-xs font-black transition">Próximo →</button>
+  </div>
+ </div>
+</section>
+
+<!-- LIÇÃO 3: Campos do Lead -->
+<section class="lesson-step hidden" data-step="3">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(2)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold transition">← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 3 de 7</span>
+   <button onclick="goStep(4)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-orange-500 hover:bg-orange-600 text-white text-[11px] font-black transition">Próximo →</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">Campos do Lead</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">Cada lead possui 8 campos principais que alimentam relatórios, propostas automáticas e o Lead Scoring com IA.</p>
+    <ul class="text-sm text-gray-300 space-y-1.5">
+     <li><strong class="text-orange-400">Nome</strong> — identificação do cliente/projeto</li>
+     <li><strong class="text-orange-400">Tipologia</strong> — letreiro, fachada, totem, etc.</li>
+     <li><strong class="text-orange-400">Software</strong> — Fusion, SolidWorks, Blender</li>
+     <li><strong class="text-orange-400">Complexidade</strong> — baixa, média, alta</li>
+     <li><strong class="text-orange-400">Valor</strong> — orçamento estimado em R$</li>
+     <li><strong class="text-orange-400">Prazo</strong> — data limite de entrega</li>
+     <li><strong class="text-orange-400">Localização</strong> — cidade/estado do cliente</li>
+     <li><strong class="text-orange-400">Contato</strong> — telefone, email, WhatsApp</li>
+    </ul>
+    <div class="p-3 rounded bg-orange-500/10 border border-orange-500/20">
+     <p class="text-[11px] text-orange-200 leading-relaxed"><strong>💡 Dica:</strong> quanto mais campos preenchidos, melhor o Lead Scoring — a IA usa esses dados para prever a chance de fechamento.</p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs space-y-2">
+     <p class="text-xs font-black text-orange-400 uppercase mb-2">Os 8 Campos</p>
+     <div class="grid grid-cols-2 gap-2">
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-orange-400 uppercase">Nome</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">Identificação</p>
+      </div>
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-orange-400 uppercase">Tipologia</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">Tipo de peça</p>
+      </div>
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-orange-400 uppercase">Software</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">Ferramenta</p>
+      </div>
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-orange-400 uppercase">Complexidade</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">Dificuldade</p>
+      </div>
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-orange-400 uppercase">Valor</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">R$ estimado</p>
+      </div>
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-orange-400 uppercase">Prazo</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">Data final</p>
+      </div>
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-orange-400 uppercase">Localização</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">Cidade/UF</p>
+      </div>
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-orange-400 uppercase">Contato</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">Tel/Email</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="crm-completion w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 focus:ring-orange-500 focus:ring-offset-0" data-step="3" onchange="markComplete('crm', 3)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <button onclick="goStep(4)" class="px-4 py-2 rounded bg-orange-500 hover:bg-orange-600 text-white text-xs font-black transition">Próximo →</button>
+  </div>
+ </div>
+</section>
+
+<!-- LIÇÃO 4: Usando o Kanban -->
+<section class="lesson-step hidden" data-step="4">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(3)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold transition">← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 4 de 7</span>
+   <button onclick="goStep(5)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-orange-500 hover:bg-orange-600 text-white text-[11px] font-black transition">Próximo →</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">Usando o Kanban</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">O Kanban funciona com <strong class="text-orange-400">drag-and-drop</strong> (arrastar e soltar). Mova os cards entre colunas para atualizar o status do lead em tempo real.</p>
+    <p class="text-sm text-gray-300 leading-relaxed"><strong class="text-white">Significado das colunas:</strong></p>
+    <ul class="text-sm text-gray-300 space-y-1.5">
+     <li><strong class="text-blue-400">Novo Lead</strong> — acabou de chegar, ainda sem contato</li>
+     <li><strong class="text-amber-400">Em Contato</strong> — primeira conversa realizada</li>
+     <li><strong class="text-purple-400">Proposta</strong> — orçamento enviado, aguardando resposta</li>
+     <li><strong class="text-emerald-400">Fechamento</strong> — negociação avançada, quase certo</li>
+     <li><strong class="text-red-400">Perdido</strong> — lead descartado ou cancelado</li>
+    </ul>
+    <div class="p-3 rounded bg-orange-500/10 border border-orange-500/20">
+     <p class="text-[11px] text-orange-200 leading-relaxed"><strong>💡 Dica:</strong> ao mover para "Fechamento" e confirmar a venda, o lead vira Projeto automaticamente — sem retrabalho.</p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs space-y-2">
+     <p class="text-xs font-black text-orange-400 uppercase mb-2">Movimento no Kanban</p>
+     <div class="flex items-center gap-2">
+      <div class="flex-1 bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-amber-400 uppercase mb-1.5">Em Contato</p>
+       <div class="bg-amber-500/10 border border-amber-500/30 rounded p-2">
+        <p class="text-xs font-bold text-white">Academia Fit</p>
+        <p class="text-[10px] text-gray-400 mt-0.5">R$ 7.200</p>
+       </div>
+      </div>
+      <div class="flex flex-col items-center justify-center text-orange-400">
+       <span class="material-symbols-outlined text-2xl">arrow_forward</span>
+       <p class="text-xs font-black mt-1">drag</p>
+      </div>
+      <div class="flex-1 bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-purple-400 uppercase mb-1.5">Proposta</p>
+       <div class="bg-purple-500/10 border border-purple-500/30 rounded p-2">
+        <p class="text-xs font-bold text-white">Academia Fit</p>
+        <p class="text-[10px] text-gray-400 mt-0.5">R$ 7.200</p>
+       </div>
+      </div>
+     </div>
+     <p class="text-[10px] text-gray-500 mt-3 leading-relaxed">Arraste o card da coluna anterior para a próxima etapa.</p>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="crm-completion w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 focus:ring-orange-500 focus:ring-offset-0" data-step="4" onchange="markComplete('crm', 4)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <button onclick="goStep(5)" class="px-4 py-2 rounded bg-orange-500 hover:bg-orange-600 text-white text-xs font-black transition">Próximo →</button>
+  </div>
+ </div>
+</section>
+
+<!-- LIÇÃO 5: Editando um Lead -->
+<section class="lesson-step hidden" data-step="5">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(4)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold transition">← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 5 de 7</span>
+   <button onclick="goStep(6)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-orange-500 hover:bg-orange-600 text-white text-[11px] font-black transition">Próximo →</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">Editando um Lead</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">Para editar qualquer informação de um lead, basta <strong class="text-orange-400">clicar no card</strong>. Um painel lateral será aberto com todos os detalhes.</p>
+    <p class="text-sm text-gray-300 leading-relaxed">O painel é organizado em <strong class="text-white">7 abas</strong>, cada uma focada em um aspecto da negociação:</p>
+    <ol class="list-decimal list-inside text-sm text-gray-300 space-y-2">
+     <li><strong class="text-white">Perfil</strong> — dados básicos e contato</li>
+     <li><strong class="text-white">Negociação</strong> — valor, prazo, condições</li>
+     <li><strong class="text-white">Anotações</strong> — observações livres</li>
+     <li><strong class="text-white">Tarefas</strong> — follow-ups e lembretes</li>
+     <li><strong class="text-white">Chat</strong> — mensagens com o cliente</li>
+     <li><strong class="text-white">Arquivos</strong> — PDFs, imagens, propostas</li>
+     <li><strong class="text-white">Histórico</strong> — log completo de ações</li>
+    </ol>
+    <div class="p-3 rounded bg-orange-500/10 border border-orange-500/20">
+     <p class="text-[11px] text-orange-200 leading-relaxed"><strong>💡 Dica:</strong> todas as alterações são salvas automaticamente — não há botão "Salvar".</p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs bg-black/50 rounded-[5px] border border-white/10 p-3">
+     <p class="text-xs font-black text-orange-400 uppercase mb-3">Painel do Lead</p>
+     <div class="bg-white/5 rounded p-2 mb-3">
+      <p class="text-xs font-bold text-white">Restaurante Sushi</p>
+      <p class="text-[10px] text-gray-400">R$ 4.500 • Prazo: 15 dias</p>
+     </div>
+     <div class="grid grid-cols-4 gap-1 mb-3">
+      <button class="px-2 py-1.5 rounded bg-orange-500 text-white text-[10px] font-black">Perfil</button>
+      <button class="px-2 py-1.5 rounded bg-white/5 text-gray-400 text-[10px] font-bold">Neg.</button>
+      <button class="px-2 py-1.5 rounded bg-white/5 text-gray-400 text-[10px] font-bold">Notas</button>
+      <button class="px-2 py-1.5 rounded bg-white/5 text-gray-400 text-[10px] font-bold">Tasks</button>
+     </div>
+     <div class="space-y-1.5">
+      <div class="flex items-center gap-2">
+       <span class="material-symbols-outlined text-orange-400 text-xs">person</span>
+       <p class="text-[11px] text-gray-300">contato@sushi.com</p>
+      </div>
+      <div class="flex items-center gap-2">
+       <span class="material-symbols-outlined text-orange-400 text-xs">call</span>
+       <p class="text-[11px] text-gray-300">(11) 98765-4321</p>
+      </div>
+      <div class="flex items-center gap-2">
+       <span class="material-symbols-outlined text-orange-400 text-xs">place</span>
+       <p class="text-[11px] text-gray-300">São Paulo, SP</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="crm-completion w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 focus:ring-orange-500 focus:ring-offset-0" data-step="5" onchange="markComplete('crm', 5)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <button onclick="goStep(6)" class="px-4 py-2 rounded bg-orange-500 hover:bg-orange-600 text-white text-xs font-black transition">Próximo →</button>
+  </div>
+ </div>
+</section>
+
+<!-- LIÇÃO 6: Convertendo Lead em Projeto -->
+<section class="lesson-step hidden" data-step="6">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(5)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold transition">← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 6 de 7</span>
+   <button onclick="goStep(7)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-orange-500 hover:bg-orange-600 text-white text-[11px] font-black transition">Próximo →</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">Convertendo Lead em Projeto</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">Quando o cliente aceita a proposta, é hora de converter o lead em projeto. Isso é feito em <strong class="text-orange-400">1 clique</strong> e todos os dados são migrados automaticamente.</p>
+    <ol class="list-decimal list-inside text-sm text-gray-300 space-y-2">
+     <li>Mova o card para a coluna <strong class="text-emerald-400">Fechamento</strong></li>
+     <li>Clique em <strong class="text-white">"Marcar como Ganho"</strong></li>
+     <li>Confirme a conversão — projeto criado com mesmo nome</li>
+     <li>O lead some do CRM e aparece no <strong class="text-purple-400">Kanban de Projetos</strong></li>
+    </ol>
+    <p class="text-sm text-gray-300 leading-relaxed">Os dados copiados incluem: nome, valor, prazo, cliente, arquivos e histórico de conversas. Nada se perde.</p>
+    <div class="p-3 rounded bg-orange-500/10 border border-orange-500/20">
+     <p class="text-[11px] text-orange-200 leading-relaxed"><strong>💡 Dica:</strong> ao converter, o sistema já cria a primeira fatura no Financeiro com o valor do projeto.</p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs space-y-3">
+     <p class="text-xs font-black text-orange-400 uppercase">Fluxo de Conversão</p>
+     <div class="bg-black/50 border border-orange-500/30 rounded p-2">
+      <p class="text-[10px] font-black text-orange-400 uppercase">CRM — Fechamento</p>
+      <div class="bg-emerald-500/10 border border-emerald-500/30 rounded p-2 mt-1">
+       <p class="text-xs font-bold text-white">Hotel Vista</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">R$ 12.000</p>
+      </div>
+     </div>
+     <div class="flex justify-center text-orange-400">
+      <span class="material-symbols-outlined text-2xl">arrow_downward</span>
+     </div>
+     <div class="bg-black/50 border border-purple-500/30 rounded p-2">
+      <p class="text-[10px] font-black text-purple-400 uppercase">Projetos — Em Produção</p>
+      <div class="bg-purple-500/10 border border-purple-500/30 rounded p-2 mt-1">
+       <p class="text-xs font-bold text-white">Hotel Vista</p>
+       <p class="text-[10px] text-gray-400 mt-0.5">R$ 12.000</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="crm-completion w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 focus:ring-orange-500 focus:ring-offset-0" data-step="6" onchange="markComplete('crm', 6)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <button onclick="goStep(7)" class="px-4 py-2 rounded bg-orange-500 hover:bg-orange-600 text-white text-xs font-black transition">Próximo →</button>
+  </div>
+ </div>
+</section>
+
+<!-- LIÇÃO 7: Dicas Avançadas -->
+<section class="lesson-step hidden" data-step="7">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(6)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold transition">← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 7 de 7</span>
+   <button onclick="goStep(8)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-black transition">Concluir ✓</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">Dicas Avançadas</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">Após dominar o básico, use estes recursos para acelerar ainda mais sua operação comercial.</p>
+    <ul class="text-sm text-gray-300 space-y-2">
+     <li><strong class="text-orange-400">Filtros salvos</strong> — salve combinações como "Leads quentes > R$ 5k" para acesso rápido</li>
+     <li><strong class="text-orange-400">Busca global</strong> — Ctrl+K abre busca que procura em todos os campos do lead</li>
+     <li><strong class="text-orange-400">Ações em massa</strong> — selecione vários cards e mova todos de uma vez</li>
+     <li><strong class="text-orange-400">Probabilidade IA</strong> — cada lead recebe um score de 0-100% baseado em histórico</li>
+     <li><strong class="text-orange-400">Exportar CSV</strong> — baixe sua carteira para análise externa</li>
+    </ul>
+    <div class="p-3 rounded bg-emerald-500/10 border border-emerald-500/20">
+     <p class="text-[11px] text-emerald-200 leading-relaxed"><strong>Parabéns!</strong> Você concluiu o módulo de CRM. Agora sabe criar leads, mover no Kanban, editar e converter em projetos. <a href="/admin/aprendizado/projetos" class="underline font-black">Próximo módulo: Projetos →</a></p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs space-y-2">
+     <p class="text-xs font-black text-orange-400 uppercase mb-2">Power User Tools</p>
+     <div class="bg-black/50 border border-white/10 rounded p-2">
+      <p class="text-[10px] font-black text-gray-500 uppercase mb-1.5">Filtros</p>
+      <div class="flex flex-wrap gap-1">
+       <span class="px-2 py-0.5 bg-orange-500/10 text-orange-400 rounded text-[10px] font-bold">Quente</span>
+       <span class="px-2 py-0.5 bg-orange-500/10 text-orange-400 rounded text-[10px] font-bold">&gt; R$ 5k</span>
+       <span class="px-2 py-0.5 bg-orange-500/10 text-orange-400 rounded text-[10px] font-bold">SP</span>
+      </div>
+     </div>
+     <div class="bg-black/50 border border-white/10 rounded p-2">
+      <p class="text-[10px] font-black text-gray-500 uppercase mb-1.5">Busca Global (Ctrl+K)</p>
+      <div class="bg-white/5 border border-white/10 rounded px-2 py-1.5 flex items-center gap-2">
+       <span class="material-symbols-outlined text-orange-400 text-xs">search</span>
+       <p class="text-xs text-gray-400">sushi, hotel...</p>
+      </div>
+     </div>
+     <div class="bg-black/50 border border-white/10 rounded p-2">
+      <p class="text-[10px] font-black text-gray-500 uppercase mb-1.5">Probabilidade IA</p>
+      <div class="flex items-center gap-2">
+       <div class="flex-1 bg-white/5 rounded-full h-1.5 overflow-hidden">
+        <div class="h-full bg-gradient-to-r from-orange-500 to-emerald-400" style="width:78%"></div>
+       </div>
+       <p class="text-xs font-black text-emerald-400">78%</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="crm-completion w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 focus:ring-orange-500 focus:ring-offset-0" data-step="7" onchange="markComplete('crm', 7)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <a href="/admin/aprendizado/projetos" class="px-4 py-2 rounded bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black transition inline-block">Próximo Módulo →</a>
+  </div>
+ </div>
+</section>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'malha3d_learning_progress';
+  const MODULE = 'crm';
+  const TOTAL = 7;
+
+  function getProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+  }
+
+  function saveProgress(data) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+  }
+
+  window.goStep = function(n) {
+    if (n < 1 || n > TOTAL) {
+      if (n > TOTAL) window.location.href = '/admin/aprendizado/projetos';
+      return;
+    }
+    document.querySelectorAll('.lesson-step').forEach(function(s) { s.classList.add('hidden'); });
+    var target = document.querySelector('.lesson-step[data-step="' + n + '"]');
+    if (target) target.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.markComplete = function(module, step) {
+    var data = getProgress();
+    if (!data[module]) data[module] = [];
+    if (data[module].indexOf(step) === -1) data[module].push(step);
+    saveProgress(data);
+    updateHeader();
+  };
+
+  window.loadProgress = function() {
+    var data = getProgress();
+    var completed = data[MODULE] || [];
+    document.querySelectorAll('.crm-completion').forEach(function(cb) {
+      var step = parseInt(cb.dataset.step, 10);
+      if (completed.indexOf(step) !== -1) cb.checked = true;
+    });
+    updateHeader();
+  };
+
+  function updateHeader() {
+    var data = getProgress();
+    var done = (data[MODULE] || []).length;
+    var pct = Math.round((Math.min(done, TOTAL) / TOTAL) * 100);
+    var bar = document.getElementById('crmProgressBar');
+    var label = document.getElementById('crmProgressLabel');
+    if (bar) bar.style.width = pct + '%';
+    if (label) label.textContent = Math.min(done, TOTAL) + ' de ' + TOTAL + ' concluídas';
+  }
+
+  // Init: show step 1 or last visited
+  var savedStep = parseInt(sessionStorage.getItem('crm_current_step') || '1', 10);
+  if (isNaN(savedStep) || savedStep < 1) savedStep = 1;
+  if (savedStep > TOTAL) savedStep = TOTAL;
+
+  document.querySelectorAll('.lesson-step').forEach(function(s) { s.classList.add('hidden'); });
+  var initial = document.querySelector('.lesson-step[data-step="' + savedStep + '"]');
+  if (initial) initial.classList.remove('hidden');
+
+  loadProgress();
+
+  // Save current step when navigating
+  document.querySelectorAll('[onclick^="goStep"]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var match = btn.getAttribute('onclick').match(/goStep\((\d+)\)/);
+      if (match) sessionStorage.setItem('crm_current_step', match[1]);
+    });
+  });
+})();
+</script>

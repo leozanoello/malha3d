@@ -1,0 +1,545 @@
+<!-- Aprendizado — Projetos — Produção -->
+<div class="mb-4 flex items-center gap-3">
+ <a href="/admin/aprendizado" class="flex items-center gap-2 px-4 py-2 rounded-[5px] bg-white/5 hover:bg-white/10 border border-white/10 transition text-gray-300 hover:text-white">
+  <span class="material-symbols-outlined text-sm">arrow_back</span>
+  <span class="text-xs font-bold">Centro</span>
+ </a>
+ <div class="flex items-center gap-2 text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+  <span>Aprendizado</span>
+  <span class="material-symbols-outlined text-[10px]">chevron_right</span>
+  <span class="text-purple-400">Projetos — Produção</span>
+ </div>
+</div>
+
+<!-- Header kcard: módulo + progresso -->
+<div class="kcard p-5 mb-4">
+ <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+  <div class="flex items-center gap-4">
+   <div class="w-14 h-14 rounded-[5px] bg-purple-500/15 border border-purple-500/20 flex items-center justify-center shrink-0">
+    <span class="material-symbols-outlined text-purple-400 text-2xl">view_in_ar</span>
+   </div>
+   <div>
+    <h1 class="text-2xl font-black text-white tracking-tight mb-1">Projetos — <span class="text-purple-400">Produção</span></h1>
+    <p class="text-gray-400 font-medium text-xs">Domine o Kanban de produção, tarefas, prazos e entregáveis em 6 lições.</p>
+   </div>
+  </div>
+  <div class="flex items-center gap-3">
+   <div class="flex items-center gap-2 px-4 py-2 rounded-[5px] bg-white/5 border border-white/10">
+    <span class="material-symbols-outlined text-purple-400 text-sm">emoji_events</span>
+    <span class="text-[10px] font-black text-white" id="projProgressLabel">0 de 6 concluídas</span>
+   </div>
+  </div>
+ </div>
+ <div class="h-2 rounded-full bg-white/5 overflow-hidden">
+  <div id="projProgressBar" class="h-full rounded-full bg-gradient-to-r from-purple-500 to-fuchsia-400 transition-all duration-500" style="width:0%"></div>
+ </div>
+</div>
+
+<!-- LIÇÃO 1: De Lead a Projeto -->
+<section class="lesson-step" data-step="1">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(0)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-[11px] font-bold transition opacity-50 cursor-not-allowed" disabled>← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 1 de 6</span>
+   <button onclick="goStep(2)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-purple-500 hover:bg-purple-600 text-white text-[11px] font-black transition">Próximo →</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">De Lead a Projeto</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">Quando um lead é marcado como <strong class="text-emerald-400">"Ganho"</strong> no CRM, ele migra automaticamente para o Kanban de Projetos — sem cadastro duplicado.</p>
+    <p class="text-sm text-gray-300 leading-relaxed">O Kanban de Projetos tem <strong class="text-white">4 colunas principais</strong>:</p>
+    <ul class="text-sm text-gray-300 space-y-1.5">
+     <li><strong class="text-gray-400">Parado</strong> — projeto criado mas ainda não iniciado</li>
+     <li><strong class="text-amber-400">Em Produção</strong> — modelagem, impressão e acabamento em andamento</li>
+     <li><strong class="text-sky-400">Entregando</strong> — projeto pronto, em transporte ou instalação</li>
+     <li><strong class="text-emerald-400">Finalizado</strong> — entregue e arquivado no portfólio</li>
+    </ul>
+    <div class="p-3 rounded bg-purple-500/10 border border-purple-500/20">
+     <p class="text-[11px] text-purple-200 leading-relaxed"><strong>💡 Dica:</strong> a ordem das colunas reflete o ciclo de vida real de uma peça — da criação à entrega final.</p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs space-y-2">
+     <p class="text-xs font-black text-purple-400 uppercase mb-2">Kanban de Projetos</p>
+     <div class="grid grid-cols-2 gap-2">
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-gray-400 uppercase mb-1">Parado</p>
+       <div class="bg-white/5 border border-white/10 rounded p-1.5">
+        <p class="text-[11px] font-bold text-white">Letreiro Loja</p>
+       </div>
+      </div>
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-amber-400 uppercase mb-1">Em Produção</p>
+       <div class="bg-amber-500/10 border border-amber-500/30 rounded p-1.5 mb-1">
+        <p class="text-[11px] font-bold text-white">Hotel Vista</p>
+       </div>
+       <div class="bg-amber-500/10 border border-amber-500/30 rounded p-1.5">
+        <p class="text-[11px] font-bold text-white">Fachada XYZ</p>
+       </div>
+      </div>
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-sky-400 uppercase mb-1">Entregando</p>
+       <div class="bg-sky-500/10 border border-sky-500/30 rounded p-1.5">
+        <p class="text-[11px] font-bold text-white">Totem Banco</p>
+       </div>
+      </div>
+      <div class="bg-black/50 border border-white/10 rounded p-2">
+       <p class="text-[10px] font-black text-emerald-400 uppercase mb-1">Finalizado</p>
+       <div class="bg-emerald-500/10 border border-emerald-500/30 rounded p-1.5">
+        <p class="text-[11px] font-bold text-white">Mascote Zoo</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="proj-completion w-4 h-4 rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500 focus:ring-offset-0" data-step="1" onchange="markComplete('projetos', 1)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <button onclick="goStep(2)" class="px-4 py-2 rounded bg-purple-500 hover:bg-purple-600 text-white text-xs font-black transition">Próximo →</button>
+  </div>
+ </div>
+</section>
+
+<!-- LIÇÃO 2: As 7 Abas do Projeto -->
+<section class="lesson-step hidden" data-step="2">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(1)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold transition">← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 2 de 6</span>
+   <button onclick="goStep(3)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-purple-500 hover:bg-purple-600 text-white text-[11px] font-black transition">Próximo →</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">As 7 Abas do Projeto</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">Ao abrir qualquer projeto, você tem acesso a <strong class="text-purple-400">7 abas organizacionais</strong>. Cada uma cuida de um aspecto específico da produção.</p>
+    <ol class="list-decimal list-inside text-sm text-gray-300 space-y-2">
+     <li><strong class="text-white">Perfil</strong> — dados do cliente, valor, prazo, tipologia</li>
+     <li><strong class="text-white">Planejamento</strong> — cronograma, marcos, responsáveis</li>
+     <li><strong class="text-white">Financeiro</strong> — custos, faturas, pagamentos, lucro</li>
+     <li><strong class="text-white">Entregáveis</strong> — peças finais, status de cada entrega</li>
+     <li><strong class="text-white">Tarefas</strong> — checklist operacional da produção</li>
+     <li><strong class="text-white">Chat</strong> — conversa direta com o cliente</li>
+     <li><strong class="text-white">Histórico</strong> — log de todas as ações do projeto</li>
+    </ol>
+    <div class="p-3 rounded bg-purple-500/10 border border-purple-500/20">
+     <p class="text-[11px] text-purple-200 leading-relaxed"><strong>💡 Dica:</strong> use Ctrl+1 a Ctrl+7 para navegar entre as abas rapidamente.</p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs bg-black/50 rounded-[5px] border border-white/10 p-3">
+     <p class="text-xs font-black text-purple-400 uppercase mb-3">Barra de Abas</p>
+     <div class="grid grid-cols-4 gap-1 mb-3">
+      <div class="px-2 py-2 rounded bg-purple-500/20 border border-purple-500/40 text-center">
+       <span class="material-symbols-outlined text-purple-400 text-xs block">person</span>
+       <p class="text-xs font-black text-purple-300 mt-1">Perfil</p>
+      </div>
+      <div class="px-2 py-2 rounded bg-white/5 text-center">
+       <span class="material-symbols-outlined text-gray-400 text-xs block">event</span>
+       <p class="text-xs font-black text-gray-500 mt-1">Planej.</p>
+      </div>
+      <div class="px-2 py-2 rounded bg-white/5 text-center">
+       <span class="material-symbols-outlined text-gray-400 text-xs block">payments</span>
+       <p class="text-xs font-black text-gray-500 mt-1">Financ.</p>
+      </div>
+      <div class="px-2 py-2 rounded bg-white/5 text-center">
+       <span class="material-symbols-outlined text-gray-400 text-xs block">inventory_2</span>
+       <p class="text-xs font-black text-gray-500 mt-1">Entreg.</p>
+      </div>
+      <div class="px-2 py-2 rounded bg-white/5 text-center">
+       <span class="material-symbols-outlined text-gray-400 text-xs block">checklist</span>
+       <p class="text-xs font-black text-gray-500 mt-1">Tarefas</p>
+      </div>
+      <div class="px-2 py-2 rounded bg-white/5 text-center">
+       <span class="material-symbols-outlined text-gray-400 text-xs block">chat</span>
+       <p class="text-xs font-black text-gray-500 mt-1">Chat</p>
+      </div>
+      <div class="px-2 py-2 rounded bg-white/5 text-center">
+       <span class="material-symbols-outlined text-gray-400 text-xs block">history</span>
+       <p class="text-xs font-black text-gray-500 mt-1">Histór.</p>
+      </div>
+      <div class="px-2 py-2 rounded bg-white/5 text-center">
+       <span class="material-symbols-outlined text-gray-400 text-xs block">more_horiz</span>
+       <p class="text-xs font-black text-gray-500 mt-1">Mais</p>
+      </div>
+     </div>
+     <p class="text-[10px] text-gray-500 leading-relaxed">A aba ativa destaca-se em roxo. Clique para trocar.</p>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="proj-completion w-4 h-4 rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500 focus:ring-offset-0" data-step="2" onchange="markComplete('projetos', 2)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <button onclick="goStep(3)" class="px-4 py-2 rounded bg-purple-500 hover:bg-purple-600 text-white text-xs font-black transition">Próximo →</button>
+  </div>
+ </div>
+</section>
+
+<!-- LIÇÃO 3: Tarefas e Checklist -->
+<section class="lesson-step hidden" data-step="3">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(2)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold transition">← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 3 de 6</span>
+   <button onclick="goStep(4)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-purple-500 hover:bg-purple-600 text-white text-[11px] font-black transition">Próximo →</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">Tarefas e Checklist</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">Dentro de cada projeto existe uma <strong class="text-purple-400">lista de tarefas</strong> que guia a produção do início ao fim. Você pode criar tarefas personalizadas para cada tipo de projeto.</p>
+    <p class="text-sm text-gray-300 leading-relaxed">Cada tarefa tem:</p>
+    <ul class="text-sm text-gray-300 space-y-1.5">
+     <li><strong class="text-white">Título</strong> descritivo da atividade</li>
+     <li><strong class="text-white">Responsável</strong> — membro da equipe</li>
+     <li><strong class="text-white">Prazo</strong> — data limite</li>
+     <li><strong class="text-white">Prioridade</strong> — baixa, média, alta</li>
+     <li><strong class="text-white">Status</strong> — pendente, em andamento, concluída</li>
+    </ul>
+    <div class="p-3 rounded bg-purple-500/10 border border-purple-500/20">
+     <p class="text-[11px] text-purple-200 leading-relaxed"><strong>💡 Dica:</strong> tarefas críticas atrasadas aparecem em vermelho no dashboard — a IA também sugere redistribuição.</p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs bg-black/50 rounded-[5px] border border-white/10 p-3">
+     <p class="text-xs font-black text-purple-400 uppercase mb-3">Tarefas do Projeto</p>
+     <div class="space-y-2">
+      <div class="flex items-start gap-2 p-2 bg-emerald-500/10 border border-emerald-500/30 rounded">
+       <input type="checkbox" checked class="mt-0.5 w-3 h-3">
+       <div class="flex-1">
+        <p class="text-xs font-bold text-white line-through opacity-60">Modelagem 3D aprovada</p>
+        <p class="text-[10px] text-gray-400">Carlos • Concluída</p>
+       </div>
+      </div>
+      <div class="flex items-start gap-2 p-2 bg-white/5 border border-white/10 rounded">
+       <input type="checkbox" class="mt-0.5 w-3 h-3">
+       <div class="flex-1">
+        <p class="text-xs font-bold text-white">Impressão SLA</p>
+        <p class="text-[10px] text-gray-400">Ana • Prazo: 18/12</p>
+       </div>
+      </div>
+      <div class="flex items-start gap-2 p-2 bg-red-500/10 border border-red-500/30 rounded">
+       <input type="checkbox" class="mt-0.5 w-3 h-3">
+       <div class="flex-1">
+        <p class="text-xs font-bold text-white">Pintura e acabamento</p>
+        <p class="text-[10px] text-red-300">Pedro • Atrasada 2 dias</p>
+       </div>
+      </div>
+      <div class="flex items-start gap-2 p-2 bg-white/5 border border-white/10 rounded">
+       <input type="checkbox" class="mt-0.5 w-3 h-3">
+       <div class="flex-1">
+        <p class="text-xs font-bold text-white">Instalação no cliente</p>
+        <p class="text-[10px] text-gray-400">Equipe • Prazo: 22/12</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="proj-completion w-4 h-4 rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500 focus:ring-offset-0" data-step="3" onchange="markComplete('projetos', 3)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <button onclick="goStep(4)" class="px-4 py-2 rounded bg-purple-500 hover:bg-purple-600 text-white text-xs font-black transition">Próximo →</button>
+  </div>
+ </div>
+</section>
+
+<!-- LIÇÃO 4: Prazos e Timeline -->
+<section class="lesson-step hidden" data-step="4">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(3)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold transition">← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 4 de 6</span>
+   <button onclick="goStep(5)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-purple-500 hover:bg-purple-600 text-white text-[11px] font-black transition">Próximo →</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">Prazos e Timeline</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">O Malha3D gerencia prazos de forma <strong class="text-purple-400">inteligente</strong>: alertas automáticos no dashboard, integração com Google Calendar e previsão de atraso via IA.</p>
+    <ol class="list-decimal list-inside text-sm text-gray-300 space-y-2">
+     <li>Defina a <strong class="text-white">data de entrega</strong> ao criar o projeto</li>
+     <li>Marcos intermediários são criados automaticamente a partir das tarefas</li>
+     <li>Alertas aparecem 3 dias antes do vencimento</li>
+     <li>A IA recalcula o prazo real baseado no ritmo da equipe</li>
+    </ol>
+    <p class="text-sm text-gray-300 leading-relaxed">Projetos atrasados recebem um <strong class="text-red-400">badge vermelho</strong> e sobem no topo do dashboard para atenção imediata.</p>
+    <div class="p-3 rounded bg-purple-500/10 border border-purple-500/20">
+     <p class="text-[11px] text-purple-200 leading-relaxed"><strong>💡 Dica:</strong> no calendário você pode ver todos os projetos e prazos em uma visão única (mês, semana ou dia).</p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs bg-black/50 rounded-[5px] border border-white/10 p-3">
+     <p class="text-xs font-black text-purple-400 uppercase mb-3">Timeline do Projeto</p>
+     <div class="space-y-3">
+      <div>
+       <div class="flex items-center justify-between mb-1">
+        <p class="text-[10px] font-bold text-gray-300">Modelagem</p>
+        <p class="text-[10px] text-emerald-400 font-bold">100%</p>
+       </div>
+       <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+        <div class="h-full bg-emerald-500" style="width:100%"></div>
+       </div>
+      </div>
+      <div>
+       <div class="flex items-center justify-between mb-1">
+        <p class="text-[10px] font-bold text-gray-300">Impressão</p>
+        <p class="text-[10px] text-amber-400 font-bold">65%</p>
+       </div>
+       <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+        <div class="h-full bg-amber-500" style="width:65%"></div>
+       </div>
+      </div>
+      <div>
+       <div class="flex items-center justify-between mb-1">
+        <p class="text-[10px] font-bold text-gray-300">Acabamento</p>
+        <p class="text-[10px] text-gray-500 font-bold">0%</p>
+       </div>
+       <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+        <div class="h-full bg-gray-500" style="width:5%"></div>
+       </div>
+      </div>
+      <div>
+       <div class="flex items-center justify-between mb-1">
+        <p class="text-[10px] font-bold text-gray-300">Entrega</p>
+        <p class="text-[10px] text-red-400 font-bold">atrasada</p>
+       </div>
+       <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+        <div class="h-full bg-red-500" style="width:30%"></div>
+       </div>
+      </div>
+      <div class="pt-2 border-t border-white/10">
+       <p class="text-[10px] text-gray-400">Prazo final: <span class="text-white font-black">22/12/2026</span></p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="proj-completion w-4 h-4 rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500 focus:ring-offset-0" data-step="4" onchange="markComplete('projetos', 4)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <button onclick="goStep(5)" class="px-4 py-2 rounded bg-purple-500 hover:bg-purple-600 text-white text-xs font-black transition">Próximo →</button>
+  </div>
+ </div>
+</section>
+
+<!-- LIÇÃO 5: Entregáveis e Arquivos -->
+<section class="lesson-step hidden" data-step="5">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(4)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold transition">← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 5 de 6</span>
+   <button onclick="goStep(6)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-purple-500 hover:bg-purple-600 text-white text-[11px] font-black transition">Próximo →</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">Entregáveis e Arquivos</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">A aba <strong class="text-purple-400">Entregáveis</strong> é onde você organiza todos os arquivos finais do projeto: modelos 3D, fotos da peça pronta, manuais de instalação e garantias.</p>
+    <p class="text-sm text-gray-300 leading-relaxed">Você pode:</p>
+    <ul class="text-sm text-gray-300 space-y-1.5">
+     <li>Fazer <strong class="text-white">upload</strong> direto pelo navegador (drag-and-drop)</li>
+     <li><strong class="text-white">Conectar Google Drive</strong> para sincronizar pastas</li>
+     <li>Organizar por categoria: STL, renders, manuais, fotos</li>
+     <li>Compartilhar links com o cliente (com expiração)</li>
+    </ul>
+    <div class="p-3 rounded bg-purple-500/10 border border-purple-500/20">
+     <p class="text-[11px] text-purple-200 leading-relaxed"><strong>💡 Dica:</strong> ao finalizar o projeto, os entregáveis viram parte do Portfólio público automaticamente.</p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs bg-black/50 rounded-[5px] border border-white/10 p-3">
+     <p class="text-xs font-black text-purple-400 uppercase mb-3">Arquivos do Projeto</p>
+     <div class="space-y-2">
+      <div class="flex items-center gap-2 p-2 bg-white/5 border border-white/10 rounded">
+       <div class="w-8 h-8 rounded bg-blue-500/20 border border-blue-500/30 flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-blue-400 text-xs">image</span>
+       </div>
+       <div class="flex-1 min-w-0">
+        <p class="text-xs font-bold text-white truncate">render-final.jpg</p>
+        <p class="text-[10px] text-gray-400">2.4 MB • 12/12</p>
+       </div>
+      </div>
+      <div class="flex items-center gap-2 p-2 bg-white/5 border border-white/10 rounded">
+       <div class="w-8 h-8 rounded bg-purple-500/20 border border-purple-500/30 flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-purple-400 text-xs">view_in_ar</span>
+       </div>
+       <div class="flex-1 min-w-0">
+        <p class="text-xs font-bold text-white truncate">hotel-vista.stl</p>
+        <p class="text-[10px] text-gray-400">18.7 MB • 10/12</p>
+       </div>
+      </div>
+      <div class="flex items-center gap-2 p-2 bg-white/5 border border-white/10 rounded">
+       <div class="w-8 h-8 rounded bg-red-500/20 border border-red-500/30 flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-red-400 text-xs">picture_as_pdf</span>
+       </div>
+       <div class="flex-1 min-w-0">
+        <p class="text-xs font-bold text-white truncate">manual-instalacao.pdf</p>
+        <p class="text-[10px] text-gray-400">540 KB • 14/12</p>
+       </div>
+      </div>
+      <div class="flex items-center gap-2 p-2 bg-white/5 border border-white/10 rounded">
+       <div class="w-8 h-8 rounded bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-emerald-400 text-xs">folder</span>
+       </div>
+       <div class="flex-1 min-w-0">
+        <p class="text-xs font-bold text-white truncate">fotos-pronto/</p>
+        <p class="text-[10px] text-gray-400">8 arquivos • 15/12</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="proj-completion w-4 h-4 rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500 focus:ring-offset-0" data-step="5" onchange="markComplete('projetos', 5)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <button onclick="goStep(6)" class="px-4 py-2 rounded bg-purple-500 hover:bg-purple-600 text-white text-xs font-black transition">Próximo →</button>
+  </div>
+ </div>
+</section>
+
+<!-- LIÇÃO 6: Finalizando e Arquivando -->
+<section class="lesson-step hidden" data-step="6">
+ <div class="kcard p-0 overflow-hidden">
+  <div class="flex items-center justify-between px-5 py-3 border-b border-white/5">
+   <button onclick="goStep(5)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white text-[11px] font-bold transition">← Anterior</button>
+   <span class="text-[10px] font-black text-white uppercase tracking-widest">Passo 6 de 6</span>
+   <button onclick="goStep(7)" class="flex items-center gap-1 px-3 py-1.5 rounded bg-emerald-500 hover:bg-emerald-600 text-white text-[11px] font-black transition">Concluir ✓</button>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+   <div class="lg:col-span-3 p-6 space-y-4">
+    <h2 class="text-xl font-black text-white">Finalizando e Arquivando</h2>
+    <p class="text-sm text-gray-300 leading-relaxed">Quando o projeto é entregue ao cliente, mova-o para a coluna <strong class="text-emerald-400">"Finalizado"</strong>. Esse é o gatilho para várias ações automáticas.</p>
+    <ol class="list-decimal list-inside text-sm text-gray-300 space-y-2">
+     <li>Gera o <strong class="text-white">Relatório Mensal</strong> de horas gastas e lucro</li>
+     <li>Adiciona a peça ao <strong class="text-white">Portfólio</strong> público</li>
+     <li>Marca a fatura final como <strong class="text-emerald-400">paga</strong></li>
+     <li>Envia pesquisa de satisfação (NPS) ao cliente</li>
+     <li>Arquiva o projeto para consultas futuras (busca)</li>
+    </ol>
+    <div class="p-3 rounded bg-emerald-500/10 border border-emerald-500/20">
+     <p class="text-[11px] text-emerald-200 leading-relaxed"><strong>Parabéns!</strong> Você concluiu o módulo de Projetos. Agora domina todo o ciclo de produção — do lead ao portfólio. <a href="/admin/aprendizado/financeiro" class="underline font-black">Próximo módulo: Financeiro →</a></p>
+    </div>
+   </div>
+   <div class="lg:col-span-2 bg-black/30 p-5 flex items-center justify-center border-l border-white/5">
+    <div class="w-full max-w-xs space-y-3">
+     <p class="text-xs font-black text-purple-400 uppercase">Projeto Finalizado</p>
+     <div class="bg-black/50 border border-emerald-500/30 rounded p-3">
+      <div class="flex items-start justify-between mb-2">
+       <p class="text-xs font-black text-white">Hotel Vista</p>
+       <span class="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-black uppercase">Finalizado</span>
+      </div>
+      <p class="text-[10px] text-gray-400 mb-2">Cliente: Hotel Vista Resort</p>
+      <div class="space-y-1">
+       <div class="flex items-center justify-between">
+        <p class="text-[10px] text-gray-500">Valor:</p>
+        <p class="text-[10px] text-white font-bold">R$ 12.000</p>
+       </div>
+       <div class="flex items-center justify-between">
+        <p class="text-[10px] text-gray-500">Custo:</p>
+        <p class="text-[10px] text-white font-bold">R$ 4.200</p>
+       </div>
+       <div class="flex items-center justify-between pt-1 border-t border-white/10">
+        <p class="text-[10px] text-gray-500">Lucro:</p>
+        <p class="text-[10px] text-emerald-400 font-black">R$ 7.800 (65%)</p>
+       </div>
+      </div>
+      <div class="mt-3 flex items-center gap-1">
+       <span class="material-symbols-outlined text-emerald-400 text-xs">check_circle</span>
+       <p class="text-[10px] text-emerald-300">Entregue em 20/12/2026</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+   <label class="flex items-center gap-2 cursor-pointer">
+    <input type="checkbox" class="proj-completion w-4 h-4 rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500 focus:ring-offset-0" data-step="6" onchange="markComplete('projetos', 6)">
+    <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+   </label>
+   <a href="/admin/aprendizado/financeiro" class="px-4 py-2 rounded bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black transition inline-block">Próximo Módulo →</a>
+  </div>
+ </div>
+</section>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'malha3d_learning_progress';
+  const MODULE = 'projetos';
+  const TOTAL = 6;
+
+  function getProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+  }
+
+  function saveProgress(data) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+  }
+
+  window.goStep = function(n) {
+    if (n < 1 || n > TOTAL) {
+      if (n > TOTAL) window.location.href = '/admin/aprendizado/financeiro';
+      return;
+    }
+    document.querySelectorAll('.lesson-step').forEach(function(s) { s.classList.add('hidden'); });
+    var target = document.querySelector('.lesson-step[data-step="' + n + '"]');
+    if (target) target.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.markComplete = function(module, step) {
+    var data = getProgress();
+    if (!data[module]) data[module] = [];
+    if (data[module].indexOf(step) === -1) data[module].push(step);
+    saveProgress(data);
+    updateHeader();
+  };
+
+  window.loadProgress = function() {
+    var data = getProgress();
+    var completed = data[MODULE] || [];
+    document.querySelectorAll('.proj-completion').forEach(function(cb) {
+      var step = parseInt(cb.dataset.step, 10);
+      if (completed.indexOf(step) !== -1) cb.checked = true;
+    });
+    updateHeader();
+  };
+
+  function updateHeader() {
+    var data = getProgress();
+    var done = (data[MODULE] || []).length;
+    var pct = Math.round((Math.min(done, TOTAL) / TOTAL) * 100);
+    var bar = document.getElementById('projProgressBar');
+    var label = document.getElementById('projProgressLabel');
+    if (bar) bar.style.width = pct + '%';
+    if (label) label.textContent = Math.min(done, TOTAL) + ' de ' + TOTAL + ' concluídas';
+  }
+
+  // Init: show step 1 or last visited
+  var savedStep = parseInt(sessionStorage.getItem('projetos_current_step') || '1', 10);
+  if (isNaN(savedStep) || savedStep < 1) savedStep = 1;
+  if (savedStep > TOTAL) savedStep = TOTAL;
+
+  document.querySelectorAll('.lesson-step').forEach(function(s) { s.classList.add('hidden'); });
+  var initial = document.querySelector('.lesson-step[data-step="' + savedStep + '"]');
+  if (initial) initial.classList.remove('hidden');
+
+  loadProgress();
+
+  // Save current step when navigating
+  document.querySelectorAll('[onclick^="goStep"]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var match = btn.getAttribute('onclick').match(/goStep\((\d+)\)/);
+      if (match) sessionStorage.setItem('projetos_current_step', match[1]);
+    });
+  });
+})();
+</script>

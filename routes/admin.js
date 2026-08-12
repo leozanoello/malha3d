@@ -4193,7 +4193,31 @@ router.get('/chat', requireAuth, async (req, res) => {
 });
 
 router.get('/aprendizado', requireAuth, async (req, res) => {
-  res.render('admin/learning', { layout: 'admin', title: 'Academia Zanoello', currentPage: 'learning', user: req.user });
+  res.render('admin/learning', { layout: 'admin', title: 'Centro de Aprendizado', currentPage: 'learning', user: req.user });
+});
+
+router.get('/aprendizado/crm', requireAuth, (req, res) => {
+  res.render('admin/learning-crm', { layout: 'admin', title: 'Aprendizado — CRM', currentPage: 'learning', user: req.user });
+});
+
+router.get('/aprendizado/projetos', requireAuth, (req, res) => {
+  res.render('admin/learning-projetos', { layout: 'admin', title: 'Aprendizado — Projetos', currentPage: 'learning', user: req.user });
+});
+
+router.get('/aprendizado/financeiro', requireAuth, (req, res) => {
+  res.render('admin/learning-financeiro', { layout: 'admin', title: 'Aprendizado — Financeiro', currentPage: 'learning', user: req.user });
+});
+
+router.get('/aprendizado/contatos', requireAuth, (req, res) => {
+  res.render('admin/learning-contatos', { layout: 'admin', title: 'Aprendizado — Contatos', currentPage: 'learning', user: req.user });
+});
+
+router.get('/aprendizado/config', requireAuth, (req, res) => {
+  res.render('admin/learning-config', { layout: 'admin', title: 'Aprendizado — Configurações', currentPage: 'learning', user: req.user });
+});
+
+router.get('/aprendizado/dicas', requireAuth, (req, res) => {
+  res.render('admin/learning-dicas', { layout: 'admin', title: 'Aprendizado — Dicas & Atalhos', currentPage: 'learning', user: req.user });
 });
 
 router.get('/freelancers', requireAuth, async (req, res) => {

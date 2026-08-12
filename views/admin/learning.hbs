@@ -1,407 +1,260 @@
-<!-- Header -->
-<div class="mb-4 p-4" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+<!-- Centro de Aprendizado — Hub Principal -->
+<div class="mb-4 p-5" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
- <div>
- <h1 class="text-3xl font-black text-white tracking-tight mb-1">
- Aprendizado <span class="text-gradient">CRM</span>
- </h1>
- <p class="text-gray-400 font-medium text-sm">
- Passo a passo interativo: domine a ferramenta CRM de Malha3D do zero ao avançado.
- </p>
+  <div>
+   <h1 class="text-2xl font-black text-white tracking-tight mb-1">
+    Centro de <span class="text-orange-400">Aprendizado</span>
+   </h1>
+   <p class="text-gray-400 font-medium text-sm">Domine cada ferramenta do Malha3D com guias interativos passo a passo.</p>
+  </div>
+  <div class="flex items-center gap-3">
+   <div class="flex items-center gap-2 px-4 py-2 rounded-[5px] bg-white/5 border border-white/10">
+    <span class="material-symbols-outlined text-orange-400 text-sm">local_fire_department</span>
+    <span class="text-[10px] font-black text-white" id="globalProgressLabel">0% concluído</span>
+   </div>
+  </div>
  </div>
- <div class="flex items-center gap-2">
- <span class="px-3 py-1.5 rounded-lg bg-orange-500/10 text-orange-400 text-[10px] font-black uppercase tracking-widest border border-orange-500/20">
- <span class="material-symbols-outlined text-xs align-middle">school</span>
- Tutorial Interativo
- </span>
- </div>
+ <!-- Barra de Progresso Global -->
+ <div class="mt-4 h-2 rounded-full bg-white/5 overflow-hidden">
+  <div id="globalProgressBar" class="h-full rounded-full bg-gradient-to-r from-orange-500 to-amber-400 transition-all duration-500" style="width:0%"></div>
  </div>
 </div>
 
-<!-- TUTORIAL CRM - PASSO A PASSO -->
-<div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+<!-- Grid de Módulos -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
 
- <!-- Sidebar: Índice dos Passos -->
- <aside class="lg:col-span-1">
- <div class="kcard rounded-[5px] border-white/5 p-4 sticky top-4">
- <h3 class="text-[10px] font-black text-orange-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
- <span class="material-symbols-outlined text-xs">menu_book</span> Índice do Tutorial
- </h3>
- <nav class="space-y-1">
- <a href="#step-1" class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 text-white text-xs font-bold transition-all">
- <span class="w-5 h-5 rounded-full bg-orange-500 text-white text-[9px] font-black flex items-center justify-center shrink-0">1</span>
- O que é o CRM
- </a>
- <a href="#step-2" class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 text-white text-xs font-bold transition-all">
- <span class="w-5 h-5 rounded-full bg-orange-500 text-white text-[9px] font-black flex items-center justify-center shrink-0">2</span>
- Criar um Lead
- </a>
- <a href="#step-3" class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 text-white text-xs font-bold transition-all">
- <span class="w-5 h-5 rounded-full bg-orange-500 text-white text-[9px] font-black flex items-center justify-center shrink-0">3</span>
- Campos do Lead
- </a>
- <a href="#step-4" class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 text-white text-xs font-bold transition-all">
- <span class="w-5 h-5 rounded-full bg-orange-500 text-white text-[9px] font-black flex items-center justify-center shrink-0">4</span>
- Kanban
- </a>
- <a href="#step-5" class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 text-white text-xs font-bold transition-all">
- <span class="w-5 h-5 rounded-full bg-orange-500 text-white text-[9px] font-black flex items-center justify-center shrink-0">5</span>
- Editar Lead
- </a>
- <a href="#step-6" class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 text-white text-xs font-bold transition-all">
- <span class="w-5 h-5 rounded-full bg-orange-500 text-white text-[9px] font-black flex items-center justify-center shrink-0">6</span>
- Converter p/ Modelagem
- </a>
- <a href="#step-7" class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 text-white text-xs font-bold transition-all">
- <span class="w-5 h-5 rounded-full bg-orange-500 text-white text-[9px] font-black flex items-center justify-center shrink-0">7</span>
- Próximos Passos
- </a>
- </nav>
- </div>
- </aside>
-
- <!-- Conteúdo do Tutorial -->
- <div class="lg:col-span-3 space-y-6">
-
- <!-- STEP 1 -->
- <section id="step-1" class="kcard rounded-[5px] border-white/5 overflow-hidden">
- <div class="aspect-video bg-gradient-to-br from-orange-500/20 to-cyan-500/10 flex items-center justify-center relative overflow-hidden p-6">
- <!-- MOCKUP VISUAL: Kanban CRM -->
- <div class="flex gap-3 w-full max-w-xl opacity-60">
-  <div class="flex-1 bg-black/40 rounded-[5px] p-2 border border-white/10">
-   <div class="flex items-center gap-1 mb-2"><div class="w-1.5 h-4 rounded-full bg-blue-500"></div><p class="text-[7px] font-black text-white uppercase">Novo Lead</p></div>
-   <div class="bg-white/5 rounded-lg p-1.5 mb-1 border border-white/10"><p class="text-[6px] text-white font-bold">Residencial Aurora</p><p class="text-[5px] text-gray-400">R$ 15.000</p></div>
-   <div class="bg-white/5 rounded-lg p-1.5 border border-white/10"><p class="text-[6px] text-white font-bold">Torre Comercial</p><p class="text-[5px] text-gray-400">R$ 28.000</p></div>
-  </div>
-  <div class="flex-1 bg-black/40 rounded-[5px] p-2 border border-white/10">
-   <div class="flex items-center gap-1 mb-2"><div class="w-1.5 h-4 rounded-full bg-purple-500"></div><p class="text-[7px] font-black text-white uppercase">Em Contato</p></div>
-   <div class="bg-white/5 rounded-lg p-1.5 border border-white/10"><p class="text-[6px] text-white font-bold">Mansão Jardins</p><p class="text-[5px] text-gray-400">R$ 45.000</p></div>
-  </div>
-  <div class="flex-1 bg-black/40 rounded-[5px] p-2 border border-white/10">
-   <div class="flex items-center gap-1 mb-2"><div class="w-1.5 h-4 rounded-full bg-emerald-500"></div><p class="text-[7px] font-black text-white uppercase">Fechamento</p></div>
-   <div class="bg-white/5 rounded-lg p-1.5 border border-orange-500/30"><p class="text-[6px] text-orange-400 font-bold">Loft Industrial</p><p class="text-[5px] text-gray-400">R$ 32.000</p></div>
-  </div>
- </div>
- <div class="absolute inset-0 flex items-center justify-center flex-col text-center p-6">
- <span class="px-3 py-1 rounded-full bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest mb-3">PASSO 1</span>
- <h2 class="text-3xl font-black text-white mb-2">O que é o CRM?</h2>
- <p class="text-white/80 text-sm max-w-md">Sua central de relacionamento com clientes e prospecção ArchViz.</p>
- </div>
- </div>
- <div class="p-6">
- <h3 class="text-lg font-black text-white mb-3">Entendendo a ferramenta</h3>
- <p class="text-gray-300 text-sm leading-relaxed mb-3">
- O <strong class="text-orange-400">CRM (Customer Relationship Management)</strong> é a área do Malha3D onde você gerencia todos os seus leads, prospects e clientes. Aqui você controla o ciclo de vida de uma venda de ArchViz: do primeiro contato até o fechamento.
- </p>
- <p class="text-gray-300 text-sm leading-relaxed mb-3">
- <strong class="text-white">Para que serve:</strong> Organizar leads em etapas visuais, calcular probabilidades de fechamento, agendar follow-ups, manter histórico de conversas e converter oportunidades em projetos de Modelagem 3D.
- </p>
- <div class="flex items-center gap-2 mt-4 p-3 rounded-[5px] bg-orange-500/10 border border-orange-500/20">
- <span class="material-symbols-outlined text-orange-400">lightbulb</span>
- <p class="text-[11px] text-orange-200"><strong>Dica:</strong> Use o CRM diariamente. Leads "frios" viram clientes quando há follow-up consistente.</p>
- </div>
- </div>
- </section>
-
- <!-- STEP 2 -->
- <section id="step-2" class="kcard rounded-[5px] border-white/5 overflow-hidden">
- <div class="aspect-video bg-gradient-to-br from-purple-500/20 to-pink-500/10 flex items-center justify-center relative overflow-hidden p-6">
- <!-- MOCKUP: Formulário Novo Lead -->
- <div class="w-full max-w-sm bg-black/60 rounded-[5px] p-3 border border-white/10 opacity-60">
-  <div class="flex items-center gap-2 mb-2 pb-2 border-b border-white/10">
-   <div class="w-6 h-6 rounded bg-orange-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-orange-500 text-xs">view_in_ar</span></div>
-   <p class="text-[8px] font-black text-white uppercase">CRIAR NOVO LEAD</p>
-  </div>
-  <div class="space-y-1.5">
-   <div class="bg-white/5 rounded p-1.5 border border-white/10"><p class="text-[6px] text-gray-400">Nome do Lead/Projeto *</p><p class="text-[7px] text-white font-bold">Renderização 3D - Prédio Comercial</p></div>
-   <div class="grid grid-cols-2 gap-1">
-    <div class="bg-white/5 rounded p-1.5 border border-white/10"><p class="text-[5px] text-gray-400">Email</p><p class="text-[6px] text-white">cliente@email.com</p></div>
-    <div class="bg-white/5 rounded p-1.5 border border-white/10"><p class="text-[5px] text-gray-400">Telefone</p><p class="text-[6px] text-white">(43) 99999-9999</p></div>
+ <!-- Módulo 1: CRM -->
+ <div class="kcard group hover:border-orange-500/30 transition-all cursor-pointer" onclick="window.location='/admin/aprendizado/crm'" style="padding:24px;">
+  <div class="flex items-start gap-4 mb-4">
+   <div class="w-14 h-14 rounded-[5px] bg-orange-500/15 border border-orange-500/20 flex items-center justify-center shrink-0 group-hover:bg-orange-500/25 transition-all">
+    <span class="material-symbols-outlined text-orange-400 text-2xl">rocket_launch</span>
    </div>
-   <div class="bg-emerald-500/10 rounded p-1.5 border border-emerald-500/20"><p class="text-[5px] text-gray-400">Valor Estimado</p><p class="text-[7px] text-emerald-400 font-black">R$ 15.000,00</p></div>
-  </div>
- </div>
- <div class="absolute inset-0 flex items-center justify-center flex-col text-center p-6">
- <span class="px-3 py-1 rounded-full bg-purple-500 text-white text-[10px] font-black uppercase tracking-widest mb-3">PASSO 2</span>
- <h2 class="text-3xl font-black text-white mb-2">Criando um Lead</h2>
- <p class="text-white/80 text-sm max-w-md">Adicione novos contatos em segundos.</p>
- </div>
- </div>
- <div class="p-6">
- <h3 class="text-lg font-black text-white mb-3">Passo a passo para criar</h3>
- <ol class="space-y-2 text-sm text-gray-300 list-decimal list-inside mb-4">
- <li>No menu lateral, clique em <strong class="text-white">CRM</strong></li>
- <li>No canto superior direito, clique no botão <strong class="text-orange-400">"Novo Lead"</strong> (ícone de foguete)</li>
- <li>Preencha o <strong class="text-white">Nome do Lead</strong> (ex: "Renderização Prédio Centro")</li>
- <li>Adicione informações de <strong class="text-white">Contato</strong> (cliente principal, com estado e cidade)</li>
- <li>Defina <strong class="text-white">Tipologia</strong> e especificações técnicas (software, formato, complexidade)</li>
- <li>Estime o <strong class="text-white">valor</strong> e defina o responsável interno</li>
- <li>Clique em <strong class="text-white">Salvar</strong></li>
- </ol>
- <div class="flex items-center gap-2 mt-4 p-3 rounded-[5px] bg-cyan-500/10 border border-cyan-500/20">
- <span class="material-symbols-outlined text-cyan-400">campaign</span>
- <p class="text-[11px] text-cyan-200"><strong>Sempre:</strong> Adicione pelo menos 1 contato principal + 1 estado (UF) + cidade.</p>
- </div>
- </div>
- </section>
-
- <!-- STEP 3 -->
- <section id="step-3" class="kcard rounded-[5px] border-white/5 overflow-hidden">
- <div class="aspect-video bg-gradient-to-br from-cyan-500/20 to-blue-500/10 flex items-center justify-center relative overflow-hidden p-6">
- <!-- MOCKUP: Campos do Card -->
- <div class="grid grid-cols-2 gap-2 w-full max-w-md opacity-60">
-  <div class="bg-black/50 rounded-lg p-2 border border-white/10"><p class="text-[6px] text-orange-400 font-black uppercase">Nome do Lead</p><p class="text-[7px] text-white">Título do projeto</p></div>
-  <div class="bg-black/50 rounded-lg p-2 border border-white/10"><p class="text-[6px] text-orange-400 font-black uppercase">Tipologia</p><p class="text-[7px] text-white">Renderização / Animação</p></div>
-  <div class="bg-black/50 rounded-lg p-2 border border-white/10"><p class="text-[6px] text-orange-400 font-black uppercase">Software Alvo</p><p class="text-[7px] text-white">D5 / Corona / V-Ray</p></div>
-  <div class="bg-black/50 rounded-lg p-2 border border-white/10"><p class="text-[6px] text-orange-400 font-black uppercase">Complexidade</p><p class="text-[7px] text-white">Baixa / Média / Alta</p></div>
-  <div class="bg-black/50 rounded-lg p-2 border border-emerald-500/20"><p class="text-[6px] text-emerald-400 font-black uppercase">Valor Estimado</p><p class="text-[7px] text-white">R$ (reais)</p></div>
-  <div class="bg-black/50 rounded-lg p-2 border border-white/10"><p class="text-[6px] text-orange-400 font-black uppercase">Prazo / Deadline</p><p class="text-[7px] text-white">Dias ou Data final</p></div>
-  <div class="bg-black/50 rounded-lg p-2 border border-white/10"><p class="text-[6px] text-orange-400 font-black uppercase">Estado / Cidade</p><p class="text-[7px] text-white">API IBGE</p></div>
-  <div class="bg-black/50 rounded-lg p-2 border border-cyan-500/20"><p class="text-[6px] text-cyan-400 font-black uppercase">Contato Principal</p><p class="text-[7px] text-white">Nome + Email + Tel</p></div>
- </div>
- <div class="absolute inset-0 flex items-center justify-center flex-col text-center p-6">
- <span class="px-3 py-1 rounded-full bg-cyan-500 text-white text-[10px] font-black uppercase tracking-widest mb-3">PASSO 3</span>
- <h2 class="text-3xl font-black text-white mb-2">Campos do Lead</h2>
- <p class="text-white/80 text-sm max-w-md">O que cada campo faz e como preenchê-lo.</p>
- </div>
- </div>
- <div class="p-6">
- <h3 class="text-lg font-black text-white mb-3">Campos explicados</h3>
- <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
- <div class="p-3 rounded-[5px] bg-white/[0.02] border border-white/5">
- <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest">Nome do Lead</p>
- <p class="text-[10px] text-gray-300">Título curto do projeto. Aparece no card.</p>
- </div>
- <div class="p-3 rounded-[5px] bg-white/[0.02] border border-white/5">
- <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest">Tipologia</p>
- <p class="text-[10px] text-gray-300">Tipo de projeto (Renderização, Animação, etc.)</p>
- </div>
- <div class="p-3 rounded-[5px] bg-white/[0.02] border border-white/5">
- <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest">Software Alvo</p>
- <p class="text-[10px] text-gray-300">D5 Render, Corona, V-Ray, Lumion, Blender.</p>
- </div>
- <div class="p-3 rounded-[5px] bg-white/[0.02] border border-white/5">
- <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest">Complexidade</p>
- <p class="text-[10px] text-gray-300">Baixa, Média, Alta ou Ultra.</p>
- </div>
- <div class="p-3 rounded-[5px] bg-white/[0.02] border border-white/5">
- <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest">Valor Estimado</p>
- <p class="text-[10px] text-gray-300">Em Reais. Define o VGV do pipeline.</p>
- </div>
- <div class="p-3 rounded-[5px] bg-white/[0.02] border border-white/5">
- <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest">Prazo / Deadline</p>
- <p class="text-[10px] text-gray-300">Em dias ou data final.</p>
- </div>
- <div class="p-3 rounded-[5px] bg-white/[0.02] border border-white/5">
- <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest">Estado (UF) / Cidade</p>
- <p class="text-[10px] text-gray-300">Lista puxada da API do IBGE.</p>
- </div>
- <div class="p-3 rounded-[5px] bg-white/[0.02] border border-white/5">
- <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest">Contato Principal</p>
- <p class="text-[10px] text-gray-300">Quem paga ou decide. Pode puxar de "Contatos" do sistema.</p>
- </div>
- </div>
- </div>
- </section>
-
- <!-- STEP 4 -->
- <section id="step-4" class="kcard rounded-[5px] border-white/5 overflow-hidden">
- <div class="aspect-video bg-gradient-to-br from-emerald-500/20 to-teal-500/10 flex items-center justify-center relative overflow-hidden p-4">
- <!-- MOCKUP: Drag & Drop Kanban -->
- <div class="flex gap-2 w-full max-w-lg opacity-60">
-  <div class="flex-1 bg-black/50 rounded-lg p-2 border border-blue-500/30">
-   <p class="text-[6px] font-black text-blue-400 uppercase mb-1">Novo Lead</p>
-   <div class="bg-white/5 rounded p-1 mb-1 border border-white/10"><p class="text-[5px] text-white">Card A</p></div>
-   <div class="bg-white/5 rounded p-1 border border-orange-500/40"><p class="text-[5px] text-orange-300">→ Arrastar</p></div>
-  </div>
-  <div class="flex items-center text-gray-500"><span class="material-symbols-outlined text-lg">arrow_forward</span></div>
-  <div class="flex-1 bg-black/50 rounded-lg p-2 border border-purple-500/30">
-   <p class="text-[6px] font-black text-purple-400 uppercase mb-1">Em Contato</p>
-   <div class="bg-white/5 rounded p-1 border border-white/10"><p class="text-[5px] text-white">Card B</p></div>
-  </div>
-  <div class="flex items-center text-gray-500"><span class="material-symbols-outlined text-lg">arrow_forward</span></div>
-  <div class="flex-1 bg-black/50 rounded-lg p-2 border border-emerald-500/30">
-   <p class="text-[6px] font-black text-emerald-400 uppercase mb-1">Fechamento</p>
-   <div class="bg-emerald-500/10 rounded p-1 border border-emerald-500/20"><p class="text-[5px] text-emerald-300">Card C ✓</p></div>
-  </div>
- </div>
- <div class="absolute inset-0 flex items-center justify-center flex-col text-center p-6">
- <span class="px-3 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest mb-3">PASSO 4</span>
- <h2 class="text-3xl font-black text-white mb-2">Kanban</h2>
- <p class="text-white/80 text-sm max-w-md">Organize leads em colunas visuais.</p>
- </div>
- </div>
- <div class="p-6">
- <h3 class="text-lg font-black text-white mb-3">Entendendo o Kanban</h3>
- <p class="text-gray-300 text-sm leading-relaxed mb-3">
- O <strong class="text-white">Kanban</strong> é a visualização principal do CRM. Cada coluna representa uma etapa do funil de vendas. Você pode arrastar cards entre colunas para atualizar o status.
- </p>
- <ul class="text-sm text-gray-300 space-y-2 mb-4">
- <li><strong class="text-orange-400">Novo Lead:</strong> acabou de chegar. Aguardando primeiro contato.</li>
- <li><strong class="text-orange-400">Em Contato:</strong> você está conversando com o cliente.</li>
- <li><strong class="text-orange-400">Em Negociação:</strong> proposta enviada, negociação ativa.</li>
- <li><strong class="text-orange-400">Orçamento Enviado:</strong> proposta comercial entregue.</li>
- <li><strong class="text-orange-400">Aguardando Fechamento:</strong> cliente decidiu, aguardando contrato/assinatura.</li>
- </ul>
- <div class="flex items-center gap-2 mt-4 p-3 rounded-[5px] bg-emerald-500/10 border border-emerald-500/20">
- <span class="material-symbols-outlined text-emerald-400">swipe</span>
- <p class="text-[11px] text-emerald-200"><strong>Atalho:</strong> Arraste o card de uma coluna para outra para mudar o status rapidamente.</p>
- </div>
- </div>
- </section>
-
- <!-- STEP 5 -->
- <section id="step-5" class="kcard rounded-[5px] border-white/5 overflow-hidden">
- <div class="aspect-video bg-gradient-to-br from-yellow-500/20 to-orange-500/10 flex items-center justify-center relative overflow-hidden p-4">
- <!-- MOCKUP: Modal de Edição com Abas -->
- <div class="w-full max-w-md bg-black/60 rounded-[5px] border border-white/10 opacity-60 overflow-hidden">
-  <div class="p-2 border-b border-white/10 flex items-center gap-2">
-   <div class="w-5 h-5 rounded bg-orange-500/20 flex items-center justify-center"><span class="material-symbols-outlined text-orange-400 text-[8px]">image</span></div>
-   <p class="text-[7px] font-black text-white">Residencial Aurora</p>
-   <span class="text-[5px] bg-orange-500/20 text-orange-400 px-1 rounded">Em Negociação</span>
-  </div>
-  <div class="flex gap-1 px-2 py-1 border-b border-white/5 bg-black/30">
-   <span class="text-[5px] font-black px-1.5 py-0.5 rounded bg-orange-500 text-white">Perfil</span>
-   <span class="text-[5px] font-black px-1.5 py-0.5 rounded text-gray-500">Produtividade</span>
-   <span class="text-[5px] font-black px-1.5 py-0.5 rounded text-gray-500">Tarefas</span>
-   <span class="text-[5px] font-black px-1.5 py-0.5 rounded text-gray-500">Chat</span>
-   <span class="text-[5px] font-black px-1.5 py-0.5 rounded text-gray-500">Histórico</span>
-  </div>
-  <div class="p-2 space-y-1">
-   <div class="bg-white/5 rounded p-1 border border-white/10"><p class="text-[5px] text-gray-400">Nome</p></div>
-   <div class="bg-white/5 rounded p-1 border border-white/10"><p class="text-[5px] text-gray-400">Contato</p></div>
-   <div class="bg-emerald-500/10 rounded p-1 border border-emerald-500/20"><p class="text-[5px] text-emerald-400">Valor: R$ 15.000</p></div>
-  </div>
- </div>
- <div class="absolute inset-0 flex items-center justify-center flex-col text-center p-6">
- <span class="px-3 py-1 rounded-full bg-yellow-500 text-white text-[10px] font-black uppercase tracking-widest mb-3">PASSO 5</span>
- <h2 class="text-3xl font-black text-white mb-2">Editar Lead</h2>
- <p class="text-white/80 text-sm max-w-md">Atualize informações a qualquer momento.</p>
- </div>
- </div>
- <div class="p-6">
- <h3 class="text-lg font-black text-white mb-3">Como editar</h3>
- <p class="text-gray-300 text-sm leading-relaxed mb-3">
- Para editar um lead, basta <strong class="text-white">clicar no card</strong> no Kanban. Um modal se abrirá com todas as informações detalhadas, organizado em abas:
- </p>
- <ul class="text-sm text-gray-300 space-y-2 mb-4">
- <li><strong class="text-orange-400">Perfil:</strong> Dados básicos, contato, especificações ArchViz.</li>
- <li><strong class="text-orange-400">Financeiro:</strong> Valor, parcelamento, formas de pagamento.</li>
- <li><strong class="text-orange-400">Entregáveis:</strong> Checklist completo de briefing técnico.</li>
- <li><strong class="text-orange-400">Tarefas:</strong> Lista de tarefas internas deste lead.</li>
- <li><strong class="text-orange-400">Chat:</strong> Conversa privada com colegas sobre este lead.</li>
- <li><strong class="text-orange-400">Histórico:</strong> Linha do tempo de tudo que aconteceu.</li>
- </ul>
- <div class="flex items-center gap-2 mt-4 p-3 rounded-[5px] bg-yellow-500/10 border border-yellow-500/20">
- <span class="material-symbols-outlined text-yellow-400">edit_note</span>
- <p class="text-[11px] text-yellow-200"><strong>Editar Vários:</strong> Use o botão no topo para editar até 50 leads em massa.</p>
- </div>
- </div>
- </section>
-
- <!-- STEP 6 -->
- <section id="step-6" class="kcard rounded-[5px] border-white/5 overflow-hidden">
- <div class="aspect-video bg-gradient-to-br from-indigo-500/20 to-purple-500/10 flex items-center justify-center relative overflow-hidden p-4">
- <!-- MOCKUP: Conversão CRM → Projeto -->
- <div class="flex items-center gap-3 w-full max-w-md opacity-60">
-  <div class="flex-1 bg-black/50 rounded-[5px] p-2 border border-orange-500/30">
-   <p class="text-[6px] font-black text-orange-400 uppercase mb-1">CRM — Lead</p>
-   <div class="bg-white/5 rounded p-1.5 border border-white/10">
-    <p class="text-[6px] text-white font-bold">Residencial Aurora</p>
-    <p class="text-[5px] text-gray-400">R$ 45.000 | Alta</p>
+   <div class="flex-1">
+    <h3 class="text-sm font-black text-white mb-1">CRM — Vendas</h3>
+    <p class="text-[11px] text-gray-400 leading-relaxed">Gerencie leads, pipeline e conversões. Do primeiro contato ao fechamento.</p>
    </div>
   </div>
-  <div class="flex flex-col items-center gap-1">
-   <span class="material-symbols-outlined text-indigo-400 text-lg">arrow_forward</span>
-   <span class="text-[5px] font-black text-indigo-300 uppercase">Converter</span>
+  <div class="flex items-center justify-between mb-2">
+   <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">7 lições</span>
+   <span class="text-[9px] font-black text-orange-400" id="progress-crm-label">0%</span>
   </div>
-  <div class="flex-1 bg-black/50 rounded-[5px] p-2 border border-indigo-500/30">
-   <p class="text-[6px] font-black text-indigo-400 uppercase mb-1">Projetos</p>
-   <div class="bg-indigo-500/10 rounded p-1.5 border border-indigo-500/20">
-    <p class="text-[6px] text-white font-bold">Residencial Aurora</p>
-    <p class="text-[5px] text-indigo-300">Convertido ✓</p>
+  <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+   <div id="progress-crm" class="h-full rounded-full bg-orange-500 transition-all" style="width:0%"></div>
+  </div>
+  <div class="flex items-center gap-2 mt-4">
+   <span class="px-2 py-0.5 rounded bg-orange-500/10 text-[8px] font-black text-orange-400 uppercase">Fundamental</span>
+   <span class="px-2 py-0.5 rounded bg-white/5 text-[8px] font-bold text-gray-500 uppercase">~15 min</span>
+  </div>
+ </div>
+
+ <!-- Módulo 2: Projetos -->
+ <div class="kcard group hover:border-purple-500/30 transition-all cursor-pointer" onclick="window.location='/admin/aprendizado/projetos'" style="padding:24px;">
+  <div class="flex items-start gap-4 mb-4">
+   <div class="w-14 h-14 rounded-[5px] bg-purple-500/15 border border-purple-500/20 flex items-center justify-center shrink-0 group-hover:bg-purple-500/25 transition-all">
+    <span class="material-symbols-outlined text-purple-400 text-2xl">view_in_ar</span>
+   </div>
+   <div class="flex-1">
+    <h3 class="text-sm font-black text-white mb-1">Projetos — Produção</h3>
+    <p class="text-[11px] text-gray-400 leading-relaxed">Kanban de produção, tarefas, prazos e entregáveis. Controle total da execução.</p>
    </div>
   </div>
+  <div class="flex items-center justify-between mb-2">
+   <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">6 lições</span>
+   <span class="text-[9px] font-black text-purple-400" id="progress-projetos-label">0%</span>
+  </div>
+  <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+   <div id="progress-projetos" class="h-full rounded-full bg-purple-500 transition-all" style="width:0%"></div>
+  </div>
+  <div class="flex items-center gap-2 mt-4">
+   <span class="px-2 py-0.5 rounded bg-purple-500/10 text-[8px] font-black text-purple-400 uppercase">Fundamental</span>
+   <span class="px-2 py-0.5 rounded bg-white/5 text-[8px] font-bold text-gray-500 uppercase">~12 min</span>
+  </div>
  </div>
- <div class="absolute inset-0 flex items-center justify-center flex-col text-center p-6">
- <span class="px-3 py-1 rounded-full bg-indigo-500 text-white text-[10px] font-black uppercase tracking-widest mb-3">PASSO 6</span>
- <h2 class="text-3xl font-black text-white mb-2">Converter para Modelagem</h2>
- <p class="text-white/80 text-sm max-w-md">Vire a chave: do CRM para a produção 3D.</p>
- </div>
- </div>
- <div class="p-6">
- <h3 class="text-lg font-black text-white mb-3">Convertendo o Lead</h3>
- <p class="text-gray-300 text-sm leading-relaxed mb-3">
- Quando o lead é fechado (cliente aceitou a proposta), você pode <strong class="text-white">convertê-lo em um card de Modelagem 3D</strong>. Isso copia todos os dados para a página de Modelagem e marca o lead como ganho.
- </p>
- <ol class="space-y-2 text-sm text-gray-300 list-decimal list-inside mb-4">
- <li>No card do lead, clique no botão <strong class="text-indigo-400">view_in_ar</strong> (ícone indigo)</li>
- <li>Confirme os dados no modal de revisão</li>
- <li>Clique em <strong class="text-white">Confirmar Conversão</strong></li>
- <li>Você será redirecionado para a página <strong class="text-white">Modelagem</strong> com o novo card</li>
- </ol>
- <div class="flex items-center gap-2 mt-4 p-3 rounded-[5px] bg-indigo-500/10 border border-indigo-500/20">
- <span class="material-symbols-outlined text-indigo-400">history_edu</span>
- <p class="text-[11px] text-indigo-200"><strong>Vínculo:</strong> O histórico do card de Modelagem sempre terá os dados originais do CRM.</p>
- </div>
- </div>
- </section>
 
- <!-- STEP 7 -->
- <section id="step-7" class="kcard rounded-[5px] border-white/5 overflow-hidden">
- <div class="aspect-video bg-gradient-to-br from-pink-500/20 to-rose-500/10 flex items-center justify-center relative overflow-hidden p-4">
- <!-- MOCKUP: Dashboard completo -->
- <div class="w-full max-w-md grid grid-cols-3 gap-2 opacity-60">
-  <div class="bg-black/50 rounded-lg p-2 border border-white/10 text-center">
-   <span class="material-symbols-outlined text-orange-500 text-sm">hub</span>
-   <p class="text-[6px] font-black text-white">CRM</p>
+ <!-- Módulo 3: Financeiro -->
+ <div class="kcard group hover:border-emerald-500/30 transition-all cursor-pointer" onclick="window.location='/admin/aprendizado/financeiro'" style="padding:24px;">
+  <div class="flex items-start gap-4 mb-4">
+   <div class="w-14 h-14 rounded-[5px] bg-emerald-500/15 border border-emerald-500/20 flex items-center justify-center shrink-0 group-hover:bg-emerald-500/25 transition-all">
+    <span class="material-symbols-outlined text-emerald-400 text-2xl">account_balance</span>
+   </div>
+   <div class="flex-1">
+    <h3 class="text-sm font-black text-white mb-1">Financeiro — ERP</h3>
+    <p class="text-[11px] text-gray-400 leading-relaxed">Contas a receber, a pagar, DRE e fluxo de caixa. Controle financeiro completo.</p>
+   </div>
   </div>
-  <div class="bg-black/50 rounded-lg p-2 border border-indigo-500/20 text-center">
-   <span class="material-symbols-outlined text-indigo-400 text-sm">view_in_ar</span>
-   <p class="text-[6px] font-black text-white">Projetos</p>
+  <div class="flex items-center justify-between mb-2">
+   <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">5 lições</span>
+   <span class="text-[9px] font-black text-emerald-400" id="progress-financeiro-label">0%</span>
   </div>
-  <div class="bg-black/50 rounded-lg p-2 border border-emerald-500/20 text-center">
-   <span class="material-symbols-outlined text-emerald-400 text-sm">payments</span>
-   <p class="text-[6px] font-black text-white">Financeiro</p>
+  <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+   <div id="progress-financeiro" class="h-full rounded-full bg-emerald-500 transition-all" style="width:0%"></div>
   </div>
-  <div class="bg-black/50 rounded-lg p-2 border border-cyan-500/20 text-center">
-   <span class="material-symbols-outlined text-cyan-400 text-sm">contacts</span>
-   <p class="text-[6px] font-black text-white">Contatos</p>
-  </div>
-  <div class="bg-black/50 rounded-lg p-2 border border-purple-500/20 text-center">
-   <span class="material-symbols-outlined text-purple-400 text-sm">calendar_month</span>
-   <p class="text-[6px] font-black text-white">Agenda</p>
-  </div>
-  <div class="bg-black/50 rounded-lg p-2 border border-amber-500/20 text-center">
-   <span class="material-symbols-outlined text-amber-400 text-sm">task_alt</span>
-   <p class="text-[6px] font-black text-white">Tarefas</p>
+  <div class="flex items-center gap-2 mt-4">
+   <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-[8px] font-black text-emerald-400 uppercase">Intermediário</span>
+   <span class="px-2 py-0.5 rounded bg-white/5 text-[8px] font-bold text-gray-500 uppercase">~10 min</span>
   </div>
  </div>
- <div class="absolute inset-0 flex items-center justify-center flex-col text-center p-6">
- <span class="px-3 py-1 rounded-full bg-pink-500 text-white text-[10px] font-black uppercase tracking-widest mb-3">PASSO 7</span>
- <h2 class="text-3xl font-black text-white mb-2">Próximos Passos</h2>
- <p class="text-white/80 text-sm max-w-md">Continue evoluindo no Malha3D.</p>
- </div>
- </div>
- <div class="p-6">
- <h3 class="text-lg font-black text-white mb-3">Você completou o tutorial!</h3>
- <p class="text-gray-300 text-sm leading-relaxed mb-3">
- Agora você já sabe usar o CRM do Malha3D. Para ir além, explore:
- </p>
- <ul class="text-sm text-gray-300 space-y-2 mb-4">
- <li><strong class="text-orange-400">Dashboard:</strong> KPIs e notificações em tempo real.</li>
- <li><strong class="text-orange-400">Modelagem:</strong> Acompanhe a produção 3D dos cards convertidos.</li>
- <li><strong class="text-orange-400">Financeiro:</strong> Controle de receitas, despesas e comissões.</li>
- <li><strong class="text-orange-400">Contatos:</strong> Base de clientes/stakeholders.</li>
- <li><strong class="text-orange-400">Calendário:</strong> Agendamentos e prazos.</li>
- </ul>
- <div class="flex items-center gap-2 mt-4 p-3 rounded-[5px] bg-pink-500/10 border border-pink-500/20">
- <span class="material-symbols-outlined text-pink-400">workspace_premium</span>
- <p class="text-[11px] text-pink-200"><strong>Parabéns!</strong> Você agora domina o CRM. Em caso de dúvidas, use o chat interno da equipe.</p>
- </div>
- </div>
- </section>
 
+ <!-- Módulo 4: Contatos -->
+ <div class="kcard group hover:border-sky-500/30 transition-all cursor-pointer" onclick="window.location='/admin/aprendizado/contatos'" style="padding:24px;">
+  <div class="flex items-start gap-4 mb-4">
+   <div class="w-14 h-14 rounded-[5px] bg-sky-500/15 border border-sky-500/20 flex items-center justify-center shrink-0 group-hover:bg-sky-500/25 transition-all">
+    <span class="material-symbols-outlined text-sky-400 text-2xl">contacts</span>
+   </div>
+   <div class="flex-1">
+    <h3 class="text-sm font-black text-white mb-1">Contatos — CRM Base</h3>
+    <p class="text-[11px] text-gray-400 leading-relaxed">Cadastro, categorias, filtros e integração com WhatsApp.</p>
+   </div>
+  </div>
+  <div class="flex items-center justify-between mb-2">
+   <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">3 lições</span>
+   <span class="text-[9px] font-black text-sky-400" id="progress-contatos-label">0%</span>
+  </div>
+  <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+   <div id="progress-contatos" class="h-full rounded-full bg-sky-500 transition-all" style="width:0%"></div>
+  </div>
+  <div class="flex items-center gap-2 mt-4">
+   <span class="px-2 py-0.5 rounded bg-sky-500/10 text-[8px] font-black text-sky-400 uppercase">Básico</span>
+   <span class="px-2 py-0.5 rounded bg-white/5 text-[8px] font-bold text-gray-500 uppercase">~5 min</span>
+  </div>
+ </div>
+
+ <!-- Módulo 5: Configurações -->
+ <div class="kcard group hover:border-gray-400/30 transition-all cursor-pointer" onclick="window.location='/admin/aprendizado/config'" style="padding:24px;">
+  <div class="flex items-start gap-4 mb-4">
+   <div class="w-14 h-14 rounded-[5px] bg-white/10 border border-white/15 flex items-center justify-center shrink-0 group-hover:bg-white/15 transition-all">
+    <span class="material-symbols-outlined text-gray-300 text-2xl">settings</span>
+   </div>
+   <div class="flex-1">
+    <h3 class="text-sm font-black text-white mb-1">Configurações</h3>
+    <p class="text-[11px] text-gray-400 leading-relaxed">Personalização, usuários, permissões e integrações.</p>
+   </div>
+  </div>
+  <div class="flex items-center justify-between mb-2">
+   <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">3 lições</span>
+   <span class="text-[9px] font-black text-gray-400" id="progress-config-label">0%</span>
+  </div>
+  <div class="h-1.5 rounded-full bg-white/5 overflow-hidden">
+   <div id="progress-config" class="h-full rounded-full bg-gray-400 transition-all" style="width:0%"></div>
+  </div>
+  <div class="flex items-center gap-2 mt-4">
+   <span class="px-2 py-0.5 rounded bg-white/10 text-[8px] font-black text-gray-400 uppercase">Básico</span>
+   <span class="px-2 py-0.5 rounded bg-white/5 text-[8px] font-bold text-gray-500 uppercase">~5 min</span>
+  </div>
+ </div>
+
+ <!-- Card Bonus: Dicas Rápidas -->
+ <div class="kcard group hover:border-amber-500/30 transition-all cursor-pointer" onclick="window.location='/admin/aprendizado/dicas'" style="padding:24px; border:1px dashed rgba(251,191,36,0.3);">
+  <div class="flex items-start gap-4 mb-4">
+   <div class="w-14 h-14 rounded-[5px] bg-amber-500/15 border border-amber-500/20 flex items-center justify-center shrink-0 group-hover:bg-amber-500/25 transition-all">
+    <span class="material-symbols-outlined text-amber-400 text-2xl">tips_and_updates</span>
+   </div>
+   <div class="flex-1">
+    <h3 class="text-sm font-black text-white mb-1">Dicas & Atalhos</h3>
+    <p class="text-[11px] text-gray-400 leading-relaxed">Atalhos de teclado, truques de produtividade e easter eggs do sistema.</p>
+   </div>
+  </div>
+  <div class="flex items-center gap-2 mt-4">
+   <span class="px-2 py-0.5 rounded bg-amber-500/10 text-[8px] font-black text-amber-400 uppercase">Bônus</span>
+   <span class="px-2 py-0.5 rounded bg-white/5 text-[8px] font-bold text-gray-500 uppercase">~3 min</span>
+  </div>
+ </div>
+
+</div>
+
+<!-- Conquistas / Badges -->
+<div class="kcard p-5 mb-6" style="border:1px solid rgba(255,255,255,0.06);">
+ <div class="flex items-center justify-between mb-4">
+  <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+   <span class="material-symbols-outlined text-amber-400 text-sm">emoji_events</span> Conquistas
+  </h3>
+  <span class="text-[9px] text-gray-500" id="badgeCountLabel">0 de 5 desbloqueadas</span>
+ </div>
+ <div class="flex flex-wrap gap-3" id="badgesContainer">
+  <div class="flex flex-col items-center gap-1 badge-item" data-badge="crm">
+   <div class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center opacity-30" id="badge-crm">
+    <span class="material-symbols-outlined text-orange-400">rocket_launch</span>
+   </div>
+   <span class="text-[7px] font-bold text-gray-500 uppercase">Expert CRM</span>
+  </div>
+  <div class="flex flex-col items-center gap-1 badge-item" data-badge="projetos">
+   <div class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center opacity-30" id="badge-projetos">
+    <span class="material-symbols-outlined text-purple-400">view_in_ar</span>
+   </div>
+   <span class="text-[7px] font-bold text-gray-500 uppercase">Produtor</span>
+  </div>
+  <div class="flex flex-col items-center gap-1 badge-item" data-badge="financeiro">
+   <div class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center opacity-30" id="badge-financeiro">
+    <span class="material-symbols-outlined text-emerald-400">account_balance</span>
+   </div>
+   <span class="text-[7px] font-bold text-gray-500 uppercase">Financista</span>
+  </div>
+  <div class="flex flex-col items-center gap-1 badge-item" data-badge="contatos">
+   <div class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center opacity-30" id="badge-contatos">
+    <span class="material-symbols-outlined text-sky-400">contacts</span>
+   </div>
+   <span class="text-[7px] font-bold text-gray-500 uppercase">Networker</span>
+  </div>
+  <div class="flex flex-col items-center gap-1 badge-item" data-badge="config">
+   <div class="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center opacity-30" id="badge-config">
+    <span class="material-symbols-outlined text-gray-300">settings</span>
+   </div>
+   <span class="text-[7px] font-bold text-gray-500 uppercase">Configurador</span>
+  </div>
  </div>
 </div>
 
+<script>
+(function() {
+  const STORAGE_KEY = 'malha3d_learning_progress';
+  const modules = {
+    crm: { total: 7, color: 'orange' },
+    projetos: { total: 6, color: 'purple' },
+    financeiro: { total: 5, color: 'emerald' },
+    contatos: { total: 3, color: 'sky' },
+    config: { total: 3, color: 'gray' }
+  };
+
+  function getProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+  }
+
+  function renderProgress() {
+    const progress = getProgress();
+    let totalLessons = 0, completedLessons = 0;
+    let badgesUnlocked = 0;
+
+    Object.entries(modules).forEach(function([key, mod]) {
+      const completed = (progress[key] || []).length;
+      totalLessons += mod.total;
+      completedLessons += Math.min(completed, mod.total);
+      const pct = Math.round((Math.min(completed, mod.total) / mod.total) * 100);
+
+      var bar = document.getElementById('progress-' + key);
+      var label = document.getElementById('progress-' + key + '-label');
+      if (bar) bar.style.width = pct + '%';
+      if (label) label.textContent = pct + '%';
+
+      // Badge
+      var badge = document.getElementById('badge-' + key);
+      if (badge && pct >= 100) {
+        badge.style.opacity = '1';
+        badge.style.border = '2px solid';
+        badge.style.boxShadow = '0 0 12px rgba(249,115,22,0.3)';
+        badgesUnlocked++;
+      }
+    });
+
+    var globalPct = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+    var globalBar = document.getElementById('globalProgressBar');
+    var globalLabel = document.getElementById('globalProgressLabel');
+    if (globalBar) globalBar.style.width = globalPct + '%';
+    if (globalLabel) globalLabel.textContent = globalPct + '% concluído';
+
+    var badgeLabel = document.getElementById('badgeCountLabel');
+    if (badgeLabel) badgeLabel.textContent = badgesUnlocked + ' de 5 desbloqueadas';
+  }
+
+  renderProgress();
+})();
+</script>

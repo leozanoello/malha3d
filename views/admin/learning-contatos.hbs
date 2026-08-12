@@ -1,0 +1,268 @@
+<!-- Contatos Learning Module — 3 Interactive Lessons -->
+<div class="learning-module" data-module="contatos" data-total="3">
+
+ <!-- Header -->
+ <div class="mb-4 p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+  <div class="flex items-center gap-3">
+   <a href="/admin/aprendizado" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all">
+    <span class="material-symbols-outlined text-sm">arrow_back</span>
+   </a>
+   <div>
+    <h1 class="text-xl font-black text-white tracking-tight">Contatos — CRM Base</h1>
+    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">Cadastro, Categorias e Integração</p>
+   </div>
+  </div>
+  <div class="flex items-center gap-4">
+   <div class="text-right">
+    <p class="text-[9px] font-bold text-gray-500 uppercase mb-1">Progresso</p>
+    <div class="w-32 h-2 rounded-full bg-white/5 overflow-hidden">
+     <div id="progressBar" class="h-full bg-gradient-to-r from-sky-500 to-cyan-400 transition-all" style="width:0%"></div>
+    </div>
+   </div>
+   <span class="text-sm font-black text-sky-400" id="stepCounter">0/3</span>
+  </div>
+ </div>
+
+ <!-- Lesson Steps Container -->
+ <div id="lessonsContainer" class="space-y-3">
+
+  <!-- LESSON 1: Criando e Organizando -->
+  <section class="lesson-step" data-step="1">
+   <div class="kcard p-0 overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+     <div class="lg:col-span-3 p-6 space-y-4">
+      <h2 class="text-xl font-black text-white">Criando e Organizando Contatos</h2>
+      <p class="text-sm text-gray-300 leading-relaxed">
+       Seu banco de dados de clientes, leads e fornecedores fica centralizado aqui. Clique em "Novo Contato", preencha Nome, Email, Telefone, Empresa e Tipo (PF ou PJ). Cada contato pode ser vinculado a leads e projetos.
+      </p>
+      <ul class="text-sm text-gray-300 space-y-1.5">
+       <li>✓ <strong>Nome:</strong> Completo do contato</li>
+       <li>✓ <strong>Email:</strong> Para comunicação e notificações</li>
+       <li>✓ <strong>Telefone:</strong> Com WhatsApp integrado</li>
+       <li>✓ <strong>Empresa:</strong> Opcional, organiza em grupos</li>
+       <li>✓ <strong>Tipo:</strong> Pessoa Física (PF) ou Jurídica (PJ)</li>
+      </ul>
+      <div class="p-3 rounded bg-sky-500/10 border border-sky-500/20">
+       <p class="text-xs text-sky-200"><strong>💡 Dica:</strong> Adicione múltiplos emails e telefones — o sistema agrupa automaticamente contatos da mesma empresa.</p>
+      </div>
+     </div>
+     <div class="lg:col-span-2 bg-black/30 p-5 flex flex-col items-center justify-center border-l border-white/5 min-h-[300px]">
+      <div class="w-full text-center space-y-2">
+       <div class="text-[10px] font-black text-gray-500 uppercase mb-3">Campos do Contato</div>
+       <div class="space-y-1.5 text-left text-[11px]">
+        <div class="p-2 rounded bg-white/5 border border-white/10">
+         <p class="font-bold text-gray-300">Nome Completo</p>
+         <p class="text-gray-500 text-[10px]">João Silva Santos</p>
+        </div>
+        <div class="p-2 rounded bg-white/5 border border-white/10">
+         <p class="font-bold text-gray-300">Email</p>
+         <p class="text-gray-500 text-[10px]">joao@empresa.com</p>
+        </div>
+        <div class="p-2 rounded bg-white/5 border border-white/10">
+         <p class="font-bold text-gray-300">Telefone</p>
+         <p class="text-gray-500 text-[10px]">(11) 98765-4321</p>
+        </div>
+        <div class="p-2 rounded bg-white/5 border border-white/10">
+         <p class="font-bold text-gray-300">Empresa</p>
+         <p class="text-gray-500 text-[10px]">Empresa ABC Ltda</p>
+        </div>
+        <div class="p-2 rounded bg-white/5 border border-white/10">
+         <p class="font-bold text-gray-300">Tipo</p>
+         <p class="text-gray-500 text-[10px]">PF (Pessoa Física)</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+     <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" onchange="markComplete('contatos', 1)" class="w-4 h-4 rounded border-white/20 accent-sky-500">
+      <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+     </label>
+    </div>
+   </div>
+  </section>
+
+  <!-- LESSON 2: Categorias e Filtros -->
+  <section class="lesson-step hidden" data-step="2">
+   <div class="kcard p-0 overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+     <div class="lg:col-span-3 p-6 space-y-4">
+      <h2 class="text-xl font-black text-white">Categorias e Filtros</h2>
+      <p class="text-sm text-gray-300 leading-relaxed">
+       Organize seus contatos em 3 categorias: Cliente (já pagou), Lead (potencial) e Parceiro (fornecedor/colaborador). Use os filtros para listar apenas o que você precisa ver. Escolha entre visualização em Grid (cards), Lista (tabela) ou Pesquisa.
+      </p>
+      <ul class="text-sm text-gray-300 space-y-1.5">
+       <li>👥 <strong>Cliente:</strong> Quem já trabalhou com você</li>
+       <li>🎯 <strong>Lead:</strong> Prospects que você quer conquistar</li>
+       <li>🤝 <strong>Parceiro:</strong> Fornecedores e colaboradores</li>
+       <li>🔍 <strong>Pesquisa:</strong> Busca por nome, email ou telefone</li>
+      </ul>
+      <div class="p-3 rounded bg-sky-500/10 border border-sky-500/20">
+       <p class="text-xs text-sky-200"><strong>💡 Dica:</strong> Combine filtros (ex: "Clientes + São Paulo") para segmentar campanhas de marketing.</p>
+      </div>
+     </div>
+     <div class="lg:col-span-2 bg-black/30 p-5 flex flex-col items-center justify-center border-l border-white/5 min-h-[300px]">
+      <div class="w-full text-center space-y-3">
+       <div class="text-[10px] font-black text-gray-500 uppercase mb-2">3 Categorias</div>
+       <div class="flex flex-col gap-2">
+        <div class="px-3 py-2 rounded bg-emerald-500/20 border border-emerald-500/30 flex items-center gap-2 justify-center">
+         <span class="material-symbols-outlined text-sm text-emerald-400">person</span>
+         <span class="text-xs font-bold text-emerald-200">Cliente</span>
+        </div>
+        <div class="px-3 py-2 rounded bg-orange-500/20 border border-orange-500/30 flex items-center gap-2 justify-center">
+         <span class="material-symbols-outlined text-sm text-orange-400">trending_up</span>
+         <span class="text-xs font-bold text-orange-200">Lead</span>
+        </div>
+        <div class="px-3 py-2 rounded bg-blue-500/20 border border-blue-500/30 flex items-center gap-2 justify-center">
+         <span class="material-symbols-outlined text-sm text-blue-400">handshake</span>
+         <span class="text-xs font-bold text-blue-200">Parceiro</span>
+        </div>
+       </div>
+       <div class="text-[10px] font-black text-gray-500 uppercase mt-3">Modos de Visualização</div>
+       <div class="flex gap-1 justify-center">
+        <span class="px-2 py-1 rounded bg-white/10 border border-white/20 text-[9px] font-bold text-gray-300">Grid</span>
+        <span class="px-2 py-1 rounded bg-white/10 border border-white/20 text-[9px] font-bold text-gray-300">Lista</span>
+        <span class="px-2 py-1 rounded bg-white/10 border border-white/20 text-[9px] font-bold text-gray-300">Pesquisa</span>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+     <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" onchange="markComplete('contatos', 2)" class="w-4 h-4 rounded border-white/20 accent-sky-500">
+      <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+     </label>
+    </div>
+   </div>
+  </section>
+
+  <!-- LESSON 3: WhatsApp e CRM -->
+  <section class="lesson-step hidden" data-step="3">
+   <div class="kcard p-0 overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+     <div class="lg:col-span-3 p-6 space-y-4">
+      <h2 class="text-xl font-black text-white">WhatsApp e CRM</h2>
+      <p class="text-sm text-gray-300 leading-relaxed">
+       Clique no ícone de WhatsApp do contato para abrir uma conversa pré-formatada com uma mensagem de template. Você também pode vincular este contato a leads ou projetos específicos para rastrear interações e histórico.
+      </p>
+      <ul class="text-sm text-gray-300 space-y-1.5">
+       <li>📱 <strong>WhatsApp Direct:</strong> Clique, escreva, envie</li>
+       <li>📝 <strong>Templates:</strong> Mensagens pré-prontas por categoria</li>
+       <li>🔗 <strong>Vincular a Lead:</strong> Registre contato origem</li>
+       <li>📊 <strong>Histórico:</strong> Toda interação fica registrada</li>
+      </ul>
+      <div class="p-3 rounded bg-sky-500/10 border border-sky-500/20">
+       <p class="text-xs text-sky-200"><strong>💡 Dica:</strong> Use templates para respostas rápidas — economiza tempo em mensagens repetitivas.</p>
+      </div>
+     </div>
+     <div class="lg:col-span-2 bg-black/30 p-5 flex flex-col items-center justify-center border-l border-white/5 min-h-[300px]">
+      <div class="w-full text-center space-y-3">
+       <div class="text-[10px] font-black text-gray-500 uppercase mb-2">WhatsApp Integration</div>
+       <div class="space-y-2">
+        <button class="w-full px-3 py-2 rounded bg-green-500/20 border border-green-500/30 flex items-center justify-center gap-2">
+         <span class="material-symbols-outlined text-sm text-green-400">whatsapp</span>
+         <span class="text-xs font-bold text-green-200">Enviar Mensagem</span>
+        </button>
+        <div class="px-2 py-1.5 rounded bg-white/5 border border-white/10 text-left">
+         <p class="text-[9px] font-bold text-gray-300 mb-1">Template:</p>
+         <p class="text-[10px] text-gray-400">Olá! Gostaria de saber mais sobre nossos serviços...</p>
+        </div>
+       </div>
+       <div class="text-[10px] font-black text-gray-500 uppercase mt-3">Vincular a Projeto</div>
+       <div class="px-2 py-1.5 rounded bg-white/5 border border-white/10 flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm text-orange-400">link</span>
+        <span class="text-xs text-gray-300">Selecione um lead...</span>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+     <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" onchange="markComplete('contatos', 3)" class="w-4 h-4 rounded border-white/20 accent-sky-500">
+      <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+     </label>
+    </div>
+   </div>
+  </section>
+
+ </div>
+
+ <!-- Navigation Buttons -->
+ <div class="flex items-center justify-between gap-3 mt-6">
+  <button id="btnPrev" onclick="previousStep('contatos')" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs font-bold uppercase hover:bg-white/10 transition-all">
+   <span class="material-symbols-outlined text-sm align-middle mr-1">arrow_back</span> Anterior
+  </button>
+  <div class="flex items-center gap-2">
+   <button onclick="goToStep('contatos', 1)" class="w-3 h-3 rounded-full bg-sky-500 transition-all" data-step="1"></button>
+   <button onclick="goToStep('contatos', 2)" class="w-3 h-3 rounded-full bg-white/20 transition-all" data-step="2"></button>
+   <button onclick="goToStep('contatos', 3)" class="w-3 h-3 rounded-full bg-white/20 transition-all" data-step="3"></button>
+  </div>
+  <button id="btnNext" onclick="nextStep('contatos')" class="px-4 py-2 rounded-lg bg-sky-500 text-white text-xs font-bold uppercase hover:bg-sky-600 transition-all">
+   Próximo <span class="material-symbols-outlined text-sm align-middle ml-1">arrow_forward</span>
+  </button>
+ </div>
+
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'malha3d_learning_progress';
+  const MODULE = 'contatos';
+  const TOTAL_STEPS = 3;
+
+  function getProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+  }
+
+  function saveProgress(module, completedSteps) {
+    try {
+      const progress = getProgress();
+      progress[module] = completedSteps;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    } catch(e) { console.error('Save progress error:', e); }
+  }
+
+  function updateUI() {
+    const progress = getProgress();
+    const completed = (progress[MODULE] || []).length;
+    const percentage = Math.round((completed / TOTAL_STEPS) * 100);
+
+    const progressBar = document.getElementById('progressBar');
+    const stepCounter = document.getElementById('stepCounter');
+    if (progressBar) progressBar.style.width = percentage + '%';
+    if (stepCounter) stepCounter.textContent = completed + '/' + TOTAL_STEPS;
+  }
+
+  window.markComplete = function(module, step) {
+    const progress = getProgress();
+    if (!progress[module]) progress[module] = [];
+    if (!progress[module].includes(step)) {
+      progress[module].push(step);
+      saveProgress(module, progress[module]);
+      updateUI();
+    }
+  };
+
+  window.nextStep = function(module) {
+    const current = parseInt(document.querySelector('.lesson-step:not(.hidden)')?.getAttribute('data-step') || 0);
+    if (current < TOTAL_STEPS) goToStep(module, current + 1);
+  };
+
+  window.previousStep = function(module) {
+    const current = parseInt(document.querySelector('.lesson-step:not(.hidden)')?.getAttribute('data-step') || 0);
+    if (current > 1) goToStep(module, current - 1);
+  };
+
+  window.goToStep = function(module, step) {
+    document.querySelectorAll('.lesson-step').forEach(s => s.classList.add('hidden'));
+    document.querySelector(`.lesson-step[data-step="${step}"]`)?.classList.remove('hidden');
+    document.querySelectorAll('[data-step]').forEach(btn => {
+      btn.classList.toggle('bg-sky-500', btn.getAttribute('data-step') == step);
+      btn.classList.toggle('bg-white/20', btn.getAttribute('data-step') != step);
+    });
+  };
+
+  updateUI();
+})();
+</script>

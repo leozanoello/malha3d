@@ -1,0 +1,356 @@
+<!-- Financeiro Learning Module — 5 Interactive Lessons -->
+<div class="learning-module" data-module="financeiro" data-total="5">
+
+ <!-- Header -->
+ <div class="mb-4 p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+  <div class="flex items-center gap-3">
+   <a href="/admin/aprendizado" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all">
+    <span class="material-symbols-outlined text-sm">arrow_back</span>
+   </a>
+   <div>
+    <h1 class="text-xl font-black text-white tracking-tight">Financeiro — ERP</h1>
+    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">Contas, Fluxo de Caixa e Relatórios</p>
+   </div>
+  </div>
+  <div class="flex items-center gap-4">
+   <div class="text-right">
+    <p class="text-[9px] font-bold text-gray-500 uppercase mb-1">Progresso</p>
+    <div class="w-32 h-2 rounded-full bg-white/5 overflow-hidden">
+     <div id="progressBar" class="h-full bg-gradient-to-r from-emerald-500 to-green-400 transition-all" style="width:0%"></div>
+    </div>
+   </div>
+   <span class="text-sm font-black text-emerald-400" id="stepCounter">0/5</span>
+  </div>
+ </div>
+
+ <!-- Lesson Steps Container -->
+ <div id="lessonsContainer" class="space-y-3">
+
+  <!-- LESSON 1: Visão Geral -->
+  <section class="lesson-step" data-step="1">
+   <div class="kcard p-0 overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+     <div class="lg:col-span-3 p-6 space-y-4">
+      <h2 class="text-xl font-black text-white">Visão Geral do Financeiro</h2>
+      <p class="text-sm text-gray-300 leading-relaxed">
+       O módulo Financeiro centraliza toda a gestão de fluxo de caixa da sua empresa. Divide-se em 5 abas principais: Painel (resumo executivo), A Receber (receitas esperadas), A Pagar (despesas), DRE (demonstrativo de resultado) e Lucratividade (análise de rentabilidade por projeto).
+      </p>
+      <div class="p-3 rounded bg-emerald-500/10 border border-emerald-500/20">
+       <p class="text-xs text-emerald-200"><strong>💡 Dica:</strong> Use o Painel como seu primeiro acesso — ele mostra KPIs essenciais em tempo real.</p>
+      </div>
+     </div>
+     <div class="lg:col-span-2 bg-black/30 p-5 flex flex-col items-center justify-center border-l border-white/5 min-h-[280px]">
+      <div class="w-full space-y-2 text-center">
+       <div class="text-[10px] font-black text-gray-500 uppercase mb-3">5 Abas Principais</div>
+       <div class="flex flex-col gap-1.5">
+        <div class="px-3 py-2 rounded bg-emerald-500/15 border border-emerald-500/30">
+         <p class="text-xs font-bold text-emerald-200">📊 Painel</p>
+        </div>
+        <div class="px-3 py-2 rounded bg-blue-500/15 border border-blue-500/30">
+         <p class="text-xs font-bold text-blue-200">📥 A Receber</p>
+        </div>
+        <div class="px-3 py-2 rounded bg-red-500/15 border border-red-500/30">
+         <p class="text-xs font-bold text-red-200">📤 A Pagar</p>
+        </div>
+        <div class="px-3 py-2 rounded bg-purple-500/15 border border-purple-500/30">
+         <p class="text-xs font-bold text-purple-200">📈 DRE</p>
+        </div>
+        <div class="px-3 py-2 rounded bg-yellow-500/15 border border-yellow-500/30">
+         <p class="text-xs font-bold text-yellow-200">💰 Lucratividade</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+     <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" onchange="markComplete('financeiro', 1)" class="w-4 h-4 rounded border-white/20 accent-emerald-500">
+      <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+     </label>
+    </div>
+   </div>
+  </section>
+
+  <!-- LESSON 2: Contas a Receber -->
+  <section class="lesson-step hidden" data-step="2">
+   <div class="kcard p-0 overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+     <div class="lg:col-span-3 p-6 space-y-4">
+      <h2 class="text-xl font-black text-white">Contas a Receber</h2>
+      <p class="text-sm text-gray-300 leading-relaxed">
+       Registre todas as receitas esperadas de clientes. Para criar um lançamento: clique em "Nova Receita", informe o cliente, valor, data de vencimento e número de parcelas. O sistema calcula automaticamente o cronograma de pagamento.
+      </p>
+      <ul class="text-sm text-gray-300 space-y-1.5">
+       <li>✓ <strong>Cliente:</strong> Selecione entre seus contatos cadastrados</li>
+       <li>✓ <strong>Valor:</strong> Total da receita (em R$)</li>
+       <li>✓ <strong>Vencimento:</strong> Data esperada de recebimento</li>
+       <li>✓ <strong>Parcelas:</strong> Divida em várias datas se necessário</li>
+      </ul>
+      <div class="p-3 rounded bg-emerald-500/10 border border-emerald-500/20">
+       <p class="text-xs text-emerald-200"><strong>💡 Dica:</strong> Marque como "Recebido" quando o pagamento cair em sua conta para atualizar o fluxo de caixa.</p>
+      </div>
+     </div>
+     <div class="lg:col-span-2 bg-black/30 p-5 flex flex-col items-center justify-center border-l border-white/5 min-h-[300px]">
+      <div class="w-full text-center space-y-3">
+       <div class="text-[10px] font-black text-gray-500 uppercase mb-2">Formulário Simplificado</div>
+       <div class="space-y-1.5 text-left text-[11px]">
+        <div class="p-2 rounded bg-white/5 border border-white/10">
+         <p class="font-bold text-gray-300">Cliente</p>
+         <p class="text-gray-500">Selecione...</p>
+        </div>
+        <div class="p-2 rounded bg-white/5 border border-white/10">
+         <p class="font-bold text-gray-300">Valor</p>
+         <p class="text-gray-500">R$ 15.000,00</p>
+        </div>
+        <div class="p-2 rounded bg-white/5 border border-white/10">
+         <p class="font-bold text-gray-300">Vencimento</p>
+         <p class="text-gray-500">15/12/2026</p>
+        </div>
+        <div class="p-2 rounded bg-white/5 border border-white/10">
+         <p class="font-bold text-gray-300">Parcelas</p>
+         <p class="text-gray-500">3x de R$ 5.000</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+     <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" onchange="markComplete('financeiro', 2)" class="w-4 h-4 rounded border-white/20 accent-emerald-500">
+      <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+     </label>
+    </div>
+   </div>
+  </section>
+
+  <!-- LESSON 3: Contas a Pagar -->
+  <section class="lesson-step hidden" data-step="3">
+   <div class="kcard p-0 overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+     <div class="lg:col-span-3 p-6 space-y-4">
+      <h2 class="text-xl font-black text-white">Contas a Pagar</h2>
+      <p class="text-sm text-gray-300 leading-relaxed">
+       Controle todas as despesas futuras: fornecedores, salários, impostos, etc. Novo lançamento: clique em "Nova Despesa", descreva, selecione a categoria, informe valor e vencimento. A auto-categorização ajuda a classificar automaticamente.
+      </p>
+      <ul class="text-sm text-gray-300 space-y-1.5">
+       <li>✓ <strong>Descrição:</strong> O que é a despesa (ex: Folha de Pagamento)</li>
+       <li>✓ <strong>Categoria:</strong> Salários, Materiais, Energia, etc.</li>
+       <li>✓ <strong>Valor:</strong> Quanto será gasto</li>
+       <li>✓ <strong>Vencimento:</strong> Quando o pagamento vence</li>
+      </ul>
+      <div class="p-3 rounded bg-emerald-500/10 border border-emerald-500/20">
+       <p class="text-xs text-emerald-200"><strong>💡 Dica:</strong> Use a auto-categorização para economizar tempo — o sistema aprende suas despesas recorrentes.</p>
+      </div>
+     </div>
+     <div class="lg:col-span-2 bg-black/30 p-5 flex flex-col items-center justify-center border-l border-white/5 min-h-[300px]">
+      <div class="w-full text-center space-y-2">
+       <div class="text-[10px] font-black text-gray-500 uppercase mb-2">Categorias de Despesa</div>
+       <div class="flex flex-wrap gap-1">
+        <span class="px-2 py-1 rounded bg-red-500/20 border border-red-500/30 text-[10px] font-bold text-red-200">Salários</span>
+        <span class="px-2 py-1 rounded bg-orange-500/20 border border-orange-500/30 text-[10px] font-bold text-orange-200">Materiais</span>
+        <span class="px-2 py-1 rounded bg-yellow-500/20 border border-yellow-500/30 text-[10px] font-bold text-yellow-200">Energia</span>
+        <span class="px-2 py-1 rounded bg-blue-500/20 border border-blue-500/30 text-[10px] font-bold text-blue-200">Impostos</span>
+        <span class="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/30 text-[10px] font-bold text-purple-200">Serviços</span>
+        <span class="px-2 py-1 rounded bg-pink-500/20 border border-pink-500/30 text-[10px] font-bold text-pink-200">Aluguel</span>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+     <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" onchange="markComplete('financeiro', 3)" class="w-4 h-4 rounded border-white/20 accent-emerald-500">
+      <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+     </label>
+    </div>
+   </div>
+  </section>
+
+  <!-- LESSON 4: DRE (Demonstrativo) -->
+  <section class="lesson-step hidden" data-step="4">
+   <div class="kcard p-0 overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+     <div class="lg:col-span-3 p-6 space-y-4">
+      <h2 class="text-xl font-black text-white">DRE — Demonstrativo de Resultado</h2>
+      <p class="text-sm text-gray-300 leading-relaxed">
+       DRE (Demonstração de Resultado do Exercício) é um relatório que mostra Receitas, Despesas e Lucro. A fórmula é simples: Receitas — Despesas = Lucro. O Malha3D gera automaticamente pela seleção de período.
+      </p>
+      <div class="p-4 rounded-lg bg-white/5 border border-white/10 space-y-2">
+       <div class="flex justify-between text-xs">
+        <span class="text-gray-400">Receitas Brutas</span>
+        <span class="font-black text-emerald-400">R$ 50.000</span>
+       </div>
+       <div class="flex justify-between text-xs">
+        <span class="text-gray-400">Despesas</span>
+        <span class="font-black text-red-400">- R$ 20.000</span>
+       </div>
+       <div class="border-t border-white/10 pt-2 flex justify-between text-xs font-bold">
+        <span class="text-gray-300">Lucro Líquido</span>
+        <span class="text-emerald-400">R$ 30.000</span>
+       </div>
+      </div>
+      <div class="p-3 rounded bg-emerald-500/10 border border-emerald-500/20">
+       <p class="text-xs text-emerald-200"><strong>💡 Dica:</strong> Use a DRE mensal para acompanhar tendências — se o lucro cai, revise suas despesas ou aumente receitas.</p>
+      </div>
+     </div>
+     <div class="lg:col-span-2 bg-black/30 p-5 flex flex-col items-center justify-center border-l border-white/5 min-h-[280px]">
+      <div class="w-full text-center space-y-2">
+       <div class="text-[10px] font-black text-gray-500 uppercase mb-3">Estrutura Simplificada</div>
+       <div class="space-y-1">
+        <div class="px-2 py-2 rounded bg-emerald-500/20 border border-emerald-500/30">
+         <p class="text-xs font-bold text-emerald-200">Receita</p>
+         <p class="text-[10px] text-gray-400">Total ganho</p>
+        </div>
+        <div class="text-xs text-gray-500">−</div>
+        <div class="px-2 py-2 rounded bg-red-500/20 border border-red-500/30">
+         <p class="text-xs font-bold text-red-200">Despesa</p>
+         <p class="text-[10px] text-gray-400">Total gasto</p>
+        </div>
+        <div class="text-xs text-gray-500">=</div>
+        <div class="px-2 py-2 rounded bg-blue-500/20 border border-blue-500/30">
+         <p class="text-xs font-bold text-blue-200">Lucro</p>
+         <p class="text-[10px] text-gray-400">Resultado</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+     <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" onchange="markComplete('financeiro', 4)" class="w-4 h-4 rounded border-white/20 accent-emerald-500">
+      <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+     </label>
+    </div>
+   </div>
+  </section>
+
+  <!-- LESSON 5: Relatórios e Insights -->
+  <section class="lesson-step hidden" data-step="5">
+   <div class="kcard p-0 overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-0">
+     <div class="lg:col-span-3 p-6 space-y-4">
+      <h2 class="text-xl font-black text-white">Relatórios e Insights</h2>
+      <p class="text-sm text-gray-300 leading-relaxed">
+       Além do DRE, o Financeiro oferece: Fluxo de Caixa (previsão de saldo), Aging (contas vencidas), Lucratividade por Projeto (qual projeto lucra mais) e Gráficos Comparativos mês-a-mês.
+      </p>
+      <ul class="text-sm text-gray-300 space-y-1.5">
+       <li>📊 <strong>Fluxo de Caixa:</strong> Quando você terá dinheiro em conta</li>
+       <li>📅 <strong>Aging:</strong> Contas vencidas que precisam de cobrança</li>
+       <li>💼 <strong>Lucratividade:</strong> Qual projeto dá mais lucro</li>
+       <li>📈 <strong>Comparativos:</strong> Tendências mês-a-mês ou ano-a-ano</li>
+      </ul>
+      <div class="p-3 rounded bg-emerald-500/10 border border-emerald-500/20">
+       <p class="text-xs text-emerald-200"><strong>💡 Dica:</strong> Exporte relatórios em PDF para compartilhar com sócios ou contadores.</p>
+      </div>
+     </div>
+     <div class="lg:col-span-2 bg-black/30 p-5 flex flex-col items-center justify-center border-l border-white/5 min-h-[280px]">
+      <div class="w-full text-center space-y-3">
+       <div class="text-[10px] font-black text-gray-500 uppercase mb-2">Tipos de Gráficos</div>
+       <svg viewBox="0 0 200 140" class="w-full h-auto max-w-[180px]">
+        <!-- Simplified bar chart mockup -->
+        <rect x="30" y="100" width="12" height="25" fill="#10b981" opacity="0.7"/>
+        <rect x="50" y="70" width="12" height="55" fill="#10b981" opacity="0.8"/>
+        <rect x="70" y="40" width="12" height="85" fill="#10b981"/>
+        <rect x="90" y="60" width="12" height="65" fill="#10b981" opacity="0.8"/>
+        <rect x="110" y="80" width="12" height="45" fill="#10b981" opacity="0.7"/>
+        <!-- Axis -->
+        <line x1="25" y1="125" x2="135" y2="125" stroke="#6b7280" stroke-width="1"/>
+        <line x1="25" y1="30" x2="25" y2="125" stroke="#6b7280" stroke-width="1"/>
+        <!-- Labels -->
+        <text x="65" y="135" font-size="9" fill="#9ca3af" text-anchor="middle">Meses</text>
+        <text x="18" y="80" font-size="9" fill="#9ca3af" text-anchor="middle">R$</text>
+       </svg>
+       <p class="text-[10px] text-gray-500">Receita vs Despesa</p>
+      </div>
+     </div>
+    </div>
+    <div class="px-5 py-3 border-t border-white/5 flex items-center justify-between">
+     <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" onchange="markComplete('financeiro', 5)" class="w-4 h-4 rounded border-white/20 accent-emerald-500">
+      <span class="text-xs font-bold text-gray-400">Entendi esta etapa</span>
+     </label>
+    </div>
+   </div>
+  </section>
+
+ </div>
+
+ <!-- Navigation Buttons -->
+ <div class="flex items-center justify-between gap-3 mt-6">
+  <button id="btnPrev" onclick="previousStep('financeiro')" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-xs font-bold uppercase hover:bg-white/10 transition-all">
+   <span class="material-symbols-outlined text-sm align-middle mr-1">arrow_back</span> Anterior
+  </button>
+  <div class="flex items-center gap-2">
+   <button onclick="goToStep('financeiro', 1)" class="w-3 h-3 rounded-full bg-emerald-500 transition-all" data-step="1"></button>
+   <button onclick="goToStep('financeiro', 2)" class="w-3 h-3 rounded-full bg-white/20 transition-all" data-step="2"></button>
+   <button onclick="goToStep('financeiro', 3)" class="w-3 h-3 rounded-full bg-white/20 transition-all" data-step="3"></button>
+   <button onclick="goToStep('financeiro', 4)" class="w-3 h-3 rounded-full bg-white/20 transition-all" data-step="4"></button>
+   <button onclick="goToStep('financeiro', 5)" class="w-3 h-3 rounded-full bg-white/20 transition-all" data-step="5"></button>
+  </div>
+  <button id="btnNext" onclick="nextStep('financeiro')" class="px-4 py-2 rounded-lg bg-emerald-500 text-white text-xs font-bold uppercase hover:bg-emerald-600 transition-all">
+   Próximo <span class="material-symbols-outlined text-sm align-middle ml-1">arrow_forward</span>
+  </button>
+ </div>
+
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'malha3d_learning_progress';
+  const MODULE = 'financeiro';
+  const TOTAL_STEPS = 5;
+
+  function getProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+  }
+
+  function saveProgress(module, completedSteps) {
+    try {
+      const progress = getProgress();
+      progress[module] = completedSteps;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    } catch(e) { console.error('Save progress error:', e); }
+  }
+
+  function updateUI() {
+    const progress = getProgress();
+    const completed = (progress[MODULE] || []).length;
+    const percentage = Math.round((completed / TOTAL_STEPS) * 100);
+
+    const progressBar = document.getElementById('progressBar');
+    const stepCounter = document.getElementById('stepCounter');
+    if (progressBar) progressBar.style.width = percentage + '%';
+    if (stepCounter) stepCounter.textContent = completed + '/' + TOTAL_STEPS;
+  }
+
+  window.markComplete = function(module, step) {
+    const progress = getProgress();
+    if (!progress[module]) progress[module] = [];
+    if (!progress[module].includes(step)) {
+      progress[module].push(step);
+      saveProgress(module, progress[module]);
+      updateUI();
+    }
+  };
+
+  window.nextStep = function(module) {
+    const current = parseInt(document.querySelector('.lesson-step:not(.hidden)')?.getAttribute('data-step') || 0);
+    if (current < TOTAL_STEPS) goToStep(module, current + 1);
+  };
+
+  window.previousStep = function(module) {
+    const current = parseInt(document.querySelector('.lesson-step:not(.hidden)')?.getAttribute('data-step') || 0);
+    if (current > 1) goToStep(module, current - 1);
+  };
+
+  window.goToStep = function(module, step) {
+    document.querySelectorAll('.lesson-step').forEach(s => s.classList.add('hidden'));
+    document.querySelector(`.lesson-step[data-step="${step}"]`)?.classList.remove('hidden');
+    document.querySelectorAll('[data-step]').forEach(btn => {
+      btn.classList.toggle('bg-emerald-500', btn.getAttribute('data-step') == step);
+      btn.classList.toggle('bg-white/20', btn.getAttribute('data-step') != step);
+    });
+  };
+
+  updateUI();
+})();
+</script>
