@@ -446,8 +446,21 @@ const startServer = async () => {
     await sequelize.authenticate();
     const isConnected = true;
     if (isConnected) {
-      // Sync schema with alter: true to automatically add any missing columns
+      // Sync schema (creates tables if missing, does NOT alter existing columns)
       await sequelize.sync();
+
+      // Safe column migration for SQLite: add missing columns without alter
+      if (sequelize.getDialect() === 'sqlite') {
+        const safeAddColumn = async (table, column, type) => {
+          try {
+            await sequelize.query(`ALTER TABLE "${table}" ADD COLUMN "${column}" ${type};`);
+          } catch (e) {
+            // Column already exists — ignore
+          }
+        };
+        // Budget columns that may be missing
+        await safeAddColumn('budgets', 'prazo_dias', 'INTEGER');
+      }
 
       return server.listen(PORT, () => {
         console.log(`🚀 Malha3D Admin rodando em http://localhost:${PORT}`);
