@@ -1,0 +1,304 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     MALHA3D NOTES — Sistema de Notas estilo Obsidian
+     Layout: Sidebar (lista) + Editor (principal)
+     ═══════════════════════════════════════════════════════════════ -->
+
+<div class="flex h-[calc(100vh-60px)] overflow-hidden -m-3 sm:-m-6">
+
+ <!-- ══════════ SIDEBAR ESQUERDA (Notas) ══════════ -->
+ <aside class="w-64 shrink-0 flex flex-col overflow-hidden" style="background:#111; border-right:1px solid rgba(255,255,255,0.06);">
+
+  <!-- Header sidebar -->
+  <div class="p-3 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+   <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-amber-400 text-base">edit_note</span>
+    <span class="text-[10px] font-black text-white uppercase tracking-widest">Notas</span>
+   </div>
+   <button onclick="window.m3dNotes.create()" class="w-6 h-6 rounded bg-amber-500 hover:bg-amber-600 flex items-center justify-center text-white transition-colors" title="Nova Nota">
+    <span class="material-symbols-outlined text-[12px]">add</span>
+   </button>
+  </div>
+
+  <!-- Busca -->
+  <div class="p-2">
+   <div class="relative">
+    <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-gray-600 text-[11px] pointer-events-none">search</span>
+    <input type="text" id="notesSidebarSearch" placeholder="Buscar..." oninput="window.m3dNotes.renderList()" class="w-full pl-7 pr-2 py-1.5 text-[10px] text-white placeholder-gray-600 rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);">
+   </div>
+  </div>
+
+  <!-- Templates -->
+  <div class="px-2 pb-2">
+   <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest px-1 mb-1">Templates</p>
+   <div class="grid grid-cols-2 gap-1">
+    <button onclick="window.m3dNotes.fromTemplate('checklist')" class="flex items-center gap-1 px-2 py-1 rounded-[3px] text-[8px] font-bold text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+     <span class="material-symbols-outlined text-[10px] text-amber-400">checklist</span> Checklist
+    </button>
+    <button onclick="window.m3dNotes.fromTemplate('reuniao')" class="flex items-center gap-1 px-2 py-1 rounded-[3px] text-[8px] font-bold text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+     <span class="material-symbols-outlined text-[10px] text-purple-400">groups</span> Reunião
+    </button>
+    <button onclick="window.m3dNotes.fromTemplate('followup')" class="flex items-center gap-1 px-2 py-1 rounded-[3px] text-[8px] font-bold text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+     <span class="material-symbols-outlined text-[10px] text-emerald-400">call</span> Follow-up
+    </button>
+    <button onclick="window.m3dNotes.fromTemplate('producao')" class="flex items-center gap-1 px-2 py-1 rounded-[3px] text-[8px] font-bold text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+     <span class="material-symbols-outlined text-[10px] text-sky-400">view_in_ar</span> Produção
+    </button>
+   </div>
+  </div>
+
+  <!-- Filtros categorias -->
+  <div class="px-2 pb-2" style="border-bottom:1px solid rgba(255,255,255,0.04);">
+   <div class="flex flex-wrap gap-1" id="notesCatFilters">
+    <button onclick="window.m3dNotes.filter('all')" class="notes-cat-btn text-[8px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30" data-cat="all">Todas</button>
+    <button onclick="window.m3dNotes.filter('Trabalho')" class="notes-cat-btn text-[8px] font-bold px-2 py-0.5 rounded-full text-gray-500 hover:text-white transition-colors" data-cat="Trabalho">Trabalho</button>
+    <button onclick="window.m3dNotes.filter('Pessoal')" class="notes-cat-btn text-[8px] font-bold px-2 py-0.5 rounded-full text-gray-500 hover:text-white transition-colors" data-cat="Pessoal">Pessoal</button>
+    <button onclick="window.m3dNotes.filter('Ideias')" class="notes-cat-btn text-[8px] font-bold px-2 py-0.5 rounded-full text-gray-500 hover:text-white transition-colors" data-cat="Ideias">Ideias</button>
+    <button onclick="window.m3dNotes.filter('Reuniões')" class="notes-cat-btn text-[8px] font-bold px-2 py-0.5 rounded-full text-gray-500 hover:text-white transition-colors" data-cat="Reuniões">Reuniões</button>
+    <button onclick="window.m3dNotes.filter('favoritos')" class="notes-cat-btn text-[8px] font-bold px-2 py-0.5 rounded-full text-gray-500 hover:text-white transition-colors" data-cat="favoritos">⭐</button>
+   </div>
+  </div>
+
+  <!-- Lista de Notas -->
+  <div class="flex-1 overflow-y-auto custom-scrollbar" id="notesSidebarList">
+   <!-- Rendered via JS -->
+  </div>
+ </aside>
+
+ <!-- ══════════ PAINEL EDITOR (Principal) ══════════ -->
+ <main class="flex-1 flex flex-col min-w-0 overflow-hidden" style="background:#0d0d0d;">
+
+  <!-- Estado vazio (sem nota selecionada) -->
+  <div id="notesEditorEmpty" class="flex-1 flex flex-col items-center justify-center text-center p-8">
+   <div class="w-20 h-20 rounded-full flex items-center justify-center mb-4" style="background:rgba(255,255,255,0.02);">
+    <span class="material-symbols-outlined text-4xl text-gray-700">edit_note</span>
+   </div>
+   <h3 class="text-sm font-bold text-gray-500 mb-1">Selecione uma nota</h3>
+   <p class="text-[10px] text-gray-600 max-w-xs">Escolha uma nota na sidebar ou crie uma nova com o botão +</p>
+  </div>
+
+  <!-- Editor (hidden até selecionar nota) -->
+  <div id="notesEditorActive" class="flex-1 flex flex-col min-h-0 hidden">
+
+   <!-- Barra título -->
+   <div class="flex items-center gap-3 px-5 py-3" style="border-bottom:1px solid rgba(255,255,255,0.04);">
+    <input type="text" id="editorTitle" placeholder="Título da nota..." class="flex-1 bg-transparent text-base font-black text-white placeholder-gray-600 focus:outline-none">
+    <button onclick="window.m3dNotes.toggleFav()" id="editorFavBtn" class="w-8 h-8 rounded flex items-center justify-center text-gray-600 hover:text-amber-400 transition-colors" title="Favoritar">
+     <span class="material-symbols-outlined text-lg" id="editorFavIcon">star_border</span>
+    </button>
+    <button onclick="window.m3dNotes.deleteActive()" class="w-8 h-8 rounded flex items-center justify-center text-gray-600 hover:text-red-400 transition-colors" title="Excluir">
+     <span class="material-symbols-outlined text-lg">delete</span>
+    </button>
+   </div>
+
+   <!-- Toolbar -->
+   <div class="flex items-center gap-0.5 px-4 py-1.5 flex-wrap" style="border-bottom:1px solid rgba(255,255,255,0.04); background:rgba(255,255,255,0.01);">
+    <button onclick="document.execCommand('bold')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Negrito"><b class="text-xs">B</b></button>
+    <button onclick="document.execCommand('italic')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Itálico"><i class="text-xs">I</i></button>
+    <button onclick="document.execCommand('underline')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Sublinhado"><u class="text-xs">U</u></button>
+    <button onclick="document.execCommand('strikeThrough')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Tachado"><s class="text-xs">S</s></button>
+    <div class="w-px h-4 bg-white/10 mx-0.5"></div>
+    <button onclick="document.execCommand('insertUnorderedList')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Lista"><span class="material-symbols-outlined text-sm">format_list_bulleted</span></button>
+    <button onclick="document.execCommand('insertOrderedList')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Numerada"><span class="material-symbols-outlined text-sm">format_list_numbered</span></button>
+    <button onclick="window.m3dNotes.insertCheck()" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Checklist"><span class="material-symbols-outlined text-sm">check_box</span></button>
+    <div class="w-px h-4 bg-white/10 mx-0.5"></div>
+    <button onclick="document.execCommand('formatBlock','','blockquote')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Citação"><span class="material-symbols-outlined text-sm">format_quote</span></button>
+    <button onclick="document.execCommand('formatBlock','','h2')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors text-[9px] font-black" title="Título">H2</button>
+    <button onclick="document.execCommand('formatBlock','','h3')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors text-[9px] font-black" title="Subtítulo">H3</button>
+    <div class="w-px h-4 bg-white/10 mx-0.5"></div>
+    <button onclick="var u=prompt('URL:');if(u)document.execCommand('createLink',false,u)" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Link"><span class="material-symbols-outlined text-sm">link</span></button>
+    <button onclick="document.execCommand('insertHorizontalRule')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Divisor"><span class="material-symbols-outlined text-sm">horizontal_rule</span></button>
+    <div class="w-px h-4 bg-white/10 mx-0.5"></div>
+    <button onclick="document.execCommand('undo')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Desfazer"><span class="material-symbols-outlined text-sm">undo</span></button>
+    <button onclick="document.execCommand('redo')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Refazer"><span class="material-symbols-outlined text-sm">redo</span></button>
+   </div>
+
+   <!-- Editor Content -->
+   <div id="editorContent" contenteditable="true" class="flex-1 overflow-y-auto custom-scrollbar px-5 py-4 text-sm text-white leading-relaxed focus:outline-none" oninput="window.m3dNotes.autoSave()"></div>
+
+   <!-- Footer: Categoria + Cor + Tags -->
+   <div class="px-4 py-3 flex flex-wrap items-center gap-4" style="border-top:1px solid rgba(255,255,255,0.04); background:rgba(255,255,255,0.01);">
+    <!-- Categoria -->
+    <div class="flex items-center gap-1.5">
+     <span class="text-[8px] font-black text-gray-500 uppercase">Cat:</span>
+     <select id="editorCategory" onchange="window.m3dNotes.autoSave()" class="text-[9px] font-bold text-white bg-transparent border-none focus:outline-none cursor-pointer">
+      <option value="Geral" class="bg-[#1a1a1a]">Geral</option>
+      <option value="Trabalho" class="bg-[#1a1a1a]">Trabalho</option>
+      <option value="Pessoal" class="bg-[#1a1a1a]">Pessoal</option>
+      <option value="Ideias" class="bg-[#1a1a1a]">Ideias</option>
+      <option value="Lembretes" class="bg-[#1a1a1a]">Lembretes</option>
+      <option value="Reuniões" class="bg-[#1a1a1a]">Reuniões</option>
+     </select>
+    </div>
+    <!-- Cores -->
+    <div class="flex items-center gap-1.5">
+     <span class="text-[8px] font-black text-gray-500 uppercase">Cor:</span>
+     <button onclick="window.m3dNotes.setColor('yellow')" class="ed-color w-5 h-5 rounded-full border border-white/20 hover:scale-110 transition-transform" style="background:#fef9c3;" data-c="yellow"></button>
+     <button onclick="window.m3dNotes.setColor('blue')" class="ed-color w-5 h-5 rounded-full border border-transparent hover:scale-110 transition-transform" style="background:#bfdbfe;" data-c="blue"></button>
+     <button onclick="window.m3dNotes.setColor('green')" class="ed-color w-5 h-5 rounded-full border border-transparent hover:scale-110 transition-transform" style="background:#bbf7d0;" data-c="green"></button>
+     <button onclick="window.m3dNotes.setColor('pink')" class="ed-color w-5 h-5 rounded-full border border-transparent hover:scale-110 transition-transform" style="background:#fbcfe8;" data-c="pink"></button>
+     <button onclick="window.m3dNotes.setColor('purple')" class="ed-color w-5 h-5 rounded-full border border-transparent hover:scale-110 transition-transform" style="background:#e9d5ff;" data-c="purple"></button>
+     <button onclick="window.m3dNotes.setColor('gray')" class="ed-color w-5 h-5 rounded-full border border-transparent hover:scale-110 transition-transform" style="background:#d1d5db;" data-c="gray"></button>
+    </div>
+    <!-- Tags -->
+    <div class="flex items-center gap-1.5 flex-1 min-w-0">
+     <span class="text-[8px] font-black text-gray-500 uppercase">#</span>
+     <input type="text" id="editorTagInput" placeholder="tag + Enter" onkeydown="if(event.key==='Enter'){event.preventDefault();window.m3dNotes.addTag();}" class="flex-1 min-w-0 text-[10px] text-white bg-transparent border-none focus:outline-none placeholder-gray-600">
+     <div class="flex gap-1 flex-wrap" id="editorTagsList"></div>
+    </div>
+    <!-- Status salvo -->
+    <span id="editorSaveStatus" class="text-[8px] text-gray-600">●</span>
+   </div>
+  </div>
+ </main>
+</div>
+
+<style>
+#editorContent h2{font-size:1.1rem;font-weight:800;margin:8px 0;color:#f59e0b;}
+#editorContent h3{font-size:0.95rem;font-weight:700;margin:6px 0;color:#d4d4d8;}
+#editorContent blockquote{border-left:3px solid #f59e0b;padding-left:12px;margin:8px 0;color:#71717a;font-style:italic;}
+#editorContent ul,#editorContent ol{padding-left:18px;margin:4px 0;}
+#editorContent li{margin:2px 0;}
+#editorContent a{color:#60a5fa;text-decoration:underline;}
+#editorContent hr{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:12px 0;}
+.note-check{display:flex;align-items:center;gap:8px;padding:2px 0;}
+.note-check input{accent-color:#f59e0b;width:15px;height:15px;cursor:pointer;}
+.note-check.done span{text-decoration:line-through;color:#52525b;}
+</style>
+
+<script>
+(function(){
+var K='malha3d_notes_v2', activeId=null, activeFilter='all', saveTimer=null;
+var TEMPLATES={
+  checklist:{title:'Checklist',category:'Trabalho',content:'<h3>✅ Checklist</h3><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Item 1</span></div><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Item 2</span></div><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Item 3</span></div><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Item 4</span></div><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Item 5</span></div>'},
+  reuniao:{title:'Reunião — ',category:'Reuniões',content:'<h3>📋 Pauta</h3><ul><li>Ponto 1</li><li>Ponto 2</li></ul><h3>📝 Anotações</h3><p><br></p><h3>✅ Ações</h3><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Responsável — Tarefa</span></div>'},
+  followup:{title:'Follow-up — ',category:'Trabalho',content:'<h3>👤 Cliente</h3><p>Nome: </p><h3>📞 Último Contato</h3><p>Data: | Canal: </p><h3>📋 Próximos Passos</h3><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Ação</span></div><h3>⏰ Retornar em</h3><p></p>'},
+  producao:{title:'Produção — ',category:'Trabalho',content:'<h3>🎯 Projeto</h3><p>Nome: | Cliente: </p><h3>📐 Etapas</h3><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Modelagem</span></div><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Texturização</span></div><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Iluminação</span></div><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Render</span></div><div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Pós-produção</span></div><h3>📝 Obs</h3><p></p>'}
+};
+var BG={yellow:'rgba(234,179,8,0.06)',blue:'rgba(59,130,246,0.06)',green:'rgba(34,197,94,0.06)',pink:'rgba(236,72,153,0.06)',purple:'rgba(168,85,247,0.06)',gray:'rgba(100,116,139,0.06)'};
+
+function get(){try{return JSON.parse(localStorage.getItem(K))||[];}catch(e){return[];}}
+function save(notes){localStorage.setItem(K,JSON.stringify(notes));}
+function genId(){return 'n_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);}
+function strip(h){var d=document.createElement('div');d.innerHTML=h;return d.textContent||'';}
+function ago(s){var d=new Date(s),m=Math.floor((Date.now()-d)/60000);if(m<1)return'agora';if(m<60)return m+'min';var h=Math.floor(m/60);if(h<24)return h+'h';var dd=Math.floor(h/24);return dd+'d';}
+
+window.m3dNotes={
+  renderList:function(){
+    var notes=get(),q=(document.getElementById('notesSidebarSearch')?.value||'').toLowerCase();
+    if(activeFilter==='favoritos')notes=notes.filter(function(n){return n.fav;});
+    else if(activeFilter!=='all')notes=notes.filter(function(n){return n.cat===activeFilter;});
+    if(q)notes=notes.filter(function(n){return n.title.toLowerCase().includes(q)||strip(n.content).toLowerCase().includes(q)||(n.tags||[]).some(function(t){return t.includes(q);});});
+    var el=document.getElementById('notesSidebarList');
+    if(!el)return;
+    el.innerHTML=notes.length===0?'<p class="text-[9px] text-gray-600 text-center py-6">Nenhuma nota</p>':notes.map(function(n){
+      var isActive=n.id===activeId;
+      return '<div onclick="window.m3dNotes.open(\''+n.id+'\')" class="mx-2 mb-1 px-3 py-2 rounded-[4px] cursor-pointer transition-all '+(isActive?'bg-white/10 border-l-2 border-amber-500':'hover:bg-white/5 border-l-2 border-transparent')+'">'
+        +'<div class="flex items-center justify-between mb-0.5"><span class="text-[10px] font-bold text-white truncate">'+(n.title||'Sem título')+'</span>'+(n.fav?'<span class="material-symbols-outlined text-amber-400 text-[10px]">star</span>':'')+'</div>'
+        +'<p class="text-[9px] text-gray-500 truncate">'+strip(n.content).slice(0,50)+'</p>'
+        +'<div class="flex items-center gap-2 mt-1"><span class="text-[7px] text-gray-600">'+ago(n.updated)+'</span><span class="text-[7px] text-gray-600">'+n.cat+'</span></div>'
+      +'</div>';
+    }).join('');
+  },
+  create:function(){
+    var notes=get();
+    var n={id:genId(),title:'',content:'',cat:'Geral',color:'yellow',tags:[],fav:false,created:new Date().toISOString(),updated:new Date().toISOString()};
+    notes.unshift(n);save(notes);activeId=n.id;
+    this.renderList();this.loadEditor(n);
+  },
+  fromTemplate:function(type){
+    var tpl=TEMPLATES[type];if(!tpl)return;
+    var notes=get();
+    var n={id:genId(),title:tpl.title,content:tpl.content,cat:tpl.category,color:'yellow',tags:[],fav:false,created:new Date().toISOString(),updated:new Date().toISOString()};
+    notes.unshift(n);save(notes);activeId=n.id;
+    this.renderList();this.loadEditor(n);
+    setTimeout(function(){document.getElementById('editorTitle').focus();document.getElementById('editorTitle').select();},50);
+  },
+  open:function(id){
+    var notes=get(),n=notes.find(function(x){return x.id===id;});
+    if(!n)return;activeId=id;this.renderList();this.loadEditor(n);
+  },
+  loadEditor:function(n){
+    document.getElementById('notesEditorEmpty').classList.add('hidden');
+    document.getElementById('notesEditorActive').classList.remove('hidden');
+    document.getElementById('editorTitle').value=n.title||'';
+    document.getElementById('editorContent').innerHTML=n.content||'';
+    document.getElementById('editorCategory').value=n.cat||'Geral';
+    this.setColor(n.color||'yellow');
+    this.updateFavIcon(n.fav);
+    this.renderTags(n.tags||[]);
+  },
+  autoSave:function(){
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(function(){
+      if(!activeId)return;
+      var notes=get();
+      notes=notes.map(function(n){
+        if(n.id!==activeId)return n;
+        n.title=document.getElementById('editorTitle').value;
+        n.content=document.getElementById('editorContent').innerHTML;
+        n.cat=document.getElementById('editorCategory').value;
+        n.updated=new Date().toISOString();
+        return n;
+      });
+      save(notes);window.m3dNotes.renderList();
+      var st=document.getElementById('editorSaveStatus');if(st){st.textContent='✓ Salvo';st.className='text-[8px] text-emerald-500';setTimeout(function(){st.textContent='●';st.className='text-[8px] text-gray-600';},1500);}
+    },600);
+  },
+  deleteActive:function(){
+    if(!activeId||!confirm('Excluir esta nota?'))return;
+    save(get().filter(function(n){return n.id!==activeId;}));
+    activeId=null;
+    document.getElementById('notesEditorActive').classList.add('hidden');
+    document.getElementById('notesEditorEmpty').classList.remove('hidden');
+    this.renderList();
+  },
+  toggleFav:function(){
+    if(!activeId)return;
+    var notes=get();notes=notes.map(function(n){if(n.id===activeId)n.fav=!n.fav;return n;});save(notes);
+    var n=notes.find(function(x){return x.id===activeId;});this.updateFavIcon(n?.fav);this.renderList();
+  },
+  updateFavIcon:function(fav){
+    var icon=document.getElementById('editorFavIcon');var btn=document.getElementById('editorFavBtn');
+    if(fav){icon.textContent='star';btn.className='w-8 h-8 rounded flex items-center justify-center text-amber-400 transition-colors';}
+    else{icon.textContent='star_border';btn.className='w-8 h-8 rounded flex items-center justify-center text-gray-600 hover:text-amber-400 transition-colors';}
+  },
+  setColor:function(c){
+    if(!activeId){document.querySelectorAll('.ed-color').forEach(function(b){b.style.borderColor=b.getAttribute('data-c')===c?'rgba(255,255,255,0.5)':'transparent';});return;}
+    var notes=get();notes=notes.map(function(n){if(n.id===activeId)n.color=c;return n;});save(notes);
+    document.querySelectorAll('.ed-color').forEach(function(b){b.style.borderColor=b.getAttribute('data-c')===c?'rgba(255,255,255,0.5)':'transparent';});
+  },
+  filter:function(cat){
+    activeFilter=cat;
+    document.querySelectorAll('.notes-cat-btn').forEach(function(b){
+      if(b.getAttribute('data-cat')===cat){b.className='notes-cat-btn text-[8px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30';}
+      else{b.className='notes-cat-btn text-[8px] font-bold px-2 py-0.5 rounded-full text-gray-500 hover:text-white transition-colors';}
+    });
+    this.renderList();
+  },
+  addTag:function(){
+    var input=document.getElementById('editorTagInput');var tag=input.value.trim().toLowerCase();input.value='';
+    if(!tag||!activeId)return;
+    var notes=get();notes=notes.map(function(n){if(n.id===activeId&&!(n.tags||[]).includes(tag)){n.tags=n.tags||[];n.tags.push(tag);}return n;});save(notes);
+    var n=notes.find(function(x){return x.id===activeId;});this.renderTags(n.tags||[]);
+  },
+  removeTag:function(tag){
+    if(!activeId)return;
+    var notes=get();notes=notes.map(function(n){if(n.id===activeId)n.tags=(n.tags||[]).filter(function(t){return t!==tag;});return n;});save(notes);
+    var n=notes.find(function(x){return x.id===activeId;});this.renderTags(n.tags||[]);
+  },
+  renderTags:function(tags){
+    var el=document.getElementById('editorTagsList');if(!el)return;
+    el.innerHTML=tags.map(function(t){return '<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-bold text-amber-400" style="background:rgba(245,158,11,0.1);">#'+t+'<button onclick="window.m3dNotes.removeTag(\''+t+'\')" class="hover:text-red-400 ml-0.5">×</button></span>';}).join('');
+  },
+  insertCheck:function(){
+    document.execCommand('insertHTML',false,'<div class="note-check"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"><span>Item</span></div>');
+  }
+};
+
+// Auto-save on title change
+document.getElementById('editorTitle')?.addEventListener('input',function(){window.m3dNotes.autoSave();});
+
+// Initial render
+window.m3dNotes.renderList();
+})();
+</script>

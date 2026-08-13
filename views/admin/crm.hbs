@@ -2512,13 +2512,17 @@ window.loadLeadHistory = function(leadId) {
  if (!modal) return;
  const form = modal.querySelector('form');
  if (form && typeof form.reset === 'function') form.reset();
- 
+
  // Reset section 3 and 4 toggle states
  const t3 = document.getElementById('toggleSection3');
  if (t3) { t3.checked = true; window.toggleLeadSection(3, true); }
  const t4 = document.getElementById('toggleSection4');
  if (t4) { t4.checked = true; window.toggleLeadSection(4, true); }
- 
+
+ // Reset project tags
+ _projectTags = [];
+ renderProjectTags();
+
  modal.classList.remove('hidden');
  modal.style.setProperty('display', 'flex', 'important');
  modal.style.opacity = '1';
@@ -2532,6 +2536,26 @@ window.loadLeadHistory = function(leadId) {
  modal.style.setProperty('display', 'none', 'important');
  }
  };
+
+ // === PROJECT TAGS MANAGEMENT ===
+ let _projectTags = [];
+ window.addProjectTag = function(tag) {
+  tag = (tag || '').trim();
+  if (!tag || _projectTags.includes(tag)) return;
+  _projectTags.push(tag);
+  renderProjectTags();
+ };
+ window.removeProjectTag = function(tag) {
+  _projectTags = _projectTags.filter(t => t !== tag);
+  renderProjectTags();
+ };
+ function renderProjectTags() {
+  const container = document.getElementById('newProjectTagsContainer');
+  const hidden = document.getElementById('newProjectTagsHidden');
+  if (!container) return;
+  container.innerHTML = _projectTags.map(t => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-500/20 border border-orange-500/30 text-[9px] font-black text-orange-300">${t.replace(/[<>]/g, '')} <button type="button" onclick="window.removeProjectTag('${t.replace(/'/g, '')}')" class="text-orange-400 hover:text-white">&times;</button></span>`).join('');
+  if (hidden) hidden.value = JSON.stringify(_projectTags);
+ }
 
  // === AJAX SUBMISSIONS ===
  // === SIMULAÇÃO FINANCEIRA INFORMATIVA (Criar Lead) ===

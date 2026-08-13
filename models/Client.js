@@ -71,6 +71,10 @@ const Client = sequelize.define('Client', {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
+  jobTitle: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   status: {
 
     type: DataTypes.STRING,

@@ -460,6 +460,7 @@ const startServer = async () => {
         };
         // Budget columns that may be missing
         await safeAddColumn('budgets', 'prazo_dias', 'INTEGER');
+        await safeAddColumn('clients', 'job_title', 'VARCHAR(255)');
       }
 
       return server.listen(PORT, () => {

@@ -4192,6 +4192,10 @@ router.get('/chat', requireAuth, async (req, res) => {
   res.render('admin/chat', { layout: 'admin', title: 'Chat da Equipe', currentPage: 'chat', user: req.user });
 });
 
+router.get('/notas', requireAuth, (req, res) => {
+  res.render('admin/notas', { layout: 'admin', title: 'Notas', currentPage: 'notas', user: req.user });
+});
+
 router.get('/aprendizado', requireAuth, async (req, res) => {
   res.render('admin/learning', { layout: 'admin', title: 'Centro de Aprendizado', currentPage: 'learning', user: req.user });
 });
