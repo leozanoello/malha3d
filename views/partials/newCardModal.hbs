@@ -91,15 +91,15 @@
        <div>
         <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Data Ganho Oportunidade</label>
         <div class="flex gap-1">
-         <input type="text" name="dataGanhoOportunidade" placeholder="DD/MM/YYYY" maxlength="10" class="flex-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none date-br-mask" oninput="formatDateInput(this)">
-         <button type="button" class="w-10 h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all flex items-center justify-center"><span class="material-symbols-outlined text-xs">calendar_today</span></button>
+         <input type="date" name="dataGanhoOportunidade" class="flex-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" style="color-scheme: dark;">
+         <button type="button" onclick="const el=this.previousElementSibling; el.focus(); el.showPicker ? el.showPicker() : el.click();" class="w-10 h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all flex items-center justify-center" title="Abrir calendário"><span class="material-symbols-outlined text-xs">calendar_today</span></button>
         </div>
        </div>
        <div>
         <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Expectativa de Início</label>
         <div class="flex gap-1">
-         <input type="text" name="expectativaInicio" placeholder="DD/MM/YYYY" maxlength="10" class="flex-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none date-br-mask" oninput="formatDateInput(this)">
-         <button type="button" class="w-10 h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all flex items-center justify-center"><span class="material-symbols-outlined text-xs">calendar_today</span></button>
+         <input type="date" name="expectativaInicio" class="flex-1 w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" style="color-scheme: dark;">
+         <button type="button" onclick="const el=this.previousElementSibling; el.focus(); el.showPicker ? el.showPicker() : el.click();" class="w-10 h-10 bg-orange-500/10 border border-orange-500/30 rounded-lg text-orange-400 hover:bg-orange-500/20 transition-all flex items-center justify-center" title="Abrir calendário"><span class="material-symbols-outlined text-xs">calendar_today</span></button>
         </div>
        </div>
       </div>
@@ -400,117 +400,46 @@
        </select>
       </div>
 
-      <!-- ENTREGÁVEIS (sub-card com circles internos) -->
-      <div class="uv-flip-card uv-flip-card--form">
-       <div class="uv-flip-content">
-        <div class="uv-flip-front">
-         <div class="uv-flip-img">
-          <div class="uv-circle"></div>
-          <div class="uv-circle uv-circle-right"></div>
-          <div class="uv-circle uv-circle-bottom"></div>
-         </div>
-         <div class="uv-flip-front-content">
-          <small class="uv-flip-badge mb-2">
-           <span class="material-symbols-outlined text-[10px] align-middle">inventory_2</span> Entregáveis
-          </small>
-          <div class="grid grid-cols-3 gap-2">
-           <div>
-            <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Imagens</label>
-            <input type="number" name="imagesCount" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
-           </div>
-           <div>
-            <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Animação (s)</label>
-            <input type="number" name="animationSeconds" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
-           </div>
-           <div>
-            <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Plantas Hum.</label>
-            <input type="number" name="floorPlansCount" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
+      <!-- ENTREGÁVEIS — Sistema Dinâmico por Ambiente -->
+      <div class="p-3 rounded-xl border border-orange-500/20 bg-orange-500/5">
+       <h5 class="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-xs">inventory_2</span> Entregáveis por Ambiente
+       </h5>
 
-      <!-- AMBIENTES A RENDERIZAR -->
-      <div>
-       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Ambientes a Renderizar (selecione múltiplos)</label>
-       <select name="environments" id="newCardEnvironments" multiple class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none h-32 custom-scrollbar">
-        <optgroup label="🏠 Internos — Residencial">
-         <option value="Sala de Estar">Sala de Estar</option>
-         <option value="Sala de Jantar">Sala de Jantar</option>
-         <option value="Sala de TV">Sala de TV</option>
-         <option value="Cozinha">Cozinha</option>
-         <option value="Cozinha Gourmet">Cozinha Gourmet</option>
-         <option value="Quarto Master">Quarto Master</option>
-         <option value="Quarto Casal">Quarto Casal</option>
-         <option value="Quarto Solteiro">Quarto Solteiro</option>
-         <option value="Quarto Infantil">Quarto Infantil</option>
-         <option value="Closet">Closet</option>
-         <option value="Banheiro Master">Banheiro Master</option>
-         <option value="Banheiro Social">Banheiro Social</option>
-         <option value="Lavabo">Lavabo</option>
-         <option value="Home Office">Home Office</option>
-         <option value="Home Theater">Home Theater</option>
-         <option value="Escritório">Escritório</option>
-         <option value="Lavanderia">Lavanderia</option>
-         <option value="Despensa">Despensa</option>
-         <option value="Hall de Entrada">Hall de Entrada</option>
-         <option value="Corredor">Corredor</option>
-         <option value="Escada Interna">Escada Interna</option>
-         <option value="Mezanino">Mezanino</option>
-         <option value="Adega">Adega</option>
-        </optgroup>
-        <optgroup label="🌳 Externos — Residencial">
-         <option value="Fachada Frontal">Fachada Frontal</option>
-         <option value="Fachada Posterior">Fachada Posterior</option>
-         <option value="Fachada Lateral">Fachada Lateral</option>
-         <option value="Área Gourmet">Área Gourmet</option>
-         <option value="Varanda">Varanda</option>
-         <option value="Terraço">Terraço</option>
-         <option value="Rooftop">Rooftop</option>
-         <option value="Piscina">Piscina</option>
-         <option value="Deck">Deck</option>
-         <option value="Jardim">Jardim</option>
-         <option value="Garagem">Garagem</option>
-         <option value="Pergolado">Pergolado</option>
-         <option value="Espaço Zen">Espaço Zen</option>
-         <option value="Playground">Playground</option>
-        </optgroup>
-        <optgroup label="🏢 Áreas Comuns — Prédios/Edifícios">
-         <option value="Lobby / Hall">Lobby / Hall</option>
-         <option value="Portaria">Portaria</option>
-         <option value="Salão de Festas">Salão de Festas</option>
-         <option value="Academia">Academia</option>
-         <option value="Piscina Condominial">Piscina Condominial</option>
-         <option value="Brinquedoteca">Brinquedoteca</option>
-         <option value="Coworking">Coworking</option>
-         <option value="Pet Place">Pet Place</option>
-         <option value="Churrasqueira">Churrasqueira</option>
-         <option value="Quadra Esportiva">Quadra Esportiva</option>
-         <option value="Sauna / Spa">Sauna / Spa</option>
-         <option value="Lavanderia Coletiva">Lavanderia Coletiva</option>
-         <option value="Estacionamento">Estacionamento</option>
-         <option value="Fachada do Edifício">Fachada do Edifício</option>
-         <option value="Vista Aérea">Vista Aérea</option>
-         <option value="Implantação">Implantação</option>
-        </optgroup>
-        <optgroup label="🏬 Comercial / Corporativo">
-         <option value="Recepção">Recepção</option>
-         <option value="Sala de Reunião">Sala de Reunião</option>
-         <option value="Open Office">Open Office</option>
-         <option value="Sala da Diretoria">Sala da Diretoria</option>
-         <option value="Copa / Refeitório">Copa / Refeitório</option>
-         <option value="Loja / Vitrine">Loja / Vitrine</option>
-         <option value="Restaurante">Restaurante</option>
-         <option value="Café / Cafeteria">Café / Cafeteria</option>
-         <option value="Clínica / Consultório">Clínica / Consultório</option>
-         <option value="Hotel — Quarto">Hotel — Quarto</option>
-         <option value="Hotel — Lobby">Hotel — Lobby</option>
-         <option value="Auditório">Auditório</option>
-        </optgroup>
-       </select>
-       <p class="text-[7px] text-gray-500 mt-1">Segure Ctrl para selecionar múltiplos ambientes</p>
+       <!-- Adicionar Ambiente -->
+       <div class="flex gap-1.5 mb-3">
+        <select id="envSelectNew" class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[10px] text-white focus:border-orange-500 focus:outline-none appearance-none">
+         <option value="">+ Adicionar ambiente...</option>
+         <optgroup label="🏠 Internos — Residencial">
+          <option>Sala de Estar</option><option>Sala de Jantar</option><option>Sala de TV</option><option>Cozinha</option><option>Cozinha Gourmet</option><option>Quarto Master</option><option>Quarto Casal</option><option>Quarto Solteiro</option><option>Quarto Infantil</option><option>Closet</option><option>Banheiro Master</option><option>Banheiro Social</option><option>Lavabo</option><option>Home Office</option><option>Home Theater</option><option>Escritório</option><option>Lavanderia</option><option>Despensa</option><option>Hall de Entrada</option><option>Corredor</option><option>Escada Interna</option><option>Mezanino</option><option>Adega</option>
+         </optgroup>
+         <optgroup label="🌳 Externos — Residencial">
+          <option>Fachada Frontal</option><option>Fachada Posterior</option><option>Fachada Lateral</option><option>Área Gourmet</option><option>Varanda</option><option>Terraço</option><option>Rooftop</option><option>Piscina</option><option>Deck</option><option>Jardim</option><option>Garagem</option><option>Pergolado</option><option>Espaço Zen</option><option>Playground</option>
+         </optgroup>
+         <optgroup label="🏢 Áreas Comuns — Prédios">
+          <option>Lobby / Hall</option><option>Portaria</option><option>Salão de Festas</option><option>Academia</option><option>Piscina Condominial</option><option>Brinquedoteca</option><option>Coworking</option><option>Pet Place</option><option>Churrasqueira</option><option>Quadra Esportiva</option><option>Sauna / Spa</option><option>Lavanderia Coletiva</option><option>Estacionamento</option><option>Fachada do Edifício</option><option>Vista Aérea</option><option>Implantação</option>
+         </optgroup>
+         <optgroup label="🏬 Comercial / Corporativo">
+          <option>Recepção</option><option>Sala de Reunião</option><option>Open Office</option><option>Sala da Diretoria</option><option>Copa / Refeitório</option><option>Loja / Vitrine</option><option>Restaurante</option><option>Café / Cafeteria</option><option>Clínica / Consultório</option><option>Hotel — Quarto</option><option>Hotel — Lobby</option><option>Auditório</option>
+         </optgroup>
+        </select>
+        <button type="button" onclick="window.addEnvItem()" class="px-3 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-[9px] font-black uppercase transition-colors shrink-0">+ Add</button>
+       </div>
+
+       <!-- Lista de Ambientes Adicionados -->
+       <div id="envItemsList" class="space-y-2 mb-3"></div>
+
+       <!-- Resumo -->
+       <div id="envSummary" class="hidden flex items-center gap-3 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+        <span class="material-symbols-outlined text-emerald-400 text-sm">summarize</span>
+        <span id="envSummaryText" class="text-[9px] font-bold text-emerald-300"></span>
+       </div>
+
+       <!-- Hidden inputs para submit -->
+       <input type="hidden" name="environments" id="envDataHidden" value="[]">
+       <input type="hidden" name="imagesCount" id="envTotalImages" value="0">
+       <input type="hidden" name="animationSeconds" id="envTotalAnimation" value="0">
+       <input type="hidden" name="panoramasCount" id="envTotalPanoramas" value="0">
       </div>
 
       <!-- PRAZOS -->

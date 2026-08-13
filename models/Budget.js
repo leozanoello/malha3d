@@ -197,6 +197,74 @@ const Budget = sequelize.define('Budget', {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
+  panoramas360: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  animationAI: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  imagesCountDiurna: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  imagesCountNoturna: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  imagesCountMisto: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  animationSecondsDiurna: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  animationSecondsNoturna: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  animationSecondsMisto: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  floorPlansCountDiurna: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  floorPlansCountNoturna: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  floorPlansCountMisto: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  panoramas360Diurna: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  panoramas360Noturna: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  panoramas360Misto: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  animationAIDiurna: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  animationAINoturna: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  animationAIMisto: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
   imagesFachadaCount: {
     type: DataTypes.INTEGER,
     defaultValue: 0
