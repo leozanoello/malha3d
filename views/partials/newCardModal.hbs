@@ -81,7 +81,7 @@
      <div class="space-y-2">
       <div>
        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Nome {{#if (eq kanbanType 'modelagem')}}do Projeto{{else}}do Lead{{/if}} *</label>
-       <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="{{#if (eq kanbanType 'modelagem')}}Ex: Projeto 3D - Prédio Comercial{{else}}Ex: Novo Lead - Construtora Horizonte{{/if}}">
+       <input type="text" name="name" {{#if (eq kanbanType 'modelagem')}}required{{/if}} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="{{#if (eq kanbanType 'modelagem')}}Ex: Projeto 3D - Prédio Comercial{{else}}Ex: Novo Lead - Construtora Horizonte{{/if}}">
       </div>
       <div>
        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Metragem (m²)</label>
@@ -171,7 +171,7 @@
      <div class="space-y-2">
       <div>
        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Nome do Contato *</label>
-       <input type="text" name="clientName" id="mainClientName" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="Nome do Cliente">
+       <input type="text" name="clientName" id="mainClientName" {{#if (eq kanbanType 'modelagem')}}required{{/if}} class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="Nome do Cliente">
       </div>
       <div class="grid grid-cols-2 gap-2">
        <div>
