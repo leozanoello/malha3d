@@ -1114,6 +1114,15 @@
                 <span class="hidden sm:inline">Buscar...</span>
                 <kbd class="hidden sm:inline text-[7px] px-1 py-0.5 rounded bg-white/10 text-gray-500 ml-2">Ctrl+K</kbd>
             </button>
+            <!-- Notas Rápidas — dois botões agrupados -->
+            <div class="flex items-center gap-1">
+                <button onclick="window.openQuickNoteCreate()" class="w-8 h-8 rounded-[4px] flex items-center justify-center text-amber-400 hover:text-amber-300 transition-colors" style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2);" title="Nova Nota Rápida" aria-label="Nova nota rápida">
+                    <span class="material-symbols-outlined text-[14px]">add</span>
+                </button>
+                <a href="/admin/notas" class="w-8 h-8 rounded-[4px] flex items-center justify-center text-yellow-400 hover:text-yellow-300 transition-colors" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" title="Minhas Notas" aria-label="Ir para notas" id="btn-goto-notes">
+                    <span class="material-symbols-outlined text-[14px]">sticky_note_2</span>
+                </a>
+            </div>
             <!-- Sino de Notificações -->
             <button onclick="window.openNotificationsPanel()" class="relative w-8 h-8 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-white transition-colors" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" id="notif-bell">
                 <span class="material-symbols-outlined text-[16px]">notifications</span>

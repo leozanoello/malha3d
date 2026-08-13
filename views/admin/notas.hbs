@@ -1,0 +1,350 @@
+<!-- Notas Rápidas — Página Completa -->
+<div class="space-y-4">
+
+ <!-- Header -->
+ <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+  <div class="flex items-center gap-2.5">
+   <div class="w-9 h-9 rounded-[5px] bg-amber-500/15 border border-amber-500/20 flex items-center justify-center">
+    <span class="material-symbols-outlined text-amber-400 text-lg">sticky_note_2</span>
+   </div>
+   <div>
+    <h1 class="text-sm font-black text-white tracking-tight">Notas <span class="text-amber-400">Rápidas</span></h1>
+    <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Organize ideias, lembretes e anotações</p>
+   </div>
+  </div>
+  <button onclick="window.openQuickNoteCreate()" class="flex items-center gap-1.5 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-[8px] font-black uppercase tracking-wider rounded-[4px] shadow-sm transition-all">
+   <span class="material-symbols-outlined text-[11px]">add</span> Nova Nota
+  </button>
+ </div>
+
+ <!-- Busca -->
+ <div class="relative">
+  <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-[13px] pointer-events-none">search</span>
+  <input type="text" id="notesSearchInput" placeholder="Buscar notas por título, conteúdo ou tags..." oninput="window.filterNotes()" class="w-full pl-9 pr-4 py-2.5 text-xs font-bold text-white placeholder-gray-500 rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ </div>
+
+ <!-- Filtros -->
+ <div class="flex items-center gap-1.5 overflow-x-auto pb-1" id="notesFilterBar">
+  <button onclick="window.setNoteFilter('all')" class="note-filter-btn active px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase tracking-wider whitespace-nowrap transition-all bg-amber-500 text-white" data-filter="all">Todas</button>
+  <button onclick="window.setNoteFilter('Geral')" class="note-filter-btn px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase tracking-wider whitespace-nowrap transition-all text-gray-400" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" data-filter="Geral">Geral</button>
+  <button onclick="window.setNoteFilter('Trabalho')" class="note-filter-btn px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase tracking-wider whitespace-nowrap transition-all text-gray-400" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" data-filter="Trabalho">Trabalho</button>
+  <button onclick="window.setNoteFilter('Pessoal')" class="note-filter-btn px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase tracking-wider whitespace-nowrap transition-all text-gray-400" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" data-filter="Pessoal">Pessoal</button>
+  <button onclick="window.setNoteFilter('Ideias')" class="note-filter-btn px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase tracking-wider whitespace-nowrap transition-all text-gray-400" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" data-filter="Ideias">Ideias</button>
+  <button onclick="window.setNoteFilter('Lembretes')" class="note-filter-btn px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase tracking-wider whitespace-nowrap transition-all text-gray-400" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" data-filter="Lembretes">Lembretes</button>
+  <button onclick="window.setNoteFilter('Reuniões')" class="note-filter-btn px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase tracking-wider whitespace-nowrap transition-all text-gray-400" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" data-filter="Reuniões">Reuniões</button>
+  <button onclick="window.setNoteFilter('favoritos')" class="note-filter-btn px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase tracking-wider whitespace-nowrap transition-all text-gray-400" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" data-filter="favoritos">⭐ Favoritos</button>
+ </div>
+
+ <!-- Grid de Notas -->
+ <div id="notesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+  <!-- Notas renderizadas via JS -->
+ </div>
+
+ <!-- Empty State -->
+ <div id="notesEmptyState" class="hidden flex flex-col items-center justify-center py-16 text-center">
+  <div class="w-16 h-16 rounded-full flex items-center justify-center mb-4" style="background:rgba(255,255,255,0.03);">
+   <span class="material-symbols-outlined text-3xl text-gray-600">note_stack</span>
+  </div>
+  <h3 class="text-sm font-bold text-gray-400 mb-1">Nenhuma nota criada</h3>
+  <p class="text-xs text-gray-500 max-w-xs">Clique em "Nova Nota" para começar a organizar suas ideias.</p>
+ </div>
+
+</div>
+
+<!-- MODAL DE NOTA (flutuante — abre de qualquer lugar) -->
+<div id="quickNoteModal" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/60 backdrop-blur-sm" style="display:none;">
+ <div class="w-full max-w-lg mx-4 rounded-[5px] shadow-2xl overflow-hidden" style="background:#151515; border:1px solid rgba(255,255,255,0.1);">
+  <!-- Header -->
+  <div class="flex items-center justify-between px-5 py-3" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+   <h3 class="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+    <span class="material-symbols-outlined text-amber-500 text-sm">sticky_note_2</span>
+    <span id="noteModalTitle">Nova Nota</span>
+   </h3>
+   <button onclick="window.closeQuickNoteModal()" class="w-7 h-7 rounded-[4px] flex items-center justify-center text-gray-500 hover:text-red-400 transition-colors" style="background:rgba(255,255,255,0.03);">
+    <span class="material-symbols-outlined text-sm">close</span>
+   </button>
+  </div>
+
+  <div class="p-5 space-y-3 max-h-[70vh] overflow-y-auto custom-scrollbar">
+   <input type="hidden" id="noteEditId" value="">
+
+   <!-- Título -->
+   <div>
+    <label class="block text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1">Título *</label>
+    <input type="text" id="noteTitle" placeholder="Título da nota..." class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+   </div>
+
+   <!-- Rich Text Editor -->
+   <div>
+    <label class="block text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1">Conteúdo</label>
+    <div class="rounded-[4px] overflow-hidden" style="border:1px solid rgba(255,255,255,0.08);">
+     <!-- Toolbar -->
+     <div class="flex items-center gap-0.5 px-2 py-1.5" style="border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02);">
+      <button onclick="document.execCommand('bold')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Negrito"><span class="material-symbols-outlined text-sm">format_bold</span></button>
+      <button onclick="document.execCommand('italic')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Itálico"><span class="material-symbols-outlined text-sm">format_italic</span></button>
+      <button onclick="document.execCommand('insertUnorderedList')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Lista"><span class="material-symbols-outlined text-sm">format_list_bulleted</span></button>
+      <button onclick="document.execCommand('formatBlock','','blockquote')" class="w-7 h-7 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors" title="Citação"><span class="material-symbols-outlined text-sm">format_quote</span></button>
+     </div>
+     <div id="noteContent" contenteditable="true" class="min-h-[100px] max-h-[200px] overflow-y-auto px-3 py-2 text-xs text-white focus:outline-none" style="background:rgba(255,255,255,0.01);"></div>
+    </div>
+   </div>
+
+   <!-- Cores -->
+   <div>
+    <label class="block text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-2">Cor</label>
+    <div class="flex items-center gap-2" id="noteColorPicker">
+     <button onclick="window.setNoteColor('yellow')" class="note-color-btn w-7 h-7 rounded-full border-2 border-white/30 transition-all hover:scale-110" style="background:#fef08a;" data-color="yellow"></button>
+     <button onclick="window.setNoteColor('blue')" class="note-color-btn w-7 h-7 rounded-full border-2 border-transparent transition-all hover:scale-110" style="background:#bfdbfe;" data-color="blue"></button>
+     <button onclick="window.setNoteColor('green')" class="note-color-btn w-7 h-7 rounded-full border-2 border-transparent transition-all hover:scale-110" style="background:#bbf7d0;" data-color="green"></button>
+     <button onclick="window.setNoteColor('pink')" class="note-color-btn w-7 h-7 rounded-full border-2 border-transparent transition-all hover:scale-110" style="background:#fbcfe8;" data-color="pink"></button>
+     <button onclick="window.setNoteColor('purple')" class="note-color-btn w-7 h-7 rounded-full border-2 border-transparent transition-all hover:scale-110" style="background:#e9d5ff;" data-color="purple"></button>
+     <button onclick="window.setNoteColor('gray')" class="note-color-btn w-7 h-7 rounded-full border-2 border-transparent transition-all hover:scale-110" style="background:#e5e7eb;" data-color="gray"></button>
+    </div>
+   </div>
+
+   <!-- Categoria -->
+   <div>
+    <label class="block text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1">Categoria</label>
+    <select id="noteCategory" class="w-full px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+     <option value="Geral">Geral</option>
+     <option value="Trabalho">Trabalho</option>
+     <option value="Pessoal">Pessoal</option>
+     <option value="Ideias">Ideias</option>
+     <option value="Lembretes">Lembretes</option>
+     <option value="Reuniões">Reuniões</option>
+    </select>
+   </div>
+
+   <!-- Tags -->
+   <div>
+    <label class="block text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1">Tags (Enter para adicionar)</label>
+    <div class="flex flex-wrap gap-1.5 mb-2" id="noteTagsList"></div>
+    <input type="text" id="noteTagInput" placeholder="Digite e pressione Enter..." onkeydown="if(event.key==='Enter'){event.preventDefault();window.addNoteTag();}" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+   </div>
+
+   <!-- Favorito -->
+   <button onclick="window.toggleNoteFavorite()" id="noteFavoriteBtn" class="flex items-center gap-2 px-3 py-2 rounded-[4px] transition-all text-gray-500" style="border:1px solid rgba(255,255,255,0.08);">
+    <span class="material-symbols-outlined text-sm" id="noteFavIcon">star_border</span>
+    <span class="text-xs font-bold" id="noteFavLabel">Marcar como favorita</span>
+   </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="flex items-center justify-end gap-2 px-5 py-3" style="border-top:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.01);">
+   <button onclick="window.closeQuickNoteModal()" class="px-4 py-2 text-xs font-bold text-gray-400 rounded-[4px] hover:bg-white/5 transition-colors">Cancelar</button>
+   <button onclick="window.saveQuickNote()" class="px-4 py-2 text-xs font-black text-white bg-amber-500 hover:bg-amber-600 rounded-[4px] uppercase tracking-wider transition-colors">Salvar</button>
+  </div>
+ </div>
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'malha3d_quick_notes';
+  let currentFilter = 'all';
+  let currentColor = 'yellow';
+  let currentTags = [];
+  let currentFavorite = false;
+
+  const COLOR_MAP = { yellow:'#fef08a', blue:'#bfdbfe', green:'#bbf7d0', pink:'#fbcfe8', purple:'#e9d5ff', gray:'#e5e7eb' };
+  const DARK_BG = { yellow:'rgba(234,179,8,0.08)', blue:'rgba(59,130,246,0.08)', green:'rgba(34,197,94,0.08)', pink:'rgba(236,72,153,0.08)', purple:'rgba(168,85,247,0.08)', gray:'rgba(148,163,184,0.08)' };
+
+  function getNotes() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { return []; } }
+  function saveNotes(notes) { localStorage.setItem(STORAGE_KEY, JSON.stringify(notes)); }
+  function genId() { return 'note_' + Date.now() + '_' + Math.random().toString(36).slice(2,8); }
+
+  function stripHtml(html) { var d = document.createElement('div'); d.innerHTML = html; return d.textContent || ''; }
+  function timeAgo(dateStr) {
+    var d = new Date(dateStr), now = Date.now(), diff = now - d.getTime();
+    var mins = Math.floor(diff/60000), hrs = Math.floor(diff/3600000), days = Math.floor(diff/86400000);
+    if (mins < 1) return 'Agora';
+    if (mins < 60) return mins + 'min';
+    if (hrs < 24) return hrs + 'h';
+    if (days < 7) return days + 'd';
+    return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'short' });
+  }
+
+  window.renderNotes = function() {
+    var notes = getNotes();
+    var query = (document.getElementById('notesSearchInput')?.value || '').toLowerCase();
+    var filtered = notes;
+
+    if (currentFilter === 'favoritos') filtered = filtered.filter(function(n) { return n.isFavorite; });
+    else if (currentFilter !== 'all') filtered = filtered.filter(function(n) { return n.category === currentFilter; });
+
+    if (query) {
+      filtered = filtered.filter(function(n) {
+        return n.title.toLowerCase().includes(query) || stripHtml(n.content).toLowerCase().includes(query) || (n.tags||[]).some(function(t) { return t.includes(query); });
+      });
+    }
+
+    var grid = document.getElementById('notesGrid');
+    var empty = document.getElementById('notesEmptyState');
+    if (!grid) return;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '';
+      if (empty) { empty.classList.remove('hidden'); empty.style.display = 'flex'; }
+      return;
+    }
+    if (empty) { empty.classList.add('hidden'); empty.style.display = 'none'; }
+
+    grid.innerHTML = filtered.map(function(n) {
+      var bg = DARK_BG[n.color] || DARK_BG.yellow;
+      var border = 'rgba(255,255,255,0.06)';
+      var tagsHtml = (n.tags||[]).slice(0,3).map(function(t) { return '<span class="text-[8px] font-bold text-gray-500 bg-white/5 px-1.5 py-0.5 rounded-full">#'+t+'</span>'; }).join('');
+      return '<div class="group rounded-[5px] p-4 cursor-pointer transition-all hover:translate-y-[-2px] hover:shadow-lg" style="background:'+bg+'; border:1px solid '+border+';" onclick="window.openNoteEdit(\''+n.id+'\')">' +
+        '<div class="flex items-center justify-between mb-2">' +
+          '<span class="text-[8px] font-black uppercase tracking-widest text-gray-500 bg-black/10 px-1.5 py-0.5 rounded">'+n.category+'</span>' +
+          '<button onclick="event.stopPropagation(); window.toggleNoteFav(\''+n.id+'\')" class="'+(n.isFavorite?'text-amber-400':'text-gray-600 hover:text-amber-400')+' transition-colors"><span class="material-symbols-outlined text-sm">'+(n.isFavorite?'star':'star_border')+'</span></button>' +
+        '</div>' +
+        '<h4 class="text-xs font-bold text-white mb-1 truncate">'+n.title+'</h4>' +
+        '<p class="text-[10px] text-gray-400 line-clamp-3 mb-2 leading-relaxed">'+stripHtml(n.content).slice(0,120)+'</p>' +
+        (tagsHtml ? '<div class="flex flex-wrap gap-1 mb-2">'+tagsHtml+'</div>' : '') +
+        '<div class="flex items-center justify-between pt-2" style="border-top:1px solid rgba(255,255,255,0.04);">' +
+          '<span class="text-[9px] text-gray-500">'+timeAgo(n.updatedAt)+'</span>' +
+          '<button onclick="event.stopPropagation(); window.deleteQuickNote(\''+n.id+'\')" class="opacity-0 group-hover:opacity-100 w-6 h-6 rounded flex items-center justify-center text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-all"><span class="material-symbols-outlined text-sm">delete</span></button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  };
+
+  window.filterNotes = function() { window.renderNotes(); };
+
+  window.setNoteFilter = function(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.note-filter-btn').forEach(function(btn) {
+      if (btn.getAttribute('data-filter') === filter) {
+        btn.className = 'note-filter-btn px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase tracking-wider whitespace-nowrap transition-all bg-amber-500 text-white';
+        btn.removeAttribute('style');
+      } else {
+        btn.className = 'note-filter-btn px-3 py-1.5 rounded-[4px] text-[9px] font-black uppercase tracking-wider whitespace-nowrap transition-all text-gray-400';
+        btn.setAttribute('style', 'background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);');
+      }
+    });
+    window.renderNotes();
+  };
+
+  window.openQuickNoteCreate = function() {
+    document.getElementById('noteEditId').value = '';
+    document.getElementById('noteTitle').value = '';
+    document.getElementById('noteContent').innerHTML = '';
+    document.getElementById('noteCategory').value = 'Geral';
+    document.getElementById('noteModalTitle').textContent = 'Nova Nota';
+    currentColor = 'yellow'; currentTags = []; currentFavorite = false;
+    window.setNoteColor('yellow');
+    window.renderNoteTags();
+    window.updateFavBtn();
+    var modal = document.getElementById('quickNoteModal');
+    modal.classList.remove('hidden'); modal.style.display = 'flex';
+    setTimeout(function() { document.getElementById('noteTitle').focus(); }, 100);
+  };
+
+  window.openNoteEdit = function(id) {
+    var notes = getNotes();
+    var note = notes.find(function(n) { return n.id === id; });
+    if (!note) return;
+    document.getElementById('noteEditId').value = note.id;
+    document.getElementById('noteTitle').value = note.title;
+    document.getElementById('noteContent').innerHTML = note.content || '';
+    document.getElementById('noteCategory').value = note.category || 'Geral';
+    document.getElementById('noteModalTitle').textContent = 'Editar Nota';
+    currentColor = note.color || 'yellow';
+    currentTags = note.tags ? [...note.tags] : [];
+    currentFavorite = note.isFavorite || false;
+    window.setNoteColor(currentColor);
+    window.renderNoteTags();
+    window.updateFavBtn();
+    var modal = document.getElementById('quickNoteModal');
+    modal.classList.remove('hidden'); modal.style.display = 'flex';
+  };
+
+  window.closeQuickNoteModal = function() {
+    var modal = document.getElementById('quickNoteModal');
+    modal.classList.add('hidden'); modal.style.display = 'none';
+  };
+
+  window.saveQuickNote = function() {
+    var title = document.getElementById('noteTitle').value.trim();
+    if (!title) { document.getElementById('noteTitle').style.borderColor = 'rgba(239,68,68,0.5)'; return; }
+    document.getElementById('noteTitle').style.borderColor = '';
+    var content = document.getElementById('noteContent').innerHTML || '';
+    var category = document.getElementById('noteCategory').value;
+    var editId = document.getElementById('noteEditId').value;
+    var notes = getNotes();
+    if (editId) {
+      notes = notes.map(function(n) { return n.id === editId ? Object.assign({}, n, { title:title, content:content, category:category, color:currentColor, tags:currentTags, isFavorite:currentFavorite, updatedAt:new Date().toISOString() }) : n; });
+    } else {
+      notes.unshift({ id:genId(), title:title, content:content, category:category, color:currentColor, tags:currentTags, isFavorite:currentFavorite, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString() });
+    }
+    saveNotes(notes);
+    window.closeQuickNoteModal();
+    window.renderNotes();
+    if (window.showToast) window.showToast(editId ? 'Nota atualizada' : 'Nota criada', 'success');
+  };
+
+  window.deleteQuickNote = function(id) {
+    if (!confirm('Excluir esta nota?')) return;
+    var notes = getNotes().filter(function(n) { return n.id !== id; });
+    saveNotes(notes);
+    window.renderNotes();
+    if (window.showToast) window.showToast('Nota excluída', 'info');
+  };
+
+  window.toggleNoteFav = function(id) {
+    var notes = getNotes().map(function(n) { return n.id === id ? Object.assign({}, n, { isFavorite:!n.isFavorite, updatedAt:new Date().toISOString() }) : n; });
+    saveNotes(notes);
+    window.renderNotes();
+  };
+
+  window.setNoteColor = function(color) {
+    currentColor = color;
+    document.querySelectorAll('.note-color-btn').forEach(function(btn) {
+      btn.style.borderColor = btn.getAttribute('data-color') === color ? 'rgba(255,255,255,0.6)' : 'transparent';
+    });
+  };
+
+  window.addNoteTag = function() {
+    var input = document.getElementById('noteTagInput');
+    var tag = input.value.trim().toLowerCase();
+    if (tag && !currentTags.includes(tag)) { currentTags.push(tag); window.renderNoteTags(); }
+    input.value = '';
+  };
+
+  window.removeNoteTag = function(tag) {
+    currentTags = currentTags.filter(function(t) { return t !== tag; });
+    window.renderNoteTags();
+  };
+
+  window.renderNoteTags = function() {
+    var el = document.getElementById('noteTagsList');
+    if (!el) return;
+    el.innerHTML = currentTags.map(function(t) {
+      return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold text-amber-400" style="background:rgba(245,158,11,0.1); border:1px solid rgba(245,158,11,0.2);">#'+t+' <button onclick="window.removeNoteTag(\''+t+'\')" class="hover:text-red-400"><span class="material-symbols-outlined text-[9px]">close</span></button></span>';
+    }).join('');
+  };
+
+  window.toggleNoteFavorite = function() {
+    currentFavorite = !currentFavorite;
+    window.updateFavBtn();
+  };
+
+  window.updateFavBtn = function() {
+    var icon = document.getElementById('noteFavIcon');
+    var label = document.getElementById('noteFavLabel');
+    var btn = document.getElementById('noteFavoriteBtn');
+    if (currentFavorite) {
+      icon.textContent = 'star'; label.textContent = 'Favorita'; btn.style.borderColor = 'rgba(245,158,11,0.4)'; btn.style.background = 'rgba(245,158,11,0.08)'; btn.className = 'flex items-center gap-2 px-3 py-2 rounded-[4px] transition-all text-amber-400';
+    } else {
+      icon.textContent = 'star_border'; label.textContent = 'Marcar como favorita'; btn.style.borderColor = 'rgba(255,255,255,0.08)'; btn.style.background = ''; btn.className = 'flex items-center gap-2 px-3 py-2 rounded-[4px] transition-all text-gray-500';
+    }
+  };
+
+  // Initial render
+  if (document.getElementById('notesGrid')) window.renderNotes();
+
+  // Close modal on ESC
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { var m = document.getElementById('quickNoteModal'); if (m && m.style.display === 'flex') window.closeQuickNoteModal(); }
+  });
+})();
+</script>
