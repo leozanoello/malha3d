@@ -1,19 +1,13 @@
-{{!-- Partial: Botões de Dados de Teste (Beta) --}}
-<div class="flex flex-col gap-2 w-full">
- <!-- Linha 1: Quantidade (ocupa 2 colunas se couber) -->
- <div class="flex items-center gap-1.5 px-2 py-1.5 rounded-[4px] w-full" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
-  <span class="text-[8px] font-black text-gray-400 uppercase tracking-wider shrink-0">Qtd:</span>
-  <input type="range" id="testDataQty" min="5" max="50" value="10" step="5" class="flex-1 h-1 accent-orange-500 cursor-pointer" oninput="document.getElementById('testDataQtyLabel').textContent=this.value">
-  <span id="testDataQtyLabel" class="text-[9px] font-black text-white w-6 text-center shrink-0">10</span>
+{{!-- Partial: Botões de Dados de Teste (Beta) — Compacto, inline --}}
+<div class="flex items-center gap-1.5">
+ <div class="flex items-center gap-1 px-2 py-1 rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+  <input type="range" id="testDataQty" min="5" max="50" value="10" step="5" class="w-12 h-1 accent-orange-500 cursor-pointer" oninput="document.getElementById('testDataQtyLabel').textContent=this.value">
+  <span id="testDataQtyLabel" class="text-[8px] font-black text-white w-4 text-center">10</span>
  </div>
-
- <!-- Linha 2-3: Botões em 2 colunas -->
- <div class="grid grid-cols-2 gap-2 w-full">
-  <button onclick="window.generateTestData('{{module}}')" class="flex items-center justify-center gap-1 px-2 py-1.5 rounded-[4px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[8px] font-black uppercase tracking-widest hover:bg-emerald-500/20 transition-colors">
-   <span class="material-symbols-outlined text-[11px]">add_circle</span> Criar
-  </button>
-  <button onclick="window.clearTestData('{{module}}')" class="flex items-center justify-center gap-1 px-2 py-1.5 rounded-[4px] bg-red-500/10 border border-red-500/30 text-red-400 text-[8px] font-black uppercase tracking-widest hover:bg-red-500/20 transition-colors">
-   <span class="material-symbols-outlined text-[11px]">delete_sweep</span> Limpar
-  </button>
- </div>
+ <button onclick="window.generateTestData('{{module}}')" class="py-1 px-2 rounded-[4px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[7px] font-black uppercase tracking-wider hover:bg-emerald-500/20 transition-colors flex items-center gap-1" title="Criar dados de teste">
+  <span class="material-symbols-outlined text-[10px]">add_circle</span> Criar
+ </button>
+ <button onclick="window.clearTestData('{{module}}')" class="py-1 px-2 rounded-[4px] bg-red-500/10 border border-red-500/30 text-red-400 text-[7px] font-black uppercase tracking-wider hover:bg-red-500/20 transition-colors flex items-center gap-1" title="Limpar dados de teste">
+  <span class="material-symbols-outlined text-[10px]">delete_sweep</span> Limpar
+ </button>
 </div>
