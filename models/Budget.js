@@ -32,6 +32,8 @@ const Budget = sequelize.define('Budget', {
       'Arquitetônico',
       'Interiores',
       'Comercial',
+      'Planta Humanizada',
+      'Tour Virtual',
       'Outro'
     ),
     allowNull: true,

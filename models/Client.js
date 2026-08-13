@@ -82,7 +82,8 @@ const Client = sequelize.define('Client', {
   }
 }, {
   tableName: 'clients',
-  timestamps: true
+  timestamps: true,
+  underscored: true
 });
 
 module.exports = Client;

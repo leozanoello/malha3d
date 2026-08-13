@@ -5491,11 +5491,20 @@ router.get('/api/relatorios/bi', requireAuth, async (req, res) => {
 // === MENU DE TABELAS (Admin DB) ===
 router.get('/tabelas', requireAuth, async (req, res) => {
   try {
-    const [tables] = await sequelize.query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '%backup%' ORDER BY name;");
+    let tables;
+    if (sequelize.getDialect() === 'sqlite') {
+      const [result] = await sequelize.query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '%backup%' ORDER BY name;");
+      tables = result;
+    } else {
+      const [result] = await sequelize.query("SELECT tablename as name FROM pg_tables WHERE schemaname='public' ORDER BY tablename;");
+      tables = result;
+    }
     const tableData = [];
     for (const t of tables) {
-      const [countResult] = await sequelize.query(`SELECT COUNT(*) as count FROM "${t.name}"`);
-      tableData.push({ name: t.name, count: countResult[0].count });
+      try {
+        const [countResult] = await sequelize.query(`SELECT COUNT(*) as count FROM "${t.name}"`);
+        tableData.push({ name: t.name, count: countResult[0].count });
+      } catch(e) { tableData.push({ name: t.name, count: 0 }); }
     }
     res.render('admin/tabelas', { layout: 'admin', title: 'Gestão de Tabelas', currentPage: 'tabelas', user: req.user, tables: tableData });
   } catch (error) {
@@ -5507,8 +5516,15 @@ router.get('/api/tabelas/:name', requireAuth, async (req, res) => {
   try {
     const tableName = req.params.name.replace(/[^a-zA-Z0-9_]/g, '');
     const [rows] = await sequelize.query(`SELECT * FROM "${tableName}" LIMIT 100`);
-    const [cols] = await sequelize.query(`PRAGMA table_info("${tableName}")`);
-    res.json({ success: true, rows, columns: cols.map(c => c.name), total: rows.length });
+    let columns;
+    if (sequelize.getDialect() === 'sqlite') {
+      const [cols] = await sequelize.query(`PRAGMA table_info("${tableName}")`);
+      columns = cols.map(c => c.name);
+    } else {
+      const [cols] = await sequelize.query(`SELECT column_name as name FROM information_schema.columns WHERE table_name='${tableName}' ORDER BY ordinal_position`);
+      columns = cols.map(c => c.name);
+    }
+    res.json({ success: true, rows, columns, total: rows.length });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
