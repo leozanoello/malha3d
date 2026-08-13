@@ -1119,10 +1119,38 @@
                 <span class="hidden sm:inline">Buscar...</span>
                 <kbd class="hidden sm:inline text-[7px] px-1 py-0.5 rounded bg-white/10 text-gray-500 ml-2">Ctrl+K</kbd>
             </button>
-            <!-- Notas (acesso rápido) -->
-            <a href="/admin/notas" class="w-8 h-8 rounded-[4px] flex items-center justify-center text-amber-400 hover:text-amber-300 transition-colors {{#if (eq currentPage 'notas')}}bg-amber-500/20 border-amber-500/30{{/if}}" style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.15);" title="Notas" aria-label="Notas">
-                <span class="material-symbols-outlined text-[14px]">edit_note</span>
-            </a>
+            <!-- Notas (acesso rápido) com submenu de templates -->
+            <div class="relative group">
+                <button onclick="event.preventDefault(); document.getElementById('notesQuickMenu').classList.toggle('hidden')" class="w-8 h-8 rounded-[4px] flex items-center justify-center text-amber-400 hover:text-amber-300 transition-colors {{#if (eq currentPage 'notas')}}bg-amber-500/20 border-amber-500/30{{/if}}" style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.15);" title="Notas" aria-label="Notas">
+                    <span class="material-symbols-outlined text-[14px]">edit_note</span>
+                </button>
+                <!-- Submenu de Templates -->
+                <div id="notesQuickMenu" class="hidden absolute top-full right-0 mt-2 w-48 rounded-lg bg-[#151515] border border-white/10 shadow-2xl z-50" style="background:rgba(21,21,21,0.98); backdrop-filter:blur(20px);">
+                    <div class="p-2 space-y-1">
+                        <button onclick="window.m3dNotes.fromTemplate('checklist'); document.getElementById('notesQuickMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-2 rounded text-[9px] font-bold text-amber-400 hover:bg-white/10 transition-colors text-left">
+                            <span class="material-symbols-outlined text-[12px]">checklist</span>
+                            <span>Checklist</span>
+                        </button>
+                        <button onclick="window.m3dNotes.fromTemplate('reuniao'); document.getElementById('notesQuickMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-2 rounded text-[9px] font-bold text-purple-400 hover:bg-white/10 transition-colors text-left">
+                            <span class="material-symbols-outlined text-[12px]">groups</span>
+                            <span>Reunião</span>
+                        </button>
+                        <button onclick="window.m3dNotes.fromTemplate('followup'); document.getElementById('notesQuickMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-2 rounded text-[9px] font-bold text-emerald-400 hover:bg-white/10 transition-colors text-left">
+                            <span class="material-symbols-outlined text-[12px]">call</span>
+                            <span>Follow-up</span>
+                        </button>
+                        <button onclick="window.m3dNotes.fromTemplate('producao'); document.getElementById('notesQuickMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-2 rounded text-[9px] font-bold text-sky-400 hover:bg-white/10 transition-colors text-left">
+                            <span class="material-symbols-outlined text-[12px]">view_in_ar</span>
+                            <span>Produção</span>
+                        </button>
+                        <div class="border-t border-white/10 my-1"></div>
+                        <a href="/admin/notas" class="w-full flex items-center gap-2 px-3 py-2 rounded text-[9px] font-bold text-gray-400 hover:bg-white/10 transition-colors text-left">
+                            <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                            <span>Ir para Notas</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
             <!-- Sino de Notificações -->
             <button onclick="window.openNotificationsPanel()" class="relative w-8 h-8 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-white transition-colors" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" id="notif-bell">
                 <span class="material-symbols-outlined text-[16px]">notifications</span>
@@ -1134,7 +1162,7 @@
             </div>
         </div>
 
-        <div class="flex-1 min-h-0 {{#if (eq currentPage 'dashboard')}}flex flex-col p-2 sm:p-4 md:p-6 overflow-y-auto 2xl:overflow-hidden h-full{{else}}p-3 sm:p-6 overflow-y-auto{{/if}}">
+        <div class="flex-1 min-h-0 {{#if (eq currentPage 'dashboard')}}flex flex-col p-2 sm:p-4 md:p-6 overflow-y-auto 2xl:overflow-hidden h-full{{else if (eq currentPage 'notas')}}overflow-hidden{{else}}p-3 sm:p-6 overflow-y-auto{{/if}}">
             {{#if error}}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <i class="fas fa-exclamation-circle"></i> {{error}}
@@ -1281,6 +1309,15 @@
                     .then(res => res.json())
                     .then(data => { renderGlobalSearchResults(data); searchResults.classList.remove('hidden'); });
             }, 500); // Debounce de 500ms para poupar o servidor
+        });
+
+        // Fechar menu de notas ao clicar fora
+        document.addEventListener('click', (e) => {
+            const notesMenu = document.getElementById('notesQuickMenu');
+            const notesBtn = e.target.closest('[title="Notas"]') || e.target.closest('[aria-label="Notas"]');
+            if (notesMenu && !notesMenu.contains(e.target) && !notesBtn) {
+                notesMenu.classList.add('hidden');
+            }
         });
 
         function renderGlobalSearchResults(data) {
@@ -1578,7 +1615,7 @@
             function restoreForm(form) {
                 const key = getFormKey(form);
                 try {
-                    const raw = sessionStorage.getItem(key);
+                    const raw = localStorage.getItem(key);
                     if (!raw) return;
                     const data = JSON.parse(raw);
                     const elements = form.querySelectorAll('input, select, textarea');
@@ -1599,27 +1636,29 @@
                 const key = getFormKey(form);
                 // Restaurar dados existentes
                 restoreForm(form);
+                // Expõe método manual de restore
+                form.restoreFromStorage = function() { restoreForm(form); };
                 // Salvar ao digitar/mudar
                 form.addEventListener('input', function() {
                     try {
-                        sessionStorage.setItem(key, JSON.stringify(serializeForm(form)));
-                    } catch (e) { /* sessionStorage cheio, ignorar */ }
+                        localStorage.setItem(key, JSON.stringify(serializeForm(form)));
+                    } catch (e) { /* localStorage cheio, ignorar */ }
                 });
                 form.addEventListener('change', function() {
                     try {
-                        sessionStorage.setItem(key, JSON.stringify(serializeForm(form)));
+                        localStorage.setItem(key, JSON.stringify(serializeForm(form)));
                     } catch (e) {}
                 });
                 // Limpar ao enviar com sucesso
                 form.addEventListener('submit', function() {
-                    try { sessionStorage.removeItem(key); } catch (e) {}
+                    try { localStorage.removeItem(key); } catch (e) {}
                 }, true);
             }
 
             // Expõe API global
             window.attachAutosave = attachAutosave;
             window.clearFormDraft = function(formId) {
-                try { sessionStorage.removeItem(STORAGE_PREFIX + formId); } catch (e) {}
+                try { localStorage.removeItem(STORAGE_PREFIX + formId); } catch (e) {}
             };
 
             // Auto-aplicar a todos os forms de modal

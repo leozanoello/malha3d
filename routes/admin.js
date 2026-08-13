@@ -1304,6 +1304,25 @@ router.post('/kanban/columns/:id/delete-safe', requireAuth, async (req, res) => 
 
 router.post('/negociacoes/novo', requireAuth, async (req, res) => {
   try {
+    // Helper para converter DD/MM/YYYY para Date válido
+    const parseDateBR = (dateStr) => {
+      if (!dateStr || typeof dateStr !== 'string' || dateStr.trim() === '' || dateStr === 'Data inválida') return null;
+      // Tenta formato DD/MM/YYYY
+      const match = dateStr.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (match) {
+        const [, day, month, year] = match;
+        const date = new Date(year, parseInt(month) - 1, parseInt(day));
+        // Validação: se o resultado é uma data válida
+        if (!isNaN(date.getTime())) return date;
+      }
+      // Tenta ISO format
+      try {
+        const isoDate = new Date(dateStr);
+        if (!isNaN(isoDate.getTime())) return isoDate;
+      } catch (e) {}
+      return null;
+    };
+
     const {
       name, clientName, email, phone, contacts, leadImage, clientPhoto, projectType, status,
       priority, estimatedValue, clientBudget, probability,
@@ -1371,14 +1390,14 @@ router.post('/negociacoes/novo', requireAuth, async (req, res) => {
       location: location || null,
       environments: environments ? (Array.isArray(environments) ? environments : environments.split(',').map(s => s.trim())) : [],
       desiredAtmosphere: desiredAtmosphere || null,
-      firstPreviewDate: (firstPreviewDate && firstPreviewDate.trim() !== '') ? firstPreviewDate : null,
-      deadline: (deadline && deadline.trim() !== '') ? deadline : null,
+      firstPreviewDate: parseDateBR(firstPreviewDate),
+      deadline: parseDateBR(deadline),
       description: description || null,
       assignedUserId: (assignedUserId && assignedUserId.trim() !== '') ? assignedUserId : null,
       color: '#f97316',
       valorGanho: valorGanho ? parseFloat(valorGanho) : null,
-      dataGanhoOportunidade: (dataGanhoOportunidade && dataGanhoOportunidade.trim() !== '') ? dataGanhoOportunidade : null,
-      expectativaInicio: (expectativaInicio && expectativaInicio.trim() !== '') ? expectativaInicio : null,
+      dataGanhoOportunidade: parseDateBR(dataGanhoOportunidade),
+      expectativaInicio: parseDateBR(expectativaInicio),
       origemProjeto: origemProjeto || null,
       observacao: observacao || null,
       etiquetas: etiquetas ? (typeof etiquetas === 'string' ? JSON.parse(etiquetas || '[]') : etiquetas) : [],
@@ -1772,6 +1791,20 @@ router.post('/api/clients/quick-create', requireAuth, async (req, res) => {
 router.post('/negociacoes/:id/update', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Helper para converter DD/MM/YYYY para Date válido
+    const parseDateBR = (dateStr) => {
+      if (!dateStr || typeof dateStr !== 'string' || dateStr.trim() === '' || dateStr === 'Data inválida') return null;
+      const match = dateStr.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (match) {
+        const [, day, month, year] = match;
+        const date = new Date(year, parseInt(month) - 1, parseInt(day));
+        if (!isNaN(date.getTime())) return date;
+      }
+      try { const d = new Date(dateStr); if (!isNaN(d.getTime())) return d; } catch (e) {}
+      return null;
+    };
+
     const {
       name, clientName, email, phone, projectType, status,
       priority, estimatedValue, clientBudget, probability,
@@ -1830,14 +1863,14 @@ router.post('/negociacoes/:id/update', requireAuth, async (req, res) => {
       environments: environments ? (Array.isArray(environments) ? environments : environments.split(',').map(s => s.trim())) : budget.environments,
       desiredAtmosphere: desiredAtmosphere !== undefined ? (desiredAtmosphere || null) : budget.desiredAtmosphere,
       productionDays: productionDays !== undefined ? (productionDays ? parseInt(productionDays) : null) : budget.productionDays,
-      firstPreviewDate: (firstPreviewDate && firstPreviewDate.trim() !== '') ? firstPreviewDate : budget.firstPreviewDate,
-      deadline: (deadline && deadline.trim() !== '') ? deadline : budget.deadline,
+      firstPreviewDate: firstPreviewDate !== undefined ? (parseDateBR(firstPreviewDate) || budget.firstPreviewDate) : budget.firstPreviewDate,
+      deadline: deadline !== undefined ? (parseDateBR(deadline) || budget.deadline) : budget.deadline,
       driveLink: driveLink !== undefined ? (driveLink || null) : budget.driveLink,
       description: description !== undefined ? (description || null) : budget.description,
       assignedUserId: (assignedUserId && assignedUserId.trim() !== '') ? assignedUserId : budget.assignedUserId,
       color: color || budget.color,
       revisionsIncluded: revisionsIncluded !== undefined ? (revisionsIncluded || null) : budget.revisionsIncluded,
-      nextActionDate: nextActionDate !== undefined ? (nextActionDate || null) : budget.nextActionDate,
+      nextActionDate: nextActionDate !== undefined ? (parseDateBR(nextActionDate) || null) : budget.nextActionDate,
       nextActionNote: nextActionNote !== undefined ? (nextActionNote || null) : budget.nextActionNote,
       state: state !== undefined ? (state || null) : budget.state,
       city: city !== undefined ? (city || null) : budget.city,
@@ -1847,7 +1880,7 @@ router.post('/negociacoes/:id/update', requireAuth, async (req, res) => {
       projectClass: projectClass !== undefined ? (projectClass || null) : budget.projectClass,
       complexity: complexity !== undefined ? (complexity || budget.complexity) : budget.complexity,
       software: software !== undefined ? (software || null) : budget.software,
-      finalDeadline: (finalDeadline && finalDeadline.trim() !== '') ? finalDeadline : (budget.finalDeadline || null),
+      finalDeadline: finalDeadline !== undefined ? (parseDateBR(finalDeadline) || budget.finalDeadline || null) : (budget.finalDeadline || null),
       renderEngine: renderEngine !== undefined ? (renderEngine || null) : budget.renderEngine,
       inputFormats: inputFormats !== undefined ? (Array.isArray(inputFormats) ? inputFormats : (inputFormats || [])) : budget.inputFormats,
       floorPlansCount: floorPlansCount !== undefined ? parseInt(floorPlansCount) : budget.floorPlansCount,

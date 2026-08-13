@@ -28,7 +28,7 @@
  </header>
 
  <div class="flex-1 overflow-y-auto p-6 custom-scrollbar" style="max-height: calc(85vh - 70px);">
- <form id="newLeadForm" action="/admin/negociacoes/novo" method="POST" class="space-y-4 text-sm" data-autosave="1">
+ <form id="newLeadForm" action="/admin/negociacoes/novo" method="POST" class="space-y-4 text-sm">
  <input type="hidden" name="contacts" id="hiddenContactsJson" value="[]">
  <input type="hidden" name="leadImage" id="hiddenLeadImage" value="/assets/0e36b4cd-1981-46d7-8e91-d4183a39f14a_3840w.webp">
  <input type="hidden" name="kanbanType" id="hiddenKanbanType" value="{{kanbanType}}">
@@ -170,8 +170,8 @@
      </div>
      <div class="space-y-2">
       <div>
-       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Nome do Contato *</label>
-       <input type="text" name="clientName" id="mainClientName" required class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="Nome do Cliente">
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Nome do Contato</label>
+       <input type="text" name="clientName" id="mainClientName" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all" placeholder="Nome do Cliente">
       </div>
       <div class="grid grid-cols-2 gap-2">
        <div>

@@ -3,7 +3,7 @@
      Layout: Sidebar (lista) + Editor (principal)
      ═══════════════════════════════════════════════════════════════ -->
 
-<div class="flex h-[calc(100vh-60px)] overflow-hidden -m-3 sm:-m-6">
+<div class="flex h-full overflow-hidden">
 
  <!-- ══════════ SIDEBAR ESQUERDA (Notas) ══════════ -->
  <aside class="w-64 shrink-0 flex flex-col overflow-hidden" style="background:#111; border-right:1px solid rgba(255,255,255,0.06);">
@@ -182,6 +182,48 @@ function genId(){return 'n_'+Date.now()+'_'+Math.random().toString(36).slice(2,7
 function strip(h){var d=document.createElement('div');d.innerHTML=h;return d.textContent||'';}
 function ago(s){var d=new Date(s),m=Math.floor((Date.now()-d)/60000);if(m<1)return'agora';if(m<60)return m+'min';var h=Math.floor(m/60);if(h<24)return h+'h';var dd=Math.floor(h/24);return dd+'d';}
 
+// Modal de edição rápida (pop-up)
+function showNoteQuickModal(){
+  var modal=document.getElementById('notesQuickModal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.id='notesQuickModal';
+    modal.className='fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden';
+    modal.innerHTML='<div class="bg-[#151515] border border-white/10 rounded-lg shadow-2xl w-full max-w-2xl mx-4 max-h-[85vh] flex flex-col overflow-hidden">'
+      +'<div class="flex items-center justify-between p-4 border-b border-white/5">'
+      +'<h3 class="text-base font-black text-white flex items-center gap-2"><span class="material-symbols-outlined text-amber-400">edit_note</span> <span id="quickModalTitle">Nova Nota</span></h3>'
+      +'<button onclick="document.getElementById(\'notesQuickModal\').classList.add(\'hidden\')" class="w-8 h-8 rounded hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white"><span class="material-symbols-outlined">close</span></button>'
+      +'</div>'
+      +'<div class="flex-1 overflow-y-auto p-4 space-y-4">'
+      +'<div><input type="text" id="quickEditorTitle" placeholder="Título da nota..." class="w-full bg-transparent text-base font-bold text-white placeholder-gray-600 focus:outline-none border-b border-white/10 pb-2"></div>'
+      +'<div id="quickEditorContent" contenteditable="true" class="w-full min-h-[300px] bg-white/5 rounded p-3 text-sm text-white leading-relaxed focus:outline-none border border-white/10" style="text-align:left;"></div>'
+      +'<div class="border-t border-white/10 pt-4">'
+      +'<label class="text-[9px] font-bold text-gray-500 uppercase mb-2 block">Categoria</label>'
+      +'<select id="quickEditorCategory" class="w-full px-3 py-2 rounded bg-white/5 border border-white/10 text-white text-[9px] font-bold focus:outline-none" style="background:rgba(255,255,255,0.02);">'
+      +'<option value="Geral">Geral</option><option value="Trabalho">Trabalho</option><option value="Pessoal">Pessoal</option><option value="Ideias">Ideias</option><option value="Lembretes">Lembretes</option><option value="Reuniões">Reuniões</option>'
+      +'</select>'
+      +'</div>'
+      +'<div class="border-t border-white/10 pt-4">'
+      +'<label class="text-[9px] font-bold text-gray-500 uppercase mb-2 block">Tags</label>'
+      +'<div class="flex gap-2 mb-2">'
+      +'<input type="text" id="quickEditorTagInput" placeholder="tag + Enter" onkeydown="if(event.key===\'Enter\'){event.preventDefault();window.m3dNotes.addTagQuick();}" class="flex-1 px-3 py-2 rounded bg-white/5 border border-white/10 text-white text-[9px] font-bold focus:outline-none placeholder-gray-600">'
+      +'</div>'
+      +'<div class="flex gap-1 flex-wrap" id="quickEditorTagsList"></div>'
+      +'</div>'
+      +'</div>'
+      +'<div class="flex items-center gap-2 p-4 border-t border-white/5 bg-white/[0.01]">'
+      +'<button onclick="window.m3dNotes.saveQuickNote()" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-[9px] uppercase transition-colors">Salvar</button>'
+      +'<button onclick="document.getElementById(\'notesQuickModal\').classList.add(\'hidden\')" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white font-bold text-[9px] uppercase transition-colors">Cancelar</button>'
+      +'<span id="quickSaveStatus" class="text-[8px] text-gray-600 ml-auto">●</span>'
+      +'</div>'
+      +'</div>';
+    document.body.appendChild(modal);
+  }
+  modal.classList.remove('hidden');
+  document.getElementById('quickEditorTitle').focus();
+  document.getElementById('quickEditorTitle').select();
+}
+
 window.m3dNotes={
   renderList:function(){
     var notes=get(),q=(document.getElementById('notesSidebarSearch')?.value||'').toLowerCase();
@@ -209,9 +251,60 @@ window.m3dNotes={
     var tpl=TEMPLATES[type];if(!tpl)return;
     var notes=get();
     var n={id:genId(),title:tpl.title,content:tpl.content,cat:tpl.category,color:'yellow',tags:[],fav:false,created:new Date().toISOString(),updated:new Date().toISOString()};
-    notes.unshift(n);save(notes);activeId=n.id;
-    this.renderList();this.loadEditor(n);
-    setTimeout(function(){document.getElementById('editorTitle').focus();document.getElementById('editorTitle').select();},50);
+    notes.unshift(n);save(notes);
+    // Se há um modal rápido aberto, usar ele; senão carregar o editor
+    var quickModal=document.getElementById('notesQuickModal');
+    if(quickModal && !quickModal.classList.contains('hidden')){
+      document.getElementById('quickEditorTitle').value=n.title;
+      document.getElementById('quickEditorContent').innerHTML=n.content;
+      document.getElementById('quickEditorCategory').value=n.cat;
+      document.getElementById('quickEditorTagsList').innerHTML='';
+      document.getElementById('quickEditorTagInput').value='';
+      window.m3dNotes._currentQuickNoteId=n.id;
+    } else {
+      // Usar modal rápida por padrão
+      showNoteQuickModal();
+      document.getElementById('quickEditorTitle').value=n.title;
+      document.getElementById('quickEditorContent').innerHTML=n.content;
+      document.getElementById('quickEditorCategory').value=n.cat;
+      document.getElementById('quickEditorTagsList').innerHTML='';
+      document.getElementById('quickEditorTagInput').value='';
+      window.m3dNotes._currentQuickNoteId=n.id;
+    }
+  },
+  saveQuickNote:function(){
+    if(!window.m3dNotes._currentQuickNoteId)return;
+    var notes=get();
+    notes=notes.map(function(n){
+      if(n.id!==window.m3dNotes._currentQuickNoteId)return n;
+      n.title=document.getElementById('quickEditorTitle').value;
+      n.content=document.getElementById('quickEditorContent').innerHTML;
+      n.cat=document.getElementById('quickEditorCategory').value;
+      n.updated=new Date().toISOString();
+      return n;
+    });
+    save(notes);
+    var st=document.getElementById('quickSaveStatus');if(st){st.textContent='✓ Salvo';st.className='text-[8px] text-emerald-500';setTimeout(function(){st.textContent='●';st.className='text-[8px] text-gray-600';},1500);}
+    setTimeout(function(){
+      document.getElementById('notesQuickModal').classList.add('hidden');
+      window.m3dNotes._currentQuickNoteId=null;
+    },600);
+  },
+  addTagQuick:function(){
+    var input=document.getElementById('quickEditorTagInput');var tag=input.value.trim().toLowerCase();input.value='';
+    if(!tag)return;
+    if(!window.m3dNotes._currentQuickNoteId)return;
+    var notes=get();notes=notes.map(function(n){if(n.id===window.m3dNotes._currentQuickNoteId&&!(n.tags||[]).includes(tag)){n.tags=n.tags||[];n.tags.push(tag);}return n;});save(notes);
+    var n=notes.find(function(x){return x.id===window.m3dNotes._currentQuickNoteId;});this.renderTagsQuick(n.tags||[]);
+  },
+  removeTagQuick:function(tag){
+    if(!window.m3dNotes._currentQuickNoteId)return;
+    var notes=get();notes=notes.map(function(n){if(n.id===window.m3dNotes._currentQuickNoteId)n.tags=(n.tags||[]).filter(function(t){return t!==tag;});return n;});save(notes);
+    var n=notes.find(function(x){return x.id===window.m3dNotes._currentQuickNoteId;});this.renderTagsQuick(n.tags||[]);
+  },
+  renderTagsQuick:function(tags){
+    var el=document.getElementById('quickEditorTagsList');if(!el)return;
+    el.innerHTML=tags.map(function(t){return '<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-bold text-amber-400" style="background:rgba(245,158,11,0.1);">#'+t+'<button onclick="window.m3dNotes.removeTagQuick(\''+t+'\')" class="hover:text-red-400 ml-0.5">×</button></span>';}).join('');
   },
   open:function(id){
     var notes=get(),n=notes.find(function(x){return x.id===id;});

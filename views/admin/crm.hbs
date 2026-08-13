@@ -2511,7 +2511,6 @@ window.loadLeadHistory = function(leadId) {
  const modal = document.getElementById('newLeadModal') || document.getElementById('newDealModal');
  if (!modal) return;
  const form = modal.querySelector('form');
- if (form && typeof form.reset === 'function') form.reset();
 
  // Reset section 3 and 4 toggle states
  const t3 = document.getElementById('toggleSection3');
@@ -2519,9 +2518,29 @@ window.loadLeadHistory = function(leadId) {
  const t4 = document.getElementById('toggleSection4');
  if (t4) { t4.checked = true; window.toggleLeadSection(4, true); }
 
- // Reset project tags
- _projectTags = [];
- renderProjectTags();
+ // NÃO chamar form.reset() — destrói dados do autosave
+ // Restaurar dados do localStorage (autosave)
+ if (form && window.attachAutosave) {
+   window.attachAutosave(form);
+ }
+ if (form && typeof form.restoreFromStorage === 'function') {
+   form.restoreFromStorage();
+ }
+
+ // Reset project tags — mas mantém do storage se houver
+ const storedTags = localStorage.getItem('malha3d_form_draft_newLeadForm');
+ if (storedTags) {
+   try {
+     const data = JSON.parse(storedTags);
+     if (data.etiquetas) {
+       _projectTags = Array.isArray(data.etiquetas) ? data.etiquetas : JSON.parse(data.etiquetas);
+       renderProjectTags();
+     }
+   } catch(e) { _projectTags = []; renderProjectTags(); }
+ } else {
+   _projectTags = [];
+   renderProjectTags();
+ }
 
  modal.classList.remove('hidden');
  modal.style.setProperty('display', 'flex', 'important');
@@ -3258,20 +3277,22 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // === AUTO AI BANNER ON NEW LEAD MODAL OPEN ===
-window.openNewLeadModal = function() {
-  const modal = document.getElementById('newLeadModal');
-  if (modal) {
-    modal.classList.remove('hidden');
-    modal.style.display = 'flex';
-    // Generate AI banner automatically after a short delay to ensure DOM is ready
+// (integrado na definição principal de openNewLeadModal acima — este bloco só adiciona banner cycle)
+(function() {
+  const _originalOpen = window.openNewLeadModal;
+  window.openNewLeadModal = function() {
+    if (_originalOpen) _originalOpen();
+    // Generate AI banner after modal is visible
     setTimeout(() => {
       window.cycleAiBanner?.();
-      // Scroll form to top
-      const scrollContainer = modal.querySelector('.overflow-y-auto');
-      if (scrollContainer) scrollContainer.scrollTop = 0;
+      const modal = document.getElementById('newLeadModal');
+      if (modal) {
+        const scrollContainer = modal.querySelector('.overflow-y-auto');
+        if (scrollContainer) scrollContainer.scrollTop = 0;
+      }
     }, 100);
-  }
-};
+  };
+})();
 
 window.closeNewLeadModal = function() {
   const modal = document.getElementById('newLeadModal');
