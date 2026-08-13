@@ -2720,6 +2720,28 @@ document.addEventListener('DOMContentLoaded', function() {
  }
  };
 
+ // Selecionar tipologia (Renderização, Modelagem, Preparo)
+ window.selectProjectType = function(btnElement, typeValue) {
+ // Remove highlight de todos os botões
+ document.querySelectorAll('.project-type-btn').forEach(btn => {
+ btn.classList.remove('border-orange-500', 'border-purple-500', 'border-blue-500', 'bg-orange-500/10', 'bg-purple-500/10', 'bg-blue-500/10');
+ btn.classList.add('border-white/10', 'bg-white/5');
+ });
+
+ // Adiciona highlight ao botão clicado
+ btnElement.classList.remove('border-white/10', 'bg-white/5');
+ if (typeValue === 'Renderização') {
+ btnElement.classList.add('border-orange-500', 'bg-orange-500/10');
+ } else if (typeValue === 'Modelagem') {
+ btnElement.classList.add('border-purple-500', 'bg-purple-500/10');
+ } else if (typeValue === 'Preparo') {
+ btnElement.classList.add('border-blue-500', 'bg-blue-500/10');
+ }
+
+ // Atualiza o input hidden
+ document.getElementById('newLeadProjectType').value = typeValue;
+ };
+
  document.getElementById('btn-new-deal')?.addEventListener('click', (e) => {
  e.preventDefault();
  window.openNewLeadModal();

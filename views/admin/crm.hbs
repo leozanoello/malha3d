@@ -928,9 +928,9 @@
  </div>
  </div>
  </div>
- <!-- BOTÃO LANÇAR NO FINANCEIRO -->
+ <!-- BOTÃO SINCRONIZAR COM FINANCEIRO -->
  <button type="button" onclick="window.launchFinanceFromCard()" class="w-full py-2.5 rounded-xl bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 hover:bg-emerald-600">
- <span class="material-symbols-outlined text-sm">send</span> Lançar Receita no Financeiro (Pendente de Aprovação)
+ <span class="material-symbols-outlined text-sm">sync</span> Sincronizar Receita com Financeiro
  </button>
  </div>
 
@@ -2543,9 +2543,8 @@ window.loadLeadHistory = function(leadId) {
  }
 
  // Reset ambientes dinâmicos
- selectedEnvironments = [];
- window.renderEnvironmentCards();
- const envSelect = document.getElementById('newCardEnvironmentSelect');
+ if (window.renderEnvItems) window.renderEnvItems();
+ var envSelect = document.getElementById('envSelectNew');
  if (envSelect) envSelect.value = '';
 
  modal.classList.remove('hidden');
@@ -2560,6 +2559,23 @@ window.loadLeadHistory = function(leadId) {
  modal.classList.add('hidden');
  modal.style.setProperty('display', 'none', 'important');
  }
+ };
+
+ // Selecionar tipologia (Renderização, Modelagem, Preparo)
+ window.selectProjectType = function(btnElement, typeValue) {
+ document.querySelectorAll('.project-type-btn').forEach(btn => {
+ btn.classList.remove('border-orange-500', 'border-purple-500', 'border-blue-500', 'bg-orange-500/10', 'bg-purple-500/10', 'bg-blue-500/10');
+ btn.classList.add('border-white/10', 'bg-white/5');
+ });
+ btnElement.classList.remove('border-white/10', 'bg-white/5');
+ if (typeValue === 'Renderização') {
+ btnElement.classList.add('border-orange-500', 'bg-orange-500/10');
+ } else if (typeValue === 'Modelagem') {
+ btnElement.classList.add('border-purple-500', 'bg-purple-500/10');
+ } else if (typeValue === 'Preparo') {
+ btnElement.classList.add('border-blue-500', 'bg-blue-500/10');
+ }
+ document.getElementById('newLeadProjectType').value = typeValue;
  };
 
  // === PROJECT TAGS MANAGEMENT ===
@@ -3308,6 +3324,54 @@ window.closeNewLeadModal = function() {
   }
 };
 
+// Selecionar tipologia (Renderização, Modelagem, Preparo)
+window.selectProjectType = function(btnElement, typeValue) {
+  // Remove highlight de todos os botões
+  document.querySelectorAll('.project-type-btn').forEach(btn => {
+    btn.classList.remove('border-orange-500', 'border-purple-500', 'border-blue-500', 'bg-orange-500/10', 'bg-purple-500/10', 'bg-blue-500/10');
+    btn.classList.add('border-white/10', 'bg-white/5');
+  });
+
+  // Adiciona highlight ao botão clicado
+  btnElement.classList.remove('border-white/10', 'bg-white/5');
+  if (typeValue === 'Renderização') {
+    btnElement.classList.add('border-orange-500', 'bg-orange-500/10');
+  } else if (typeValue === 'Modelagem') {
+    btnElement.classList.add('border-purple-500', 'bg-purple-500/10');
+  } else if (typeValue === 'Preparo') {
+    btnElement.classList.add('border-blue-500', 'bg-blue-500/10');
+  }
+
+  // Atualiza o input hidden
+  document.getElementById('newLeadProjectType').value = typeValue;
+};
+
+// Sincronizar receita do card com Financeiro
+window.launchFinanceFromCard = async function() {
+  const leadId = window._currentLeadId;
+  if (!leadId) { alert('Abra um lead antes de sincronizar.'); return; }
+  const totalValue = parseFloat(document.getElementById('editTotalValue')?.value || document.getElementById('editEstimatedValue')?.value || 0);
+  if (totalValue <= 0) { alert('Preencha o Valor Total antes de sincronizar.'); return; }
+  const installments = parseInt(document.getElementById('editInstallmentsCount')?.value || 1);
+  const firstDueDate = document.getElementById('editFirstDueDate')?.value || new Date().toISOString().split('T')[0];
+  if (!confirm('Sincronizar R$ ' + totalValue.toLocaleString('pt-BR', {minimumFractionDigits:2}) + ' em ' + installments + 'x com o Financeiro?')) return;
+  try {
+    const res = await fetch('/admin/api/negociacoes/' + leadId + '/finance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ totalValue, installments, firstDueDate })
+    });
+    const data = await res.json();
+    if (data.success) {
+      if (window.showToast) window.showToast('Receita sincronizada com o Financeiro!', 'success');
+    } else {
+      alert('Erro: ' + (data.error || 'Falha ao sincronizar'));
+    }
+  } catch (err) {
+    alert('Erro de rede');
+  }
+};
+
 // Auto-cycle banner on page load
 window.cycleAiBanner = function() {
   const banners = [
@@ -3609,76 +3673,5 @@ window.deleteColumnSafe = async function() {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// SISTEMA DINÂMICO DE AMBIENTES — NOVO LEAD
-// ═══════════════════════════════════════════════════════════════
-
-let selectedEnvironments = [];
-
-window.addEnvironmentCard = function() {
- const select = document.getElementById('newCardEnvironmentSelect');
- const envValue = select.value.trim();
-
- if (!envValue) {
-  alert('Selecione um ambiente!');
-  return;
- }
-
- // Verificar duplicatas
- if (selectedEnvironments.includes(envValue)) {
-  alert('Este ambiente já foi adicionado!');
-  select.value = '';
-  return;
- }
-
- selectedEnvironments.push(envValue);
- window.renderEnvironmentCards();
- select.value = '';
-};
-
-window.removeEnvironmentCard = function(envName) {
- selectedEnvironments = selectedEnvironments.filter(e => e !== envName);
- window.renderEnvironmentCards();
-};
-
-window.renderEnvironmentCards = function() {
- const container = document.getElementById('newCardEnvironmentsContainer');
- const hidden = document.getElementById('newCardEnvironmentsHidden');
-
- container.innerHTML = '';
-
- if (selectedEnvironments.length === 0) {
-  container.innerHTML = '<p class="text-[7px] text-gray-500 w-full text-center py-1">Nenhum ambiente adicionado</p>';
-  hidden.value = '[]';
-  return;
- }
-
- selectedEnvironments.forEach((env, idx) => {
-  const card = document.createElement('div');
-  card.className = 'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-orange-500/30 text-white hover:bg-orange-500/10 transition-all group';
-  card.innerHTML = `
-   <span class="material-symbols-outlined text-[10px] text-orange-400">location_on</span>
-   <span class="text-[9px] font-semibold whitespace-nowrap">${env}</span>
-   <button type="button" onclick="window.removeEnvironmentCard('${env.replace(/'/g, "\\'")}'); event.preventDefault();" class="w-4 h-4 rounded flex items-center justify-center text-gray-500 group-hover:text-red-400 hover:bg-red-500/10 transition-all">
-    <span class="material-symbols-outlined text-[8px]">close</span>
-   </button>
-  `;
-  container.appendChild(card);
- });
-
- // Atualizar hidden input para submissão
- hidden.value = JSON.stringify(selectedEnvironments);
-};
-
-// Permitir ENTER no select para adicionar
-document.addEventListener('DOMContentLoaded', function() {
- const select = document.getElementById('newCardEnvironmentSelect');
- if (select) {
-  select.addEventListener('keydown', function(e) {
-   if (e.key === 'Enter') {
-    e.preventDefault();
-    window.addEnvironmentCard();
-   }
-  });
- }
-});
+// Sistema de ambientes agora é global (admin.hbs → window.addEnvItem / window.renderEnvItems)
 </script>

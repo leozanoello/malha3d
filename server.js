@@ -450,16 +450,33 @@ const startServer = async () => {
       await sequelize.sync();
 
       // Safe column migration for SQLite: add missing columns without alter
+      const safeAddColumn = async (table, column, type) => {
+        try {
+          await sequelize.query(`ALTER TABLE "${table}" ADD COLUMN "${column}" ${type};`);
+        } catch (e) {
+          // Column already exists — ignore
+        }
+      };
+      // Budget columns that may be missing
+      await safeAddColumn('budgets', 'prazo_dias', 'INTEGER');
+      await safeAddColumn('budgets', 'panoramas360', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'animationAI', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'imagesCountDiurna', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'imagesCountNoturna', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'imagesCountMisto', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'animationSecondsDiurna', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'animationSecondsNoturna', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'animationSecondsMisto', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'floorPlansCountDiurna', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'floorPlansCountNoturna', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'floorPlansCountMisto', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'panoramas360Diurna', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'panoramas360Noturna', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'panoramas360Misto', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'animationAIDiurna', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'animationAINoturna', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'animationAIMisto', 'INTEGER DEFAULT 0');
       if (sequelize.getDialect() === 'sqlite') {
-        const safeAddColumn = async (table, column, type) => {
-          try {
-            await sequelize.query(`ALTER TABLE "${table}" ADD COLUMN "${column}" ${type};`);
-          } catch (e) {
-            // Column already exists — ignore
-          }
-        };
-        // Budget columns that may be missing
-        await safeAddColumn('budgets', 'prazo_dias', 'INTEGER');
         await safeAddColumn('clients', 'job_title', 'VARCHAR(255)');
       }
 

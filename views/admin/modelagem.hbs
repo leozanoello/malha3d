@@ -861,9 +861,9 @@
  </div>
  </div>
  </div>
- <!-- BOTÃO LANÇAR NO FINANCEIRO -->
+ <!-- BOTÃO SINCRONIZAR COM FINANCEIRO -->
  <button type="button" onclick="window.launchFinanceFromCard()" class="w-full py-2.5 rounded-xl bg-emerald-500 text-white text-[9px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 hover:bg-emerald-600">
- <span class="material-symbols-outlined text-sm">send</span> Lançar Receita no Financeiro (Pendente de Aprovação)
+ <span class="material-symbols-outlined text-sm">sync</span> Sincronizar Receita com Financeiro
  </button>
  </div>
 
@@ -2695,6 +2695,28 @@ window.closeNewLeadModal = function() {
   }
 };
 
+// Selecionar tipologia (Renderização, Modelagem, Preparo)
+window.selectProjectType = function(btnElement, typeValue) {
+  // Remove highlight de todos os botões
+  document.querySelectorAll('.project-type-btn').forEach(btn => {
+    btn.classList.remove('border-orange-500', 'border-purple-500', 'border-blue-500', 'bg-orange-500/10', 'bg-purple-500/10', 'bg-blue-500/10');
+    btn.classList.add('border-white/10', 'bg-white/5');
+  });
+
+  // Adiciona highlight ao botão clicado
+  btnElement.classList.remove('border-white/10', 'bg-white/5');
+  if (typeValue === 'Renderização') {
+    btnElement.classList.add('border-orange-500', 'bg-orange-500/10');
+  } else if (typeValue === 'Modelagem') {
+    btnElement.classList.add('border-purple-500', 'bg-purple-500/10');
+  } else if (typeValue === 'Preparo') {
+    btnElement.classList.add('border-blue-500', 'bg-blue-500/10');
+  }
+
+  // Atualiza o input hidden
+  document.getElementById('newLeadProjectType').value = typeValue;
+};
+
 // === MÁSCARA DE DATA BR (DD/MM/AAAA) ===
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.date-br-mask').forEach(function(input) {
@@ -2714,26 +2736,26 @@ function convertBrDateToIso(brDate) {
   return parts[2] + '-' + parts[1] + '-' + parts[0];
 }
 
-// === LANÇAR RECEITA DA ABA FINANCEIRO DO CARD ===
+// === SINCRONIZAR RECEITA DO CARD COM FINANCEIRO ===
 window.launchFinanceFromCard = async function() {
  const projectId = window._currentLeadId;
- if (!projectId) { alert('Salve o projeto antes de lançar no financeiro.'); return; }
+ if (!projectId) { alert('Salve o projeto antes de sincronizar.'); return; }
  const totalValue = parseFloat(document.getElementById('editTotalValue')?.value || 0);
- if (totalValue <= 0) { alert('Preencha o Valor Total antes de lançar.'); return; }
+ if (totalValue <= 0) { alert('Preencha o Valor Total antes de sincronizar.'); return; }
  const installments = parseInt(document.getElementById('editInstallmentsCount')?.value || 1);
  const firstDueDate = document.getElementById('editFirstDueDate')?.value || new Date().toISOString().split('T')[0];
- if (!confirm('Lançar R$ ' + totalValue.toLocaleString('pt-BR', {minimumFractionDigits:2}) + ' em ' + installments + 'x no Financeiro?\n\nO lançamento entrará como PENDENTE DE APROVAÇÃO.')) return;
+ if (!confirm('Sincronizar R$ ' + totalValue.toLocaleString('pt-BR', {minimumFractionDigits:2}) + ' em ' + installments + 'x com o Financeiro?')) return;
  try {
   const res = await fetch('/admin/api/negociacoes/' + projectId + '/finance', {
    method: 'POST',
    headers: { 'Content-Type': 'application/json' },
-   body: JSON.stringify({ totalValue, installments, firstDueDate, approvalStatus: 'pendente' })
+   body: JSON.stringify({ totalValue, installments, firstDueDate })
   });
   const data = await res.json();
   if (data.success) {
-   if (window.showToast) window.showToast('Receita lançada no Financeiro! Aguardando aprovação.', 'success');
+   if (window.showToast) window.showToast('Receita sincronizada com o Financeiro!', 'success');
   } else {
-   alert('Erro: ' + (data.error || 'Falha ao lançar'));
+   alert('Erro: ' + (data.error || 'Falha ao sincronizar'));
   }
  } catch (err) {
   alert('Erro de rede');

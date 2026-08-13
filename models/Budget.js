@@ -199,71 +199,88 @@ const Budget = sequelize.define('Budget', {
   },
   panoramas360: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'panoramas360'
   },
   animationAI: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'animationAI'
   },
   imagesCountDiurna: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'imagesCountDiurna'
   },
   imagesCountNoturna: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'imagesCountNoturna'
   },
   imagesCountMisto: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'imagesCountMisto'
   },
   animationSecondsDiurna: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'animationSecondsDiurna'
   },
   animationSecondsNoturna: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'animationSecondsNoturna'
   },
   animationSecondsMisto: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'animationSecondsMisto'
   },
   floorPlansCountDiurna: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'floorPlansCountDiurna'
   },
   floorPlansCountNoturna: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'floorPlansCountNoturna'
   },
   floorPlansCountMisto: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'floorPlansCountMisto'
   },
   panoramas360Diurna: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'panoramas360Diurna'
   },
   panoramas360Noturna: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'panoramas360Noturna'
   },
   panoramas360Misto: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'panoramas360Misto'
   },
   animationAIDiurna: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'animationAIDiurna'
   },
   animationAINoturna: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'animationAINoturna'
   },
   animationAIMisto: {
     type: DataTypes.INTEGER,
-    defaultValue: 0
+    defaultValue: 0,
+    field: 'animationAIMisto'
   },
   imagesFachadaCount: {
     type: DataTypes.INTEGER,

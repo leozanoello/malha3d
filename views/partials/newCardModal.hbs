@@ -350,32 +350,24 @@
       <span class="material-symbols-outlined text-[10px] align-middle">inventory_2</span> Informações do Card
      </small>
      <div class="space-y-2">
-      <div class="grid grid-cols-2 gap-2">
-       <div>
-        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Tipologia</label>
-        <div class="flex items-center gap-1.5">
-         <select name="projectType" id="newLeadProjectType" class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none transition-all appearance-none">
-          <option value="Renderização" selected>Renderização</option>
-          <option value="Modelagem 3D">Modelagem 3D</option>
-          <option value="Animação">Animação</option>
-          <option value="Visita Virtual">Visita Virtual 360°</option>
-          <option value="Interiores">Interiores</option>
-          <option value="Arquitetônico">Arquitetônico</option>
-          <option value="Comercial">Comercial</option>
-          <option value="Outro">Outro</option>
-         </select>
-         <button type="button" onclick="window.addDynamicOption('newLeadProjectType')" title="Adicionar Tipologia" class="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-400 hover:bg-orange-500 hover:text-white flex items-center justify-center transition-all shrink-0">
-          <span class="material-symbols-outlined text-xs">add</span>
-         </button>
-        </div>
+      <!-- TIPOLOGIA: 3 BOTÕES FUNDAMENTAIS -->
+      <div>
+       <label class="block text-[8px] text-gray-400 font-bold uppercase mb-2">Tipologia</label>
+       <div class="grid grid-cols-3 gap-2">
+        <button type="button" onclick="window.selectProjectType(this, 'Renderização')" class="px-3 py-3 rounded-lg bg-white/5 border-2 border-white/10 text-xs font-bold text-white hover:border-orange-500 hover:bg-orange-500/10 transition-all flex items-center justify-center gap-1.5 project-type-btn" data-type="Renderização">
+         <span class="material-symbols-outlined text-sm">photo_camera</span>
+         <span>Renderização</span>
+        </button>
+        <button type="button" onclick="window.selectProjectType(this, 'Modelagem')" class="px-3 py-3 rounded-lg bg-white/5 border-2 border-white/10 text-xs font-bold text-white hover:border-purple-500 hover:bg-purple-500/10 transition-all flex items-center justify-center gap-1.5 project-type-btn" data-type="Modelagem">
+         <span class="material-symbols-outlined text-sm">account_tree</span>
+         <span>Modelagem</span>
+        </button>
+        <button type="button" onclick="window.selectProjectType(this, 'Preparo')" class="px-3 py-3 rounded-lg bg-white/5 border-2 border-white/10 text-xs font-bold text-white hover:border-blue-500 hover:bg-blue-500/10 transition-all flex items-center justify-center gap-1.5 project-type-btn" data-type="Preparo">
+         <span class="material-symbols-outlined text-sm">engineering</span>
+         <span>Preparo</span>
+        </button>
        </div>
-       <div>
-        <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Cor de Destaque</label>
-        <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">
-         <input type="color" name="color" value="#f97316" class="w-5 h-5 rounded cursor-pointer bg-transparent border-0">
-         <span class="text-[10px] text-gray-400">Card Color</span>
-        </div>
-       </div>
+       <input type="hidden" name="projectType" id="newLeadProjectType" value="">
       </div>
 
       <!-- VALOR ESTIMADO + PROBABILIDADE -->
@@ -400,46 +392,66 @@
        </select>
       </div>
 
-      <!-- ENTREGÁVEIS — Sistema Dinâmico por Ambiente -->
-      <div class="p-3 rounded-xl border border-orange-500/20 bg-orange-500/5">
-       <h5 class="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-xs">inventory_2</span> Entregáveis por Ambiente
+      <!-- ENTREGÁVEIS — 5 Produtos × 3 Períodos (Diurna/Noturna/Misto) -->
+      <div class="p-3 rounded-[5px] border border-white/10 bg-white/[0.02] space-y-2">
+       <h5 class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-xs">inventory_2</span> Entregáveis
        </h5>
 
-       <!-- Adicionar Ambiente -->
-       <div class="flex gap-1.5 mb-3">
-        <select id="envSelectNew" class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-[10px] text-white focus:border-orange-500 focus:outline-none appearance-none">
-         <option value="">+ Adicionar ambiente...</option>
-         <optgroup label="🏠 Internos — Residencial">
-          <option>Sala de Estar</option><option>Sala de Jantar</option><option>Sala de TV</option><option>Cozinha</option><option>Cozinha Gourmet</option><option>Quarto Master</option><option>Quarto Casal</option><option>Quarto Solteiro</option><option>Quarto Infantil</option><option>Closet</option><option>Banheiro Master</option><option>Banheiro Social</option><option>Lavabo</option><option>Home Office</option><option>Home Theater</option><option>Escritório</option><option>Lavanderia</option><option>Despensa</option><option>Hall de Entrada</option><option>Corredor</option><option>Escada Interna</option><option>Mezanino</option><option>Adega</option>
-         </optgroup>
-         <optgroup label="🌳 Externos — Residencial">
-          <option>Fachada Frontal</option><option>Fachada Posterior</option><option>Fachada Lateral</option><option>Área Gourmet</option><option>Varanda</option><option>Terraço</option><option>Rooftop</option><option>Piscina</option><option>Deck</option><option>Jardim</option><option>Garagem</option><option>Pergolado</option><option>Espaço Zen</option><option>Playground</option>
-         </optgroup>
-         <optgroup label="🏢 Áreas Comuns — Prédios">
-          <option>Lobby / Hall</option><option>Portaria</option><option>Salão de Festas</option><option>Academia</option><option>Piscina Condominial</option><option>Brinquedoteca</option><option>Coworking</option><option>Pet Place</option><option>Churrasqueira</option><option>Quadra Esportiva</option><option>Sauna / Spa</option><option>Lavanderia Coletiva</option><option>Estacionamento</option><option>Fachada do Edifício</option><option>Vista Aérea</option><option>Implantação</option>
-         </optgroup>
-         <optgroup label="🏬 Comercial / Corporativo">
-          <option>Recepção</option><option>Sala de Reunião</option><option>Open Office</option><option>Sala da Diretoria</option><option>Copa / Refeitório</option><option>Loja / Vitrine</option><option>Restaurante</option><option>Café / Cafeteria</option><option>Clínica / Consultório</option><option>Hotel — Quarto</option><option>Hotel — Lobby</option><option>Auditório</option>
-         </optgroup>
-        </select>
-        <button type="button" onclick="window.addEnvItem()" class="px-3 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-[9px] font-black uppercase transition-colors shrink-0">+ Add</button>
+       <!-- Cabeçalho -->
+       <div class="grid grid-cols-[1fr_48px_48px_48px] gap-1 items-end">
+        <span></span>
+        <span class="text-[7px] font-black text-amber-400 uppercase text-center">☀️ Dia</span>
+        <span class="text-[7px] font-black text-indigo-400 uppercase text-center">🌙 Noite</span>
+        <span class="text-[7px] font-black text-cyan-400 uppercase text-center">🔀 Misto</span>
        </div>
 
-       <!-- Lista de Ambientes Adicionados -->
-       <div id="envItemsList" class="space-y-2 mb-3"></div>
-
-       <!-- Resumo -->
-       <div id="envSummary" class="hidden flex items-center gap-3 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-        <span class="material-symbols-outlined text-emerald-400 text-sm">summarize</span>
-        <span id="envSummaryText" class="text-[9px] font-bold text-emerald-300"></span>
+       <!-- 1. Imagens -->
+       <div class="grid grid-cols-[1fr_48px_48px_48px] gap-1 items-center">
+        <label class="text-[8px] text-gray-300 font-bold uppercase flex items-center gap-1"><span class="material-symbols-outlined text-[11px] text-gray-500">image</span> Imagens</label>
+        <input type="number" name="imagesCountDiurna" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+        <input type="number" name="imagesCountNoturna" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+        <input type="number" name="imagesCountMisto" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
        </div>
 
-       <!-- Hidden inputs para submit -->
-       <input type="hidden" name="environments" id="envDataHidden" value="[]">
-       <input type="hidden" name="imagesCount" id="envTotalImages" value="0">
-       <input type="hidden" name="animationSeconds" id="envTotalAnimation" value="0">
-       <input type="hidden" name="panoramasCount" id="envTotalPanoramas" value="0">
+       <!-- 2. Animação (s) -->
+       <div class="grid grid-cols-[1fr_48px_48px_48px] gap-1 items-center">
+        <label class="text-[8px] text-gray-300 font-bold uppercase flex items-center gap-1"><span class="material-symbols-outlined text-[11px] text-gray-500">movie</span> Animação (s)</label>
+        <input type="number" name="animationSecondsDiurna" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+        <input type="number" name="animationSecondsNoturna" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+        <input type="number" name="animationSecondsMisto" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+       </div>
+
+       <!-- 3. Plantas Humanizadas -->
+       <div class="grid grid-cols-[1fr_48px_48px_48px] gap-1 items-center">
+        <label class="text-[8px] text-gray-300 font-bold uppercase flex items-center gap-1"><span class="material-symbols-outlined text-[11px] text-gray-500">floor</span> Plantas Hum.</label>
+        <input type="number" name="floorPlansCountDiurna" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+        <input type="number" name="floorPlansCountNoturna" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+        <input type="number" name="floorPlansCountMisto" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+       </div>
+
+       <!-- 4. Render 360° -->
+       <div class="grid grid-cols-[1fr_48px_48px_48px] gap-1 items-center">
+        <label class="text-[8px] text-gray-300 font-bold uppercase flex items-center gap-1"><span class="material-symbols-outlined text-[11px] text-gray-500">360</span> Render 360°</label>
+        <input type="number" name="panoramas360Diurna" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+        <input type="number" name="panoramas360Noturna" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+        <input type="number" name="panoramas360Misto" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+       </div>
+
+       <!-- 5. Animação IA -->
+       <div class="grid grid-cols-[1fr_48px_48px_48px] gap-1 items-center">
+        <label class="text-[8px] text-gray-300 font-bold uppercase flex items-center gap-1"><span class="material-symbols-outlined text-[11px] text-gray-500">smart_toy</span> Animação IA</label>
+        <input type="number" name="animationAIDiurna" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+        <input type="number" name="animationAINoturna" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+        <input type="number" name="animationAIMisto" min="0" value="0" class="w-full bg-white/5 border border-white/10 rounded px-1 py-1.5 text-[10px] text-center text-white focus:border-orange-500 focus:outline-none">
+       </div>
+
+       <!-- Totais (calculados e enviados ao backend) -->
+       <input type="hidden" name="imagesCount" id="imagesCountTotal" value="0">
+       <input type="hidden" name="animationSeconds" id="animationSecondsTotal" value="0">
+       <input type="hidden" name="floorPlansCount" id="floorPlansCountTotal" value="0">
+       <input type="hidden" name="panoramas360" id="panoramas360Total" value="0">
+       <input type="hidden" name="animationAI" id="animationAITotal" value="0">
       </div>
 
       <!-- PRAZOS -->

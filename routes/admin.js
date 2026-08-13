@@ -953,18 +953,25 @@ router.post('/negociacoes/:id/confirm-project', requireAuth, async (req, res) =>
       proposalStatus: 'aceita'
     });
 
-    // Automação Financeira: Gerar Sinal de 50%
-    await FinanceTransaction.create({
-      type: 'receita',
-      description: `Sinal (50%) - Projeto: ${budget.name}`,
-      payer: budget.clientName || 'Cliente Direto',
-      amount: (parseFloat(budget.estimatedValue) || 0) / 2,
-      status: 'pendente',
-      category: 'projeto_render',
-      dueDate: new Date(),
-      budgetId: budget.id,
-      projectId: project.id // Linked directly!
-    });
+    // Automação Financeira: Gerar receita do projeto (parcela única = valor total)
+    const totalProjeto = parseFloat(budget.estimatedValue) || 0;
+    if (totalProjeto > 0) {
+      // Remover transações anteriores duplicadas deste budget
+      await FinanceTransaction.destroy({ where: { budgetId: budget.id, type: 'receita', category: 'recebivel_projeto' } });
+      await FinanceTransaction.create({
+        type: 'receita',
+        description: `${budget.name} — Pagamento único`,
+        amount: totalProjeto,
+        originalAmount: totalProjeto,
+        status: 'pendente',
+        category: 'recebivel_projeto',
+        dueDate: new Date(),
+        budgetId: budget.id,
+        projectId: project.id,
+        costCenter: 'producao_3d',
+        notes: `Receita gerada automaticamente ao fechar negociação`
+      });
+    }
 
     // Automação: Comissão de Indicação (10% se houver origem externa)
     if (budget.origin && budget.origin !== 'website' && budget.origin !== 'direto' && budget.origin !== 'Google' && budget.origin !== 'Instagram') {
@@ -1379,9 +1386,27 @@ router.post('/negociacoes/novo', requireAuth, async (req, res) => {
       projectCategory: isSection2Enabled ? (projectCategory || null) : null,
 
       // Opção 3 (Entregáveis 3D & Cronograma)
-      imagesCount: isSection3Enabled && imagesCount ? parseInt(imagesCount) : 0,
-      animationSeconds: isSection3Enabled && animationSeconds ? parseInt(animationSeconds) : 0,
-      panoramasCount: isSection3Enabled && panoramasCount ? parseInt(panoramasCount) : 0,
+      imagesCount: imagesCount ? parseInt(imagesCount) : 0,
+      animationSeconds: animationSeconds ? parseInt(animationSeconds) : 0,
+      panoramasCount: panoramasCount ? parseInt(panoramasCount) : 0,
+      panoramas360: req.body.panoramas360 ? parseInt(req.body.panoramas360) : 0,
+      animationAI: req.body.animationAI ? parseInt(req.body.animationAI) : 0,
+      // Sub-campos Diurna/Noturna/Misto
+      imagesCountDiurna: req.body.imagesCountDiurna ? parseInt(req.body.imagesCountDiurna) : 0,
+      imagesCountNoturna: req.body.imagesCountNoturna ? parseInt(req.body.imagesCountNoturna) : 0,
+      imagesCountMisto: req.body.imagesCountMisto ? parseInt(req.body.imagesCountMisto) : 0,
+      animationSecondsDiurna: req.body.animationSecondsDiurna ? parseInt(req.body.animationSecondsDiurna) : 0,
+      animationSecondsNoturna: req.body.animationSecondsNoturna ? parseInt(req.body.animationSecondsNoturna) : 0,
+      animationSecondsMisto: req.body.animationSecondsMisto ? parseInt(req.body.animationSecondsMisto) : 0,
+      floorPlansCountDiurna: req.body.floorPlansCountDiurna ? parseInt(req.body.floorPlansCountDiurna) : 0,
+      floorPlansCountNoturna: req.body.floorPlansCountNoturna ? parseInt(req.body.floorPlansCountNoturna) : 0,
+      floorPlansCountMisto: req.body.floorPlansCountMisto ? parseInt(req.body.floorPlansCountMisto) : 0,
+      panoramas360Diurna: req.body.panoramas360Diurna ? parseInt(req.body.panoramas360Diurna) : 0,
+      panoramas360Noturna: req.body.panoramas360Noturna ? parseInt(req.body.panoramas360Noturna) : 0,
+      panoramas360Misto: req.body.panoramas360Misto ? parseInt(req.body.panoramas360Misto) : 0,
+      animationAIDiurna: req.body.animationAIDiurna ? parseInt(req.body.animationAIDiurna) : 0,
+      animationAINoturna: req.body.animationAINoturna ? parseInt(req.body.animationAINoturna) : 0,
+      animationAIMisto: req.body.animationAIMisto ? parseInt(req.body.animationAIMisto) : 0,
       totalArea: isSection3Enabled && totalArea ? parseFloat(totalArea) : null,
       clientBudget: isSection3Enabled && clientBudget ? parseFloat(clientBudget) : null,
       productionDays: isSection3Enabled && productionDays ? parseInt(productionDays) : null,
@@ -1417,42 +1442,28 @@ router.post('/negociacoes/novo', requireAuth, async (req, res) => {
         .catch(err => console.error('[CRM] Lead image generation failed:', err.message));
     }
 
-    // === GATILHO AUTOMÁTICO: Se é um PROJETO, cria registros financeiros ===
+    // === GATILHO AUTOMÁTICO: Se é um PROJETO com valor, cria recebíveis no Financeiro ===
     let financeCreated = false;
     if (kanbanTypeResolved === 'modelagem' && (lead.valorGanho || lead.estimatedValue)) {
       try {
         const totalValue = parseFloat(lead.valorGanho || lead.estimatedValue || 0);
         const payMethod = req.body.paymentMethod || 'pix';
         const baseDate = lead.expectativaInicio || lead.deadline || new Date();
+        const numInstallments = parseInt(req.body.installments || 1);
 
-        // 1. BANCO DE VENDAS (Competência): Registro com status PENDENTE DE APROVAÇÃO
-        await FinanceTransaction.create({
-          description: `Venda: ${lead.name}`,
-          amount: totalValue,
-          originalAmount: totalValue,
-          type: 'receita',
-          category: 'venda_projeto',
-          status: 'pendente',
-          approvalStatus: 'pendente',
-          dueDate: new Date(),
-          paymentMethod: payMethod,
-          budgetId: lead.id,
-          costCenter: 'producao_3d',
-          notes: `Aguardando aprovação do gestor financeiro — Projeto "${lead.name}" | Método: ${payMethod}`
-        });
-
-        // 2. BANCO DE RECEBÍVEIS (Caixa): Gera parcelas com base no método
+        // Gerar parcelas de recebíveis (status financeiro real, sem aprovação)
         let parcelas = [];
         if (payMethod === '50_50') {
           parcelas = [
             { amount: totalValue * 0.5, dueDate: new Date(baseDate), notes: 'Parcela 1/2 (50% entrada)' },
             { amount: totalValue * 0.5, dueDate: new Date(new Date(baseDate).setDate(new Date(baseDate).getDate() + 30)), notes: 'Parcela 2/2 (50% na entrega)' }
           ];
-        } else if (payMethod === 'parcelado') {
-          for (let i = 0; i < 3; i++) {
+        } else if (payMethod === 'parcelado' || numInstallments > 1) {
+          const n = numInstallments > 1 ? numInstallments : 3;
+          for (let i = 0; i < n; i++) {
             const d = new Date(baseDate);
             d.setMonth(d.getMonth() + i);
-            parcelas.push({ amount: totalValue / 3, dueDate: d, notes: `Parcela ${i+1}/3` });
+            parcelas.push({ amount: totalValue / n, dueDate: d, notes: `Parcela ${i+1}/${n}` });
           }
         } else {
           parcelas = [{ amount: totalValue, dueDate: new Date(baseDate), notes: 'Pagamento único' }];
@@ -1460,18 +1471,17 @@ router.post('/negociacoes/novo', requireAuth, async (req, res) => {
 
         for (const p of parcelas) {
           await FinanceTransaction.create({
-            description: `Recebível: ${lead.name} — ${p.notes}`,
+            description: `${lead.name} — ${p.notes}`,
             amount: p.amount,
             originalAmount: p.amount,
             type: 'receita',
             category: 'recebivel_projeto',
             status: 'pendente',
-            approvalStatus: 'pendente',
             dueDate: p.dueDate,
             paymentMethod: payMethod,
             budgetId: lead.id,
             costCenter: 'producao_3d',
-            notes: p.notes
+            notes: `Receita do projeto "${lead.name}" | ${p.notes}`
           });
         }
         financeCreated = true;
@@ -2415,7 +2425,7 @@ router.post('/api/negociacoes/:id/convert-to-modelagem', requireAuth, async (req
 
 // ==========================================
 // FINANCEIRO TRANSACIONAL DO PROJETO (Card de Modelagem)
-// Salva Valor Total, Parcelas, Formas, Cronograma de Pagamento e Contas
+// Sincroniza valor do card → Financeiro (sem aprovação, lançamento direto)
 // ==========================================
 router.post('/api/negociacoes/:id/finance', requireAuth, async (req, res) => {
   try {
@@ -2425,6 +2435,8 @@ router.post('/api/negociacoes/:id/finance', requireAuth, async (req, res) => {
     if (!budget) return res.status(404).json({ success: false, error: 'Projeto não encontrado' });
 
     const total = parseFloat(totalValue || 0);
+    if (total <= 0) return res.status(400).json({ success: false, error: 'Valor deve ser maior que zero' });
+
     const numInstallments = parseInt(installments || 1);
     const baseDate = firstDueDate || new Date().toISOString().split('T')[0];
 
@@ -2437,29 +2449,30 @@ router.post('/api/negociacoes/:id/finance', requireAuth, async (req, res) => {
       paymentStatus: 'pendente'
     });
 
-    // Gerar lançamentos de RECEITA na tabela finance_transactions
-    // (fonte oficial de dados para o menu Financeiro)
+    // Remover transações anteriores do mesmo budget (evitar duplicidade)
+    await FinanceTransaction.destroy({ where: { budgetId: budget.id, type: 'receita', category: 'recebivel_projeto' } });
+
+    // Gerar parcelas de RECEITA diretamente (sem aprovação)
     const parcelas = [];
     for (let i = 0; i < numInstallments; i++) {
       const d = new Date(baseDate);
       d.setMonth(d.getMonth() + i);
       parcelas.push({
-        description: `Receita: ${budget.name} — Parcela ${i+1}/${numInstallments}`,
+        description: `${budget.name} — Parcela ${i+1}/${numInstallments}`,
         amount: total / numInstallments,
         originalAmount: total / numInstallments,
         type: 'receita',
         category: 'recebivel_projeto',
         status: 'pendente',
-        approvalStatus: 'pendente',
         dueDate: d,
         budgetId: budget.id,
         costCenter: 'producao_3d',
-        notes: `Lançado via aba Financeiro do card "${budget.name}"`
+        notes: `Receita do projeto "${budget.name}" | Parcela ${i+1}/${numInstallments}`
       });
     }
     await FinanceTransaction.bulkCreate(parcelas);
 
-    return res.json({ success: true, message: 'Receita lançada no Financeiro!', parcelas: parcelas.length });
+    return res.json({ success: true, message: `Receita de R$ ${total.toFixed(2)} registrada em ${numInstallments}x no Financeiro!`, parcelas: parcelas.length });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
