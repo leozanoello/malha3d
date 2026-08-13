@@ -337,8 +337,10 @@ window.m3dNotes={
       var st=document.getElementById('editorSaveStatus');if(st){st.textContent='✓ Salvo';st.className='text-[8px] text-emerald-500';setTimeout(function(){st.textContent='●';st.className='text-[8px] text-gray-600';},1500);}
     },600);
   },
-  deleteActive:function(){
-    if(!activeId||!confirm('Excluir esta nota?'))return;
+  deleteActive:async function(){
+    if(!activeId)return;
+    var ok = await window.m3dConfirm('Excluir esta nota permanentemente?', { title: 'Excluir Nota', type: 'danger', confirmText: 'Excluir' });
+    if(!ok)return;
     save(get().filter(function(n){return n.id!==activeId;}));
     activeId=null;
     document.getElementById('notesEditorActive').classList.add('hidden');

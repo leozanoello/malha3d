@@ -1784,14 +1784,89 @@ router.post('/api/clients/quick-create', requireAuth, async (req, res) => {
     if (!name || name.trim() === '') {
       return res.status(400).json({ success: false, error: 'Nome do contato/cliente é obrigatório.' });
     }
+
+    const nameTrimmed = name.trim();
+    const emailTrimmed = email ? email.trim() : null;
+    const phoneTrimmed = phone ? phone.trim() : null;
+
+    // ═══════════════════════════════════════════════════════════════
+    // VERIFICAR DUPLICATAS — Por Email, Telefone ou Nome (exato)
+    // ═══════════════════════════════════════════════════════════════
+
+    const Op = require('sequelize').Op;
+    const whereConditions = [];
+
+    // 1. Se tem email, procura por email
+    if (emailTrimmed && emailTrimmed !== '') {
+      whereConditions.push({ email: emailTrimmed });
+    }
+
+    // 2. Se tem phone, procura por phone
+    if (phoneTrimmed && phoneTrimmed !== '') {
+      whereConditions.push({ phone: phoneTrimmed });
+    }
+
+    // 3. Procura por nome exato (case-insensitive)
+    whereConditions.push(sequelize.where(
+      sequelize.fn('LOWER', sequelize.col('name')),
+      Op.eq,
+      nameTrimmed.toLowerCase()
+    ));
+
+    // Buscar possível duplicata
+    const existingClient = await Client.findOne({
+      where: {
+        [Op.or]: whereConditions
+      }
+    });
+
+    if (existingClient) {
+      // Contato já existe — verificar se é realmente igual ou apenas similar
+      const existingData = existingClient.get({ plain: true });
+
+      // Verificar se todos os dados fornecidos já existem
+      const isSameName = existingData.name.toLowerCase() === nameTrimmed.toLowerCase();
+      const isSameEmail = emailTrimmed ? (existingData.email === emailTrimmed) : true;
+      const isSamePhone = phoneTrimmed ? (existingData.phone === phoneTrimmed) : true;
+
+      if (isSameName && isSameEmail && isSamePhone) {
+        // Duplicata completa
+        return res.status(409).json({
+          success: false,
+          error: `Contato já existe com estas características:\n\n👤 ${existingData.name}\n📧 ${existingData.email || '(sem email)'}\n📱 ${existingData.phone || '(sem telefone)'}`,
+          existingClient: existingData,
+          isDuplicate: true
+        });
+      } else {
+        // Dados diferentes — permitir criação mas avisar
+        return res.status(409).json({
+          success: false,
+          error: `⚠️ Contato similar já existe:\n\n👤 ${existingData.name}\n📧 ${existingData.email || '(sem email)'}\n📱 ${existingData.phone || '(sem telefone)'}\n\nDeseja criar um novo com dados diferentes? Se sim, mude ao menos um campo (email, telefone ou nome).`,
+          existingClient: existingData,
+          isDuplicate: false,
+          similarFound: true
+        });
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // NÃO É DUPLICATA — Criar novo contato
+    // ═══════════════════════════════════════════════════════════════
+
     const client = await Client.create({
-      name: name.trim(),
-      email: (email && email.trim() !== '') ? email.trim() : null,
-      phone: (phone && phone.trim() !== '') ? phone.trim() : null,
+      name: nameTrimmed,
+      email: emailTrimmed && emailTrimmed !== '' ? emailTrimmed : null,
+      phone: phoneTrimmed && phoneTrimmed !== '' ? phoneTrimmed : null,
       category: 'Lead',
       source: 'CRM Novo Lead'
     });
-    return res.json({ success: true, client });
+
+    return res.json({
+      success: true,
+      client: client.get({ plain: true }),
+      message: `✅ Contato "${client.name}" salvo com sucesso!`
+    });
+
   } catch (err) {
     console.error('Quick Create Client Error:', err);
     return res.status(500).json({ success: false, error: err.message });
@@ -2545,34 +2620,29 @@ function buildCalendarGrid(year, month, events) {
   const firstWeekday = startOfMonth.day(); // 0 = Sunday
   const today = moment();
 
-  const eventsByDay = {};
-  events.forEach(ev => {
-    if (!ev.startTime) return;
-    const d = moment(ev.startTime);
-    if (d.year() === year && d.month() === month) {
-      const day = d.date();
-      if (!eventsByDay[day]) eventsByDay[day] = [];
-      const style = EVENT_TYPE_STYLES[ev.type] || { badge: 'bg-gray-500 shadow-gray-500/20', label: ev.type || 'Evento' };
-      eventsByDay[day].push({ ...ev, badgeClass: style.badge, typeLabel: style.label });
-    }
-  });
-
   const cells = [];
-  const prevMonthEnd = moment({ year, month, day: 1 }).subtract(1, 'day');
+  const prevMonthMoment = moment({ year, month, day: 1 }).subtract(1, 'month');
+  const prevMonthDays = prevMonthMoment.daysInMonth();
   for (let i = 0; i < firstWeekday; i++) {
-    cells.push({ day: prevMonthEnd.date() - (firstWeekday - 1 - i), inMonth: false, isToday: false, events: [] });
+    const d = prevMonthDays - (firstWeekday - 1 - i);
+    const fullDate = prevMonthMoment.clone().date(d).format('YYYY-MM-DD');
+    cells.push({ day: d, inMonth: false, isToday: false, events: [], fullDate });
   }
   for (let d = 1; d <= daysInMonth; d++) {
+    const fullDate = moment({ year, month, day: d }).format('YYYY-MM-DD');
     cells.push({
       day: d,
       inMonth: true,
       isToday: today.year() === year && today.month() === month && today.date() === d,
-      events: eventsByDay[d] || []
+      events: [],
+      fullDate
     });
   }
+  const nextMonthMoment = moment({ year, month, day: 1 }).add(1, 'month');
   let nextDay = 1;
   while (cells.length % 7 !== 0) {
-    cells.push({ day: nextDay++, inMonth: false, isToday: false, events: [] });
+    const fullDate = nextMonthMoment.clone().date(nextDay).format('YYYY-MM-DD');
+    cells.push({ day: nextDay++, inMonth: false, isToday: false, events: [], fullDate });
   }
 
   const weeks = [];
@@ -2661,6 +2731,18 @@ router.post('/api/agenda', requireAuth, async (req, res) => {
   } catch (error) {
     console.error('Create calendar event error:', error);
     return res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete('/api/agenda/:id', requireAuth, async (req, res) => {
+  try {
+    const event = await CalendarEvent.findByPk(req.params.id);
+    if (!event) return res.status(404).json({ success: false, error: 'Evento não encontrado' });
+    await event.destroy();
+    return res.json({ success: true });
+  } catch (error) {
+    console.error('Delete calendar event error:', error);
+    return res.status(500).json({ success: false, error: error.message });
   }
 });
 

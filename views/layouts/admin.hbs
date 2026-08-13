@@ -1463,6 +1463,126 @@
     </script>
 
     <script>
+        // === SISTEMA DE MODAIS CUSTOMIZADOS (substitui alert/confirm/prompt nativos) ===
+        (function() {
+            function createModal(opts) {
+                var existing = document.getElementById('m3dDialogOverlay');
+                if (existing) existing.remove();
+
+                var overlay = document.createElement('div');
+                overlay.id = 'm3dDialogOverlay';
+                overlay.className = 'fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm';
+                overlay.style.animation = 'fadeIn 150ms ease';
+
+                var iconColor = opts.type === 'danger' ? 'text-red-400' : opts.type === 'warning' ? 'text-amber-400' : opts.type === 'success' ? 'text-emerald-400' : 'text-orange-400';
+                var iconName = opts.type === 'danger' ? 'warning' : opts.type === 'warning' ? 'help' : opts.type === 'success' ? 'check_circle' : 'info';
+                var btnColor = opts.type === 'danger' ? 'bg-red-500 hover:bg-red-600' : 'bg-orange-500 hover:bg-orange-600';
+
+                var inputHtml = '';
+                if (opts.input) {
+                    inputHtml = '<input type="' + (opts.inputType || 'text') + '" id="m3dDialogInput" value="' + (opts.inputValue || '') + '" placeholder="' + (opts.inputPlaceholder || '') + '" class="w-full px-3 py-2 mt-3 text-xs text-white rounded-[4px] focus:border-orange-500 focus:outline-none" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);" autofocus>';
+                }
+
+                var cancelBtn = opts.showCancel !== false ? '<button id="m3dDialogCancel" class="flex-1 py-2.5 rounded-[4px] text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-white hover:bg-white/10 transition-all" style="border:1px solid rgba(255,255,255,0.1);">' + (opts.cancelText || 'Cancelar') + '</button>' : '';
+
+                overlay.innerHTML = '<div class="w-full max-w-sm mx-4 rounded-[5px] overflow-hidden" style="background:#151515; border:1px solid rgba(255,255,255,0.08); box-shadow:0 20px 60px rgba(0,0,0,0.8);">' +
+                    '<div class="p-5 text-center">' +
+                        '<div class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);">' +
+                            '<span class="material-symbols-outlined text-2xl ' + iconColor + '">' + iconName + '</span>' +
+                        '</div>' +
+                        '<h3 class="text-sm font-black text-white mb-1">' + (opts.title || 'Confirmação') + '</h3>' +
+                        '<p class="text-[11px] text-gray-400 leading-relaxed">' + (opts.message || '') + '</p>' +
+                        inputHtml +
+                    '</div>' +
+                    '<div class="flex gap-2 p-4" style="border-top:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.01);">' +
+                        cancelBtn +
+                        '<button id="m3dDialogConfirm" class="flex-1 py-2.5 rounded-[4px] text-[9px] font-black uppercase tracking-widest text-white ' + btnColor + ' transition-all">' + (opts.confirmText || 'OK') + '</button>' +
+                    '</div>' +
+                '</div>';
+
+                document.body.appendChild(overlay);
+                return overlay;
+            }
+
+            // window.m3dConfirm — substitui confirm()
+            window.m3dConfirm = function(message, opts) {
+                opts = opts || {};
+                return new Promise(function(resolve) {
+                    var overlay = createModal({
+                        title: opts.title || 'Confirmar ação',
+                        message: message,
+                        type: opts.type || 'warning',
+                        confirmText: opts.confirmText || 'Confirmar',
+                        cancelText: opts.cancelText || 'Cancelar',
+                        showCancel: true
+                    });
+                    document.getElementById('m3dDialogConfirm').onclick = function() { overlay.remove(); resolve(true); };
+                    document.getElementById('m3dDialogCancel').onclick = function() { overlay.remove(); resolve(false); };
+                    overlay.addEventListener('click', function(e) { if (e.target === overlay) { overlay.remove(); resolve(false); } });
+                    document.addEventListener('keydown', function handler(e) { if (e.key === 'Escape') { overlay.remove(); resolve(false); document.removeEventListener('keydown', handler); } });
+                });
+            };
+
+            // window.m3dAlert — substitui alert()
+            window.m3dAlert = function(message, opts) {
+                opts = opts || {};
+                return new Promise(function(resolve) {
+                    var overlay = createModal({
+                        title: opts.title || (opts.type === 'danger' ? 'Erro' : opts.type === 'success' ? 'Sucesso' : 'Aviso'),
+                        message: message,
+                        type: opts.type || 'info',
+                        confirmText: 'OK',
+                        showCancel: false
+                    });
+                    document.getElementById('m3dDialogConfirm').onclick = function() { overlay.remove(); resolve(); };
+                    overlay.addEventListener('click', function(e) { if (e.target === overlay) { overlay.remove(); resolve(); } });
+                    document.addEventListener('keydown', function handler(e) { if (e.key === 'Escape' || e.key === 'Enter') { overlay.remove(); resolve(); document.removeEventListener('keydown', handler); } });
+                });
+            };
+
+            // window.m3dPrompt — substitui prompt()
+            window.m3dPrompt = function(message, opts) {
+                opts = opts || {};
+                return new Promise(function(resolve) {
+                    var overlay = createModal({
+                        title: opts.title || 'Preencher',
+                        message: message,
+                        type: 'info',
+                        input: true,
+                        inputType: opts.inputType || 'text',
+                        inputValue: opts.defaultValue || '',
+                        inputPlaceholder: opts.placeholder || '',
+                        confirmText: opts.confirmText || 'OK',
+                        cancelText: 'Cancelar',
+                        showCancel: true
+                    });
+                    var input = document.getElementById('m3dDialogInput');
+                    if (input) setTimeout(function() { input.focus(); }, 100);
+                    document.getElementById('m3dDialogConfirm').onclick = function() { var val = input ? input.value : ''; overlay.remove(); resolve(val); };
+                    document.getElementById('m3dDialogCancel').onclick = function() { overlay.remove(); resolve(null); };
+                    if (input) input.addEventListener('keydown', function(e) { if (e.key === 'Enter') { var val = input.value; overlay.remove(); resolve(val); } });
+                    overlay.addEventListener('click', function(e) { if (e.target === overlay) { overlay.remove(); resolve(null); } });
+                });
+            };
+
+            // Override nativos para que código existente use automaticamente os modais customizados
+            window._nativeAlert = window.alert;
+            window._nativeConfirm = window.confirm;
+            window._nativePrompt = window.prompt;
+
+            window.alert = function(msg) { window.m3dAlert(msg); };
+            window.confirm = function(msg) {
+                // Para manter compatibilidade síncrona com código existente que usa if(confirm(...))
+                // usamos o confirm nativo como fallback — mas novo código deve usar m3dConfirm (async)
+                return window._nativeConfirm(msg);
+            };
+            window.prompt = function(msg, def) {
+                return window._nativePrompt(msg, def);
+            };
+        })();
+    </script>
+
+    <script>
         // === GLOBAL TOAST NOTIFICATION ===
         window.showToast = window.showToast || function(message, type) {
             type = type || 'success';
@@ -1528,13 +1648,15 @@
         };
 
         window.restoreTrashItem = async function(id) {
-            if (!confirm('Restaurar este card?')) return;
+            var ok = await window.m3dConfirm('Restaurar este card para o kanban?', { title: 'Restaurar Card', type: 'info', confirmText: 'Restaurar' });
+            if (!ok) return;
             await fetch('/admin/api/trash/' + id + '/restore', { method: 'POST' });
             window.openTrashModal(window.location.pathname.includes('crm') ? 'crm' : 'projetos');
         };
 
         window.deleteTrashItem = async function(id) {
-            if (!confirm('APAGAR PERMANENTEMENTE este card? Esta ação não pode ser desfeita.')) return;
+            var ok = await window.m3dConfirm('Apagar permanentemente este card?<br><span class="text-[9px] text-red-300">Esta ação não pode ser desfeita.</span>', { title: 'Apagar Card', type: 'danger', confirmText: 'Apagar Definitivo' });
+            if (!ok) return;
             await fetch('/admin/api/trash/' + id, { method: 'DELETE' });
             window.openTrashModal(window.location.pathname.includes('crm') ? 'crm' : 'projetos');
         };
@@ -1846,7 +1968,8 @@
     // === GERADOR DE DADOS DE TESTE (Beta) ===
     window.generateTestData = async function(module) {
       var qty = document.getElementById('testDataQty') ? document.getElementById('testDataQty').value : 10;
-      if (!confirm('Criar ' + qty + ' registros de teste em "' + module + '"?\n\nDados serão marcados como teste e podem ser deletados depois.')) return;
+      var ok = await window.m3dConfirm('Criar ' + qty + ' registros de teste em "' + module + '"?<br><br><span class="text-[9px] text-gray-500">Dados serão marcados como teste e podem ser deletados depois.</span>', { title: 'Criar Dados de Teste', type: 'info', confirmText: 'Criar ' + qty });
+      if (!ok) return;
       try {
         var res = await fetch('/admin/api/test-data/generate', {
           method: 'POST',
@@ -1855,18 +1978,18 @@
         });
         var data = await res.json();
         if (data.success) {
-          var msg = 'Criados com sucesso: ' + Object.entries(data.created).map(function(e) { return e[1] + ' ' + e[0]; }).join(', ');
-          if (window.showToast) window.showToast(msg, 'success');
-          else alert(msg);
+          var msg = Object.entries(data.created).map(function(e) { return e[1] + ' ' + e[0]; }).join(', ');
+          if (window.showToast) window.showToast('Criados: ' + msg, 'success');
           setTimeout(function() { location.reload(); }, 1000);
         } else {
-          alert('Erro: ' + (data.message || 'Falha ao gerar'));
+          window.m3dAlert(data.message || 'Falha ao gerar dados', { type: 'danger', title: 'Erro' });
         }
-      } catch(e) { alert('Erro de conexão: ' + e.message); }
+      } catch(e) { window.m3dAlert('Erro de conexão: ' + e.message, { type: 'danger' }); }
     };
 
     window.clearTestData = async function(module) {
-      if (!confirm('⚠️ DELETAR todos os dados de teste em "' + module + '"?\n\nApenas dados marcados como teste serão removidos.\nDados reais NÃO serão afetados.')) return;
+      var ok = await window.m3dConfirm('Deletar todos os dados de teste em "' + module + '"?<br><br><span class="text-[9px] text-gray-500">Apenas dados marcados como teste serão removidos.<br>Dados reais NÃO serão afetados.</span>', { title: 'Limpar Dados de Teste', type: 'danger', confirmText: 'Deletar Tudo' });
+      if (!ok) return;
       try {
         var res = await fetch('/admin/api/test-data/clear', {
           method: 'DELETE',
@@ -1875,14 +1998,13 @@
         });
         var data = await res.json();
         if (data.success) {
-          var msg = 'Deletados: ' + Object.entries(data.deleted).map(function(e) { return e[1] + ' ' + e[0]; }).join(', ');
-          if (window.showToast) window.showToast(msg, 'info');
-          else alert(msg);
+          var msg = Object.entries(data.deleted).map(function(e) { return e[1] + ' ' + e[0]; }).join(', ');
+          if (window.showToast) window.showToast('Deletados: ' + msg, 'info');
           setTimeout(function() { location.reload(); }, 1000);
         } else {
-          alert('Erro: ' + (data.message || 'Falha ao deletar'));
+          window.m3dAlert(data.message || 'Falha ao deletar', { type: 'danger' });
         }
-      } catch(e) { alert('Erro de conexão: ' + e.message); }
+      } catch(e) { window.m3dAlert('Erro de conexão: ' + e.message, { type: 'danger' }); }
     };
     </script>
 

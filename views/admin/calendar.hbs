@@ -1,7 +1,7 @@
-<!-- Agenda — Template Padrão (.kcard) -->
+<!-- Agenda — Calendário Dinâmico (Google Calendar Style) -->
 <div class="p-4 md:p-5 flex flex-col gap-3" style="background:#0a0c10;">
 
- <!-- Banner Header (.kcard com imagem) -->
+ <!-- Banner Header -->
  <div class="kcard">
  <div class="kcard-img" style="height:80px;">
  <img src="/assets/76f2442d-8a92-481f-bc04-36aed4707d00_3840w.webp" alt="Agenda ArchViz" class="w-full h-full object-cover">
@@ -28,7 +28,7 @@
  </div>
  </div>
 
- <!-- Calendário (.kcard) -->
+ <!-- Calendário Principal -->
  <div class="kcard">
  <div class="kcard-body" style="padding:20px;">
  <div class="flex justify-between items-center mb-4">
@@ -44,8 +44,9 @@
  <a href="/admin/agenda?month={{todayMonth}}&year={{todayYear}}" class="py-1.5 px-3 rounded-[4px] text-[8px] font-black uppercase tracking-wider text-gray-400 hover:text-white transition-colors" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Hoje</a>
  </div>
 
- <div class="grid grid-cols-7 gap-px overflow-hidden" style="border:1px solid rgba(255,255,255,0.06); border-radius:5px;">
- <!-- Weekdays -->
+ <!-- Grid do Calendário com suporte a multi-dia -->
+ <div id="calendarGrid" class="grid grid-cols-7 gap-px overflow-hidden" style="border:1px solid rgba(255,255,255,0.06); border-radius:5px;">
+ <!-- Weekdays Header -->
  <div class="py-3 text-center text-[8px] font-black text-gray-600 uppercase tracking-widest" style="background:rgba(255,255,255,0.02);">Dom</div>
  <div class="py-3 text-center text-[8px] font-black text-gray-600 uppercase tracking-widest" style="background:rgba(255,255,255,0.02);">Seg</div>
  <div class="py-3 text-center text-[8px] font-black text-gray-600 uppercase tracking-widest" style="background:rgba(255,255,255,0.02);">Ter</div>
@@ -54,23 +55,13 @@
  <div class="py-3 text-center text-[8px] font-black text-gray-600 uppercase tracking-widest" style="background:rgba(255,255,255,0.02);">Sex</div>
  <div class="py-3 text-center text-[8px] font-black text-gray-600 uppercase tracking-widest" style="background:rgba(255,255,255,0.02);">Sáb</div>
 
- <!-- Days -->
+ <!-- Days (renderizados via JS para suportar eventos multi-dia) -->
  {{#each weeks}}
  {{#each this}}
- {{#if this.inMonth}}
- <div class="min-h-[80px] p-3 text-[9px] font-black {{#if this.isToday}}text-orange-400{{else}}text-gray-500{{/if}} transition-colors calendar-day-cell" style="{{#if this.isToday}}background:rgba(249,115,22,0.05); border-left:2px solid rgba(249,115,22,0.4);{{else}}background:transparent; border-left:1px solid rgba(255,255,255,0.04);{{/if}}">
- {{this.day}}
- {{#if (length this.events)}}
- <div class="mt-1.5 space-y-1">
- {{#each this.events}}
- <div class="{{this.badgeClass}} text-[7px] font-black text-white p-1 rounded-[3px] truncate shadow-sm uppercase tracking-wider calendar-event-badge" title="{{this.title}}">{{this.title}}</div>
- {{/each}}
+ <div class="relative min-h-[90px] p-1.5 calendar-day-cell {{#unless this.inMonth}}opacity-20{{/unless}}" data-date="{{this.fullDate}}" style="{{#if this.isToday}}background:rgba(249,115,22,0.05); border-left:2px solid rgba(249,115,22,0.4);{{else}}background:transparent; border-left:1px solid rgba(255,255,255,0.04);{{/if}}">
+ <span class="text-[9px] font-black {{#if this.isToday}}text-orange-400{{else}}text-gray-500{{/if}}">{{this.day}}</span>
+ <div class="mt-1 space-y-0.5 event-slot" data-day="{{this.day}}" data-in-month="{{this.inMonth}}"></div>
  </div>
- {{/if}}
- </div>
- {{else}}
- <div class="min-h-[80px] p-3 text-[9px] font-black text-gray-800 opacity-20" style="border-left:1px solid rgba(255,255,255,0.02);">{{this.day}}</div>
- {{/if}}
  {{/each}}
  {{/each}}
  </div>
@@ -79,13 +70,13 @@
 
  <!-- 3 Colunas Informativas -->
  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
- <!-- Col 1: Próximos Eventos (cronológico) -->
+ <!-- Col 1: Próximos Eventos -->
  <div class="kcard">
  <div class="kcard-body" style="padding:14px;">
  <p class="text-[8px] font-black text-orange-400 uppercase tracking-widest mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">event</span> Próximos Eventos</p>
  <div class="space-y-1.5" id="upcoming-events-list">
  {{#each upcomingEvents}}
- <div class="flex items-center gap-2 p-1.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+ <div class="flex items-center gap-2 p-1.5 rounded-[4px] cursor-pointer hover:border-orange-500/30 transition-colors event-upcoming-item" data-event-id="{{this.id}}" onclick="openEventDetail('{{this.id}}')" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
  <span class="text-[7px] font-bold text-gray-500">{{formatDateShort this.startTime}}</span>
  <span class="text-[8px] font-bold text-white truncate flex-1">{{this.title}}</span>
  <span class="kcard-badge" style="font-size:6px;">{{this.type}}</span>
@@ -98,7 +89,7 @@
  </div>
  </div>
 
- <!-- Col 2: Quantidade por Tipo (decrescente) -->
+ <!-- Col 2: Quantidade por Tipo -->
  <div class="kcard">
  <div class="kcard-body" style="padding:14px;">
  <p class="text-[8px] font-black text-purple-400 uppercase tracking-widest mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">category</span> Tipo de Reunião</p>
@@ -116,7 +107,7 @@
  </div>
  </div>
 
- <!-- Col 3: Reuniões por Semana/Mês -->
+ <!-- Col 3: Frequência -->
  <div class="kcard">
  <div class="kcard-body" style="padding:14px;">
  <p class="text-[8px] font-black text-emerald-400 uppercase tracking-widest mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">bar_chart</span> Frequência</p>
@@ -136,7 +127,40 @@
 
 </div>
 
-<!-- New Event Modal (.kcard style) -->
+<!-- Event Detail Modal (ao clicar em evento) -->
+<div id="eventDetailModal" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/80 backdrop-blur-sm" style="display:none;" onclick="if(event.target===this){this.style.display='none';this.classList.add('hidden');}">
+ <div class="w-full max-w-md mx-4" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+ <div class="p-5" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+ <div class="flex items-center justify-between">
+  <h5 id="eventDetailTitle" class="text-sm font-black text-white"></h5>
+  <button onclick="document.getElementById('eventDetailModal').style.display='none';" class="w-6 h-6 rounded flex items-center justify-center text-gray-500 hover:text-white" style="background:rgba(255,255,255,0.05);">
+  <span class="material-symbols-outlined text-sm">close</span>
+  </button>
+ </div>
+ <span id="eventDetailType" class="kcard-badge kcard-badge-orange mt-2 inline-block" style="font-size:7px;"></span>
+ </div>
+ <div class="p-5 space-y-3">
+ <div class="flex items-center gap-2">
+  <span class="material-symbols-outlined text-[13px] text-gray-500">schedule</span>
+  <span id="eventDetailTime" class="text-[9px] font-bold text-gray-300"></span>
+ </div>
+ <div class="flex items-center gap-2">
+  <span class="material-symbols-outlined text-[13px] text-gray-500">date_range</span>
+  <span id="eventDetailDuration" class="text-[9px] font-bold text-gray-300"></span>
+ </div>
+ <div id="eventDetailDescWrap" class="hidden">
+  <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1">Descrição</p>
+  <p id="eventDetailDesc" class="text-[9px] text-gray-300"></p>
+ </div>
+ </div>
+ <div class="flex justify-end gap-2 p-4" style="border-top:1px solid rgba(255,255,255,0.06);">
+ <button onclick="deleteCurrentEvent()" class="px-3 py-1.5 text-[8px] font-black uppercase text-red-400 hover:bg-red-500/10 rounded transition-colors">Excluir</button>
+ <button onclick="document.getElementById('eventDetailModal').style.display='none';" class="px-3 py-1.5 text-[8px] font-black uppercase text-gray-400 hover:text-white">Fechar</button>
+ </div>
+ </div>
+</div>
+
+<!-- New Event Modal -->
 <div class="modal fade" id="newEventModal" tabindex="-1" aria-hidden="true">
  <div class="modal-dialog modal-dialog-centered">
  <div class="modal-content" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
@@ -153,44 +177,28 @@
  <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Título do Evento</label>
  <input type="text" name="title" required placeholder="Ex: Reunião de Briefing" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
  </div>
-
  <div class="grid grid-cols-2 gap-3">
  <div>
  <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Início</label>
- <input type="datetime-local" name="startTime" required class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ <input type="datetime-local" name="startTime" required class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color-scheme:dark;">
  </div>
  <div>
  <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Término</label>
- <input type="datetime-local" name="endTime" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ <input type="datetime-local" name="endTime" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color-scheme:dark;">
  </div>
  </div>
-
  <div>
  <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Tipo de Evento</label>
  <select name="type" class="w-full px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
  <option value="reuniao" style="background:#151515;">Reunião</option>
  <option value="entrega" style="background:#151515;">Entrega de Projeto</option>
+ <option value="deadline" style="background:#151515;">Deadline</option>
  <option value="followup" style="background:#151515;">Follow-up</option>
  <option value="interno" style="background:#151515;">Compromisso Interno</option>
+ <option value="briefing" style="background:#151515;">Briefing</option>
+ <option value="revisao" style="background:#151515;">Revisão</option>
  </select>
  </div>
-
- <div>
- <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Vincular a (Opcional)</label>
- <input type="text" name="linkedEntity" placeholder="Buscar CRM, Cliente ou Projeto..." class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
- </div>
-
- <div class="grid grid-cols-2 gap-3">
- <label class="flex items-center gap-2 p-2.5 rounded-[4px] cursor-pointer" style="border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02);">
- <input type="checkbox" name="notifyEmail" class="accent-orange-500 w-3.5 h-3.5">
- <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">E-mail</span>
- </label>
- <label class="flex items-center gap-2 p-2.5 rounded-[4px] cursor-pointer" style="border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02);">
- <input type="checkbox" name="notifySystem" class="accent-orange-500 w-3.5 h-3.5" checked>
- <span class="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Notificação</span>
- </label>
- </div>
-
  <div>
  <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Descrição</label>
  <textarea name="description" rows="2" class="w-full px-3 py-2 text-xs text-white rounded-[4px] resize-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></textarea>
@@ -208,13 +216,134 @@
 </div>
 
 <script>
-function filterCalendarEvents(query) {
- var q = (query || '').toLowerCase().trim();
- document.querySelectorAll('.calendar-event-badge').forEach(function(badge) {
- badge.style.display = (!q || badge.textContent.toLowerCase().includes(q)) ? 'block' : 'none';
+// === CALENDAR ENGINE — Multi-day spanning events (Google Calendar style) ===
+var _calendarEvents = {{{json events}}};
+var _currentEventId = null;
+
+var EVENT_COLORS = {
+ reuniao: { bg: 'rgba(59,130,246,0.8)', border: '#3b82f6' },
+ entrega: { bg: 'rgba(16,185,129,0.8)', border: '#10b981' },
+ deadline: { bg: 'rgba(239,68,68,0.8)', border: '#ef4444' },
+ followup: { bg: 'rgba(245,158,11,0.8)', border: '#f59e0b' },
+ interno: { bg: 'rgba(139,92,246,0.8)', border: '#8b5cf6' },
+ briefing: { bg: 'rgba(6,182,212,0.8)', border: '#06b6d4' },
+ revisao: { bg: 'rgba(251,146,60,0.8)', border: '#fb923c' }
+};
+
+function renderMultiDayEvents() {
+ var grid = document.getElementById('calendarGrid');
+ if (!grid) return;
+ var dayCells = grid.querySelectorAll('.calendar-day-cell');
+ var cellMap = {};
+ dayCells.forEach(function(cell) {
+  var date = cell.dataset.date;
+  if (date) cellMap[date] = cell;
+ });
+
+ _calendarEvents.forEach(function(ev) {
+  if (!ev.startTime) return;
+  var start = new Date(ev.startTime);
+  var end = ev.endTime ? new Date(ev.endTime) : new Date(start.getTime() + 3600000);
+  var startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  var endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  var spanDays = Math.max(1, Math.round((endDay - startDay) / 86400000) + 1);
+  var colors = EVENT_COLORS[ev.type] || { bg: 'rgba(100,116,139,0.8)', border: '#64748b' };
+
+  // Renderizar evento em cada dia que cobre
+  var cursor = new Date(startDay);
+  for (var i = 0; i < spanDays; i++) {
+   var dateKey = cursor.getFullYear() + '-' + String(cursor.getMonth()+1).padStart(2,'0') + '-' + String(cursor.getDate()).padStart(2,'0');
+   var cell = cellMap[dateKey];
+   if (cell) {
+    var slot = cell.querySelector('.event-slot');
+    if (slot) {
+     var tag = document.createElement('div');
+     tag.className = 'calendar-event-badge cursor-pointer';
+     tag.dataset.eventId = ev.id;
+     tag.onclick = function(e) { e.stopPropagation(); openEventDetail(ev.id); };
+
+     // Estilo: início, meio, fim ou único dia
+     var isStart = (i === 0);
+     var isEnd = (i === spanDays - 1);
+     var borderRadius = '2px';
+     if (spanDays > 1) {
+      if (isStart && !isEnd) borderRadius = '3px 0 0 3px';
+      else if (!isStart && isEnd) borderRadius = '0 3px 3px 0';
+      else if (!isStart && !isEnd) borderRadius = '0';
+      else borderRadius = '3px';
+     }
+
+     tag.style.cssText = 'background:' + colors.bg + '; border-left:2px solid ' + colors.border + '; border-radius:' + borderRadius + '; padding:2px 4px; font-size:7px; font-weight:800; color:#fff; text-transform:uppercase; letter-spacing:0.05em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-right:' + (isEnd ? '0' : '-4px') + '; position:relative; z-index:2;';
+     tag.textContent = isStart ? ev.title : (spanDays > 2 && i === 1 ? '→ ' + ev.title : '');
+     tag.title = ev.title + ' (' + spanDays + ' dias)';
+
+     slot.appendChild(tag);
+    }
+   }
+   cursor.setDate(cursor.getDate() + 1);
+  }
  });
 }
 
+function openEventDetail(eventId) {
+ _currentEventId = eventId;
+ var ev = _calendarEvents.find(function(e) { return e.id === eventId; });
+ if (!ev) return;
+
+ var modal = document.getElementById('eventDetailModal');
+ document.getElementById('eventDetailTitle').textContent = ev.title;
+ document.getElementById('eventDetailType').textContent = ev.type || 'evento';
+
+ var start = new Date(ev.startTime);
+ var end = ev.endTime ? new Date(ev.endTime) : null;
+ var opts = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+ document.getElementById('eventDetailTime').textContent = start.toLocaleString('pt-BR', opts) + (end ? ' → ' + end.toLocaleString('pt-BR', opts) : '');
+
+ // Calcular duração
+ if (end) {
+  var diff = end - start;
+  var days = Math.floor(diff / 86400000);
+  var hours = Math.floor((diff % 86400000) / 3600000);
+  var durText = '';
+  if (days > 0) durText += days + ' dia' + (days > 1 ? 's' : '');
+  if (hours > 0) durText += (durText ? ' e ' : '') + hours + 'h';
+  if (!durText) durText = 'Menos de 1h';
+  document.getElementById('eventDetailDuration').textContent = 'Duração: ' + durText;
+ } else {
+  document.getElementById('eventDetailDuration').textContent = 'Duração: 1h (padrão)';
+ }
+
+ var descWrap = document.getElementById('eventDetailDescWrap');
+ if (ev.description) {
+  document.getElementById('eventDetailDesc').textContent = ev.description;
+  descWrap.classList.remove('hidden');
+ } else {
+  descWrap.classList.add('hidden');
+ }
+
+ modal.classList.remove('hidden');
+ modal.style.display = 'flex';
+}
+
+async function deleteCurrentEvent() {
+ if (!_currentEventId) return;
+ if (!confirm('Excluir este evento?')) return;
+ try {
+  var res = await fetch('/admin/api/agenda/' + _currentEventId, { method: 'DELETE' });
+  var json = await res.json();
+  if (json.success) { window.location.reload(); }
+  else { alert('Erro: ' + (json.error || json.message)); }
+ } catch(e) { alert('Erro de rede'); }
+}
+
+function filterCalendarEvents(query) {
+ var q = (query || '').toLowerCase().trim();
+ document.querySelectorAll('.calendar-event-badge').forEach(function(badge) {
+  badge.style.display = (!q || (badge.textContent || '').toLowerCase().includes(q)) ? 'block' : 'none';
+ });
+}
+
+// Submit new event
 document.getElementById('newEventForm')?.addEventListener('submit', async function(e) {
  e.preventDefault();
  var formData = new FormData(this);
@@ -223,7 +352,11 @@ document.getElementById('newEventForm')?.addEventListener('submit', async functi
  var response = await fetch('/admin/api/agenda', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
  var result = await response.json();
  if (result.success) { window.location.reload(); }
- else { alert('Erro: ' + result.message); }
+ else { alert('Erro: ' + (result.message || result.error)); }
  } catch (error) { alert('Erro ao processar'); }
 });
+
+// Render events after DOM ready
+document.addEventListener('DOMContentLoaded', renderMultiDayEvents);
+if (document.readyState !== 'loading') renderMultiDayEvents();
 </script>

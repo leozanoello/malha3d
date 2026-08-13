@@ -2594,7 +2594,7 @@ window.loadLeadHistory = function(leadId) {
   const container = document.getElementById('newProjectTagsContainer');
   const hidden = document.getElementById('newProjectTagsHidden');
   if (!container) return;
-  container.innerHTML = _projectTags.map(t => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-500/20 border border-orange-500/30 text-[9px] font-black text-orange-300">${t.replace(/[<>]/g, '')} <button type="button" onclick="window.removeProjectTag('${t.replace(/'/g, '')}')" class="text-orange-400 hover:text-white">&times;</button></span>`).join('');
+  container.innerHTML = _projectTags.map(t => `<span class="inline-flex items-center gap-0.5 px-1.5 py-px rounded-full bg-orange-500/20 border border-orange-500/30 text-[8px] font-bold text-orange-300 leading-none">${t.replace(/[<>]/g, '')} <button type="button" onclick="window.removeProjectTag('${t.replace(/'/g, '')}')" class="text-orange-400 hover:text-white text-[9px] leading-none">&times;</button></span>`).join('');
   if (hidden) hidden.value = JSON.stringify(_projectTags);
  }
 
@@ -2920,24 +2920,102 @@ window.submitNewLead = async function(e) {
  const phone = document.getElementById('mainClientPhone')?.value;
 
  if (!name || name.trim() === '') {
- alert('Por favor, preencha o Nome do Contato 1 antes de salvar no sistema.');
- return;
+  if (window.showToast) window.showToast('Preencha o Nome do Contato antes de salvar', 'error');
+  else alert('Por favor, preencha o Nome do Contato 1 antes de salvar no sistema.');
+  return;
+ }
+
+ // Disable button durante requisição
+ const btn = event?.target;
+ if (btn) {
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.style.pointerEvents = 'none';
  }
 
  try {
- const res = await fetch('/admin/api/clients/quick-create', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
- body: JSON.stringify({ name, email, phone })
- });
- const json = await res.json();
- if (json.success) {
- alert(`Contato "${json.client.name}" salvo com sucesso no cadastro geral de Clientes!`);
- } else {
- alert('Erro ao salvar contato: ' + (json.error || 'Erro desconhecido'));
- }
+  const res = await fetch('/admin/api/clients/quick-create', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+   body: JSON.stringify({ name, email, phone })
+  });
+
+  const json = await res.json();
+
+  if (res.ok && json.success) {
+   // ✅ SUCESSO — Contato criado
+   const successMsg = `✅ Contato "${json.client.name}" salvo com sucesso!\n\nAgora você pode vincular este contato ao lead ou criar outro.`;
+   if (window.showToast) {
+    window.showToast(successMsg, 'success');
+   } else {
+    alert(successMsg);
+   }
+
+   // Limpar campos (opcional)
+   document.getElementById('mainClientEmail').value = '';
+   document.getElementById('mainClientPhone').value = '';
+   document.getElementById('mainClientName').value = '';
+
+  } else if (res.status === 409) {
+   // ⚠️ DUPLICATA OU SIMILAR ENCONTRADA
+
+   if (json.isDuplicate) {
+    // Duplicata completa (mesmos dados)
+    const existingData = json.existingClient;
+    const msg = `⚠️ ESTE CONTATO JÁ EXISTE!\n\n` +
+     `👤 Nome: ${existingData.name}\n` +
+     `📧 Email: ${existingData.email || '(não informado)'}\n` +
+     `📱 Telefone: ${existingData.phone || '(não informado)'}\n\n` +
+     `Não foi criado um duplicado. Use este contato existente.`;
+
+    if (window.showToast) {
+     window.showToast(msg, 'warning');
+    } else {
+     alert(msg);
+    }
+
+   } else if (json.similarFound) {
+    // Similar encontrado (dados diferentes)
+    const existingData = json.existingClient;
+    const msg = `ℹ️ CONTATO SIMILAR JÁ EXISTE\n\n` +
+     `Encontramos um contato parecido:\n` +
+     `👤 ${existingData.name}\n` +
+     `📧 ${existingData.email || '(sem email)'}\n` +
+     `📱 ${existingData.phone || '(sem telefone)'}\n\n` +
+     `Seus dados são diferentes. Quer criar um novo contato mesmo assim?\n` +
+     `(Modifique um dos campos para confirmar)`;
+
+    if (window.showToast) {
+     window.showToast(msg, 'info');
+    } else {
+     alert(msg);
+    }
+   }
+
+  } else {
+   // ❌ ERRO GENÉRICO
+   const errMsg = json.error || 'Erro desconhecido ao salvar contato';
+   if (window.showToast) {
+    window.showToast(`❌ ${errMsg}`, 'error');
+   } else {
+    alert(`Erro ao salvar contato: ${errMsg}`);
+   }
+  }
+
  } catch (e) {
- alert('Erro ao conectar com o servidor para salvar o contato.');
+  const errMsg = 'Erro ao conectar com o servidor para salvar o contato.';
+  if (window.showToast) {
+   window.showToast(`❌ ${errMsg}`, 'error');
+  } else {
+   alert(errMsg);
+  }
+ } finally {
+  // Re-enable button
+  if (btn) {
+   btn.disabled = false;
+   btn.style.opacity = '1';
+   btn.style.pointerEvents = 'auto';
+  }
  }
  };
 
