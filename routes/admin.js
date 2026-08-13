@@ -7633,8 +7633,9 @@ router.post('/api/test-data/generate', requireAuth, async (req, res) => {
         const loc = randomFrom(P.cities);
         const client = await Client.create({ name: randomFrom(P.clientNames), email: randomFrom(P.emails), phone: randomFrom(P.phones), category: 'Lead', type: Math.random() > 0.5 ? 'PF' : 'PJ', city: loc.city, state: loc.state, source: 'test_data', userId });
         created.clients++;
-        const columns = await KanbanColumn.findAll({ where: { type: 'vendas' } });
-        const firstStatus = columns.length > 0 ? columns[Math.floor(Math.random() * Math.min(3, columns.length))].statusKey : 'novo';
+        let columns = await KanbanColumn.findAll({ where: { type: 'crm' } });
+        if (columns.length === 0) columns = await KanbanColumn.findAll({ where: { type: 'vendas' } });
+        const firstStatus = columns.length > 0 ? columns[Math.floor(Math.random() * Math.min(3, columns.length))].statusKey : 'novo_lead';
         await Budget.create({ name: randomFrom(P.projectNames), clientId: client.id, email: client.email, phone: client.phone, projectType: randomFrom(P.types), targetSoftware: randomFrom(P.softwares), complexity: randomFrom(P.complexity), estimatedValue: randomPrice(), totalArea: randomBetween(50, 500), kanbanType: 'vendas', status: firstStatus, winStatus: 'aberto', source: 'test_data', color: randomFrom(P.colors), probability: randomBetween(10, 95), priority: randomFrom(['baixa','media','alta']), state: loc.state, city: loc.city, userId });
         created.budgets++;
       }

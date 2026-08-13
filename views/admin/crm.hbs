@@ -2576,9 +2576,9 @@ document.addEventListener('DOMContentLoaded', function() {
 window.submitNewLead = async function(e) {
  e.preventDefault();
  const form = e.target;
- const submitBtn = form.querySelector('button[type="submit"]');
- const originalText = submitBtn.innerHTML;
- 
+ const submitBtn = form.querySelector('#btnSaveProject') || form.querySelector('button[type="submit"]') || document.getElementById('btnSaveProject');
+ const originalText = submitBtn ? submitBtn.innerHTML : '';
+
  submitBtn.disabled = true;
  submitBtn.innerHTML = '<span class="animate-spin material-symbols-outlined text-sm">sync</span> Processando...';
 
@@ -2588,35 +2588,48 @@ window.submitNewLead = async function(e) {
  try {
  const res = await fetch('/admin/negociacoes/novo', {
  method: 'POST',
- headers: { 
+ headers: {
  'Content-Type': 'application/json',
  'Accept': 'application/json'
  },
  body: JSON.stringify(data)
  });
+
+ // Debug: log status e resposta
+ console.log('[submitNewLead] HTTP Status:', res.status);
+
  const json = await res.json();
- if (json.success) {
+ console.log('[submitNewLead] Response JSON:', json);
+
+ if (json.success && res.ok) {
  if (window.clearFormDraft) window.clearFormDraft(form.id || 'newLeadForm');
  document.getElementById('newLeadModal').classList.add('hidden');
- window.location.reload();
+ if (window.showToast) window.showToast('Lead criado com sucesso! Atualizando...', 'success');
+ // Aguarda um pouco antes de recarregar para a IA gerar banner
+ setTimeout(() => {
+   window.location.reload();
+ }, 1500);
  } else {
- alert('Erro ao criar lead: ' + (json.error || 'Erro desconhecido'));
- submitBtn.disabled = false;
- submitBtn.innerHTML = originalText;
+ const errMsg = json.error || json.message || 'Erro desconhecido';
+ console.error('[submitNewLead] Erro do servidor:', errMsg);
+ if (window.showToast) window.showToast('Erro: ' + errMsg, 'error');
+ else alert('Erro ao criar lead: ' + errMsg);
+ if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalText; }
  }
  } catch (err) {
- alert('Erro de rede.');
- submitBtn.disabled = false;
- submitBtn.innerHTML = originalText;
+ console.error('[submitNewLead] Erro de rede:', err);
+ if (window.showToast) window.showToast('Erro de rede: ' + err.message, 'error');
+ else alert('Erro de rede: ' + err.message);
+ if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalText; }
  }
  };
 
  window.submitEditLead = async function(e) {
  e.preventDefault();
  const form = e.target;
- const submitBtn = form.querySelector('button[type="submit"]');
- const originalText = submitBtn.innerHTML;
- 
+ const submitBtn = form.querySelector('button[type="submit"]') || form.querySelector('#btnSaveProject');
+ const originalText = submitBtn ? submitBtn.innerHTML : '';
+
  submitBtn.disabled = true;
  submitBtn.innerHTML = '<span class="animate-spin material-symbols-outlined text-sm">sync</span> Salvando...';
 
@@ -2626,24 +2639,37 @@ window.submitNewLead = async function(e) {
  try {
  const res = await fetch(form.action, {
  method: 'POST',
- headers: { 
+ headers: {
  'Content-Type': 'application/json',
  'Accept': 'application/json'
  },
  body: JSON.stringify(data)
  });
+
+ console.log('[submitEditLead] HTTP Status:', res.status);
+
  const json = await res.json();
- if (json.success) {
+ console.log('[submitEditLead] Response JSON:', json);
+
+ if (json.success && res.ok) {
  if (window.clearFormDraft) window.clearFormDraft(form.id || 'editLeadForm');
  document.getElementById('manageLeadModal').classList.add('hidden');
- window.location.reload();
+ if (window.showToast) window.showToast('Lead atualizado com sucesso! Atualizando...', 'success');
+ setTimeout(() => {
+   window.location.reload();
+ }, 1500);
  } else {
- alert('Erro ao atualizar: ' + (json.error || 'Erro desconhecido'));
+ const errMsg = json.error || json.message || 'Erro desconhecido';
+ console.error('[submitEditLead] Erro do servidor:', errMsg);
+ if (window.showToast) window.showToast('Erro: ' + errMsg, 'error');
+ else alert('Erro ao atualizar: ' + errMsg);
  submitBtn.disabled = false;
  submitBtn.innerHTML = originalText;
  }
  } catch (err) {
- alert('Erro de rede.');
+ console.error('[submitEditLead] Erro de rede:', err);
+ if (window.showToast) window.showToast('Erro de rede: ' + err.message, 'error');
+ else alert('Erro de rede: ' + err.message);
  submitBtn.disabled = false;
  submitBtn.innerHTML = originalText;
  }
