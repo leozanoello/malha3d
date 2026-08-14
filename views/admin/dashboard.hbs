@@ -21,11 +21,12 @@
  <!--
  GRID PRINCIPAL — 4 Colunas × 2 Linhas (lg breakpoint)
  ┌──────────────────────────────────────────────────────────────┐
- │  [Notif]   [Tarefas]   [Previsão]   [Aprendizado]            │ LINHA 1
- │                       Vendas                                 │
+ │  [Notif]   [Tarefas]   [Notas]   [Aprendizado]               │ LINHA 1
  ├──────────────────────────────────────────────────────────────┤
  │  [Financeiro ........ ocupa 2 colunas ........]   [Chat ..] │ LINHA 2
  │                                                   [2 linhas] │
+ ├──────────────────────────────────────────────────────────────┤
+ │  [Previsão Vendas]                                           │ LINHA 3
  └──────────────────────────────────────────────────────────────┘
  Mobile/Tablet: tudo vira 1 coluna
  -->
@@ -93,35 +94,32 @@
  </div>
  </div>
 
- <!-- Card 3: Previsão de Vendas (Flip Card Uiverse) -->
- <div class="uv-flip-card min-h-[260px]">
- <div class="uv-flip-content">
- <div class="uv-flip-back">
- <div class="uv-flip-back-inner">
- <span class="material-symbols-outlined text-3xl text-orange-400">monitoring</span>
- <strong class="text-[9px] uppercase tracking-widest">Previsão de Vendas</strong>
- <span class="text-lg font-black text-orange-400">{{formatCurrency forecast.med}}</span>
- <span class="text-[7px] text-gray-500 uppercase">Ponderada</span>
+ <!-- Card 3: Notas (substitui Previsão de Vendas) -->
+ <div class="ds-card flex flex-col overflow-hidden min-h-[260px]">
+ <div class="ds-card-header">
+ <h3 class="ds-card-title">
+ <span class="material-symbols-outlined text-amber-400 text-sm">sticky_note_2</span> Notas Rápidas
+ </h3>
+ <button onclick="window.addQuickNote()" class="ds-action-btn text-amber-400">
+ <span class="material-symbols-outlined text-[10px]">add</span>
+ </button>
  </div>
+ <div class="ds-card-body p-3 space-y-2 overflow-y-auto custom-scrollbar flex-1" id="quickNotesList">
+ <div class="p-2 rounded bg-amber-500/10 border border-amber-500/20">
+ <p class="text-[9px] ds-text font-semibold">Revisar proposta Aurora</p>
+ <p class="text-[8px] text-gray-500 mt-1">14:30 - Hoje</p>
  </div>
- <div class="uv-flip-front">
- <div class="uv-flip-img">
- <div class="uv-circle"></div>
- <div class="uv-circle" id="uv-right"></div>
- <div class="uv-circle" id="uv-bottom"></div>
+ <div class="p-2 rounded bg-blue-500/10 border border-blue-500/20">
+ <p class="text-[9px] ds-text font-semibold">Enviar mockups para cliente</p>
+ <p class="text-[8px] text-gray-500 mt-1">10:15 - Hoje</p>
  </div>
- <div class="uv-flip-front-content">
- <small class="uv-flip-badge">Forecast CRM</small>
- <div class="uv-flip-description">
- <div class="uv-flip-title"><p><strong>Previsão Mensal</strong></p></div>
- <div class="space-y-1 mt-2">
- <div class="flex justify-between"><span class="text-[8px] text-gray-400">Mínima</span><span class="text-[9px] font-black">{{formatCurrency forecast.min}}</span></div>
- <div class="flex justify-between"><span class="text-[8px] text-orange-400">Ponderada</span><span class="text-[9px] font-black text-orange-400">{{formatCurrency forecast.med}}</span></div>
- <div class="flex justify-between"><span class="text-[8px] text-gray-400">Máxima</span><span class="text-[9px] font-black">{{formatCurrency forecast.max}}</span></div>
+ <div class="p-2 rounded bg-emerald-500/10 border border-emerald-500/20">
+ <p class="text-[9px] ds-text font-semibold">Reunião com equipe 16h</p>
+ <p class="text-[8px] text-gray-500 mt-1">08:00 - Hoje</p>
  </div>
- <p class="uv-flip-footer"><a href="/admin/crm" class="text-orange-400 hover:text-white">Ver Funil →</a></p>
- </div>
- </div>
+ <div class="p-2 rounded bg-purple-500/10 border border-purple-500/20">
+ <p class="text-[9px] ds-text font-semibold">Finalizar renderização</p>
+ <p class="text-[8px] text-gray-500 mt-1">Ontem</p>
  </div>
  </div>
  </div>
@@ -229,7 +227,44 @@
  </div>
 
  </div>
-</div>
+
+ <!-- === LINHA 3 === -->
+
+ <!-- Card 7: Previsão de Vendas (Flip Card Uiverse) — Movido para baixo -->
+ <div class="uv-flip-card min-h-[260px]">
+ <div class="uv-flip-content">
+ <div class="uv-flip-back">
+ <div class="uv-flip-back-inner">
+ <span class="material-symbols-outlined text-3xl text-orange-400">monitoring</span>
+ <strong class="text-[9px] uppercase tracking-widest">Previsão de Vendas</strong>
+ <span class="text-lg font-black text-orange-400">{{formatCurrency forecast.med}}</span>
+ <span class="text-[7px] text-gray-500 uppercase">Ponderada</span>
+ </div>
+ </div>
+ <div class="uv-flip-front">
+ <div class="uv-flip-img">
+ <div class="uv-circle"></div>
+ <div class="uv-circle" id="uv-right"></div>
+ <div class="uv-circle" id="uv-bottom"></div>
+ </div>
+ <div class="uv-flip-front-content">
+ <small class="uv-flip-badge">Forecast CRM</small>
+ <div class="uv-flip-description">
+ <div class="uv-flip-title"><p><strong>Previsão Mensal</strong></p></div>
+ <div class="space-y-1 mt-2">
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Mínima</span><span class="text-[9px] font-black">{{formatCurrency forecast.min}}</span></div>
+ <div class="flex justify-between"><span class="text-[8px] text-orange-400">Ponderada</span><span class="text-[9px] font-black text-orange-400">{{formatCurrency forecast.med}}</span></div>
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Máxima</span><span class="text-[9px] font-black">{{formatCurrency forecast.max}}</span></div>
+ </div>
+ <p class="uv-flip-footer"><a href="/admin/crm" class="text-orange-400 hover:text-white">Ver Funil →</a></p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ </div>
+
 
 <style>
 /* ====================================================== */
