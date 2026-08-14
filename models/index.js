@@ -50,6 +50,25 @@ const AccountsPayable = require('./AccountsPayable');
 const ArInstallment = require('./ArInstallment');
 const ApInstallment = require('./ApInstallment');
 
+// === LEAD MODELS (Espelhamento isolado de Project) ===
+const Lead = require('./Lead');
+const LeadRevision = require('./LeadRevision');
+const LeadDelivery = require('./LeadDelivery');
+const LeadTask = require('./LeadTask')(sequelize);
+const LeadLog = require('./LeadLog');
+const LeadMilestone = require('./LeadMilestone');
+const LeadTimeLog = require('./LeadTimeLog');
+const LeadCalendarEvent = require('./LeadCalendarEvent');
+const LeadFinanceTransaction = require('./LeadFinanceTransaction');
+const LeadPortfolioItem = require('./LeadPortfolioItem');
+const LeadAccountsReceivable = require('./LeadAccountsReceivable');
+const LeadAccountsPayable = require('./LeadAccountsPayable');
+const LeadComment = require('./LeadComment');
+const LeadFocusSession = require('./LeadFocusSession');
+
+// === FEATURE TOGGLES (Admin controla visibilidade) ===
+const FeatureToggle = require('./FeatureToggle');
+
 // Relacionamentos Budget e Client
 Client.hasMany(Budget, { as: 'budgets', foreignKey: 'clientId', onDelete: 'SET NULL' });
 Budget.belongsTo(Client, { as: 'client', foreignKey: 'clientId' });
@@ -208,6 +227,51 @@ CpqAmbiente.belongsTo(CpqFase, { as: 'fase', foreignKey: 'faseId' });
 CpqAmbiente.hasMany(CpqEntregavel, { as: 'entregaveis', foreignKey: 'ambienteId', onDelete: 'CASCADE' });
 CpqEntregavel.belongsTo(CpqAmbiente, { as: 'ambiente', foreignKey: 'ambienteId' });
 
+// === LEAD (Espelhamento isolado de Project) ===
+Lead.belongsTo(Client, { as: 'customer', foreignKey: 'clientId' });
+Lead.belongsTo(User, { as: 'assignedUser', foreignKey: 'assignedUserId' });
+Client.hasMany(Lead, { as: 'leads', foreignKey: 'clientId' });
+User.hasMany(Lead, { as: 'assignedLeads', foreignKey: 'assignedUserId' });
+
+Lead.hasMany(LeadRevision, { as: 'revisions', foreignKey: 'leadId', onDelete: 'CASCADE' });
+LeadRevision.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasMany(LeadDelivery, { as: 'deliveries', foreignKey: 'leadId', onDelete: 'CASCADE' });
+LeadDelivery.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasMany(LeadTask, { as: 'tasks', foreignKey: 'leadId', onDelete: 'CASCADE' });
+LeadTask.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasMany(LeadLog, { as: 'logs', foreignKey: 'leadId', onDelete: 'CASCADE' });
+LeadLog.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasMany(LeadMilestone, { as: 'milestones', foreignKey: 'leadId', onDelete: 'CASCADE' });
+LeadMilestone.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasMany(LeadTimeLog, { as: 'timeLogs', foreignKey: 'leadId', onDelete: 'CASCADE' });
+LeadTimeLog.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasMany(LeadCalendarEvent, { as: 'calendarEvents', foreignKey: 'leadId', onDelete: 'CASCADE' });
+LeadCalendarEvent.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasMany(LeadFinanceTransaction, { as: 'transactions', foreignKey: 'leadId', onDelete: 'SET NULL' });
+LeadFinanceTransaction.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasOne(LeadPortfolioItem, { as: 'portfolio', foreignKey: 'leadId' });
+LeadPortfolioItem.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasMany(LeadAccountsReceivable, { as: 'receivables', foreignKey: 'leadId', onDelete: 'CASCADE' });
+LeadAccountsReceivable.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasMany(LeadAccountsPayable, { as: 'payables', foreignKey: 'leadId', onDelete: 'CASCADE' });
+LeadAccountsPayable.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasMany(LeadComment, { as: 'comments', foreignKey: 'leadId', onDelete: 'CASCADE' });
+LeadComment.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
+Lead.hasMany(LeadFocusSession, { as: 'focusSessions', foreignKey: 'leadId', onDelete: 'CASCADE' });
+LeadFocusSession.belongsTo(Lead, { as: 'lead', foreignKey: 'leadId' });
+
 // Dynamic Tenant Isolation Attribute and Hook Registration
 const { registerTenantHooks } = require('../utils/tenantContext');
 const modelsToIsolate = [
@@ -231,7 +295,8 @@ const modelsToIsolate = [
   CRMLeadLog,
   CRMLeadMessage,
   CrmForecastProbability,
-  CpqOrcamento
+  CpqOrcamento,
+  Lead
 ];
 
 modelsToIsolate.forEach(model => {
@@ -304,5 +369,20 @@ module.exports = {
   CpqOrcamento,
   CpqFase,
   CpqAmbiente,
-  CpqEntregavel
+  CpqEntregavel,
+  Lead,
+  LeadRevision,
+  LeadDelivery,
+  LeadTask,
+  LeadLog,
+  LeadMilestone,
+  LeadTimeLog,
+  LeadCalendarEvent,
+  LeadFinanceTransaction,
+  LeadPortfolioItem,
+  LeadAccountsReceivable,
+  LeadAccountsPayable,
+  LeadComment,
+  LeadFocusSession,
+  FeatureToggle
 };

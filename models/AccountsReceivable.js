@@ -16,11 +16,24 @@ const AccountsReceivable = sequelize.define('AccountsReceivable', {
   installmentsCount: { type: DataTypes.INTEGER, defaultValue: 1, field: 'installments_count' },
   paymentMethod: { type: DataTypes.STRING, allowNull: true, field: 'payment_method' },
   status: { type: DataTypes.ENUM('aberto', 'parcial', 'quitado', 'cancelado', 'atrasado'), defaultValue: 'aberto' },
+  category: { type: DataTypes.STRING, allowNull: true, defaultValue: 'projeto' },
   bankAccountId: { type: DataTypes.UUID, allowNull: true, field: 'bank_account_id' },
   chartAccountId: { type: DataTypes.UUID, allowNull: true, field: 'chart_account_id' },
   costCenterId: { type: DataTypes.UUID, allowNull: true, field: 'cost_center_id' },
   notes: { type: DataTypes.TEXT, allowNull: true },
-  originDate: { type: DataTypes.DATEONLY, allowNull: true, field: 'origin_date' }
+  originDate: { type: DataTypes.DATEONLY, allowNull: true, field: 'origin_date' },
+  editHistory: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    field: 'edit_history',
+    get() {
+      const val = this.getDataValue('editHistory');
+      try { return val ? JSON.parse(val) : []; } catch (e) { return []; }
+    },
+    set(val) {
+      this.setDataValue('editHistory', JSON.stringify(val || []));
+    }
+  }
 }, { tableName: 'accounts_receivable', underscored: true, timestamps: true });
 
 module.exports = AccountsReceivable;

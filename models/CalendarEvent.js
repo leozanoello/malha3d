@@ -65,6 +65,17 @@ const CalendarEvent = sequelize.define('CalendarEvent', {
     set(val) {
       this.setDataValue('history', JSON.stringify(val || []));
     }
+  },
+  tasks: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    get() {
+      const val = this.getDataValue('tasks');
+      try { return val ? JSON.parse(val) : []; } catch (e) { return []; }
+    },
+    set(val) {
+      this.setDataValue('tasks', JSON.stringify(val || []));
+    }
   }
 }, {
   tableName: 'calendar_events',

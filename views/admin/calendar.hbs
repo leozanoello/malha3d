@@ -154,6 +154,7 @@
  <!-- Tabs -->
  <div class="flex shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.06);">
   <button onclick="switchEventTab('details')" id="evtTabDetails" class="flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest text-orange-400 border-b-2 border-orange-500">Detalhes</button>
+  <button onclick="switchEventTab('tasks')" id="evtTabTasks" class="flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest text-gray-500 border-b-2 border-transparent hover:text-white">Tarefas</button>
   <button onclick="switchEventTab('edit')" id="evtTabEdit" class="flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest text-gray-500 border-b-2 border-transparent hover:text-white">Editar</button>
   <button onclick="switchEventTab('participants')" id="evtTabParticipants" class="flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest text-gray-500 border-b-2 border-transparent hover:text-white">Participantes</button>
   <button onclick="switchEventTab('history')" id="evtTabHistory" class="flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest text-gray-500 border-b-2 border-transparent hover:text-white">Histórico</button>
@@ -184,6 +185,22 @@
 
   <!-- TAB: EDITAR -->
   <div id="evtContentEdit" class="p-5 space-y-3 hidden">
+
+  <!-- TAB: TAREFAS (Checklist com data) -->
+  <div id="evtContentTasks" class="p-5 space-y-3 hidden">
+   <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-1">
+    <span class="material-symbols-outlined text-[10px]">checklist</span> Tarefas do Evento
+   </p>
+   <div class="flex gap-2">
+    <input type="text" id="newEventTaskTitle" placeholder="Nova tarefa..." class="flex-1 px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+    <input type="date" id="newEventTaskDate" class="px-2 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color-scheme:dark; width:130px;">
+    <button type="button" onclick="addEventTask()" class="px-3 py-2 rounded-md bg-orange-500/20 text-orange-400 border border-orange-500/30 text-[8px] font-black uppercase hover:bg-orange-500 hover:text-white transition-all shrink-0">+ Add</button>
+   </div>
+   <p class="text-[7px] text-gray-500">Tarefas criadas aqui aparecem nas Notificações e na Lista de Tarefas do sistema.</p>
+   <div id="eventTasksList" class="space-y-1.5 mt-2">
+    <p class="text-[9px] text-gray-500 text-center py-3">Nenhuma tarefa</p>
+   </div>
+  </div>
    <form id="editEventForm" class="space-y-3">
     <div>
      <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Título</label>
@@ -318,7 +335,7 @@ var _currentEventId = null;
 var _currentEvent = null;
 
 function switchEventTab(tab) {
- ['details','edit','participants','history'].forEach(function(t) {
+ ['details','tasks','edit','participants','history'].forEach(function(t) {
   var content = document.getElementById('evtContent' + t.charAt(0).toUpperCase() + t.slice(1));
   var tabBtn = document.getElementById('evtTab' + t.charAt(0).toUpperCase() + t.slice(1));
   if (content) content.classList.toggle('hidden', t !== tab);
@@ -330,6 +347,7 @@ function switchEventTab(tab) {
  });
  if (tab === 'history' && _currentEventId) loadEventHistory(_currentEventId);
  if (tab === 'participants' && _currentEventId) renderParticipantsEdit();
+ if (tab === 'tasks' && _currentEventId) loadEventTasks(_currentEventId);
 }
 
 function openEventDetail(eventId) {
@@ -537,6 +555,85 @@ function filterCalendarEvents(query) {
  document.querySelectorAll('.calendar-event-badge').forEach(function(badge) {
   badge.style.display = (!q || (badge.textContent || '').toLowerCase().includes(q)) ? 'block' : 'none';
  });
+}
+
+// === TAREFAS DO EVENTO (Checklist) ===
+async function loadEventTasks(eventId) {
+ var list = document.getElementById('eventTasksList');
+ if (!list) return;
+ list.innerHTML = '<p class="text-[9px] text-gray-500 text-center py-3">Carregando...</p>';
+ try {
+  var res = await fetch('/admin/api/agenda/' + eventId + '/tasks');
+  var json = await res.json();
+  if (json.success && json.tasks && json.tasks.length > 0) {
+   renderEventTasks(json.tasks);
+  } else {
+   list.innerHTML = '<p class="text-[9px] text-gray-500 text-center py-3">Nenhuma tarefa</p>';
+  }
+ } catch(e) {
+  list.innerHTML = '<p class="text-[9px] text-red-400 text-center py-3">Erro ao carregar</p>';
+ }
+}
+
+function renderEventTasks(tasks) {
+ var list = document.getElementById('eventTasksList');
+ if (!list) return;
+ list.innerHTML = tasks.map(function(t) {
+  var checked = t.completed ? 'checked' : '';
+  var lineThrough = t.completed ? 'line-through opacity-50' : '';
+  var dateStr = t.dueDate ? new Date(t.dueDate).toLocaleDateString('pt-BR') : '';
+  var overdue = !t.completed && t.dueDate && new Date(t.dueDate) < new Date() ? 'text-red-400' : 'text-gray-500';
+  return '<div class="flex items-center gap-2 p-2 rounded-[4px] group" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">' +
+   '<input type="checkbox" ' + checked + ' onchange="toggleEventTask(\'' + t.id + '\', this.checked)" class="w-3.5 h-3.5 rounded accent-orange-500 cursor-pointer shrink-0">' +
+   '<span class="flex-1 text-[9px] font-bold text-white ' + lineThrough + '">' + (t.title || '') + '</span>' +
+   (dateStr ? '<span class="text-[7px] font-bold ' + overdue + ' shrink-0">' + dateStr + '</span>' : '') +
+   '<button onclick="deleteEventTask(\'' + t.id + '\')" class="w-5 h-5 rounded flex items-center justify-center text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity" style="background:rgba(255,255,255,0.05);"><span class="material-symbols-outlined text-xs">close</span></button>' +
+  '</div>';
+ }).join('');
+}
+
+async function addEventTask() {
+ if (!_currentEventId) return;
+ var titleInput = document.getElementById('newEventTaskTitle');
+ var dateInput = document.getElementById('newEventTaskDate');
+ var title = (titleInput.value || '').trim();
+ if (!title) { titleInput.focus(); return; }
+ try {
+  var res = await fetch('/admin/api/agenda/' + _currentEventId + '/tasks', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({ title: title, dueDate: dateInput.value || null })
+  });
+  var json = await res.json();
+  if (json.success) {
+   titleInput.value = '';
+   dateInput.value = '';
+   loadEventTasks(_currentEventId);
+   if (window.showToast) window.showToast('Tarefa adicionada', 'success');
+  } else {
+   if (window.showToast) window.showToast('Erro: ' + (json.error || 'Falha'), 'error');
+  }
+ } catch(e) {
+  if (window.showToast) window.showToast('Erro de rede', 'error');
+ }
+}
+
+async function toggleEventTask(taskId, completed) {
+ try {
+  await fetch('/admin/api/agenda/tasks/' + taskId, {
+   method: 'PATCH',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({ completed: completed })
+  });
+  if (_currentEventId) loadEventTasks(_currentEventId);
+ } catch(e) {}
+}
+
+async function deleteEventTask(taskId) {
+ try {
+  await fetch('/admin/api/agenda/tasks/' + taskId, { method: 'DELETE' });
+  if (_currentEventId) loadEventTasks(_currentEventId);
+ } catch(e) {}
 }
 
 // Submit new event

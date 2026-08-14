@@ -2063,5 +2063,107 @@
     };
     </script>
 
+    <!-- NOTAS: Templates globais (funciona em qualquer página) -->
+    <script>
+    (function(){
+      var K='malha3d_notes_v2';
+      var TEMPLATES={
+        checklist:{title:'Checklist',category:'Trabalho',content:'<h3>✅ Checklist</h3><p style="font-size:10px;color:#71717a;background:rgba(245,158,11,0.05);border:1px dashed rgba(245,158,11,0.25);border-radius:4px;padding:6px 8px;">✏️ Use o botão Checklist na toolbar para adicionar novos itens.</p><hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:12px 0;"><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Item 1 — clique e digite</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Item 2</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Item 3</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Item 4</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Item 5</span></div>'},
+        reuniao:{title:'Reunião — ',category:'Reuniões',content:'<h3>📋 Pauta</h3><ul><li>Ponto 1 — descreva o tema</li><li>Ponto 2</li><li>Ponto 3</li></ul><h3>📝 Anotações</h3><p>Escreva livremente o que foi discutido...</p><h3>✅ Ações / Decisões</h3><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Responsável — Ação</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Responsável — Outra ação</span></div><h3>⏰ Próxima Reunião</h3><p>Data: __ / __ / ____ &nbsp; Hora: __:__</p>'},
+        followup:{title:'Follow-up — ',category:'Trabalho',content:'<h3>👤 Cliente</h3><p>Nome: [digite o nome]</p><p>Empresa: [empresa] | Contato: [telefone/email]</p><h3>📞 Último Contato</h3><p>Data: [dd/mm/aaaa] | Canal: [WhatsApp / E-mail / Telefone]</p><h3>🎯 Status Atual</h3><p>Descreva onde o cliente está no funil...</p><h3>📋 Próximos Passos</h3><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Ação 1 — responsável e prazo</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Ação 2</span></div><h3>⏰ Retornar em</h3><p>Data: [dd/mm/aaaa]</p>'},
+        producao:{title:'Produção — ',category:'Trabalho',content:'<h3>🎯 Projeto</h3><p>Nome: [projeto] | Cliente: [cliente] | Prazo: [dd/mm/aaaa]</p><h3>📐 Etapas de Produção</h3><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>📁 Briefing — coleta de referências</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>🧊 Modelagem 3D</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>🎨 Texturização</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>💡 Iluminação</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>📷 Render</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>🖼️ Pós-produção e entrega</span></div><h3>📝 Observações</h3><p>...</p>'}
+      };
+
+      function getNotes(){try{return JSON.parse(localStorage.getItem(K))||[];}catch(e){return[];}}
+      function saveNotes(n){localStorage.setItem(K,JSON.stringify(n));}
+      function genId(){return 'n_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);}
+
+      function openQuickNoteModal(noteData){
+        var existing=document.getElementById('notesQuickModal');
+        if(existing) existing.remove();
+
+        var modal=document.createElement('div');
+        modal.id='notesQuickModal';
+        modal.className='fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm';
+        modal.style.display='flex';
+        modal.innerHTML='<div style="background:#151515;border:1px solid rgba(255,255,255,0.1);border-radius:8px;box-shadow:0 25px 50px rgba(0,0,0,0.5);width:100%;max-width:680px;margin:0 16px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);">'
+          +'<h3 style="font-size:14px;font-weight:900;color:white;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="color:#f59e0b;">edit_note</span> <span id="quickModalTitle">'+((noteData&&noteData.title)||'Nova Nota')+'</span></h3>'
+          +'<button onclick="document.getElementById(\'notesQuickModal\').remove()" style="width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border:none;cursor:pointer;color:#9ca3af;" onmouseover="this.style.color=\'white\'" onmouseout="this.style.color=\'#9ca3af\'"><span class="material-symbols-outlined">close</span></button>'
+          +'</div>'
+          +'<div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;">'
+          +'<input type="text" id="quickEditorTitle" placeholder="Título da nota..." value="'+((noteData&&noteData.title)||'')+'" style="width:100%;background:transparent;font-size:16px;font-weight:700;color:white;border:none;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:8px;outline:none;">'
+          +'<div id="quickEditorContent" contenteditable="true" style="width:100%;min-height:300px;background:rgba(255,255,255,0.03);border-radius:6px;padding:12px;font-size:13px;color:white;line-height:1.6;border:1px solid rgba(255,255,255,0.08);outline:none;">'+((noteData&&noteData.content)||'')+'</div>'
+          +'<div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;">'
+          +'<label style="font-size:9px;font-weight:700;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:6px;">Categoria</label>'
+          +'<select id="quickEditorCategory" style="width:100%;padding:8px 12px;border-radius:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:white;font-size:11px;font-weight:600;outline:none;">'
+          +'<option value="Geral">Geral</option><option value="Trabalho"'+(noteData&&noteData.cat==='Trabalho'?' selected':'')+'>Trabalho</option><option value="Pessoal">Pessoal</option><option value="Ideias">Ideias</option><option value="Lembretes">Lembretes</option><option value="Reuniões"'+(noteData&&noteData.cat==='Reuniões'?' selected':'')+'>Reuniões</option>'
+          +'</select>'
+          +'</div>'
+          +'</div>'
+          +'<div style="display:flex;align-items:center;gap:8px;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.01);">'
+          +'<button id="quickNoteSaveBtn" style="padding:8px 16px;border-radius:8px;background:#f59e0b;color:white;font-size:9px;font-weight:900;text-transform:uppercase;border:none;cursor:pointer;">Salvar</button>'
+          +'<button onclick="document.getElementById(\'notesQuickModal\').remove()" style="padding:8px 16px;border-radius:8px;background:rgba(255,255,255,0.05);color:#d4d4d8;font-size:9px;font-weight:900;text-transform:uppercase;border:none;cursor:pointer;">Cancelar</button>'
+          +'<span id="quickSaveStatus" style="font-size:9px;color:#4b5563;margin-left:auto;">●</span>'
+          +'</div>'
+          +'</div>';
+        document.body.appendChild(modal);
+
+        // Bind salvar
+        document.getElementById('quickNoteSaveBtn').onclick=function(){
+          var notes=getNotes();
+          notes=notes.map(function(x){
+            if(x.id!==noteData.id) return x;
+            x.title=document.getElementById('quickEditorTitle').value;
+            x.content=document.getElementById('quickEditorContent').innerHTML;
+            x.cat=document.getElementById('quickEditorCategory').value;
+            x.updated=new Date().toISOString();
+            return x;
+          });
+          saveNotes(notes);
+          var st=document.getElementById('quickSaveStatus');
+          if(st){st.textContent='✓ Salvo';st.style.color='#10b981';}
+          setTimeout(function(){ document.getElementById('notesQuickModal')?.remove(); },500);
+          if(window.showToast) window.showToast('Nota criada com sucesso!','success');
+        };
+
+        // Fechar com ESC
+        modal.addEventListener('keydown',function(e){if(e.key==='Escape')modal.remove();});
+
+        // Focus
+        setTimeout(function(){document.getElementById('quickEditorTitle')?.focus();},50);
+      }
+
+      // Definir globalmente — se a página de notas já definiu window.m3dNotes, preservar e apenas dar fallback
+      if(!window.m3dNotes) window.m3dNotes={};
+
+      // Salvar a versão original da página de notas (se existir)
+      var _origFromTemplate = window.m3dNotes.fromTemplate;
+
+      window.m3dNotes.fromTemplate = function(type){
+        // Se estamos na página de notas e ela tem sua própria implementação completa, usar ela
+        if(_origFromTemplate && document.getElementById('notesEditorActive')){
+          return _origFromTemplate.call(window.m3dNotes, type);
+        }
+
+        var tpl=TEMPLATES[type];
+        if(!tpl){console.error('[Notas] Template não encontrado:',type);return;}
+
+        // Criar nota no localStorage
+        var notes=getNotes();
+        var n={id:genId(),title:tpl.title,content:tpl.content,cat:tpl.category,color:'yellow',tags:[],fav:false,created:new Date().toISOString(),updated:new Date().toISOString()};
+        notes.unshift(n);
+        saveNotes(notes);
+
+        // Abrir modal de edição rápida
+        openQuickNoteModal(n);
+      };
+
+      // Fallbacks para funções chamadas nos onclick
+      if(!window.m3dNotes.saveQuickNote) window.m3dNotes.saveQuickNote=function(){var b=document.getElementById('quickNoteSaveBtn');if(b)b.click();};
+      if(!window.m3dNotes.addTagQuick) window.m3dNotes.addTagQuick=function(){};
+    })();
+    </script>
+
 </body>
 </html>

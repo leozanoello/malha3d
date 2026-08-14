@@ -14,13 +14,26 @@ const AccountsPayable = sequelize.define('AccountsPayable', {
   totalAmount: { type: DataTypes.DECIMAL(12, 2), allowNull: false, field: 'total_amount' },
   installmentsCount: { type: DataTypes.INTEGER, defaultValue: 1, field: 'installments_count' },
   status: { type: DataTypes.ENUM('aberto', 'parcial', 'quitado', 'cancelado', 'atrasado'), defaultValue: 'aberto' },
+  category: { type: DataTypes.STRING, allowNull: true, defaultValue: 'operacional' },
   dueDate: { type: DataTypes.DATEONLY, allowNull: true, field: 'due_date' },
   bankAccountId: { type: DataTypes.UUID, allowNull: true, field: 'bank_account_id' },
   chartAccountId: { type: DataTypes.UUID, allowNull: true, field: 'chart_account_id' },
   costCenterId: { type: DataTypes.UUID, allowNull: true, field: 'cost_center_id' },
   costClassification: { type: DataTypes.ENUM('fixo', 'variavel'), defaultValue: 'variavel', field: 'cost_classification' },
   notes: { type: DataTypes.TEXT, allowNull: true },
-  approvalStatus: { type: DataTypes.ENUM('pendente', 'aprovado', 'rejeitado'), defaultValue: 'pendente', field: 'approval_status' }
+  approvalStatus: { type: DataTypes.ENUM('pendente', 'aprovado', 'rejeitado'), defaultValue: 'pendente', field: 'approval_status' },
+  editHistory: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    field: 'edit_history',
+    get() {
+      const val = this.getDataValue('editHistory');
+      try { return val ? JSON.parse(val) : []; } catch (e) { return []; }
+    },
+    set(val) {
+      this.setDataValue('editHistory', JSON.stringify(val || []));
+    }
+  }
 }, { tableName: 'accounts_payable', underscored: true, timestamps: true });
 
 module.exports = AccountsPayable;

@@ -3060,6 +3060,120 @@ router.get('/api/agenda/:id/history', requireAuth, async (req, res) => {
   }
 });
 
+// === TAREFAS DO EVENTO (Checklist) ===
+router.get('/api/agenda/:id/tasks', requireAuth, async (req, res) => {
+  try {
+    const event = await CalendarEvent.findByPk(req.params.id);
+    if (!event) return res.status(404).json({ success: false, error: 'Evento não encontrado' });
+    return res.json({ success: true, tasks: event.tasks || [] });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/api/agenda/:id/tasks', requireAuth, async (req, res) => {
+  try {
+    const event = await CalendarEvent.findByPk(req.params.id);
+    if (!event) return res.status(404).json({ success: false, error: 'Evento não encontrado' });
+
+    const { title, dueDate } = req.body;
+    if (!title) return res.status(400).json({ success: false, error: 'Título obrigatório' });
+
+    const tasks = event.tasks || [];
+    const newTask = {
+      id: require('crypto').randomUUID(),
+      title,
+      dueDate: dueDate || null,
+      completed: false,
+      createdAt: new Date().toISOString(),
+      createdBy: req.user ? req.user.name : 'Sistema'
+    };
+    tasks.push(newTask);
+    await event.update({ tasks });
+
+    // Registrar no histórico
+    const history = event.history || [];
+    history.push({
+      action: 'task_added',
+      description: `Tarefa "${title}" adicionada`,
+      userName: req.user ? req.user.name : 'Sistema',
+      date: new Date().toISOString()
+    });
+    await event.update({ history });
+
+    // Criar CRMTask para aparecer nas notificações e lista de tarefas do sistema
+    try {
+      await CRMTask.create({
+        title: `[Agenda] ${title}`,
+        description: `Tarefa do evento "${event.title}"`,
+        dueDate: dueDate || event.startTime,
+        status: 'pendente',
+        priority: 'media',
+        category: 'agenda',
+        budgetId: null
+      });
+    } catch (taskErr) {
+      console.error('[Agenda] Falha ao criar CRMTask:', taskErr.message);
+    }
+
+    return res.json({ success: true, tasks });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.patch('/api/agenda/tasks/:taskId', requireAuth, async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { completed } = req.body;
+
+    const events = await CalendarEvent.findAll();
+    for (const event of events) {
+      const tasks = event.tasks || [];
+      const taskIdx = tasks.findIndex(t => t.id === taskId);
+      if (taskIdx !== -1) {
+        tasks[taskIdx].completed = !!completed;
+        tasks[taskIdx].completedAt = completed ? new Date().toISOString() : null;
+        await event.update({ tasks });
+        return res.json({ success: true, tasks });
+      }
+    }
+    return res.status(404).json({ success: false, error: 'Tarefa não encontrada' });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.delete('/api/agenda/tasks/:taskId', requireAuth, async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    const events = await CalendarEvent.findAll();
+    for (const event of events) {
+      const tasks = event.tasks || [];
+      const taskIdx = tasks.findIndex(t => t.id === taskId);
+      if (taskIdx !== -1) {
+        const removed = tasks.splice(taskIdx, 1)[0];
+        await event.update({ tasks });
+
+        const history = event.history || [];
+        history.push({
+          action: 'task_removed',
+          description: `Tarefa "${removed.title}" removida`,
+          userName: req.user ? req.user.name : 'Sistema',
+          date: new Date().toISOString()
+        });
+        await event.update({ history });
+
+        return res.json({ success: true, tasks });
+      }
+    }
+    return res.status(404).json({ success: false, error: 'Tarefa não encontrada' });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // === ADICIONAR PARTICIPANTE ===
 router.post('/api/agenda/:id/participants', requireAuth, async (req, res) => {
   try {
@@ -8389,6 +8503,12 @@ router.get('/api/export/sheets', requireAuth, (req, res) => {
 // =============================================================
 const cpqRoutes = require('./cpq');
 router.use('/api/cpq', requireAuth, cpqRoutes);
+
+// =============================================================
+// UNIVERSAL MASTER CARD (Lead ↔ Project sincronizado)
+// =============================================================
+const universalRoutes = require('./leadProjectUnified');
+router.use('/api/universal', requireAuth, universalRoutes);
 
 // Renderizar página CPQ
 router.get('/cpq/:budgetId', requireAuth, async (req, res) => {

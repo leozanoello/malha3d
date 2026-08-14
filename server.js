@@ -478,6 +478,14 @@ const startServer = async () => {
       await safeAddColumn('budgets', 'animationAIMisto', 'INTEGER DEFAULT 0');
       await safeAddColumn('clients', 'job_title', 'VARCHAR(255)');
       await safeAddColumn('freelancers', 'skills', 'VARCHAR(500)');
+      await safeAddColumn('calendar_events', 'tasks', "TEXT DEFAULT '[]'");
+      await safeAddColumn('calendar_events', 'history', "TEXT DEFAULT '[]'");
+      await safeAddColumn('calendar_events', 'tasks', 'TEXT');
+      await safeAddColumn('calendar_events', 'created_by', 'UUID');
+      await safeAddColumn('calendar_events', 'participants', 'TEXT');
+      await safeAddColumn('calendar_events', 'history', 'TEXT');
+      await safeAddColumn('calendar_events', 'created_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NOW()');
+      await safeAddColumn('calendar_events', 'updated_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NOW()');
 
       return server.listen(PORT, () => {
         console.log(`🚀 Malha3D Admin rodando em http://localhost:${PORT}`);

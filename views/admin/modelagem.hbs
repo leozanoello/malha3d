@@ -2725,27 +2725,8 @@ window.launchFinanceFromCard = async function() {
  }
 };
 
-// === CRIAR NOVO PROJETO (Draft → Abre modal de edição completo) ===
-window.createNewProjectDraft = async function() {
-  try {
-    const res = await fetch('/admin/api/projetos/draft', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
-    const data = await res.json();
-    if (data.success && data.draft) {
-      // Abrir o modal de edição com o draft (todas as 7 abas disponíveis)
-      window.manageLead(data.draft);
-      // Ativar modo edição automaticamente
-      setTimeout(function() {
-        var editBtn = document.getElementById('btn-edit-toggle');
-        if (editBtn) editBtn.click();
-      }, 300);
-      if (window.showToast) window.showToast('Novo projeto criado! Preencha os dados.', 'info');
-    } else {
-      alert('Erro ao criar projeto: ' + (data.error || ''));
-    }
-  } catch (err) {
-    alert('Erro de rede ao criar projeto');
-  }
-};
+// === CRIAR NOVO PROJETO — Usa modal unificado (newCardModal) ===
+// (Botão "Novo Projeto" na sidebar abre window.openNewLeadModal() diretamente)
 
 // === TRAVA DE SEGURANÇA: Desbloqueio do Valor Ganho ===
 window.unlockValorGanho = function() {
