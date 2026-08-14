@@ -39,11 +39,13 @@
  <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all" data-tab="pagar">
  <span class="material-symbols-outlined text-[12px]">arrow_upward</span> A Pagar
  </button>
- <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all" data-tab="dre">
+ <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all opacity-50 relative" data-tab="dre">
  <span class="material-symbols-outlined text-[12px]">analytics</span> DRE
+ <span class="absolute -top-1 -right-1 text-[6px] font-black bg-amber-500/20 text-amber-400 px-1 rounded border border-amber-500/30">v2.0</span>
  </button>
- <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all" data-tab="lucro">
+ <button class="finance-tab-btn flex items-center gap-1.5 px-4 py-2 rounded-[4px] text-[9px] font-black uppercase tracking-widest transition-all opacity-50 relative" data-tab="lucro">
  <span class="material-symbols-outlined text-[12px]">trending_up</span> Lucratividade
+ <span class="absolute -top-1 -right-1 text-[6px] font-black bg-amber-500/20 text-amber-400 px-1 rounded border border-amber-500/30">v2.0</span>
  </button>
 </div>
 
@@ -190,22 +192,48 @@
  </div>
 </div>
 
-<!-- Tab Pane 3: Lucratividade por Projeto -->
+<!-- Tab Pane 3: Lucratividade por Projeto — CONGELADO v2.0 -->
 <div id="tab-pane-lucro" class="finance-pane hidden space-y-4">
+ <!-- Banner Exemplo Futuro -->
+ <div class="flex items-center gap-2 p-3 rounded-[5px] mb-1" style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25);">
+ <span class="material-symbols-outlined text-amber-400 text-sm">info</span>
+ <div>
+  <p class="text-[9px] font-black text-amber-400 uppercase tracking-widest">Exemplo Futuro de Ferramenta</p>
+  <p class="text-[8px] text-amber-400/70">Esta visualização contém dados simulados. Funcionalidade completa disponível na versão 2.0.</p>
+ </div>
+ </div>
+
+ <div class="pointer-events-none select-none">
  <div class="kcard">
  <div class="kcard-body" style="padding:16px;">
- <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] mb-3 flex items-center gap-1.5"><span class="material-symbols-outlined text-purple-400 text-[12px]">trending_up</span> Lucratividade Real — Dados do Sistema</p>
- <!-- KPIs -->
- <div class="grid grid-cols-4 gap-2 mb-4" id="lucro-kpis">
- <div class="p-2.5 rounded-[4px]" style="background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Receita Total</p><p class="text-sm font-black text-emerald-400" id="lucro-receita">--</p></div>
- <div class="p-2.5 rounded-[4px]" style="background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Custos Totais</p><p class="text-sm font-black text-red-400" id="lucro-custos">--</p></div>
- <div class="p-2.5 rounded-[4px]" style="background:rgba(139,92,246,0.05); border:1px solid rgba(139,92,246,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Lucro Líquido</p><p class="text-sm font-black text-purple-400" id="lucro-liquido">--</p></div>
- <div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Margem</p><p class="text-sm font-black text-white" id="lucro-margem">--</p></div>
+ <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] mb-3 flex items-center gap-1.5"><span class="material-symbols-outlined text-purple-400 text-[12px]">trending_up</span> Lucratividade por Projeto</p>
+ <!-- KPIs Fictícios -->
+ <div class="grid grid-cols-4 gap-2 mb-4">
+ <div class="p-2.5 rounded-[4px]" style="background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Receita Total</p><p class="text-sm font-black text-emerald-400">R$ 87.450,00</p></div>
+ <div class="p-2.5 rounded-[4px]" style="background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Custos Totais</p><p class="text-sm font-black text-red-400">R$ 52.180,00</p></div>
+ <div class="p-2.5 rounded-[4px]" style="background:rgba(139,92,246,0.05); border:1px solid rgba(139,92,246,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Lucro Líquido</p><p class="text-sm font-black text-purple-400">R$ 35.270,00</p></div>
+ <div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Margem</p><p class="text-sm font-black text-white">40.3%</p></div>
  </div>
- <!-- Distribuição por Centro de Custo -->
- <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-2">Custo por Centro</p>
- <div class="space-y-1.5" id="lucro-centros">
- <p class="text-[9px] text-gray-500 text-center py-3">Carregando...</p>
+ <!-- Tabela Fictícia -->
+ <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-2">Projetos — Margem Individual</p>
+ <div class="space-y-1.5">
+ <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+  <span class="text-[9px] font-bold text-white">Residencial Alphaville — 12 Renders</span>
+  <div class="flex items-center gap-3"><span class="text-[9px] font-bold text-emerald-400">R$ 28.500</span><span class="text-[8px] font-black text-purple-400">Margem 48%</span></div>
+ </div>
+ <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+  <span class="text-[9px] font-bold text-white">Comercial Centro — Animação 60s</span>
+  <div class="flex items-center gap-3"><span class="text-[9px] font-bold text-emerald-400">R$ 35.000</span><span class="text-[8px] font-black text-purple-400">Margem 38%</span></div>
+ </div>
+ <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+  <span class="text-[9px] font-bold text-white">Condomínio Jardins — Implantação</span>
+  <div class="flex items-center gap-3"><span class="text-[9px] font-bold text-emerald-400">R$ 18.200</span><span class="text-[8px] font-black text-purple-400">Margem 35%</span></div>
+ </div>
+ <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+  <span class="text-[9px] font-bold text-white">Hotel Premium — Tour Virtual 360°</span>
+  <div class="flex items-center gap-3"><span class="text-[9px] font-bold text-emerald-400">R$ 5.750</span><span class="text-[8px] font-black text-amber-400">Margem 22%</span></div>
+ </div>
+ </div>
  </div>
  </div>
  </div>
@@ -326,56 +354,55 @@
  </div>
 </div>
 
-<!-- Tab Pane: DRE -->
+<!-- Tab Pane: DRE — CONGELADO v2.0 -->
 <div id="tab-pane-dre" class="finance-pane hidden space-y-3">
+ <!-- Banner Exemplo Futuro -->
+ <div class="flex items-center gap-2 p-3 rounded-[5px] mb-1" style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25);">
+ <span class="material-symbols-outlined text-amber-400 text-sm">info</span>
+ <div>
+  <p class="text-[9px] font-black text-amber-400 uppercase tracking-widest">Exemplo Futuro de Ferramenta</p>
+  <p class="text-[8px] text-amber-400/70">Esta visualização contém dados simulados. Funcionalidade completa disponível na versão 2.0.</p>
+ </div>
+ </div>
+
+ <div class="pointer-events-none select-none">
  <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
- <!-- DRE Mensal -->
+ <!-- DRE Mensal Fictício -->
  <div class="kcard">
  <div class="kcard-body" style="padding:16px;">
- <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] mb-4 flex items-center gap-1.5"><span class="material-symbols-outlined text-purple-400 text-[12px]">analytics</span> DRE — Mês Atual</p>
- <div class="space-y-1.5" id="erp-dre-content">
- <p class="text-[9px] text-gray-500 text-center py-4">Carregando...</p>
+ <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] mb-4 flex items-center gap-1.5"><span class="material-symbols-outlined text-purple-400 text-[12px]">analytics</span> DRE — Mês Atual (Agosto 2026)</p>
+ <div class="space-y-1.5">
+  <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.15);"><span class="text-[8px] font-bold text-gray-300">Receita Bruta</span><span class="text-[9px] font-black text-emerald-400">R$ 94.800,00</span></div>
+  <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><span class="text-[8px] font-bold text-gray-400">(-) Impostos (ISS 5%)</span><span class="text-[9px] font-bold text-red-400">- R$ 4.740,00</span></div>
+  <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><span class="text-[8px] font-bold text-gray-300">= Receita Líquida</span><span class="text-[9px] font-black text-white">R$ 90.060,00</span></div>
+  <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><span class="text-[8px] font-bold text-gray-400">(-) Custos Diretos (Freelancers)</span><span class="text-[9px] font-bold text-red-400">- R$ 28.500,00</span></div>
+  <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><span class="text-[8px] font-bold text-gray-400">(-) Custos Diretos (Licenças)</span><span class="text-[9px] font-bold text-red-400">- R$ 4.200,00</span></div>
+  <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(139,92,246,0.05); border:1px solid rgba(139,92,246,0.2);"><span class="text-[8px] font-bold text-gray-300">= Lucro Bruto</span><span class="text-[9px] font-black text-purple-400">R$ 57.360,00</span></div>
+  <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><span class="text-[8px] font-bold text-gray-400">(-) Despesas Operacionais</span><span class="text-[9px] font-bold text-red-400">- R$ 18.900,00</span></div>
+  <div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><span class="text-[8px] font-bold text-gray-400">(-) Folha de Pagamento</span><span class="text-[9px] font-bold text-red-400">- R$ 12.000,00</span></div>
+  <div class="flex items-center justify-between p-2.5 rounded-[4px] mt-2" style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25);"><span class="text-[9px] font-black text-white">LUCRO LÍQUIDO</span><span class="text-sm font-black text-emerald-400">R$ 26.460,00</span></div>
+  <div class="text-center mt-1"><span class="text-[8px] font-black text-gray-500">Margem Líquida: <span class="text-emerald-400">27.9%</span></span></div>
  </div>
  </div>
  </div>
- <!-- Fluxo de Caixa -->
+ <!-- Fluxo de Caixa Fictício -->
  <div class="kcard">
  <div class="kcard-body" style="padding:16px;">
  <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] mb-3 flex items-center gap-1.5"><span class="material-symbols-outlined text-blue-400 text-[12px]">bar_chart</span> Fluxo de Caixa — 6 Meses</p>
- <div class="flex items-center gap-3 mb-3">
- <div class="p-2 rounded-[4px] flex-1" style="background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.15);">
- <p class="text-[7px] font-black text-gray-500 uppercase">Saldo Atual</p>
- <p class="text-sm font-black text-emerald-400" id="erp-saldo-atual">--</p>
+ <div class="flex items-center gap-3 mb-4">
+  <div class="p-2 rounded-[4px] flex-1" style="background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.15);"><p class="text-[7px] font-black text-gray-500 uppercase">Saldo Atual</p><p class="text-sm font-black text-emerald-400">R$ 142.300</p></div>
+  <div class="p-2 rounded-[4px] flex-1" style="background:rgba(249,115,22,0.05); border:1px solid rgba(249,115,22,0.15);"><p class="text-[7px] font-black text-gray-500 uppercase">A Receber</p><p class="text-sm font-black text-orange-400">R$ 67.800</p></div>
+  <div class="p-2 rounded-[4px] flex-1" style="background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.15);"><p class="text-[7px] font-black text-gray-500 uppercase">A Pagar</p><p class="text-sm font-black text-red-400">R$ 31.200</p></div>
  </div>
- <div class="p-2 rounded-[4px] flex-1" style="background:rgba(249,115,22,0.05); border:1px solid rgba(249,115,22,0.15);">
- <p class="text-[7px] font-black text-gray-500 uppercase">A Receber (Pendente)</p>
- <p class="text-sm font-black text-orange-400" id="erp-a-receber-total">--</p>
+ <!-- Barras fictícias do fluxo -->
+ <div class="space-y-2">
+  <div class="flex items-center gap-2"><span class="text-[7px] font-bold text-gray-500 w-8">Mar</span><div class="flex-1 h-4 rounded-[3px] overflow-hidden flex"><div class="bg-emerald-500/60 h-full" style="width:70%"></div><div class="bg-red-500/40 h-full" style="width:30%"></div></div><span class="text-[7px] font-bold text-emerald-400">+R$22k</span></div>
+  <div class="flex items-center gap-2"><span class="text-[7px] font-bold text-gray-500 w-8">Abr</span><div class="flex-1 h-4 rounded-[3px] overflow-hidden flex"><div class="bg-emerald-500/60 h-full" style="width:62%"></div><div class="bg-red-500/40 h-full" style="width:38%"></div></div><span class="text-[7px] font-bold text-emerald-400">+R$18k</span></div>
+  <div class="flex items-center gap-2"><span class="text-[7px] font-bold text-gray-500 w-8">Mai</span><div class="flex-1 h-4 rounded-[3px] overflow-hidden flex"><div class="bg-emerald-500/60 h-full" style="width:80%"></div><div class="bg-red-500/40 h-full" style="width:20%"></div></div><span class="text-[7px] font-bold text-emerald-400">+R$41k</span></div>
+  <div class="flex items-center gap-2"><span class="text-[7px] font-bold text-gray-500 w-8">Jun</span><div class="flex-1 h-4 rounded-[3px] overflow-hidden flex"><div class="bg-emerald-500/60 h-full" style="width:55%"></div><div class="bg-red-500/40 h-full" style="width:45%"></div></div><span class="text-[7px] font-bold text-amber-400">+R$8k</span></div>
+  <div class="flex items-center gap-2"><span class="text-[7px] font-bold text-gray-500 w-8">Jul</span><div class="flex-1 h-4 rounded-[3px] overflow-hidden flex"><div class="bg-emerald-500/60 h-full" style="width:75%"></div><div class="bg-red-500/40 h-full" style="width:25%"></div></div><span class="text-[7px] font-bold text-emerald-400">+R$32k</span></div>
+  <div class="flex items-center gap-2"><span class="text-[7px] font-bold text-gray-500 w-8">Ago</span><div class="flex-1 h-4 rounded-[3px] overflow-hidden flex"><div class="bg-emerald-500/60 h-full" style="width:68%"></div><div class="bg-red-500/40 h-full" style="width:32%"></div></div><span class="text-[7px] font-bold text-emerald-400">+R$26k</span></div>
  </div>
- <div class="p-2 rounded-[4px] flex-1" style="background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.15);">
- <p class="text-[7px] font-black text-gray-500 uppercase">A Pagar (Pendente)</p>
- <p class="text-sm font-black text-red-400" id="erp-a-pagar-total">--</p>
- </div>
- </div>
- <div style="height:200px;"><canvas id="erpCashFlowChart"></canvas></div>
- </div>
- </div>
- </div>
- <!-- Sugestões IA -->
- <div class="kcard">
- <div class="kcard-body" style="padding:14px;">
- <p class="text-[8px] font-black text-orange-400 uppercase tracking-widest mb-2 flex items-center gap-1"><span class="material-symbols-outlined text-[10px]">auto_awesome</span> Inteligência Artificial — Insights Financeiros</p>
- <div class="grid grid-cols-1 md:grid-cols-3 gap-2" id="erp-ai-insights">
- <div class="p-3 rounded-[4px]" style="border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02);">
- <p class="text-[7px] font-black text-cyan-400 uppercase tracking-widest mb-1">Categorização Auto</p>
- <p class="text-[8px] text-gray-400">Despesas classificadas automaticamente por padrão de texto e valor histórico.</p>
- </div>
- <div class="p-3 rounded-[4px]" style="border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02);">
- <p class="text-[7px] font-black text-amber-400 uppercase tracking-widest mb-1">Predição Inadimplência</p>
- <p class="text-[8px] text-gray-400">Clientes com parcelas >15 dias atrasadas terão alerta automático de risco.</p>
- </div>
- <div class="p-3 rounded-[4px]" style="border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02);">
- <p class="text-[7px] font-black text-emerald-400 uppercase tracking-widest mb-1">Projeção Sazonal</p>
- <p class="text-[8px] text-gray-400">Fluxo de caixa ajustado por sazonalidade baseada nos últimos 12 meses.</p>
  </div>
  </div>
  </div>
@@ -1484,7 +1511,7 @@ window.loadReceivables = async function() {
   const res = await fetch('/admin/api/erp/receivables');
   const data = await res.json();
   if (!data.success || !data.receivables.length) {
-   tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-[9px] text-gray-500">Nenhuma conta a receber</td></tr>';
+   tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-[9px] text-gray-500">Nenhuma conta a receber</td></tr>';
    if (summary) summary.textContent = '0 registros | R$ 0,00';
    return;
   }
@@ -1497,18 +1524,20 @@ window.loadReceivables = async function() {
    var totalInst = r.installments ? r.installments.length : 0;
    var valorParcela = r.installmentsCount > 0 ? parseFloat(r.totalAmount) / r.installmentsCount : parseFloat(r.totalAmount);
    var statusColor = r.status === 'quitado' ? 'text-emerald-400 bg-emerald-500/10' : r.status === 'atrasado' ? 'text-red-400 bg-red-500/10' : 'text-orange-400 bg-orange-500/10';
-   // Remover prefixos desnecessários da descrição
    var desc = (r.description||'').replace(/^Receita:\s*/i, '').replace(/^Recebível:\s*/i, '').replace(/^Venda:\s*/i, '');
-   return '<tr class="ar-row" data-status="' + r.status + '" data-payment="' + (r.paymentMethod||'') + '" data-amount="' + parseFloat(r.totalAmount||0) + '" data-desc="' + desc.toLowerCase() + '" style="border-top:1px solid rgba(255,255,255,0.04);">' +
+   var catLabel = r.category || 'projeto';
+   var catColor = catLabel === 'projeto' ? '#10b981' : '#6b7280';
+   return '<tr class="ar-row" data-status="' + r.status + '" data-payment="' + (r.paymentMethod||'') + '" data-amount="' + parseFloat(r.totalAmount||0) + '" data-desc="' + desc.toLowerCase() + '" data-category="' + catLabel + '" style="border-top:1px solid rgba(255,255,255,0.04);">' +
     '<td class="px-3 py-2 text-[9px] font-bold text-white truncate max-w-[200px]">' + desc + '</td>' +
     '<td class="px-3 py-2 text-[9px] font-black text-emerald-400">' + fmt(r.totalAmount) + '</td>' +
     '<td class="px-3 py-2 text-[9px] font-black text-blue-400">' + fmt(valorParcela) + '</td>' +
     '<td class="px-3 py-2 text-[8px] text-gray-400">' + paidCount + '/' + totalInst + ' pagas</td>' +
     '<td class="px-3 py-2 text-[8px] text-gray-400 uppercase">' + (r.paymentMethod||'—') + '</td>' +
+    '<td class="px-3 py-2"><span class="text-[7px] font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:' + catColor + '20; color:' + catColor + '; border:1px solid ' + catColor + '40;">' + catLabel + '</span></td>' +
     '<td class="px-3 py-2"><span class="text-[7px] font-black uppercase px-1.5 py-0.5 rounded ' + statusColor + '">' + r.status + '</span></td>' +
     '<td class="px-3 py-2 text-right"><button onclick="window.openARDetail(\'' + r.id + '\')" class="px-2 py-1 text-[7px] font-bold text-orange-400 rounded-[3px] hover:bg-orange-500/20" style="background:rgba(249,115,22,0.08); border:1px solid rgba(249,115,22,0.2);">Detalhes</button></td></tr>';
   }).join('');
- } catch(e) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-[9px] text-red-400">Erro</td></tr>'; }
+ } catch(e) { tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-[9px] text-red-400">Erro</td></tr>'; }
 };
 
 // Filtro AR
@@ -1555,30 +1584,126 @@ window.openARDetail = async function(id) {
     '</div></div>';
   }).join('');
 
-  var modalHtml = '<div id="arDetailModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80" style="display:flex;">' +
-   '<div style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); width:100%; max-width:600px; max-height:85vh; overflow:hidden; display:flex; flex-direction:column;" class="mx-4">' +
+  // Histórico de edição
+  var historyHtml = '';
+  var editHistory = r.editHistory || [];
+  if (editHistory.length > 0) {
+   historyHtml = editHistory.map(function(h) {
+    var dt = new Date(h.date).toLocaleString('pt-BR');
+    var changesStr = (h.changes||[]).map(function(c) { return '<span class="text-orange-400">' + c.field + '</span>: "' + (c.from||'vazio') + '" → "' + c.to + '"'; }).join(', ');
+    return '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04);"><p class="text-[8px] font-bold text-white">' + (h.userName||'Sistema') + ' <span class="text-gray-500">em ' + dt + '</span></p><p class="text-[7px] text-gray-400 mt-0.5">' + changesStr + '</p></div>';
+   }).join('');
+  } else {
+   historyHtml = '<p class="text-[8px] text-gray-500 text-center py-3">Nenhuma edição registrada</p>';
+  }
+
+  var modalHtml = '<div id="arDetailModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80" style="display:flex;" onclick="if(event.target===this) this.remove();">' +
+   '<div style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); width:100%; max-width:650px; max-height:85vh; overflow:hidden; display:flex; flex-direction:column;" class="mx-4">' +
    '<header style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.06);" class="flex items-center justify-between shrink-0">' +
-   '<div><p class="text-[11px] font-black text-white">' + r.description + '</p><p class="text-[7px] text-gray-500 uppercase mt-0.5">Origem: ' + (r.originDate||'—') + ' | Banco: ' + (r.bankAccount?r.bankAccount.name:'—') + '</p></div>' +
+   '<div><p class="text-[11px] font-black text-white">' + (r.description||'').replace(/^Receita:\s*/i, '').replace(/^Recebível:\s*/i, '') + '</p><p class="text-[7px] text-gray-500 uppercase mt-0.5">Categoria: <span style="color:#10b981;">' + (r.category || 'projeto') + '</span> | Origem: ' + (r.originDate||'—') + '</p></div>' +
    '<button onclick="document.getElementById(\'arDetailModal\').remove()" class="w-7 h-7 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-white" style="background:rgba(255,255,255,0.05);"><span class="material-symbols-outlined text-sm">close</span></button>' +
    '</header>' +
-   '<div style="padding:16px 20px; overflow-y:auto;" class="flex-1 space-y-3 custom-scrollbar">' +
+
+   // Tabs
+   '<div class="flex shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.06);">' +
+   '<button onclick="document.getElementById(\'arTab_details\').classList.remove(\'hidden\');document.getElementById(\'arTab_edit\').classList.add(\'hidden\');document.getElementById(\'arTab_history\').classList.add(\'hidden\');" class="flex-1 py-2 text-[8px] font-black uppercase text-orange-400 border-b-2 border-orange-500">Detalhes</button>' +
+   '<button onclick="window.unlockAREdit(\'' + id + '\')" class="flex-1 py-2 text-[8px] font-black uppercase text-gray-500 border-b-2 border-transparent hover:text-white">Editar 🔒</button>' +
+   '<button onclick="document.getElementById(\'arTab_details\').classList.add(\'hidden\');document.getElementById(\'arTab_edit\').classList.add(\'hidden\');document.getElementById(\'arTab_history\').classList.remove(\'hidden\');" class="flex-1 py-2 text-[8px] font-black uppercase text-gray-500 border-b-2 border-transparent hover:text-white">Histórico</button>' +
+   '</div>' +
+
+   '<div style="overflow-y:auto;" class="flex-1 custom-scrollbar">' +
+
+   // Tab Detalhes
+   '<div id="arTab_details" class="p-5 space-y-3">' +
    '<div class="grid grid-cols-4 gap-2">' +
    '<div class="p-2.5 rounded-[4px]" style="background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Total</p><p class="text-sm font-black text-emerald-400">' + fmt(r.totalAmount) + '</p></div>' +
    '<div class="p-2.5 rounded-[4px]" style="background:rgba(249,115,22,0.05); border:1px solid rgba(249,115,22,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Em Aberto</p><p class="text-sm font-black text-orange-400">' + fmt(pendingAmount) + '</p></div>' +
    '<div class="p-2.5 rounded-[4px]" style="background:rgba(59,130,246,0.05); border:1px solid rgba(59,130,246,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Vlr Parcela</p><p class="text-sm font-black text-blue-400">' + fmt(valorParcela) + '</p></div>' +
    '<div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Status</p><p class="text-sm font-black text-white uppercase">' + r.status + '</p></div>' +
    '</div>' +
-   '<div class="grid grid-cols-3 gap-2">' +
+   '<div class="grid grid-cols-4 gap-2">' +
    '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Forma</p><p class="text-[9px] font-bold text-white uppercase">' + (r.paymentMethod||'—') + '</p></div>' +
    '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Parcelas</p><p class="text-[9px] font-bold text-white">' + r.installmentsCount + 'x</p></div>' +
    '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Cliente</p><p class="text-[9px] font-bold text-white">' + (r.client?r.client.name:'—') + '</p></div>' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Categoria</p><p class="text-[9px] font-bold text-emerald-400 uppercase">' + (r.category||'projeto') + '</p></div>' +
    '</div>' +
    '<p class="text-[8px] font-black text-gray-400 uppercase tracking-widest pt-2">Cronograma de Parcelas</p>' +
    '<div class="space-y-1.5">' + installmentsHtml + '</div>' +
+   '</div>' +
+
+   // Tab Editar (hidden até senha)
+   '<div id="arTab_edit" class="p-5 space-y-3 hidden">' +
+   '<div class="p-2 rounded-[4px] bg-amber-500/5 border border-amber-500/20"><p class="text-[8px] font-bold text-amber-400">🔒 Edição protegida por senha. Alterações são registradas no histórico.</p></div>' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Descrição</label><input id="arEdit_desc" value="' + (r.description||'').replace(/"/g, '&quot;') + '" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></div>' +
+   '<div class="grid grid-cols-2 gap-3">' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Valor Total</label><input id="arEdit_amount" type="number" step="0.01" value="' + parseFloat(r.totalAmount||0) + '" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></div>' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Categoria</label><select id="arEdit_category" class="w-full px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"><option value="' + (r.category||'projeto') + '">' + (r.category||'projeto') + ' (atual)</option></select></div>' +
+   '</div>' +
+   '<div class="grid grid-cols-2 gap-3">' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Forma Pagamento</label><select id="arEdit_payment" class="w-full px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"><option value="pix"' + (r.paymentMethod==='pix'?' selected':'') + '>PIX</option><option value="boleto"' + (r.paymentMethod==='boleto'?' selected':'') + '>Boleto</option><option value="cartao"' + (r.paymentMethod==='cartao'?' selected':'') + '>Cartão</option><option value="ted"' + (r.paymentMethod==='ted'?' selected':'') + '>TED</option><option value="dinheiro"' + (r.paymentMethod==='dinheiro'?' selected':'') + '>Dinheiro</option></select></div>' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Data Origem</label><input id="arEdit_date" type="date" value="' + (r.originDate||'') + '" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color-scheme:dark;"></div>' +
+   '</div>' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Observações</label><textarea id="arEdit_notes" rows="2" class="w-full px-3 py-2 text-xs text-white rounded-[4px] resize-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">' + (r.notes||'') + '</textarea></div>' +
+   '<button onclick="window.saveAREdit(\'' + id + '\')" class="w-full py-2.5 rounded-[4px] bg-orange-500 hover:bg-orange-600 text-[8px] font-black uppercase text-white flex items-center justify-center gap-1.5"><span class="material-symbols-outlined text-xs">save</span> Salvar Alterações</button>' +
+   '</div>' +
+
+   // Tab Histórico
+   '<div id="arTab_history" class="p-5 space-y-2 hidden">' +
+   '<p class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-2">Histórico de Edição</p>' +
+   historyHtml +
+   '</div>' +
+
    '</div></div></div>';
 
   document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+  // Carregar categorias no select de edição
+  fetch('/admin/api/erp/categories/receita').then(function(r){return r.json();}).then(function(d) {
+   if (d.success && d.categories) {
+    var sel = document.getElementById('arEdit_category');
+    if (sel) sel.innerHTML = d.categories.map(function(c) { return '<option value="' + c.name + '"' + (c.name === r.category ? ' selected' : '') + '>' + c.name + '</option>'; }).join('');
+   }
+  }).catch(function(){});
+
  } catch(e) { alert('Erro ao carregar detalhes: ' + e.message); }
+};
+
+// Desbloquear edição AR com senha
+window.unlockAREdit = function(id) {
+ var senha = prompt('Digite a senha para editar:');
+ if (senha === '0235') {
+  document.getElementById('arTab_details')?.classList.add('hidden');
+  document.getElementById('arTab_edit')?.classList.remove('hidden');
+  document.getElementById('arTab_history')?.classList.add('hidden');
+ } else if (senha !== null) {
+  if (window.showToast) window.showToast('Senha incorreta', 'error');
+  else alert('Senha incorreta');
+ }
+};
+
+// Salvar edição AR
+window.saveAREdit = async function(id) {
+ var data = {
+  password: '0235',
+  description: document.getElementById('arEdit_desc')?.value,
+  totalAmount: document.getElementById('arEdit_amount')?.value,
+  category: document.getElementById('arEdit_category')?.value,
+  paymentMethod: document.getElementById('arEdit_payment')?.value,
+  originDate: document.getElementById('arEdit_date')?.value || null,
+  notes: document.getElementById('arEdit_notes')?.value
+ };
+ try {
+  var res = await fetch('/admin/api/erp/receivables/' + id, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+  var json = await res.json();
+  if (json.success) {
+   if (window.showToast) window.showToast('✓ Lançamento atualizado', 'success');
+   document.getElementById('arDetailModal')?.remove();
+   window.loadReceivables();
+  } else {
+   if (window.showToast) window.showToast('Erro: ' + (json.error||''), 'error');
+   else alert(json.error || 'Erro');
+  }
+ } catch(e) { alert('Erro de rede: ' + e.message); }
 };
 
 window.payARInstallment = async function(instId) {
@@ -1617,29 +1742,125 @@ window.openAPDetail = async function(id) {
     '</div></div>';
   }).join('');
 
-  var modalHtml = '<div id="apDetailModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80" style="display:flex;">' +
-   '<div style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); width:100%; max-width:600px; max-height:85vh; overflow:hidden; display:flex; flex-direction:column;" class="mx-4">' +
+  // Histórico de edição
+  var historyHtml = '';
+  var editHistory = p.editHistory || [];
+  if (editHistory.length > 0) {
+   historyHtml = editHistory.map(function(h) {
+    var dt = new Date(h.date).toLocaleString('pt-BR');
+    var changesStr = (h.changes||[]).map(function(c) { return '<span class="text-orange-400">' + c.field + '</span>: "' + (c.from||'vazio') + '" → "' + c.to + '"'; }).join(', ');
+    return '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04);"><p class="text-[8px] font-bold text-white">' + (h.userName||'Sistema') + ' <span class="text-gray-500">em ' + dt + '</span></p><p class="text-[7px] text-gray-400 mt-0.5">' + changesStr + '</p></div>';
+   }).join('');
+  } else {
+   historyHtml = '<p class="text-[8px] text-gray-500 text-center py-3">Nenhuma edição registrada</p>';
+  }
+
+  var modalHtml = '<div id="apDetailModal" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80" style="display:flex;" onclick="if(event.target===this) this.remove();">' +
+   '<div style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); width:100%; max-width:650px; max-height:85vh; overflow:hidden; display:flex; flex-direction:column;" class="mx-4">' +
    '<header style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.06);" class="flex items-center justify-between shrink-0">' +
-   '<div><p class="text-[11px] font-black text-white">' + p.description + '</p><p class="text-[7px] text-gray-500 uppercase mt-0.5">Tipo: ' + (p.costClassification==='fixo'?'Custo Fixo':'Custo Variável') + ' | Venc: ' + (p.dueDate||'—') + '</p></div>' +
+   '<div><p class="text-[11px] font-black text-white">' + (p.description||'') + '</p><p class="text-[7px] text-gray-500 uppercase mt-0.5">Categoria: <span style="color:#ef4444;">' + (p.category || 'operacional') + '</span> | Tipo: ' + (p.costClassification==='fixo'?'Fixo':'Variável') + '</p></div>' +
    '<button onclick="document.getElementById(\'apDetailModal\').remove()" class="w-7 h-7 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-white" style="background:rgba(255,255,255,0.05);"><span class="material-symbols-outlined text-sm">close</span></button>' +
    '</header>' +
-   '<div style="padding:16px 20px; overflow-y:auto;" class="flex-1 space-y-3 custom-scrollbar">' +
+
+   // Tabs
+   '<div class="flex shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.06);">' +
+   '<button onclick="document.getElementById(\'apTab_details\').classList.remove(\'hidden\');document.getElementById(\'apTab_edit\').classList.add(\'hidden\');document.getElementById(\'apTab_history\').classList.add(\'hidden\');" class="flex-1 py-2 text-[8px] font-black uppercase text-orange-400 border-b-2 border-orange-500">Detalhes</button>' +
+   '<button onclick="window.unlockAPEdit(\'' + id + '\')" class="flex-1 py-2 text-[8px] font-black uppercase text-gray-500 border-b-2 border-transparent hover:text-white">Editar 🔒</button>' +
+   '<button onclick="document.getElementById(\'apTab_details\').classList.add(\'hidden\');document.getElementById(\'apTab_edit\').classList.add(\'hidden\');document.getElementById(\'apTab_history\').classList.remove(\'hidden\');" class="flex-1 py-2 text-[8px] font-black uppercase text-gray-500 border-b-2 border-transparent hover:text-white">Histórico</button>' +
+   '</div>' +
+
+   '<div style="overflow-y:auto;" class="flex-1 custom-scrollbar">' +
+
+   // Tab Detalhes
+   '<div id="apTab_details" class="p-5 space-y-3">' +
    '<div class="grid grid-cols-4 gap-2">' +
    '<div class="p-2.5 rounded-[4px]" style="background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Total</p><p class="text-sm font-black text-red-400">' + fmt(p.totalAmount) + '</p></div>' +
    '<div class="p-2.5 rounded-[4px]" style="background:rgba(249,115,22,0.05); border:1px solid rgba(249,115,22,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Em Aberto</p><p class="text-sm font-black text-orange-400">' + fmt(pendingAmount) + '</p></div>' +
    '<div class="p-2.5 rounded-[4px]" style="background:rgba(59,130,246,0.05); border:1px solid rgba(59,130,246,0.15);"><p class="text-[7px] font-bold text-gray-500 uppercase">Vlr Parcela</p><p class="text-sm font-black text-blue-400">' + fmt(valorParcela) + '</p></div>' +
    '<div class="p-2.5 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Status</p><p class="text-sm font-black text-white uppercase">' + p.status + '</p></div>' +
    '</div>' +
-   '<div class="grid grid-cols-2 gap-2">' +
+   '<div class="grid grid-cols-3 gap-2">' +
    '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Fornecedor</p><p class="text-[9px] font-bold text-white">' + (p.freelancer?p.freelancer.name:'Geral') + '</p></div>' +
    '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Parcelas</p><p class="text-[9px] font-bold text-white">' + p.installmentsCount + 'x de ' + fmt(valorParcela) + '</p></div>' +
+   '<div class="p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"><p class="text-[7px] font-bold text-gray-500 uppercase">Categoria</p><p class="text-[9px] font-bold text-red-400 uppercase">' + (p.category||'operacional') + '</p></div>' +
    '</div>' +
    '<p class="text-[8px] font-black text-gray-400 uppercase tracking-widest pt-2">Cronograma</p>' +
    '<div class="space-y-1.5">' + installmentsHtml + '</div>' +
+   '</div>' +
+
+   // Tab Editar
+   '<div id="apTab_edit" class="p-5 space-y-3 hidden">' +
+   '<div class="p-2 rounded-[4px] bg-amber-500/5 border border-amber-500/20"><p class="text-[8px] font-bold text-amber-400">🔒 Edição protegida por senha. Alterações são registradas no histórico.</p></div>' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Descrição</label><input id="apEdit_desc" value="' + (p.description||'').replace(/"/g, '&quot;') + '" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></div>' +
+   '<div class="grid grid-cols-2 gap-3">' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Valor Total</label><input id="apEdit_amount" type="number" step="0.01" value="' + parseFloat(p.totalAmount||0) + '" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></div>' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Categoria</label><select id="apEdit_category" class="w-full px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"><option>' + (p.category||'operacional') + '</option></select></div>' +
+   '</div>' +
+   '<div class="grid grid-cols-2 gap-3">' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Tipo Custo</label><select id="apEdit_cost" class="w-full px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"><option value="fixo"' + (p.costClassification==='fixo'?' selected':'') + '>Fixo</option><option value="variavel"' + (p.costClassification==='variavel'?' selected':'') + '>Variável</option></select></div>' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Vencimento</label><input id="apEdit_due" type="date" value="' + (p.dueDate||'') + '" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color-scheme:dark;"></div>' +
+   '</div>' +
+   '<div><label class="text-[8px] font-bold text-gray-500 uppercase mb-1 block">Observações</label><textarea id="apEdit_notes" rows="2" class="w-full px-3 py-2 text-xs text-white rounded-[4px] resize-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">' + (p.notes||'') + '</textarea></div>' +
+   '<button onclick="window.saveAPEdit(\'' + id + '\')" class="w-full py-2.5 rounded-[4px] bg-orange-500 hover:bg-orange-600 text-[8px] font-black uppercase text-white flex items-center justify-center gap-1.5"><span class="material-symbols-outlined text-xs">save</span> Salvar Alterações</button>' +
+   '</div>' +
+
+   // Tab Histórico
+   '<div id="apTab_history" class="p-5 space-y-2 hidden">' +
+   '<p class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-2">Histórico de Edição</p>' +
+   historyHtml +
+   '</div>' +
+
    '</div></div></div>';
 
   document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+  // Carregar categorias despesa no select
+  fetch('/admin/api/erp/categories/despesa').then(function(r){return r.json();}).then(function(d) {
+   if (d.success && d.categories) {
+    var sel = document.getElementById('apEdit_category');
+    if (sel) sel.innerHTML = d.categories.map(function(c) { return '<option value="' + c.name + '"' + (c.name === p.category ? ' selected' : '') + '>' + c.name + '</option>'; }).join('');
+   }
+  }).catch(function(){});
+
  } catch(e) { alert('Erro: ' + e.message); }
+};
+
+// Desbloquear edição AP com senha
+window.unlockAPEdit = function(id) {
+ var senha = prompt('Digite a senha para editar:');
+ if (senha === '0235') {
+  document.getElementById('apTab_details')?.classList.add('hidden');
+  document.getElementById('apTab_edit')?.classList.remove('hidden');
+  document.getElementById('apTab_history')?.classList.add('hidden');
+ } else if (senha !== null) {
+  if (window.showToast) window.showToast('Senha incorreta', 'error');
+  else alert('Senha incorreta');
+ }
+};
+
+// Salvar edição AP
+window.saveAPEdit = async function(id) {
+ var data = {
+  password: '0235',
+  description: document.getElementById('apEdit_desc')?.value,
+  totalAmount: document.getElementById('apEdit_amount')?.value,
+  category: document.getElementById('apEdit_category')?.value,
+  costClassification: document.getElementById('apEdit_cost')?.value,
+  dueDate: document.getElementById('apEdit_due')?.value || null,
+  notes: document.getElementById('apEdit_notes')?.value
+ };
+ try {
+  var res = await fetch('/admin/api/erp/payables/' + id, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+  var json = await res.json();
+  if (json.success) {
+   if (window.showToast) window.showToast('✓ Lançamento atualizado', 'success');
+   document.getElementById('apDetailModal')?.remove();
+   window.loadPayables();
+  } else {
+   if (window.showToast) window.showToast('Erro: ' + (json.error||''), 'error');
+   else alert(json.error || 'Erro');
+  }
+ } catch(e) { alert('Erro de rede: ' + e.message); }
 };
 
 window.payAPInstallment = async function(instId) {
@@ -1677,16 +1898,19 @@ window.loadPayables = async function() {
    var custoLabel = p.costClassification === 'fixo' ? 'Fixo' : 'Variável';
    var custoColor = p.costClassification === 'fixo' ? 'text-purple-400' : 'text-cyan-400';
    var valorParcela = p.installmentsCount > 0 ? parseFloat(p.totalAmount) / p.installmentsCount : parseFloat(p.totalAmount);
-   return '<tr class="ap-row" data-status="' + p.status + '" data-cost="' + (p.costClassification||'variavel') + '" data-amount="' + parseFloat(p.totalAmount||0) + '" data-desc="' + (p.description||'').toLowerCase() + '" data-duedate="' + (p.dueDate||'') + '" style="border-top:1px solid rgba(255,255,255,0.04);">' +
+   var catLabel = p.category || 'operacional';
+   var catColor = '#ef4444';
+   return '<tr class="ap-row" data-status="' + p.status + '" data-cost="' + (p.costClassification||'variavel') + '" data-amount="' + parseFloat(p.totalAmount||0) + '" data-desc="' + (p.description||'').toLowerCase() + '" data-duedate="' + (p.dueDate||'') + '" data-category="' + catLabel + '" style="border-top:1px solid rgba(255,255,255,0.04);">' +
     '<td class="px-3 py-2 text-[9px] font-bold text-white truncate max-w-[200px]">' + p.description + '</td>' +
     '<td class="px-3 py-2 text-[9px] font-black text-red-400">' + fmt(p.totalAmount) + '</td>' +
     '<td class="px-3 py-2 text-[9px] font-black text-blue-400">' + fmt(valorParcela) + '</td>' +
     '<td class="px-3 py-2 text-[8px] text-gray-400">' + (p.dueDate || '—') + '</td>' +
     '<td class="px-3 py-2 text-[8px] font-bold ' + custoColor + ' uppercase">' + custoLabel + '</td>' +
+    '<td class="px-3 py-2"><span class="text-[7px] font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:' + catColor + '20; color:' + catColor + '; border:1px solid ' + catColor + '40;">' + catLabel + '</span></td>' +
     '<td class="px-3 py-2"><span class="text-[7px] font-black uppercase px-1.5 py-0.5 rounded ' + statusColor + '">' + p.status + '</span></td>' +
     '<td class="px-3 py-2 text-right"><button onclick="window.openAPDetail(\'' + p.id + '\')" class="px-2 py-1 text-[7px] font-bold text-orange-400 rounded-[3px] hover:bg-orange-500/20" style="background:rgba(249,115,22,0.08); border:1px solid rgba(249,115,22,0.2);">Detalhes</button></td></tr>';
   }).join('');
- } catch(e) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-[9px] text-red-400">Erro</td></tr>'; }
+ } catch(e) { tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-[9px] text-red-400">Erro</td></tr>'; }
 };
 
 // Filtro AP

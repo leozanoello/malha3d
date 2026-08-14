@@ -486,6 +486,16 @@ const startServer = async () => {
       await safeAddColumn('calendar_events', 'history', 'TEXT');
       await safeAddColumn('calendar_events', 'created_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NOW()');
       await safeAddColumn('calendar_events', 'updated_at', 'TIMESTAMP WITH TIME ZONE DEFAULT NOW()');
+      await safeAddColumn('accounts_receivable', 'category', 'VARCHAR(255) DEFAULT \'projeto\'');
+      await safeAddColumn('accounts_receivable', 'edit_history', 'TEXT');
+      await safeAddColumn('accounts_payable', 'category', 'VARCHAR(255) DEFAULT \'operacional\'');
+      await safeAddColumn('accounts_payable', 'edit_history', 'TEXT');
+
+      // Seed categorias financeiras
+      try {
+        const { seedFinanceCategories } = require('./scripts/seedFinanceCategories');
+        await seedFinanceCategories();
+      } catch (e) { /* non-fatal */ }
 
       return server.listen(PORT, () => {
         console.log(`🚀 Malha3D Admin rodando em http://localhost:${PORT}`);

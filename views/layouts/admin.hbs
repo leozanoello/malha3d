@@ -1007,6 +1007,12 @@
                                 <span class="material-symbols-outlined text-lg">view_in_ar</span> Projetos
                             </a>
                         </li>
+                        <li>
+                            <a href="/admin/portal-cliente" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all opacity-50 relative text-gray-500 hover:bg-white/5 hover:text-amber-400">
+                                <span class="material-symbols-outlined text-lg">badge</span> Portal do Cliente
+                                <span class="absolute -top-1 -right-1 text-[6px] font-black bg-amber-500/20 text-amber-400 px-1 rounded border border-amber-500/30">v2.0</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
@@ -1078,6 +1084,13 @@
                                 <span class="material-symbols-outlined text-lg">admin_panel_settings</span> Admin
                             </a>
                         </li>
+                        {{#if (eq user.role 'admin')}}
+                        <li>
+                            <a href="/admin/assinantes" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'subscribers')}}bg-indigo-500/10 text-indigo-400 shadow-[inset_0_0_10px_rgba(99,102,241,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
+                                <span class="material-symbols-outlined text-lg">group</span> Assinantes
+                            </a>
+                        </li>
+                        {{/if}}
                         <li>
                             <a href="/admin/tabelas" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'tabelas')}}bg-cyber-500/10 text-cyber-500 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
                                 <span class="material-symbols-outlined text-lg">table_chart</span> Tabelas
@@ -1096,11 +1109,6 @@
                         <span class="material-symbols-outlined text-sm">rocket_launch</span> Versão 2.0
                     </h3>
                     <ul class="space-y-0.5 px-2">
-                        <li>
-                            <a href="/admin/portal-cliente" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
-                                <span class="material-symbols-outlined text-lg">badge</span> Portal do Cliente
-                            </a>
-                        </li>
                         <li>
                             <a href="/admin/previsao" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500">
                                 <span class="material-symbols-outlined text-lg">query_stats</span> Previsão & Analytics
@@ -1169,37 +1177,11 @@
                 <span class="hidden sm:inline">Buscar...</span>
                 <kbd class="hidden sm:inline text-[7px] px-1 py-0.5 rounded bg-white/10 text-gray-500 ml-2">Ctrl+K</kbd>
             </button>
-            <!-- Notas (acesso rápido) com submenu de templates -->
-            <div class="relative group">
-                <button onclick="event.preventDefault(); document.getElementById('notesQuickMenu').classList.toggle('hidden')" class="w-8 h-8 rounded-[4px] flex items-center justify-center text-amber-400 hover:text-amber-300 transition-colors {{#if (eq currentPage 'notas')}}bg-amber-500/20 border-amber-500/30{{/if}}" style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.15);" title="Notas" aria-label="Notas">
+            <!-- Notas (acesso rápido) — abre nota flutuante -->
+            <div class="relative">
+                <button onclick="window.openFloatingNote()" class="w-8 h-8 rounded-[4px] flex items-center justify-center text-amber-400 hover:text-amber-300 transition-colors {{#if (eq currentPage 'notas')}}bg-amber-500/20 border-amber-500/30{{/if}}" style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.15);" title="Nova Nota Rápida" aria-label="Notas">
                     <span class="material-symbols-outlined text-[14px]">edit_note</span>
                 </button>
-                <!-- Submenu de Templates -->
-                <div id="notesQuickMenu" class="hidden absolute top-full right-0 mt-2 w-48 rounded-lg bg-[#151515] border border-white/10 shadow-2xl z-50" style="background:rgba(21,21,21,0.98); backdrop-filter:blur(20px);">
-                    <div class="p-2 space-y-1">
-                        <button onclick="window.m3dNotes.fromTemplate('checklist'); document.getElementById('notesQuickMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-2 rounded text-[9px] font-bold text-amber-400 hover:bg-white/10 transition-colors text-left">
-                            <span class="material-symbols-outlined text-[12px]">checklist</span>
-                            <span>Checklist</span>
-                        </button>
-                        <button onclick="window.m3dNotes.fromTemplate('reuniao'); document.getElementById('notesQuickMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-2 rounded text-[9px] font-bold text-purple-400 hover:bg-white/10 transition-colors text-left">
-                            <span class="material-symbols-outlined text-[12px]">groups</span>
-                            <span>Reunião</span>
-                        </button>
-                        <button onclick="window.m3dNotes.fromTemplate('followup'); document.getElementById('notesQuickMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-2 rounded text-[9px] font-bold text-emerald-400 hover:bg-white/10 transition-colors text-left">
-                            <span class="material-symbols-outlined text-[12px]">call</span>
-                            <span>Follow-up</span>
-                        </button>
-                        <button onclick="window.m3dNotes.fromTemplate('producao'); document.getElementById('notesQuickMenu').classList.add('hidden')" class="w-full flex items-center gap-2 px-3 py-2 rounded text-[9px] font-bold text-sky-400 hover:bg-white/10 transition-colors text-left">
-                            <span class="material-symbols-outlined text-[12px]">view_in_ar</span>
-                            <span>Produção</span>
-                        </button>
-                        <div class="border-t border-white/10 my-1"></div>
-                        <a href="/admin/notas" class="w-full flex items-center gap-2 px-3 py-2 rounded text-[9px] font-bold text-gray-400 hover:bg-white/10 transition-colors text-left">
-                            <span class="material-symbols-outlined text-[12px]">open_in_new</span>
-                            <span>Ir para Notas</span>
-                        </a>
-                    </div>
-                </div>
             </div>
             <!-- Sino de Notificações -->
             <button onclick="window.openNotificationsPanel()" class="relative w-8 h-8 rounded-[4px] flex items-center justify-center text-gray-400 hover:text-white transition-colors" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" id="notif-bell">
@@ -1364,15 +1346,6 @@
                     .then(res => res.json())
                     .then(data => { renderGlobalSearchResults(data); searchResults.classList.remove('hidden'); });
             }, 500); // Debounce de 500ms para poupar o servidor
-        });
-
-        // Fechar menu de notas ao clicar fora
-        document.addEventListener('click', (e) => {
-            const notesMenu = document.getElementById('notesQuickMenu');
-            const notesBtn = e.target.closest('[title="Notas"]') || e.target.closest('[aria-label="Notas"]');
-            if (notesMenu && !notesMenu.contains(e.target) && !notesBtn) {
-                notesMenu.classList.add('hidden');
-            }
         });
 
         function renderGlobalSearchResults(data) {
@@ -2063,105 +2036,143 @@
     };
     </script>
 
-    <!-- NOTAS: Templates globais (funciona em qualquer página) -->
+    <!-- NOTAS: Janela flutuante com drag/resize e toolbar -->
     <script>
     (function(){
       var K='malha3d_notes_v2';
-      var TEMPLATES={
-        checklist:{title:'Checklist',category:'Trabalho',content:'<h3>✅ Checklist</h3><p style="font-size:10px;color:#71717a;background:rgba(245,158,11,0.05);border:1px dashed rgba(245,158,11,0.25);border-radius:4px;padding:6px 8px;">✏️ Use o botão Checklist na toolbar para adicionar novos itens.</p><hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:12px 0;"><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Item 1 — clique e digite</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Item 2</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Item 3</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Item 4</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Item 5</span></div>'},
-        reuniao:{title:'Reunião — ',category:'Reuniões',content:'<h3>📋 Pauta</h3><ul><li>Ponto 1 — descreva o tema</li><li>Ponto 2</li><li>Ponto 3</li></ul><h3>📝 Anotações</h3><p>Escreva livremente o que foi discutido...</p><h3>✅ Ações / Decisões</h3><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Responsável — Ação</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Responsável — Outra ação</span></div><h3>⏰ Próxima Reunião</h3><p>Data: __ / __ / ____ &nbsp; Hora: __:__</p>'},
-        followup:{title:'Follow-up — ',category:'Trabalho',content:'<h3>👤 Cliente</h3><p>Nome: [digite o nome]</p><p>Empresa: [empresa] | Contato: [telefone/email]</p><h3>📞 Último Contato</h3><p>Data: [dd/mm/aaaa] | Canal: [WhatsApp / E-mail / Telefone]</p><h3>🎯 Status Atual</h3><p>Descreva onde o cliente está no funil...</p><h3>📋 Próximos Passos</h3><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Ação 1 — responsável e prazo</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>Ação 2</span></div><h3>⏰ Retornar em</h3><p>Data: [dd/mm/aaaa]</p>'},
-        producao:{title:'Produção — ',category:'Trabalho',content:'<h3>🎯 Projeto</h3><p>Nome: [projeto] | Cliente: [cliente] | Prazo: [dd/mm/aaaa]</p><h3>📐 Etapas de Produção</h3><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>📁 Briefing — coleta de referências</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>🧊 Modelagem 3D</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>🎨 Texturização</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>💡 Iluminação</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>📷 Render</span></div><div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;"><span>🖼️ Pós-produção e entrega</span></div><h3>📝 Observações</h3><p>...</p>'}
-      };
-
       function getNotes(){try{return JSON.parse(localStorage.getItem(K))||[];}catch(e){return[];}}
       function saveNotes(n){localStorage.setItem(K,JSON.stringify(n));}
       function genId(){return 'n_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);}
 
-      function openQuickNoteModal(noteData){
-        var existing=document.getElementById('notesQuickModal');
-        if(existing) existing.remove();
+      window.openFloatingNote = function(){
+        var existing = document.getElementById('floatingNoteWin');
+        if(existing){ existing.style.display='flex'; var fc=document.getElementById('fnContent'); if(fc)fc.focus(); return; }
 
-        var modal=document.createElement('div');
-        modal.id='notesQuickModal';
-        modal.className='fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm';
-        modal.style.display='flex';
-        modal.innerHTML='<div style="background:#151515;border:1px solid rgba(255,255,255,0.1);border-radius:8px;box-shadow:0 25px 50px rgba(0,0,0,0.5);width:100%;max-width:680px;margin:0 16px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;">'
-          +'<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.05);">'
-          +'<h3 style="font-size:14px;font-weight:900;color:white;display:flex;align-items:center;gap:8px;"><span class="material-symbols-outlined" style="color:#f59e0b;">edit_note</span> <span id="quickModalTitle">'+((noteData&&noteData.title)||'Nova Nota')+'</span></h3>'
-          +'<button onclick="document.getElementById(\'notesQuickModal\').remove()" style="width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);border:none;cursor:pointer;color:#9ca3af;" onmouseover="this.style.color=\'white\'" onmouseout="this.style.color=\'#9ca3af\'"><span class="material-symbols-outlined">close</span></button>'
-          +'</div>'
-          +'<div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;">'
-          +'<input type="text" id="quickEditorTitle" placeholder="Título da nota..." value="'+((noteData&&noteData.title)||'')+'" style="width:100%;background:transparent;font-size:16px;font-weight:700;color:white;border:none;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:8px;outline:none;">'
-          +'<div id="quickEditorContent" contenteditable="true" style="width:100%;min-height:300px;background:rgba(255,255,255,0.03);border-radius:6px;padding:12px;font-size:13px;color:white;line-height:1.6;border:1px solid rgba(255,255,255,0.08);outline:none;">'+((noteData&&noteData.content)||'')+'</div>'
-          +'<div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;">'
-          +'<label style="font-size:9px;font-weight:700;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:6px;">Categoria</label>'
-          +'<select id="quickEditorCategory" style="width:100%;padding:8px 12px;border-radius:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:white;font-size:11px;font-weight:600;outline:none;">'
-          +'<option value="Geral">Geral</option><option value="Trabalho"'+(noteData&&noteData.cat==='Trabalho'?' selected':'')+'>Trabalho</option><option value="Pessoal">Pessoal</option><option value="Ideias">Ideias</option><option value="Lembretes">Lembretes</option><option value="Reuniões"'+(noteData&&noteData.cat==='Reuniões'?' selected':'')+'>Reuniões</option>'
-          +'</select>'
-          +'</div>'
-          +'</div>'
-          +'<div style="display:flex;align-items:center;gap:8px;padding:12px 20px;border-top:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.01);">'
-          +'<button id="quickNoteSaveBtn" style="padding:8px 16px;border-radius:8px;background:#f59e0b;color:white;font-size:9px;font-weight:900;text-transform:uppercase;border:none;cursor:pointer;">Salvar</button>'
-          +'<button onclick="document.getElementById(\'notesQuickModal\').remove()" style="padding:8px 16px;border-radius:8px;background:rgba(255,255,255,0.05);color:#d4d4d8;font-size:9px;font-weight:900;text-transform:uppercase;border:none;cursor:pointer;">Cancelar</button>'
-          +'<span id="quickSaveStatus" style="font-size:9px;color:#4b5563;margin-left:auto;">●</span>'
-          +'</div>'
-          +'</div>';
-        document.body.appendChild(modal);
-
-        // Bind salvar
-        document.getElementById('quickNoteSaveBtn').onclick=function(){
-          var notes=getNotes();
-          notes=notes.map(function(x){
-            if(x.id!==noteData.id) return x;
-            x.title=document.getElementById('quickEditorTitle').value;
-            x.content=document.getElementById('quickEditorContent').innerHTML;
-            x.cat=document.getElementById('quickEditorCategory').value;
-            x.updated=new Date().toISOString();
-            return x;
-          });
-          saveNotes(notes);
-          var st=document.getElementById('quickSaveStatus');
-          if(st){st.textContent='✓ Salvo';st.style.color='#10b981';}
-          setTimeout(function(){ document.getElementById('notesQuickModal')?.remove(); },500);
-          if(window.showToast) window.showToast('Nota criada com sucesso!','success');
-        };
-
-        // Fechar com ESC
-        modal.addEventListener('keydown',function(e){if(e.key==='Escape')modal.remove();});
-
-        // Focus
-        setTimeout(function(){document.getElementById('quickEditorTitle')?.focus();},50);
-      }
-
-      // Definir globalmente — se a página de notas já definiu window.m3dNotes, preservar e apenas dar fallback
-      if(!window.m3dNotes) window.m3dNotes={};
-
-      // Salvar a versão original da página de notas (se existir)
-      var _origFromTemplate = window.m3dNotes.fromTemplate;
-
-      window.m3dNotes.fromTemplate = function(type){
-        // Se estamos na página de notas e ela tem sua própria implementação completa, usar ela
-        if(_origFromTemplate && document.getElementById('notesEditorActive')){
-          return _origFromTemplate.call(window.m3dNotes, type);
-        }
-
-        var tpl=TEMPLATES[type];
-        if(!tpl){console.error('[Notas] Template não encontrado:',type);return;}
-
-        // Criar nota no localStorage
         var notes=getNotes();
-        var n={id:genId(),title:tpl.title,content:tpl.content,cat:tpl.category,color:'yellow',tags:[],fav:false,created:new Date().toISOString(),updated:new Date().toISOString()};
-        notes.unshift(n);
-        saveNotes(notes);
+        var n={id:genId(),title:'',content:'',cat:'Geral',color:'yellow',tags:[],fav:false,created:new Date().toISOString(),updated:new Date().toISOString()};
+        notes.unshift(n); saveNotes(notes);
 
-        // Abrir modal de edição rápida
-        openQuickNoteModal(n);
+        var win=document.createElement('div');
+        win.id='floatingNoteWin';
+        win.dataset.noteId=n.id;
+        win.style.cssText='position:fixed;top:80px;right:40px;width:420px;height:480px;min-width:300px;min-height:280px;z-index:99999;display:flex;flex-direction:column;border-radius:8px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.1);resize:both;';
+
+        win.innerHTML=''
+          +'<div id="fnDragHandle" style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:#1a1a1a;border-bottom:1px solid rgba(255,255,255,0.06);cursor:move;user-select:none;flex-shrink:0;">'
+          +'<div style="display:flex;align-items:center;gap:6px;"><span class="material-symbols-outlined" style="font-size:14px;color:#f59e0b;">edit_note</span><input type="text" id="fnTitle" placeholder="T\u00edtulo da nota..." style="background:transparent;border:none;color:white;font-size:12px;font-weight:700;outline:none;width:200px;"></div>'
+          +'<div style="display:flex;align-items:center;gap:2px;">'
+          +'<button onclick="window.minimizeFloatingNote()" style="width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#6b7280;cursor:pointer;" title="Minimizar"><span class="material-symbols-outlined" style="font-size:14px;">remove</span></button>'
+          +'<button onclick="window.maximizeFloatingNote()" style="width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#6b7280;cursor:pointer;" title="Maximizar"><span class="material-symbols-outlined" style="font-size:14px;">open_in_full</span></button>'
+          +'<button onclick="window.closeFloatingNote()" style="width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#6b7280;cursor:pointer;" title="Fechar e Salvar"><span class="material-symbols-outlined" style="font-size:14px;">close</span></button>'
+          +'</div></div>'
+          +'<div id="fnToolbar" style="display:flex;align-items:center;gap:1px;padding:4px 8px;background:#141414;border-bottom:1px solid rgba(255,255,255,0.04);flex-wrap:wrap;flex-shrink:0;">'
+          +'<button onclick="document.execCommand(\'bold\')" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;font-weight:bold;font-size:12px;" title="Negrito (Ctrl+B)">B</button>'
+          +'<button onclick="document.execCommand(\'italic\')" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;font-style:italic;font-size:12px;" title="It\u00e1lico (Ctrl+I)">I</button>'
+          +'<button onclick="document.execCommand(\'underline\')" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;text-decoration:underline;font-size:12px;" title="Sublinhado (Ctrl+U)">U</button>'
+          +'<button onclick="document.execCommand(\'strikeThrough\')" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;text-decoration:line-through;font-size:12px;" title="Tachado">S</button>'
+          +'<span style="width:1px;height:16px;background:rgba(255,255,255,0.08);margin:0 3px;"></span>'
+          +'<button onclick="document.execCommand(\'formatBlock\',false,\'h2\')" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;font-size:10px;font-weight:900;" title="T\u00edtulo">H2</button>'
+          +'<button onclick="document.execCommand(\'formatBlock\',false,\'h3\')" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;font-size:9px;font-weight:900;" title="Subt\u00edtulo">H3</button>'
+          +'<button onclick="document.execCommand(\'formatBlock\',false,\'blockquote\')" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;" title="Cita\u00e7\u00e3o"><span class="material-symbols-outlined" style="font-size:13px;">format_quote</span></button>'
+          +'<span style="width:1px;height:16px;background:rgba(255,255,255,0.08);margin:0 3px;"></span>'
+          +'<button onclick="document.execCommand(\'insertUnorderedList\')" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;" title="Lista"><span class="material-symbols-outlined" style="font-size:13px;">format_list_bulleted</span></button>'
+          +'<button onclick="document.execCommand(\'insertOrderedList\')" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;" title="Lista Numerada"><span class="material-symbols-outlined" style="font-size:13px;">format_list_numbered</span></button>'
+          +'<button onclick="window.fnInsertCheck()" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;" title="Checklist"><span class="material-symbols-outlined" style="font-size:13px;">check_box</span></button>'
+          +'<span style="width:1px;height:16px;background:rgba(255,255,255,0.08);margin:0 3px;"></span>'
+          +'<button onclick="document.execCommand(\'insertHorizontalRule\')" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;" title="Linha"><span class="material-symbols-outlined" style="font-size:13px;">horizontal_rule</span></button>'
+          +'<button onclick="window.fnInsertLink()" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;" title="Link"><span class="material-symbols-outlined" style="font-size:13px;">link</span></button>'
+          +'<button onclick="document.execCommand(\'removeFormat\')" style="width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;color:#9ca3af;cursor:pointer;" title="Limpar"><span class="material-symbols-outlined" style="font-size:13px;">format_clear</span></button>'
+          +'<span style="flex:1;"></span>'
+          +'<span id="fnSaveStatus" style="font-size:8px;color:#4b5563;">\u25cf</span>'
+          +'</div>'
+          +'<div id="fnContent" contenteditable="true" style="flex:1;padding:16px;font-size:13px;color:#e5e5e5;line-height:1.7;overflow-y:auto;outline:none;background:#0f0f0f;"></div>'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:#1a1a1a;border-top:1px solid rgba(255,255,255,0.04);flex-shrink:0;">'
+          +'<a href="/admin/notas" style="font-size:8px;font-weight:700;color:#6b7280;text-decoration:none;text-transform:uppercase;letter-spacing:0.05em;">Ir para Notas \u2197</a>'
+          +'<span style="font-size:8px;color:#4b5563;">Auto-salva ao digitar</span>'
+          +'</div>';
+
+        document.body.appendChild(win);
+
+        // DRAG
+        var handle=document.getElementById('fnDragHandle');
+        var isDragging=false,dragX=0,dragY=0;
+        handle.addEventListener('mousedown',function(e){
+          if(e.target.closest('button')||e.target.closest('input'))return;
+          isDragging=true;dragX=e.clientX-win.offsetLeft;dragY=e.clientY-win.offsetTop;
+          document.body.style.userSelect='none';
+        });
+        document.addEventListener('mousemove',function(e){
+          if(!isDragging)return;
+          var x=e.clientX-dragX,y=e.clientY-dragY;
+          x=Math.max(0,Math.min(x,window.innerWidth-100));
+          y=Math.max(0,Math.min(y,window.innerHeight-50));
+          win.style.left=x+'px';win.style.top=y+'px';win.style.right='auto';
+        });
+        document.addEventListener('mouseup',function(){isDragging=false;document.body.style.userSelect='';});
+
+        // AUTO-SAVE
+        var saveTimer=null;
+        function autoSave(){
+          clearTimeout(saveTimer);
+          saveTimer=setTimeout(function(){
+            var notes=getNotes(),nid=win.dataset.noteId;
+            notes=notes.map(function(x){
+              if(x.id!==nid)return x;
+              x.title=document.getElementById('fnTitle').value;
+              x.content=document.getElementById('fnContent').innerHTML;
+              x.updated=new Date().toISOString();
+              return x;
+            });
+            saveNotes(notes);
+            var st=document.getElementById('fnSaveStatus');
+            if(st){st.textContent='\u2713';st.style.color='#10b981';setTimeout(function(){st.textContent='\u25cf';st.style.color='#4b5563';},1200);}
+          },800);
+        }
+        document.getElementById('fnContent').addEventListener('input',autoSave);
+        document.getElementById('fnTitle').addEventListener('input',autoSave);
+        setTimeout(function(){document.getElementById('fnTitle').focus();},50);
       };
 
-      // Fallbacks para funções chamadas nos onclick
-      if(!window.m3dNotes.saveQuickNote) window.m3dNotes.saveQuickNote=function(){var b=document.getElementById('quickNoteSaveBtn');if(b)b.click();};
-      if(!window.m3dNotes.addTagQuick) window.m3dNotes.addTagQuick=function(){};
+      window.minimizeFloatingNote=function(){
+        var win=document.getElementById('floatingNoteWin');if(!win)return;
+        var c=document.getElementById('fnContent'),t=document.getElementById('fnToolbar');
+        if(c.style.display==='none'){c.style.display='';t.style.display='';win.style.height='480px';win.style.resize='both';}
+        else{c.style.display='none';t.style.display='none';win.style.height='auto';win.style.resize='none';}
+      };
+
+      window.maximizeFloatingNote=function(){
+        var win=document.getElementById('floatingNoteWin');if(!win)return;
+        if(win.dataset.maximized==='1'){
+          win.style.top=win.dataset.prevTop;win.style.left=win.dataset.prevLeft;win.style.right=win.dataset.prevRight;
+          win.style.width=win.dataset.prevW;win.style.height=win.dataset.prevH;win.dataset.maximized='0';
+        }else{
+          win.dataset.prevTop=win.style.top;win.dataset.prevLeft=win.style.left;win.dataset.prevRight=win.style.right;
+          win.dataset.prevW=win.style.width;win.dataset.prevH=win.style.height;
+          win.style.top='10px';win.style.left='270px';win.style.right='10px';
+          win.style.width='calc(100vw - 280px)';win.style.height='calc(100vh - 20px)';win.dataset.maximized='1';
+        }
+      };
+
+      window.closeFloatingNote=function(){
+        var win=document.getElementById('floatingNoteWin');if(!win)return;
+        var notes=getNotes(),nid=win.dataset.noteId;
+        var title=document.getElementById('fnTitle').value||'';
+        var content=document.getElementById('fnContent').innerHTML||'';
+        notes=notes.map(function(x){if(x.id!==nid)return x;x.title=title;x.content=content;x.updated=new Date().toISOString();return x;});
+        if(!title&&(!content||content==='<br>'||content===''))notes=notes.filter(function(x){return x.id!==nid;});
+        saveNotes(notes);win.remove();
+        if(window.showToast&&title)window.showToast('Nota salva!','success');
+      };
+
+      window.fnInsertCheck=function(){
+        document.execCommand('insertHTML',false,'<div style="display:flex;align-items:center;gap:8px;padding:3px 0;"><input type="checkbox" style="accent-color:#f59e0b;width:15px;height:15px;cursor:pointer;"><span>Item</span></div><br>');
+      };
+      window.fnInsertLink=function(){var u=prompt('URL:');if(u)document.execCommand('createLink',false,u);};
+
+      if(!window.m3dNotes)window.m3dNotes={};
+      if(!window.m3dNotes.fromTemplate)window.m3dNotes.fromTemplate=function(){window.openFloatingNote();};
+      if(!window.m3dNotes.saveQuickNote)window.m3dNotes.saveQuickNote=function(){};
+      if(!window.m3dNotes.addTagQuick)window.m3dNotes.addTagQuick=function(){};
     })();
     </script>
 

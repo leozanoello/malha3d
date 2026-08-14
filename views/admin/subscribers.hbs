@@ -1,0 +1,195 @@
+<!-- Assinantes — Gestão de Clientes SaaS (Apenas Super Admin) -->
+<div class="p-4 md:p-5 flex flex-col gap-3" style="background:#0a0c10;">
+
+ <!-- Banner -->
+ <div class="kcard">
+ <div class="kcard-img" style="height:80px;">
+ <img src="/assets/76f2442d-8a92-481f-bc04-36aed4707d00_3840w.webp" alt="Assinantes" class="w-full h-full object-cover">
+ <div class="absolute inset-0 bg-gradient-to-t from-[#151515] via-[#151515]/70 to-transparent"></div>
+ </div>
+ <div class="kcard-body" style="padding:16px 20px;">
+ <div class="flex items-center gap-1.5 flex-wrap mb-2">
+ <span class="kcard-badge" style="background:rgba(99,102,241,0.15); color:#818cf8; border-color:rgba(99,102,241,0.3);">
+ <span class="material-symbols-outlined text-[8px] align-middle mr-0.5">group</span> Assinantes
+ </span>
+ <span class="kcard-badge">Super Admin</span>
+ </div>
+ <h4 class="kcard-title" style="font-size:1.1rem; white-space:normal; margin-bottom:4px;">Gestão de Assinantes</h4>
+ <p class="text-[9px] text-[#777] uppercase tracking-widest">Clientes do SaaS Malha3D — gerencie planos, equipes e permissões</p>
+ </div>
+ </div>
+
+ <!-- KPI Cards -->
+ <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px; text-align:center;">
+ <p class="text-[8px] font-black text-indigo-400 uppercase tracking-widest mb-1">Total Assinantes</p>
+ <p class="text-2xl font-black text-white">{{stats.totalSubscribers}}</p>
+ </div>
+ </div>
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px; text-align:center;">
+ <p class="text-[8px] font-black text-emerald-400 uppercase tracking-widest mb-1">Ativos</p>
+ <p class="text-2xl font-black text-emerald-400">{{stats.activeSubscribers}}</p>
+ </div>
+ </div>
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px; text-align:center;">
+ <p class="text-[8px] font-black text-red-400 uppercase tracking-widest mb-1">Suspensos</p>
+ <p class="text-2xl font-black text-red-400">{{stats.suspendedSubscribers}}</p>
+ </div>
+ </div>
+ <div class="kcard">
+ <div class="kcard-body" style="padding:14px; text-align:center;">
+ <p class="text-[8px] font-black text-cyan-400 uppercase tracking-widest mb-1">Total Colaboradores</p>
+ <p class="text-2xl font-black text-white">{{stats.totalCollaborators}}</p>
+ </div>
+ </div>
+ </div>
+
+ <!-- Lista de Assinantes -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:20px;">
+ <div class="flex items-center justify-between mb-4">
+ <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
+ <span class="material-symbols-outlined text-sm">people</span> Assinantes & Equipes
+ </p>
+ <div class="relative flex items-center">
+ <span class="material-symbols-outlined absolute left-2 text-gray-500 text-[13px] pointer-events-none">search</span>
+ <input type="text" placeholder="Buscar assinante..." class="pl-7 pr-3 py-1.5 text-[9px] font-bold text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500/40 transition-colors w-44" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:4px;" oninput="filterSubscribers(this.value)">
+ </div>
+ </div>
+
+ <div class="space-y-2" id="subscribersList">
+ {{#each subscribers}}
+ <div class="subscriber-row rounded-lg overflow-hidden" style="border:1px solid rgba(255,255,255,0.06);" data-name="{{this.name}}" data-email="{{this.email}}">
+  <!-- Header do Assinante -->
+  <div class="flex items-center gap-3 p-3 cursor-pointer hover:bg-white/[0.02] transition-colors" onclick="toggleSubscriberTeam('{{this.id}}')">
+   <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-black shrink-0" style="background:rgba(99,102,241,0.15); color:#818cf8; border:1px solid rgba(99,102,241,0.3);">
+    {{getFirstLetters this.name}}
+   </div>
+   <div class="flex-1 min-w-0">
+    <p class="text-xs font-bold text-white truncate">{{this.name}}</p>
+    <p class="text-[8px] text-gray-500">{{this.email}}</p>
+   </div>
+   <div class="flex items-center gap-2 shrink-0">
+    {{#if this.planName}}
+    <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase" style="background:rgba(99,102,241,0.15); color:#818cf8; border:1px solid rgba(99,102,241,0.2);">{{this.planName}}</span>
+    {{/if}}
+    <span class="px-2 py-0.5 rounded text-[7px] font-black uppercase {{#if (eq this.status 'active')}}text-emerald-400{{else if (eq this.status 'suspended')}}text-red-400{{else}}text-gray-400{{/if}}" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+     {{#if (eq this.status 'active')}}Ativo{{else if (eq this.status 'suspended')}}Suspenso{{else}}Inativo{{/if}}
+    </span>
+    <span class="text-[8px] text-gray-500">{{len this.subUsers}} membros</span>
+    <span class="material-symbols-outlined text-gray-500 text-sm transition-transform subscriber-chevron" id="chevron-{{this.id}}">expand_more</span>
+   </div>
+  </div>
+
+  <!-- Equipe expandível -->
+  <div id="team-{{this.id}}" class="hidden" style="background:rgba(0,0,0,0.2); border-top:1px solid rgba(255,255,255,0.04);">
+   <div class="p-3 space-y-1.5">
+    <div class="flex items-center justify-between mb-2">
+     <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest">Equipe de {{this.name}}</p>
+     <button onclick="openInviteModal('{{this.id}}', '{{this.name}}')" class="text-[7px] font-black uppercase px-2 py-1 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500 hover:text-white transition-all flex items-center gap-1">
+      <span class="material-symbols-outlined text-[9px]">person_add</span> Convidar
+     </button>
+    </div>
+    {{#if (len this.subUsers)}}
+    {{#each this.subUsers}}
+    <div class="flex items-center gap-2 p-2 rounded" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04);">
+     <div class="w-6 h-6 rounded flex items-center justify-center text-[8px] font-black" style="background:rgba(6,182,212,0.1); color:#22d3ee; border:1px solid rgba(6,182,212,0.3);">
+      {{getFirstLetters this.name}}
+     </div>
+     <div class="flex-1 min-w-0">
+      <p class="text-[9px] font-bold text-white truncate">{{this.name}}</p>
+      <p class="text-[7px] text-gray-500">{{this.email}} • {{this.role}}</p>
+     </div>
+     <span class="px-1.5 py-0.5 rounded text-[6px] font-black uppercase {{#if (eq this.status 'active')}}text-emerald-400{{else}}text-gray-500{{/if}}" style="background:rgba(255,255,255,0.03);">
+      {{#if (eq this.status 'active')}}Ativo{{else}}Inativo{{/if}}
+     </span>
+    </div>
+    {{/each}}
+    {{else}}
+    <p class="text-[8px] text-gray-500 text-center py-2">Nenhum colaborador vinculado</p>
+    {{/if}}
+   </div>
+  </div>
+ </div>
+ {{/each}}
+
+ {{#unless subscribers.length}}
+ <p class="text-[9px] text-gray-500 text-center py-6">Nenhum assinante cadastrado</p>
+ {{/unless}}
+ </div>
+ </div>
+ </div>
+
+ <!-- Hierarquia Visual -->
+ <div class="kcard">
+ <div class="kcard-body" style="padding:20px;">
+ <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+ <span class="material-symbols-outlined text-sm">account_tree</span> Hierarquia do Sistema
+ </p>
+ <div class="space-y-2">
+ <div class="flex items-center gap-3 p-3 rounded-lg" style="background:rgba(249,115,22,0.05); border:1px solid rgba(249,115,22,0.2);">
+  <span class="material-symbols-outlined text-orange-400">shield</span>
+  <div>
+   <p class="text-[9px] font-black text-orange-400 uppercase">Super Admin (Malha3D)</p>
+   <p class="text-[8px] text-gray-500">Vê tudo. Gerencia assinantes, planos, instâncias e logs do sistema.</p>
+  </div>
+ </div>
+ <div class="flex items-center gap-3 p-3 rounded-lg ml-6" style="background:rgba(99,102,241,0.05); border:1px solid rgba(99,102,241,0.2);">
+  <span class="material-symbols-outlined text-indigo-400">workspace_premium</span>
+  <div>
+   <p class="text-[9px] font-black text-indigo-400 uppercase">Assinante (Cliente SaaS)</p>
+   <p class="text-[8px] text-gray-500">Gerencia sua própria equipe. Adiciona/remove colaboradores e controla permissões.</p>
+  </div>
+ </div>
+ <div class="flex items-center gap-3 p-3 rounded-lg ml-12" style="background:rgba(6,182,212,0.05); border:1px solid rgba(6,182,212,0.2);">
+  <span class="material-symbols-outlined text-cyan-400">person</span>
+  <div>
+   <p class="text-[9px] font-black text-cyan-400 uppercase">Colaborador (Equipe do Assinante)</p>
+   <p class="text-[8px] text-gray-500">Acessa apenas os módulos permitidos pelo assinante. Sem gestão de usuários.</p>
+  </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+</div>
+
+<script>
+function toggleSubscriberTeam(subscriberId) {
+ var team = document.getElementById('team-' + subscriberId);
+ var chevron = document.getElementById('chevron-' + subscriberId);
+ if (team) {
+  team.classList.toggle('hidden');
+  if (chevron) chevron.style.transform = team.classList.contains('hidden') ? '' : 'rotate(180deg)';
+ }
+}
+
+function filterSubscribers(query) {
+ var q = (query || '').toLowerCase().trim();
+ document.querySelectorAll('.subscriber-row').forEach(function(row) {
+  var name = (row.dataset.name || '').toLowerCase();
+  var email = (row.dataset.email || '').toLowerCase();
+  row.style.display = (!q || name.includes(q) || email.includes(q)) ? 'block' : 'none';
+ });
+}
+
+function openInviteModal(subscriberId, subscriberName) {
+ var email = prompt('Email do novo colaborador para "' + subscriberName + '":');
+ if (!email) return;
+ fetch('/admin/api/assinantes/' + subscriberId + '/invite', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email: email })
+ }).then(r => r.json()).then(data => {
+  if (data.success) {
+   if (window.showToast) window.showToast('Convite enviado para ' + email, 'success');
+   setTimeout(() => location.reload(), 1000);
+  } else {
+   alert('Erro: ' + (data.error || 'Falha'));
+  }
+ }).catch(() => alert('Erro de rede'));
+}
+</script>

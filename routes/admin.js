@@ -2965,13 +2965,17 @@ router.get('/agenda', requireAuth, async (req, res) => {
 
 router.post('/api/agenda', requireAuth, async (req, res) => {
   try {
-    const { title, startTime, endTime, type, description } = req.body;
+    const { title, startTime, endTime, type, description, participants } = req.body;
     if (!title || !title.trim()) {
       return res.status(400).json({ success: false, message: 'Título do evento é obrigatório.' });
     }
     if (!startTime) {
       return res.status(400).json({ success: false, message: 'Data/hora de início é obrigatória.' });
     }
+
+    // Participantes enviados no momento da criação
+    const eventParticipants = Array.isArray(participants) ? participants : [];
+
     const event = await CalendarEvent.create({
       title: title.trim(),
       startTime,
@@ -2979,15 +2983,47 @@ router.post('/api/agenda', requireAuth, async (req, res) => {
       type: type || 'reuniao',
       description: description || null,
       createdBy: req.user ? req.user.id : null,
-      participants: [],
+      participants: eventParticipants,
       history: [{
         action: 'created',
-        description: 'Evento criado',
+        description: 'Evento criado' + (eventParticipants.length ? ' com ' + eventParticipants.length + ' participante(s)' : ''),
         userName: req.user ? req.user.name : 'Sistema',
         userId: req.user ? req.user.id : null,
         date: new Date().toISOString()
       }]
     });
+
+    // Notificar participantes (best-effort)
+    if (eventParticipants.length > 0) {
+      try {
+        const nodemailer = require('nodemailer');
+        if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+          const transporter = nodemailer.createTransport({
+            host: process.env.SMTP_HOST || 'smtp.gmail.com',
+            port: parseInt(process.env.SMTP_PORT || '587'),
+            secure: false,
+            auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+          });
+          for (const p of eventParticipants) {
+            const targetUser = await User.findByPk(p.id);
+            if (targetUser && targetUser.email) {
+              transporter.sendMail({
+                from: `"Malha3D Agenda" <${process.env.SMTP_USER}>`,
+                to: targetUser.email,
+                subject: `📅 Novo compromisso: ${title.trim()}`,
+                html: `<h3>Você foi adicionado a um compromisso</h3>
+                  <p><strong>${title.trim()}</strong></p>
+                  <p>📅 ${new Date(startTime).toLocaleString('pt-BR')}</p>
+                  <p>Tipo: ${type || 'Reunião'}</p>
+                  ${description ? '<p>' + description + '</p>' : ''}
+                  <p>Criado por: ${req.user ? req.user.name : 'Sistema'}</p>`
+              }).catch(() => {});
+            }
+          }
+        }
+      } catch (e) { /* best-effort */ }
+    }
+
     return res.json({ success: true, event });
   } catch (error) {
     console.error('Create calendar event error:', error);
@@ -3076,7 +3112,7 @@ router.post('/api/agenda/:id/tasks', requireAuth, async (req, res) => {
     const event = await CalendarEvent.findByPk(req.params.id);
     if (!event) return res.status(404).json({ success: false, error: 'Evento não encontrado' });
 
-    const { title, dueDate } = req.body;
+    const { title, dueDate, assigneeId, assigneeName, priority } = req.body;
     if (!title) return res.status(400).json({ success: false, error: 'Título obrigatório' });
 
     const tasks = event.tasks || [];
@@ -3084,6 +3120,9 @@ router.post('/api/agenda/:id/tasks', requireAuth, async (req, res) => {
       id: require('crypto').randomUUID(),
       title,
       dueDate: dueDate || null,
+      assigneeId: assigneeId || null,
+      assigneeName: assigneeName || null,
+      priority: priority || 'media',
       completed: false,
       createdAt: new Date().toISOString(),
       createdBy: req.user ? req.user.name : 'Sistema'
@@ -3095,7 +3134,7 @@ router.post('/api/agenda/:id/tasks', requireAuth, async (req, res) => {
     const history = event.history || [];
     history.push({
       action: 'task_added',
-      description: `Tarefa "${title}" adicionada`,
+      description: `Tarefa "${title}" adicionada` + (assigneeName ? ` (para ${assigneeName})` : ''),
       userName: req.user ? req.user.name : 'Sistema',
       date: new Date().toISOString()
     });
@@ -3105,10 +3144,10 @@ router.post('/api/agenda/:id/tasks', requireAuth, async (req, res) => {
     try {
       await CRMTask.create({
         title: `[Agenda] ${title}`,
-        description: `Tarefa do evento "${event.title}"`,
+        description: `Tarefa do evento "${event.title}"${assigneeName ? ' — Responsável: ' + assigneeName : ''}`,
         dueDate: dueDate || event.startTime,
         status: 'pendente',
-        priority: 'media',
+        priority: priority || 'media',
         category: 'agenda',
         budgetId: null
       });
@@ -4793,6 +4832,66 @@ router.get('/automacoes', requireAuth, async (req, res) => {
 
 router.get('/marketing-ia', requireAuth, async (req, res) => {
   res.render('admin/marketing-ia', { layout: 'admin', title: 'Marketing Inteligente', currentPage: 'marketing-ia', user: req.user });
+});
+
+// === ASSINANTES (Gestão de clientes SaaS — Apenas Super Admin) ===
+router.get('/assinantes', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    const allUsers = (await User.findAll({ order: [['createdAt', 'DESC']] })).map(u => u.get({ plain: true }));
+
+    const subscriberUsers = allUsers.filter(u => u.role === 'subscriber');
+    const subscribers = subscriberUsers.map(sub => ({
+      ...sub,
+      subUsers: allUsers.filter(u => u.parentId === sub.id),
+      planName: sub.tenantName || 'Free'
+    }));
+
+    const totalCollaborators = allUsers.filter(u => u.parentId && u.role !== 'subscriber').length;
+
+    res.render('admin/subscribers', {
+      layout: 'admin',
+      title: 'Gestão de Assinantes',
+      currentPage: 'subscribers',
+      user: req.user,
+      subscribers,
+      stats: {
+        totalSubscribers: subscriberUsers.length,
+        activeSubscribers: subscriberUsers.filter(u => u.status === 'active').length,
+        suspendedSubscribers: subscriberUsers.filter(u => u.status === 'suspended').length,
+        totalCollaborators
+      }
+    });
+  } catch (error) {
+    console.error('Subscribers Route Error:', error);
+    res.status(500).render('admin/error', { layout: 'admin', message: `Erro ao carregar assinantes: ${error.message}` });
+  }
+});
+
+router.post('/api/assinantes/:id/invite', requireAuth, checkPermission('admin'), async (req, res) => {
+  try {
+    const subscriber = await User.findByPk(req.params.id);
+    if (!subscriber || subscriber.role !== 'subscriber') {
+      return res.status(404).json({ success: false, error: 'Assinante não encontrado' });
+    }
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ success: false, error: 'Email obrigatório' });
+
+    const existing = await User.findOne({ where: { email } });
+    if (existing) return res.status(400).json({ success: false, error: 'Este email já está cadastrado no sistema' });
+
+    const newUser = await User.create({
+      name: email.split('@')[0],
+      email,
+      password: '$2b$10$placeholder',
+      role: 'collaborator',
+      status: 'active',
+      parentId: subscriber.id
+    });
+
+    return res.json({ success: true, user: { id: newUser.id, email: newUser.email } });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 router.get('/avancado', requireAuth, checkPermission('admin'), async (req, res) => {
@@ -6506,7 +6605,7 @@ router.get('/api/erp/receivables', requireAuth, async (req, res) => {
 router.post('/api/erp/receivables/generate', requireAuth, async (req, res) => {
   const t = await sequelize.transaction();
   try {
-    const { budgetId, projectId, clientId, description, totalAmount, installmentsCount, paymentMethod, bankAccountId, firstDueDate } = req.body;
+    const { budgetId, projectId, clientId, description, totalAmount, installmentsCount, paymentMethod, bankAccountId, firstDueDate, category } = req.body;
     if (!totalAmount || !description) return res.status(400).json({ success: false, error: 'totalAmount e description obrigatórios' });
 
     const parcelas = parseInt(installmentsCount) || 1;
@@ -6522,6 +6621,7 @@ router.post('/api/erp/receivables/generate', requireAuth, async (req, res) => {
       installmentsCount: parcelas,
       paymentMethod: paymentMethod || 'pix',
       bankAccountId: bankAccountId || null,
+      category: category || (projectId || budgetId ? 'Projeto 3D / Render' : 'Outros'),
       status: 'aberto',
       originDate: new Date().toISOString().split('T')[0]
     }, { transaction: t });

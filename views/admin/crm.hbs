@@ -732,6 +732,26 @@
  </div>
  </div>
 
+ <!-- VALOR + PROBABILIDADE + PRIORIDADE (ESPELHADO DA CRIAÇÃO) -->
+ <div class="grid grid-cols-3 gap-2">
+ <div>
+ <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Valor Estimado (R$)</label>
+ <input type="number" step="0.01" id="editEstimatedValue" name="estimatedValue" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none" placeholder="0.00">
+ </div>
+ <div>
+ <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Probabilidade (%)</label>
+ <input type="number" min="0" max="100" id="editProbability" name="probability" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none">
+ </div>
+ <div>
+ <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Prioridade</label>
+ <select id="editPriority" name="priority" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none appearance-none">
+ <option value="baixa">Baixa</option>
+ <option value="media">Média</option>
+ <option value="alta">Alta</option>
+ </select>
+ </div>
+ </div>
+
  <!-- PRAZOS -->
  <div class="grid grid-cols-2 gap-2">
  <div>
@@ -1738,7 +1758,38 @@ document.addEventListener('DOMContentLoaded', function() {
  if(document.getElementById('editEnvironments')) document.getElementById('editEnvironments').value = Array.isArray(data.environments) ? data.environments.join(', ') : (data.environments || '');
  if(document.getElementById('editDesiredAtmosphere')) document.getElementById('editDesiredAtmosphere').value = data.desiredAtmosphere || '';
  if(document.getElementById('editAssignedUserId')) document.getElementById('editAssignedUserId').value = data.assignedUserId || '';
- 
+
+ // Campos unificados (espelhados da criação)
+ if(document.getElementById('editEstimatedValue')) document.getElementById('editEstimatedValue').value = data.estimatedValue || '';
+ if(document.getElementById('editProbability')) document.getElementById('editProbability').value = data.probability !== undefined ? data.probability : 50;
+ if(document.getElementById('editPriority')) document.getElementById('editPriority').value = data.priority || 'media';
+ if(document.getElementById('editDataGanho')) {
+  var dg = data.dataGanhoOportunidade ? new Date(data.dataGanhoOportunidade).toISOString().split('T')[0] : '';
+  document.getElementById('editDataGanho').value = dg;
+ }
+ if(document.getElementById('editExpectativaInicio')) {
+  var ei = data.expectativaInicio ? new Date(data.expectativaInicio).toISOString().split('T')[0] : '';
+  document.getElementById('editExpectativaInicio').value = ei;
+ }
+ if(document.getElementById('editOrigemProjeto')) document.getElementById('editOrigemProjeto').value = data.origemProjeto || '';
+ if(document.getElementById('editObservacao')) document.getElementById('editObservacao').value = data.observacao || '';
+ // Etiquetas
+ if(document.getElementById('editProjectTagsHidden')) {
+  var tags = data.etiquetas || data.tags || [];
+  if (typeof tags === 'string') try { tags = JSON.parse(tags); } catch(e) { tags = []; }
+  document.getElementById('editProjectTagsHidden').value = JSON.stringify(tags);
+  window._editProjectTags = tags;
+  if (window.renderEditProjectTags) window.renderEditProjectTags();
+ }
+ // Endereço
+ if(document.getElementById('editCep')) document.getElementById('editCep').value = data.cep || '';
+ if(document.getElementById('editRua')) document.getElementById('editRua').value = data.rua || '';
+ if(document.getElementById('editNumero')) document.getElementById('editNumero').value = data.numero || '';
+ if(document.getElementById('editComplemento')) document.getElementById('editComplemento').value = data.complemento || '';
+ if(document.getElementById('editBairro')) document.getElementById('editBairro').value = data.bairro || '';
+ if(document.getElementById('editEstadoEnd')) document.getElementById('editEstadoEnd').value = data.stateEnd || data.state || '';
+ if(document.getElementById('editCidadeEnd')) document.getElementById('editCidadeEnd').value = data.cityEnd || data.city || '';
+
  // New Fields
  if(document.getElementById('editProductionDays')) document.getElementById('editProductionDays').value = data.productionDays || '';
  if(document.getElementById('editClientBudget')) document.getElementById('editClientBudget').value = data.clientBudget || '';
