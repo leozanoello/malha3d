@@ -825,32 +825,36 @@
 
         /* Flip-card para formulários (auto-height, sem flip, frente sempre visível) */
         .uv-flip-card--form {
-          height: auto;
-          min-height: unset;
+          height: auto !important;
+          min-height: unset !important;
+          overflow: visible !important;
         }
         .uv-flip-card--form .uv-flip-content {
-          transform-style: flat;
-          height: auto;
+          transform-style: flat !important;
+          transform: none !important;
+          transition: none !important;
+          height: auto !important;
+          box-shadow: none !important;
+          display: block !important;
+          position: relative !important;
         }
         .uv-flip-card--form .uv-flip-back {
-          display: none;
+          display: none !important;
         }
         .uv-flip-card--form .uv-flip-front {
-          position: relative;
-          transform: none;
-          height: auto;
+          position: relative !important;
+          transform: none !important;
+          height: auto !important;
+          backface-visibility: visible !important;
         }
         .uv-flip-card--form .uv-flip-front-content {
-          position: relative;
-          height: auto;
+          position: relative !important;
+          height: auto !important;
           padding: 12px;
+          z-index: 1;
         }
         .uv-flip-card--form .uv-flip-img {
-          display: none;
-        }
-        .uv-flip-card--form .uv-flip-front-content {
-          position: relative;
-          z-index: 1;
+          display: none !important;
         }
 
         /* ══════════════════════════════════════════════════════════ */
@@ -1110,32 +1114,32 @@
                     </h3>
                     <ul class="space-y-0.5 px-2">
                         <li>
-                            <a href="/admin/previsao" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500">
+                            <a href="/admin/previsao"  style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500">
                                 <span class="material-symbols-outlined text-lg">query_stats</span> Previsão & Analytics
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/budget-generator" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500">
+                            <a href="/admin/budget-generator"  style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500">
                                 <span class="material-symbols-outlined text-lg">magic_button</span> Gerador de Orçamento
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/rastreio-ativo" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
+                            <a href="/admin/rastreio-ativo"  style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
                                 <span class="material-symbols-outlined text-lg">timer</span> Rastreio Ativo
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/automacoes" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
+                            <a href="/admin/automacoes"  style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
                                 <span class="material-symbols-outlined text-lg">bolt</span> Automações
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/marketing-ia" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
+                            <a href="/admin/marketing-ia"  style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
                                 <span class="material-symbols-outlined text-lg">auto_awesome</span> Marketing IA
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/marketplace" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
+                            <a href="/admin/marketplace"  style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
                                 <span class="material-symbols-outlined text-lg">shopping_bag</span> Marketplace
                             </a>
                         </li>
