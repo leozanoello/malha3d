@@ -2923,10 +2923,7 @@ function renderProjectTags() {
   container.innerHTML = _projectTags.map(t => {
     var safeTag = t.replace(/[<>"']/g, '');
     return '<div class="uv-tag-container">' +
-      '<div class="uv-tag-hover"></div>' +
-      '<div class="uv-tag-bt-1"></div><div class="uv-tag-bt-2"></div><div class="uv-tag-bt-3"></div>' +
-      '<div class="uv-tag-bt-4"></div><div class="uv-tag-bt-5"></div><div class="uv-tag-bt-6"></div>' +
-      '<div class="uv-tag-btn">' + safeTag + ' <span class="uv-tag-close" onclick="window.removeProjectTag(\'' + safeTag + '\')">&times;</span></div>' +
+      '<button class="uv-tag-btn" type="button">' + safeTag + ' <span class="uv-tag-close" onclick="window.removeProjectTag(\'' + safeTag + '\')">&times;</span></button>' +
     '</div>';
   }).join('');
   if (hidden) hidden.value = JSON.stringify(_projectTags);

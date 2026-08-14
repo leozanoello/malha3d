@@ -1,0 +1,600 @@
+{{!-- CPQ: Configure, Price, Quote — Motor de Orçamentos --}}
+
+<div class="mb-4 p-4 relative overflow-hidden" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+  <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 blur-[100px] -mr-32 -mt-32"></div>
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
+    <div class="min-w-0">
+      <h1 class="text-2xl font-black text-white tracking-tight mb-1">
+        Construtor de <span class="text-orange-500">Orçamento</span>
+      </h1>
+      <p class="text-gray-400 font-medium text-sm">
+        Configure fases, ambientes e entregáveis com precificação granular.
+      </p>
+    </div>
+    <div class="flex items-center gap-3 flex-wrap shrink-0">
+      <div class="text-right">
+        <span class="text-[10px] uppercase tracking-widest font-black text-gray-500 block">Total do Projeto</span>
+        <span id="cpq-total-geral" class="text-2xl font-black text-orange-500">R$ 0,00</span>
+      </div>
+      <button onclick="cpqFinalizar()" class="kcard flex flex-col items-center justify-center gap-1 w-[70px] h-[70px] cursor-pointer hover:border-emerald-500/40 transition-all" style="border-color:rgba(16,185,129,0.2);">
+        <span class="material-symbols-outlined text-lg text-emerald-400">check_circle</span>
+        <span class="text-[7px] uppercase tracking-widest font-black text-emerald-400">Finalizar</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+{{!-- Container de Fases (Accordions Nível 1) --}}
+<div id="cpq-fases-container" class="space-y-3">
+  {{!-- Fases são renderizadas via JS --}}
+</div>
+
+{{!-- Botão Adicionar Fase --}}
+<div class="mt-4">
+  <button onclick="cpqAddFase()" class="w-full py-3 border-2 border-dashed border-gray-700 hover:border-orange-500/50 rounded transition-all text-gray-500 hover:text-orange-400 font-bold text-sm uppercase tracking-wider flex items-center justify-center gap-2">
+    <span class="material-symbols-outlined text-base">add</span>
+    Adicionar Nova Fase / Grupo
+  </button>
+</div>
+
+{{!-- Modal: Configurar Entregável --}}
+<div class="modal fade" id="cpqEntregavelModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="background:#0a0c10; border:1px solid rgba(255,255,255,0.1); border-radius:12px;">
+      <div class="modal-header border-0 px-6 pt-5 pb-0">
+        <h5 class="text-lg font-black text-white uppercase tracking-wide">Configurar Entregável</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-6 py-5">
+        <input type="hidden" id="modal-entregavel-id">
+        <input type="hidden" id="modal-ambiente-id">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="text-[10px] uppercase tracking-widest font-black text-gray-500 block mb-1">Tipo</label>
+            <select id="modal-tipo" class="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-orange-500 outline-none">
+              <option value="imagem">Imagem Estática</option>
+              <option value="video">Vídeo / Animação</option>
+              <option value="imagem_360">Imagem 360°</option>
+              <option value="video_interativo">Tour Virtual Interativo</option>
+              <option value="planta_humanizada">Planta Humanizada</option>
+              <option value="video_ia">Vídeo por IA (Veo 3)</option>
+              <option value="custom">Personalizado</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] uppercase tracking-widest font-black text-gray-500 block mb-1">Nome (opcional)</label>
+            <input id="modal-nome" type="text" placeholder="Ex: Fachada Principal" class="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-orange-500 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div>
+            <label class="text-[10px] uppercase tracking-widest font-black text-gray-500 block mb-1">Quantidade</label>
+            <input id="modal-qtd" type="number" min="1" value="1" class="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-orange-500 outline-none">
+          </div>
+          <div>
+            <label class="text-[10px] uppercase tracking-widest font-black text-gray-500 block mb-1">Valor Base (R$)</label>
+            <input id="modal-valor-base" type="number" min="0" step="0.01" value="0" class="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-orange-500 outline-none">
+          </div>
+          <div>
+            <label class="text-[10px] uppercase tracking-widest font-black text-gray-500 block mb-1">Resolução</label>
+            <select id="modal-resolucao" class="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-orange-500 outline-none">
+              <option value="Web">Web (72dpi)</option>
+              <option value="FullHD" selected>Full HD (1080p)</option>
+              <option value="4K">4K Ultra HD</option>
+              <option value="8K">8K Cinema</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] uppercase tracking-widest font-black text-gray-500 block mb-1">Revisões Inclusas</label>
+            <input id="modal-revisoes" type="number" min="0" value="2" class="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-orange-500 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="text-[10px] uppercase tracking-widest font-black text-gray-500 block mb-2">Softwares no Pipeline</label>
+            <div id="modal-softwares" class="flex flex-wrap gap-2">
+              <label class="cpq-chip"><input type="checkbox" value="Revit" class="hidden"><span>Revit</span></label>
+              <label class="cpq-chip"><input type="checkbox" value="3ds Max" class="hidden"><span>3ds Max</span></label>
+              <label class="cpq-chip"><input type="checkbox" value="D5 Render" class="hidden"><span>D5 Render</span></label>
+              <label class="cpq-chip"><input type="checkbox" value="SketchUp" class="hidden"><span>SketchUp</span></label>
+              <label class="cpq-chip"><input type="checkbox" value="Blender" class="hidden"><span>Blender</span></label>
+              <label class="cpq-chip"><input type="checkbox" value="Corona" class="hidden"><span>Corona</span></label>
+              <label class="cpq-chip"><input type="checkbox" value="V-Ray" class="hidden"><span>V-Ray</span></label>
+              <label class="cpq-chip"><input type="checkbox" value="Veo 3" class="hidden"><span>Veo 3 (IA)</span></label>
+              <label class="cpq-chip"><input type="checkbox" value="After Effects" class="hidden"><span>After Effects</span></label>
+              <label class="cpq-chip"><input type="checkbox" value="Photoshop" class="hidden"><span>Photoshop</span></label>
+            </div>
+          </div>
+          <div>
+            <label class="flex items-center gap-3 mt-6 cursor-pointer group">
+              <input id="modal-arquivo-aberto" type="checkbox" class="w-4 h-4 rounded border-white/20 bg-white/5 text-orange-500 focus:ring-orange-500">
+              <div>
+                <span class="text-white text-sm font-bold group-hover:text-orange-400 transition-colors">Entregar Arquivo Aberto</span>
+                <span class="text-gray-500 text-xs block">Adiciona +40% ao valor (arquivo fonte editável)</span>
+              </div>
+            </label>
+            <div class="mt-4">
+              <label class="text-[10px] uppercase tracking-widest font-black text-gray-500 block mb-1">Prazo (dias)</label>
+              <input id="modal-prazo" type="number" min="1" value="7" class="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-orange-500 outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="text-[10px] uppercase tracking-widest font-black text-gray-500 block mb-1">Observações</label>
+          <textarea id="modal-obs" rows="2" placeholder="Notas internas sobre este entregável..." class="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white text-sm focus:border-orange-500 outline-none resize-none"></textarea>
+        </div>
+
+        {{!-- Preview do cálculo --}}
+        <div class="p-3 rounded" style="background:rgba(249,115,22,0.05); border:1px solid rgba(249,115,22,0.2);">
+          <div class="flex justify-between items-center">
+            <span class="text-[10px] uppercase tracking-widest font-black text-gray-400">Subtotal Calculado</span>
+            <span id="modal-subtotal-preview" class="text-xl font-black text-orange-500">R$ 0,00</span>
+          </div>
+          <div id="modal-calculo-detalhe" class="text-[11px] text-gray-500 mt-1"></div>
+        </div>
+      </div>
+      <div class="modal-footer border-0 px-6 pb-5 pt-0">
+        <button type="button" data-bs-dismiss="modal" class="px-4 py-2 text-gray-400 hover:text-white text-sm font-bold transition-colors">Cancelar</button>
+        <button type="button" onclick="cpqSalvarEntregavel()" class="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded text-sm font-black uppercase tracking-wider transition-colors">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cpq-fase { transition: all 0.2s ease; }
+  .cpq-fase-collapsed .cpq-fase-body { display: none; }
+  .cpq-fase-collapsed .cpq-fase-chevron { transform: rotate(-90deg); }
+  .cpq-ambiente-collapsed .cpq-ambiente-body { display: none; }
+  .cpq-ambiente-collapsed .cpq-ambiente-chevron { transform: rotate(-90deg); }
+  .cpq-chip span {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .cpq-chip input:checked + span {
+    background: rgba(249,115,22,0.15);
+    border-color: rgba(249,115,22,0.5);
+    color: #f97316;
+  }
+  .cpq-chip:hover span { border-color: rgba(249,115,22,0.3); }
+  .cpq-drag-over { border-color: #f97316 !important; background: rgba(249,115,22,0.03) !important; }
+  .cpq-entregavel-row:hover { background: rgba(255,255,255,0.02); }
+  .cpq-tipo-badge {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+</style>
+
+<script>
+const BUDGET_ID = '{{budgetId}}';
+const API_BASE = '/admin/api/cpq';
+let cpqData = null;
+
+const TIPO_LABELS = {
+  imagem: 'Imagem',
+  video: 'Vídeo',
+  imagem_360: '360°',
+  video_interativo: 'Tour Virtual',
+  planta_humanizada: 'Planta',
+  video_ia: 'Vídeo IA',
+  custom: 'Custom'
+};
+const TIPO_COLORS = {
+  imagem: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+  video: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+  imagem_360: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+  video_interativo: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+  planta_humanizada: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+  video_ia: 'text-pink-400 bg-pink-500/10 border-pink-500/20',
+  custom: 'text-gray-400 bg-gray-500/10 border-gray-500/20'
+};
+
+function formatCurrency(val) {
+  return 'R$ ' + Number(val || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// ============================================================
+// LOAD & RENDER
+// ============================================================
+
+async function cpqLoad() {
+  try {
+    const res = await fetch(`${API_BASE}/${BUDGET_ID}`);
+    cpqData = await res.json();
+    cpqRender();
+  } catch (err) {
+    console.error('CPQ Load error:', err);
+  }
+}
+
+function cpqRender() {
+  const container = document.getElementById('cpq-fases-container');
+  document.getElementById('cpq-total-geral').textContent = formatCurrency(cpqData.totalCached);
+
+  if (!cpqData.fases || cpqData.fases.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-16 text-gray-600">
+        <span class="material-symbols-outlined text-5xl mb-3 block">architecture</span>
+        <p class="text-sm font-bold">Nenhuma fase criada</p>
+        <p class="text-xs text-gray-700 mt-1">Clique em "Adicionar Nova Fase" para começar</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = cpqData.fases.map((fase, fi) => `
+    <div class="cpq-fase" data-fase-id="${fase.id}" draggable="true" ondragstart="cpqDragStart(event,'fase')" ondragover="cpqDragOver(event)" ondrop="cpqDrop(event,'fase')" ondragend="cpqDragEnd(event)">
+      <div class="p-0" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06); overflow:hidden;">
+        {{!-- Fase Header --}}
+        <div class="cpq-fase-header flex items-center gap-3 px-4 py-3 cursor-pointer select-none hover:bg-white/[0.02] transition-colors" onclick="cpqToggleFase(this)">
+          <span class="material-symbols-outlined cpq-fase-chevron text-gray-500 text-base transition-transform">expand_more</span>
+          <span class="material-symbols-outlined text-gray-600 text-base cursor-grab" draggable="true">drag_indicator</span>
+          <span class="text-[10px] uppercase tracking-widest font-black text-gray-600">${fi + 1}</span>
+          <input type="text" value="${fase.nome}" class="bg-transparent border-0 text-white font-black text-sm flex-1 outline-none focus:text-orange-400 min-w-0" onchange="cpqRenameFase('${fase.id}', this.value)" onclick="event.stopPropagation()">
+          <span class="text-sm font-black text-orange-500 whitespace-nowrap">${formatCurrency(fase.subtotalCached)}</span>
+          <button onclick="event.stopPropagation(); cpqDuplicarFase('${fase.id}')" class="text-gray-600 hover:text-blue-400 transition-colors" title="Duplicar Fase">
+            <span class="material-symbols-outlined text-base">content_copy</span>
+          </button>
+          <button onclick="event.stopPropagation(); cpqDeleteFase('${fase.id}')" class="text-gray-600 hover:text-red-400 transition-colors" title="Remover Fase">
+            <span class="material-symbols-outlined text-base">delete</span>
+          </button>
+        </div>
+        {{!-- Fase Body --}}
+        <div class="cpq-fase-body px-4 pb-4">
+          <div class="space-y-2 ml-6">
+            ${(fase.ambientes || []).map((amb, ai) => cpqRenderAmbiente(amb, ai)).join('')}
+          </div>
+          <button onclick="cpqAddAmbiente('${fase.id}')" class="ml-6 mt-3 w-[calc(100%-1.5rem)] py-2 border border-dashed border-gray-800 hover:border-orange-500/40 rounded text-gray-600 hover:text-orange-400 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-all">
+            <span class="material-symbols-outlined text-sm">add</span> Adicionar Ambiente
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function cpqRenderAmbiente(amb, index) {
+  return `
+    <div class="cpq-ambiente" data-ambiente-id="${amb.id}" draggable="true" ondragstart="cpqDragStart(event,'ambiente')" ondragover="cpqDragOver(event)" ondrop="cpqDrop(event,'ambiente')" ondragend="cpqDragEnd(event)">
+      <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04); border-radius:4px; overflow:hidden;">
+        <div class="cpq-ambiente-header flex items-center gap-2 px-3 py-2 cursor-pointer select-none hover:bg-white/[0.02] transition-colors" onclick="cpqToggleAmbiente(this)">
+          <span class="material-symbols-outlined cpq-ambiente-chevron text-gray-600 text-sm transition-transform">expand_more</span>
+          <span class="material-symbols-outlined text-gray-700 text-sm cursor-grab" draggable="true">drag_indicator</span>
+          <input type="text" value="${amb.nome}" class="bg-transparent border-0 text-gray-300 font-bold text-xs flex-1 outline-none focus:text-orange-400 min-w-0" onchange="cpqRenameAmbiente('${amb.id}', this.value)" onclick="event.stopPropagation()">
+          <span class="text-xs font-bold text-gray-400 whitespace-nowrap">${formatCurrency(amb.subtotalCached)}</span>
+          <button onclick="event.stopPropagation(); cpqDeleteAmbiente('${amb.id}')" class="text-gray-700 hover:text-red-400 transition-colors">
+            <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+        <div class="cpq-ambiente-body px-3 pb-3">
+          <div class="space-y-1">
+            ${(amb.entregaveis || []).map(ent => cpqRenderEntregavel(ent)).join('')}
+          </div>
+          <button onclick="cpqOpenEntregavelModal('${amb.id}')" class="mt-2 w-full py-1.5 border border-dashed border-gray-800 hover:border-orange-500/30 rounded text-gray-700 hover:text-orange-400 text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-all">
+            <span class="material-symbols-outlined text-xs">add</span> Produto
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function cpqRenderEntregavel(ent) {
+  const config = ent.config || {};
+  const softwares = (config.softwares || []).slice(0, 3);
+  return `
+    <div class="cpq-entregavel-row flex items-center gap-2 px-2 py-1.5 rounded transition-colors group" data-entregavel-id="${ent.id}">
+      <span class="cpq-tipo-badge border ${TIPO_COLORS[ent.tipo] || TIPO_COLORS.custom}">${TIPO_LABELS[ent.tipo] || ent.tipo}</span>
+      <span class="text-white text-xs font-medium flex-1 truncate">${ent.nome || TIPO_LABELS[ent.tipo] || 'Item'}</span>
+      ${softwares.length ? `<span class="text-[9px] text-gray-600 hidden md:inline">${softwares.join(' · ')}</span>` : ''}
+      ${config.resolucao && config.resolucao !== 'FullHD' ? `<span class="text-[9px] font-bold text-gray-500">${config.resolucao}</span>` : ''}
+      <span class="text-[10px] text-gray-500">×${ent.qtd}</span>
+      <span class="text-xs font-bold text-gray-300 w-20 text-right">${formatCurrency(ent.subtotalCached)}</span>
+      <button onclick="cpqEditEntregavel('${ent.id}')" class="text-gray-700 hover:text-orange-400 opacity-0 group-hover:opacity-100 transition-all">
+        <span class="material-symbols-outlined text-sm">edit</span>
+      </button>
+      <button onclick="cpqDeleteEntregavel('${ent.id}')" class="text-gray-700 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all">
+        <span class="material-symbols-outlined text-sm">close</span>
+      </button>
+    </div>`;
+}
+
+// ============================================================
+// CRUD OPERATIONS
+// ============================================================
+
+async function cpqAddFase() {
+  await fetch(`${API_BASE}/${BUDGET_ID}/fases`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome: 'Nova Fase' })
+  });
+  await cpqLoad();
+}
+
+async function cpqRenameFase(id, nome) {
+  await fetch(`${API_BASE}/fases/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome })
+  });
+}
+
+async function cpqDeleteFase(id) {
+  if (!confirm('Remover esta fase e todos seus ambientes?')) return;
+  await fetch(`${API_BASE}/fases/${id}`, { method: 'DELETE' });
+  await cpqLoad();
+}
+
+async function cpqDuplicarFase(id) {
+  await fetch(`${API_BASE}/fases/${id}/duplicar`, { method: 'POST' });
+  await cpqLoad();
+}
+
+async function cpqAddAmbiente(faseId) {
+  await fetch(`${API_BASE}/fases/${faseId}/ambientes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome: 'Novo Ambiente' })
+  });
+  await cpqLoad();
+}
+
+async function cpqRenameAmbiente(id, nome) {
+  await fetch(`${API_BASE}/ambientes/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome })
+  });
+}
+
+async function cpqDeleteAmbiente(id) {
+  if (!confirm('Remover este ambiente e seus entregáveis?')) return;
+  await fetch(`${API_BASE}/ambientes/${id}`, { method: 'DELETE' });
+  await cpqLoad();
+}
+
+async function cpqDeleteEntregavel(id) {
+  await fetch(`${API_BASE}/entregaveis/${id}`, { method: 'DELETE' });
+  await cpqLoad();
+}
+
+// ============================================================
+// MODAL: ENTREGÁVEL
+// ============================================================
+
+function cpqOpenEntregavelModal(ambienteId, entregavelId = null) {
+  document.getElementById('modal-ambiente-id').value = ambienteId;
+  document.getElementById('modal-entregavel-id').value = entregavelId || '';
+
+  if (entregavelId) {
+    const ent = cpqFindEntregavel(entregavelId);
+    if (ent) {
+      document.getElementById('modal-tipo').value = ent.tipo;
+      document.getElementById('modal-nome').value = ent.nome || '';
+      document.getElementById('modal-qtd').value = ent.qtd;
+      document.getElementById('modal-valor-base').value = ent.valorBase;
+      const config = ent.config || {};
+      document.getElementById('modal-resolucao').value = config.resolucao || 'FullHD';
+      document.getElementById('modal-revisoes').value = config.revisoes_inclusas || 2;
+      document.getElementById('modal-arquivo-aberto').checked = !!config.arquivo_aberto;
+      document.getElementById('modal-prazo').value = config.prazo_dias || 7;
+      document.getElementById('modal-obs').value = config.observacoes || '';
+      document.querySelectorAll('#modal-softwares input').forEach(cb => {
+        cb.checked = (config.softwares || []).includes(cb.value);
+      });
+    }
+  } else {
+    document.getElementById('modal-tipo').value = 'imagem';
+    document.getElementById('modal-nome').value = '';
+    document.getElementById('modal-qtd').value = 1;
+    document.getElementById('modal-valor-base').value = '';
+    document.getElementById('modal-resolucao').value = 'FullHD';
+    document.getElementById('modal-revisoes').value = 2;
+    document.getElementById('modal-arquivo-aberto').checked = false;
+    document.getElementById('modal-prazo').value = 7;
+    document.getElementById('modal-obs').value = '';
+    document.querySelectorAll('#modal-softwares input').forEach(cb => cb.checked = false);
+  }
+
+  cpqUpdateModalPreview();
+  new bootstrap.Modal(document.getElementById('cpqEntregavelModal')).show();
+}
+
+function cpqEditEntregavel(id) {
+  const ent = cpqFindEntregavel(id);
+  if (ent) cpqOpenEntregavelModal(ent.ambienteId, id);
+}
+
+function cpqFindEntregavel(id) {
+  for (const fase of (cpqData.fases || [])) {
+    for (const amb of (fase.ambientes || [])) {
+      for (const ent of (amb.entregaveis || [])) {
+        if (ent.id === id) return ent;
+      }
+    }
+  }
+  return null;
+}
+
+async function cpqSalvarEntregavel() {
+  const entId = document.getElementById('modal-entregavel-id').value;
+  const ambId = document.getElementById('modal-ambiente-id').value;
+
+  const softwares = [];
+  document.querySelectorAll('#modal-softwares input:checked').forEach(cb => softwares.push(cb.value));
+
+  const payload = {
+    tipo: document.getElementById('modal-tipo').value,
+    nome: document.getElementById('modal-nome').value || null,
+    qtd: parseInt(document.getElementById('modal-qtd').value) || 1,
+    valorBase: parseFloat(document.getElementById('modal-valor-base').value) || 0,
+    config: {
+      resolucao: document.getElementById('modal-resolucao').value,
+      arquivo_aberto: document.getElementById('modal-arquivo-aberto').checked,
+      softwares,
+      revisoes_inclusas: parseInt(document.getElementById('modal-revisoes').value) || 2,
+      fatores_preco: {
+        resolucao: { FullHD: 1.0, '4K': 1.5, '8K': 2.2, Web: 0.8 },
+        arquivo_aberto: 0.4,
+        revisao_extra: 250.0
+      },
+      prazo_dias: parseInt(document.getElementById('modal-prazo').value) || null,
+      observacoes: document.getElementById('modal-obs').value || ''
+    }
+  };
+
+  if (entId) {
+    await fetch(`${API_BASE}/entregaveis/${entId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } else {
+    await fetch(`${API_BASE}/ambientes/${ambId}/entregaveis`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  }
+
+  bootstrap.Modal.getInstance(document.getElementById('cpqEntregavelModal')).hide();
+  await cpqLoad();
+}
+
+function cpqUpdateModalPreview() {
+  const qtd = parseInt(document.getElementById('modal-qtd').value) || 1;
+  const valorBase = parseFloat(document.getElementById('modal-valor-base').value) || 0;
+  const resolucao = document.getElementById('modal-resolucao').value;
+  const arquivoAberto = document.getElementById('modal-arquivo-aberto').checked;
+  const revisoes = parseInt(document.getElementById('modal-revisoes').value) || 2;
+
+  const fatores = { FullHD: 1.0, '4K': 1.5, '8K': 2.2, Web: 0.8 };
+  const fatorRes = fatores[resolucao] || 1.0;
+  const fatorArq = arquivoAberto ? 0.4 : 0;
+  const revisoesExtra = Math.max(0, revisoes - 2);
+  const subtotal = (qtd * valorBase * fatorRes * (1 + fatorArq)) + (revisoesExtra * 250);
+
+  document.getElementById('modal-subtotal-preview').textContent = formatCurrency(subtotal);
+  document.getElementById('modal-calculo-detalhe').textContent =
+    `${qtd} × R$${valorBase.toFixed(2)} × ${fatorRes} (${resolucao})` +
+    (arquivoAberto ? ' × 1.4 (arquivo aberto)' : '') +
+    (revisoesExtra > 0 ? ` + ${revisoesExtra} × R$250 (revisões extra)` : '');
+}
+
+// Live preview listeners
+['modal-qtd', 'modal-valor-base', 'modal-resolucao', 'modal-revisoes', 'modal-arquivo-aberto'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', cpqUpdateModalPreview);
+  if (el) el.addEventListener('change', cpqUpdateModalPreview);
+});
+
+// ============================================================
+// ACCORDIONS (Toggle)
+// ============================================================
+
+function cpqToggleFase(header) {
+  header.closest('.cpq-fase > div').classList.toggle('cpq-fase-collapsed');
+}
+
+function cpqToggleAmbiente(header) {
+  header.closest('.cpq-ambiente > div').classList.toggle('cpq-ambiente-collapsed');
+}
+
+// ============================================================
+// DRAG & DROP (Reordenação)
+// ============================================================
+
+let cpqDragType = null;
+let cpqDragEl = null;
+
+function cpqDragStart(e, type) {
+  cpqDragType = type;
+  cpqDragEl = e.target.closest(`.cpq-${type}`);
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => cpqDragEl.style.opacity = '0.4', 0);
+}
+
+function cpqDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const target = e.target.closest(`.cpq-${cpqDragType}`);
+  if (target && target !== cpqDragEl) {
+    target.classList.add('cpq-drag-over');
+  }
+}
+
+function cpqDragEnd(e) {
+  if (cpqDragEl) cpqDragEl.style.opacity = '';
+  document.querySelectorAll('.cpq-drag-over').forEach(el => el.classList.remove('cpq-drag-over'));
+}
+
+async function cpqDrop(e, type) {
+  e.preventDefault();
+  document.querySelectorAll('.cpq-drag-over').forEach(el => el.classList.remove('cpq-drag-over'));
+  if (!cpqDragEl) return;
+  cpqDragEl.style.opacity = '';
+
+  const target = e.target.closest(`.cpq-${type}`);
+  if (!target || target === cpqDragEl) return;
+
+  const container = cpqDragEl.parentNode;
+  const siblings = [...container.querySelectorAll(`:scope > .cpq-${type}`)];
+  const dragIdx = siblings.indexOf(cpqDragEl);
+  const dropIdx = siblings.indexOf(target);
+
+  if (dragIdx < dropIdx) {
+    target.after(cpqDragEl);
+  } else {
+    target.before(cpqDragEl);
+  }
+
+  const items = [...container.querySelectorAll(`:scope > .cpq-${type}`)].map((el, i) => ({
+    id: el.dataset[`${type}Id`],
+    ordem: i + 1
+  }));
+
+  await fetch(`${API_BASE}/reorder/${type === 'fase' ? 'fases' : type === 'ambiente' ? 'ambientes' : 'entregaveis'}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ items })
+  });
+
+  await cpqLoad();
+}
+
+// ============================================================
+// FINALIZAR ORÇAMENTO
+// ============================================================
+
+async function cpqFinalizar() {
+  if (!confirm('Gerar itens de proposta a partir deste orçamento?\nItens CPQ anteriores serão substituídos.')) return;
+  const res = await fetch(`${API_BASE}/${BUDGET_ID}/finalizar`, { method: 'POST' });
+  const data = await res.json();
+  if (data.success) {
+    alert(`Orçamento finalizado!\n${data.itemsGerados} itens gerados.\nTotal: ${formatCurrency(data.total)}`);
+  } else {
+    alert('Erro: ' + (data.error || 'Falha ao finalizar'));
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', cpqLoad);
+</script>

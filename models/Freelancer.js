@@ -45,6 +45,11 @@ const Freelancer = sequelize.define('Freelancer', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  skills: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: 'Habilidades técnicas selecionadas via botões toggle (Modelagem, Textura, Iluminação, Render, etc)'
+  },
   softwares: {
     type: DataTypes.STRING,
     allowNull: true

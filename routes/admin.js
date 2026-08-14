@@ -8,7 +8,8 @@ const {
   SmartNote, ApiKey, ProjectLog, ProjectTask,
   Milestone, Task, TaskFile, TaskHistoryComment, TaskDependency, TaskTemplate,
   CRMLeadLog, CRMLeadMessage, CrmForecastProbability, CategoryReceita, CategoryDespesa,
-  BankAccount, ChartOfAccounts, CostCenter, AccountsReceivable, AccountsPayable, ArInstallment, ApInstallment
+  BankAccount, ChartOfAccounts, CostCenter, AccountsReceivable, AccountsPayable, ArInstallment, ApInstallment,
+  CpqOrcamento
 } = require('../models');
 const { sequelize } = require('../config/database');
 const { Op } = require('sequelize');
@@ -1494,6 +1495,19 @@ router.post('/negociacoes/novo', requireAuth, async (req, res) => {
       return res.json({ success: true, lead, financeCreated });
     }
 
+    // Registrar log de criação
+    try {
+      await CRMLeadLog.create({
+        budgetId: lead.id,
+        userId: req.user?.id || null,
+        userName: req.user?.name || 'Sistema',
+        action: 'lead_created',
+        details: `Lead "${lead.name}" criado. Tipo: ${lead.projectType || 'Outro'}, Valor: R$ ${lead.estimatedValue || '0'}, Prioridade: ${lead.priority || 'media'}`
+      });
+    } catch (logErr) {
+      console.error('[CRM] Failed to write create log:', logErr.message);
+    }
+
     req.flash('success_msg', 'Lead criado com sucesso!');
     res.redirect('/admin/crm');
   } catch (error) {
@@ -2546,6 +2560,22 @@ router.post('/api/negociacoes/:id/convert-to-modelagem', requireAuth, async (req
     await modelagemCard.update({
       productionDays: productionDaysAllocated || leadData.productionDays || null,
       notes: (leadData.notes || '') + '\n\n[CONVERSÃO CRM → PROJETO]\nData Fechamento: ' + now.toISOString() + '\nData Entrega: ' + (deadline || 'N/D') + '\nDias Úteis Alocados: ' + (productionDaysAllocated || 'N/D')
+    });
+
+    // Registrar log no CRM e no novo Projeto
+    await CRMLeadLog.create({
+      budgetId: sourceLead.id,
+      userId: req.user?.id || null,
+      userName: req.user?.name || 'Sistema',
+      action: 'converted_to_project',
+      details: `Lead convertido para Projeto (Modelagem). Novo card ID: ${modelagemCard.id}`
+    });
+    await CRMLeadLog.create({
+      budgetId: modelagemCard.id,
+      userId: req.user?.id || null,
+      userName: req.user?.name || 'Sistema',
+      action: 'created_from_lead',
+      details: `Projeto criado a partir do Lead "${sourceLead.name}" (ID: ${sourceLead.id})`
     });
 
     return res.json({
@@ -8096,6 +8126,25 @@ router.get('/api/export/sheets', requireAuth, (req, res) => {
 // =============================================================
 const cpqRoutes = require('./cpq');
 router.use('/api/cpq', requireAuth, cpqRoutes);
+
+// Renderizar página CPQ
+router.get('/cpq/:budgetId', requireAuth, async (req, res) => {
+  try {
+    const orcamento = await CpqOrcamento.findOne({ where: { budgetId: req.params.budgetId } });
+    if (!orcamento) {
+      // Cria orçamento vazio se não existir
+      await CpqOrcamento.create({ budgetId: req.params.budgetId, totalCached: 0 });
+    }
+    res.render('admin/cpq', {
+      layout: 'layouts/admin',
+      title: 'Construtor de Orçamento CPQ',
+      budgetId: req.params.budgetId
+    });
+  } catch (err) {
+    console.error('CPQ page error:', err);
+    res.status(500).render('admin/error', { error: err.message });
+  }
+});
 
 module.exports = router;
 

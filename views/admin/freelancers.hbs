@@ -153,14 +153,20 @@
  <input type="number" name="hourlyRate" placeholder="80.00" step="0.01" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
  </div>
  <div class="col-span-2">
- <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 block">Especialidades</label>
+ <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Especialidades (texto livre)</label>
+ <input type="text" name="expertiseText" placeholder="Ex: Interiores residenciais, fachadas corporativas..." class="w-full px-3 py-2 text-xs text-white rounded-[4px] mb-2" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+ <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1.5 block">Habilidades Técnicas</label>
  <div class="flex flex-wrap gap-1.5" id="expertiseToggles">
  <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Modelagem" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Modelagem</button>
- <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Renderização" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Renderização</button>
- <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Animação" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Animação</button>
- <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Pós-Produção" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Pós-Produção</button>
- <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Texturização" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Texturização</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Textura" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Textura</button>
  <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Iluminação" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Iluminação</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Render" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Render</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Edição de Vídeo" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Edição de Vídeo</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Pós Produção" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Pós Produção</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Modelagem de Objeto" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Mod. Objeto</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Criatividade" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Criatividade</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Detalhamento" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Detalhamento</button>
+ <button type="button" class="px-2.5 py-1 rounded-[4px] text-[8px] font-bold text-gray-400 uppercase" data-value="Apresentação" onclick="window.toggleExpertise(this)" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Apresentação</button>
  </div>
  <input type="hidden" name="expertise" id="expertiseHidden" value="">
  </div>
@@ -343,7 +349,11 @@ window.editFreelancer = async function(id) {
        <input type="number" step="0.01" id="ef_hourlyRate" value="${f.hourlyRate||0}" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></div>
       </div>
       <div><label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Especialidades</label>
-      <input type="text" id="ef_expertise" value="${f.expertise||''}" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" placeholder="Ex: Interiores, Fachadas"></div>
+      <input type="text" id="ef_expertise" value="${f.expertise||''}" class="w-full px-3 py-2 text-xs text-white rounded-[4px] mb-2" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" placeholder="Ex: Interiores, Fachadas">
+      <label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Habilidades Técnicas</label>
+      <div class="flex flex-wrap gap-1" id="ef_expertiseToggles">${['Modelagem','Textura','Iluminação','Render','Edição de Vídeo','Pós Produção','Mod. Objeto','Criatividade','Detalhamento','Apresentação'].map(function(s){ return '<button type="button" class="px-2 py-0.5 rounded-[3px] text-[7px] font-bold uppercase" data-value="'+s+'" onclick="window.toggleEditExpertise(this)" style="'+((f.expertise||'').toLowerCase().includes(s.toLowerCase())?'background:#f97316;border:1px solid #f97316;color:#fff;':'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);color:#9ca3af;')+'">'+s+'</button>'; }).join('')}</div>
+      <input type="hidden" id="ef_skills" value="${f.skills||''}">
+      </div>
       <div>
        <label class="block text-[8px] text-gray-500 font-bold uppercase mb-1">Softwares</label>
        <div class="flex flex-wrap gap-1" id="ef_softwareToggles">${softwareBtns}</div>
@@ -398,6 +408,18 @@ window.toggleEditSoftware = function(btn) {
  document.getElementById('ef_softwares').value = selected.join(', ');
 };
 
+window.toggleEditExpertise = function(btn) {
+ const isActive = btn.style.background.includes('f97316');
+ if (isActive) {
+  btn.style.cssText = 'background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color:#9ca3af;';
+ } else {
+  btn.style.cssText = 'background:#f97316; border:1px solid #f97316; color:#ffffff;';
+ }
+ const allBtns = document.querySelectorAll('#ef_expertiseToggles button');
+ const selected = Array.from(allBtns).filter(b => b.style.background.includes('f97316')).map(b => b.dataset.value);
+ document.getElementById('ef_skills').value = selected.join(', ');
+};
+
 window.saveFreelancerEdit = async function(id) {
  const body = {
   name: document.getElementById('ef_name').value,
@@ -405,6 +427,7 @@ window.saveFreelancerEdit = async function(id) {
   phone: document.getElementById('ef_phone').value,
   hourlyRate: document.getElementById('ef_hourlyRate').value,
   expertise: document.getElementById('ef_expertise').value,
+  skills: document.getElementById('ef_skills') ? document.getElementById('ef_skills').value : '',
   softwares: document.getElementById('ef_softwares').value,
   hardwareSpecs: document.getElementById('ef_hardware').value,
   portfolioUrl: document.getElementById('ef_portfolio').value,

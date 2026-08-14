@@ -476,9 +476,8 @@ const startServer = async () => {
       await safeAddColumn('budgets', 'animationAIDiurna', 'INTEGER DEFAULT 0');
       await safeAddColumn('budgets', 'animationAINoturna', 'INTEGER DEFAULT 0');
       await safeAddColumn('budgets', 'animationAIMisto', 'INTEGER DEFAULT 0');
-      if (sequelize.getDialect() === 'sqlite') {
-        await safeAddColumn('clients', 'job_title', 'VARCHAR(255)');
-      }
+      await safeAddColumn('clients', 'job_title', 'VARCHAR(255)');
+      await safeAddColumn('freelancers', 'skills', 'VARCHAR(500)');
 
       return server.listen(PORT, () => {
         console.log(`🚀 Malha3D Admin rodando em http://localhost:${PORT}`);

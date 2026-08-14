@@ -1942,9 +1942,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
  // === HISTÓRICO (immutable audit trail) ===
  const HISTORY_ACTION_LABEL = {
- lead_updated: 'Lead atualizado',
- status_changed: 'Etapa alterada',
- contact_linked: 'Contato vinculado'
+ lead_updated: '✏️ Dados Atualizados',
+ status_changed: '🔄 Etapa Alterada',
+ contact_linked: '👤 Contato Vinculado',
+ banner_changed: '🖼️ Banner Trocado',
+ banner_uploaded: '📤 Banner Enviado',
+ probability_changed: '📊 Probabilidade Alterada',
+ converted_to_project: '🚀 Convertido p/ Projeto',
+ created_from_lead: '📥 Criado a partir de Lead',
+ lead_created: '✨ Lead Criado',
+ task_created: '📋 Tarefa Criada',
+ task_completed: '✅ Tarefa Concluída',
+ finance_updated: '💰 Financeiro Atualizado',
+ note_added: '📝 Nota Adicionada'
  };
 
  // === SISTEMA DE PRODUTIVIDADE (Tabela de Produtos ArchViz + Cálculo) ===
@@ -2597,10 +2607,7 @@ window.loadLeadHistory = function(leadId) {
   container.innerHTML = _projectTags.map(t => {
    var safeTag = t.replace(/[<>"']/g, '');
    return '<div class="uv-tag-container">' +
-    '<div class="uv-tag-hover"></div>' +
-    '<div class="uv-tag-bt-1"></div><div class="uv-tag-bt-2"></div><div class="uv-tag-bt-3"></div>' +
-    '<div class="uv-tag-bt-4"></div><div class="uv-tag-bt-5"></div><div class="uv-tag-bt-6"></div>' +
-    '<div class="uv-tag-btn">' + safeTag + ' <span class="uv-tag-close" onclick="window.removeProjectTag(\'' + safeTag + '\')">&times;</span></div>' +
+    '<button class="uv-tag-btn" type="button">' + safeTag + ' <span class="uv-tag-close" onclick="window.removeProjectTag(\'' + safeTag + '\')">&times;</span></button>' +
    '</div>';
   }).join('');
   if (hidden) hidden.value = JSON.stringify(_projectTags);

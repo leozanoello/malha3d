@@ -52,7 +52,7 @@
 <div id="contactsMasterContainer">
  
  <!-- GRID & BLOCK VIEWS -->
- <div id="contactsGridContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+ <div id="contactsGridContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
  {{#each clients}}
  <div class="kcard contact-card contact-item group transition-all relative overflow-hidden p-4" data-category="{{this.category}}" data-name="{{this.name}}" data-company="{{this.company}}" data-email="{{this.email}}">
  <div class="absolute top-0 right-0 w-20 h-20 bg-orange-500/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-orange-500/10 transition-all"></div>
@@ -264,5 +264,9 @@ function setViewMode(mode) {
  searchContainer.className = 'flex flex-col gap-2';
  btnSearch.className = 'p-2 rounded-[5px] bg-orange-500/20 text-orange-400 transition-all';
  }
+ localStorage.setItem('malha3d_contacts_viewMode', mode);
 }
+
+// Iniciar no modo salvo ou "grid" (Cards Compacto) como padrão
+setViewMode(localStorage.getItem('malha3d_contacts_viewMode') || 'grid');
 </script>
