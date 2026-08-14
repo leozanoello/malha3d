@@ -369,11 +369,7 @@ const Lead = sequelize.define('Lead', {
   indexes: [
     { fields: ['status'] },
     { fields: ['category'] },
-    { fields: ['created_at'] },
-    { fields: ['clientId'] },
-    { fields: ['assigned_user_id'] },
-    { unique: true, fields: ['tracking_code'] },
-    { unique: true, fields: ['external_token'] }
+    { fields: ['created_at'] }
   ]
 });
 

@@ -6672,6 +6672,113 @@ router.post('/api/erp/payables/installments/:id/pay', requireAuth, async (req, r
   }
 });
 
+// ═══════════════════════════════════════════════════════════════
+// EDIÇÃO DE LANÇAMENTO A RECEBER (com senha)
+// ═══════════════════════════════════════════════════════════════
+router.patch('/api/erp/receivables/:id', requireAuth, async (req, res) => {
+  try {
+    const { password, ...updateData } = req.body;
+    if (password !== '0235') {
+      return res.status(403).json({ success: false, error: 'Senha incorreta' });
+    }
+
+    const ar = await AccountsReceivable.findByPk(req.params.id);
+    if (!ar) return res.status(404).json({ success: false, error: 'Registro não encontrado' });
+
+    // Registrar alterações no histórico
+    const changes = [];
+    const fields = ['description', 'totalAmount', 'category', 'paymentMethod', 'notes', 'status', 'originDate'];
+    fields.forEach(f => {
+      if (updateData[f] !== undefined && String(updateData[f]) !== String(ar[f] || '')) {
+        changes.push({ field: f, from: ar[f], to: updateData[f] });
+      }
+    });
+
+    const history = ar.editHistory || [];
+    if (changes.length > 0) {
+      history.push({
+        date: new Date().toISOString(),
+        userName: req.user ? req.user.name : 'Sistema',
+        userId: req.user ? req.user.id : null,
+        changes: changes
+      });
+    }
+
+    // Aplicar update
+    const allowed = {};
+    fields.forEach(f => { if (updateData[f] !== undefined) allowed[f] = updateData[f]; });
+    allowed.editHistory = history;
+
+    await ar.update(allowed);
+    res.json({ success: true, receivable: ar.get({ plain: true }) });
+  } catch (e) {
+    console.error('Edit AR error:', e);
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// EDIÇÃO DE LANÇAMENTO A PAGAR (com senha)
+// ═══════════════════════════════════════════════════════════════
+router.patch('/api/erp/payables/:id', requireAuth, async (req, res) => {
+  try {
+    const { password, ...updateData } = req.body;
+    if (password !== '0235') {
+      return res.status(403).json({ success: false, error: 'Senha incorreta' });
+    }
+
+    const ap = await AccountsPayable.findByPk(req.params.id);
+    if (!ap) return res.status(404).json({ success: false, error: 'Registro não encontrado' });
+
+    // Registrar alterações no histórico
+    const changes = [];
+    const fields = ['description', 'totalAmount', 'category', 'dueDate', 'costClassification', 'notes', 'status'];
+    fields.forEach(f => {
+      if (updateData[f] !== undefined && String(updateData[f]) !== String(ap[f] || '')) {
+        changes.push({ field: f, from: ap[f], to: updateData[f] });
+      }
+    });
+
+    const history = ap.editHistory || [];
+    if (changes.length > 0) {
+      history.push({
+        date: new Date().toISOString(),
+        userName: req.user ? req.user.name : 'Sistema',
+        userId: req.user ? req.user.id : null,
+        changes: changes
+      });
+    }
+
+    // Aplicar update
+    const allowed = {};
+    fields.forEach(f => { if (updateData[f] !== undefined) allowed[f] = updateData[f]; });
+    allowed.editHistory = history;
+
+    await ap.update(allowed);
+    res.json({ success: true, payable: ap.get({ plain: true }) });
+  } catch (e) {
+    console.error('Edit AP error:', e);
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// LISTAR CATEGORIAS DE RECEITA E DESPESA
+// ═══════════════════════════════════════════════════════════════
+router.get('/api/erp/categories/receita', requireAuth, async (req, res) => {
+  try {
+    const cats = await CategoryReceita.findAll({ where: { isActive: true }, order: [['name', 'ASC']] });
+    res.json({ success: true, categories: cats.map(c => c.get({ plain: true })) });
+  } catch (e) { res.json({ success: true, categories: [] }); }
+});
+
+router.get('/api/erp/categories/despesa', requireAuth, async (req, res) => {
+  try {
+    const cats = await CategoryDespesa.findAll({ where: { isActive: true }, order: [['name', 'ASC']] });
+    res.json({ success: true, categories: cats.map(c => c.get({ plain: true })) });
+  } catch (e) { res.json({ success: true, categories: [] }); }
+});
+
 // --- DRE (Demonstrativo de Resultado) ---
 router.get('/api/erp/dre', requireAuth, async (req, res) => {
   try {
