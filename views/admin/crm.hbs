@@ -76,7 +76,7 @@
  {{> testDataButtons module="crm"}}
 
  <!-- Novo Lead -->
- <button class="py-1.5 px-4 rounded-[4px] bg-orange-500 text-white font-black text-[8px] uppercase tracking-wider shadow-sm hover:bg-orange-600 transition-all flex items-center gap-1.5" onclick="if(typeof window.openNewLeadModal === 'function'){ window.openNewLeadModal(); } else { const m = document.getElementById('newLeadModal'); if(m){ m.classList.remove('hidden'); m.style.display='flex'; } }">
+ <button class="py-1.5 px-4 rounded-[4px] bg-orange-500 text-white font-black text-[8px] uppercase tracking-wider shadow-sm hover:bg-orange-600 transition-all flex items-center gap-1.5" onclick="window.openCreateLeadModal()">
  <span class="material-symbols-outlined text-[11px]">person_add</span> Novo Lead
  </button>
  </div>
@@ -2546,7 +2546,59 @@ window.loadLeadHistory = function(leadId) {
  }
  };
 
- // === GLOBAL MODAL TRIGGER ===
+ // === CRIAR NOVO LEAD — Usa o MESMO modal de edição (manageLeadModal) em modo criação ===
+ window.openCreateLeadModal = function() {
+  // Limpar todos os campos do modal de edição
+  var form = document.getElementById('editLeadForm');
+  if (form) {
+    form.reset();
+    form.action = '/admin/negociacoes/novo';
+  }
+
+  // Limpar campos individualmente
+  var fields = ['editName','editTotalArea','editDataGanho','editExpectativaInicio','editOrigemProjeto','editObservacao','editClientName','editEmail','editPhone','editCep','editRua','editNumero','editComplemento','editBairro','editEstadoEnd','editCidadeEnd','editProjectType','editColor','editEstimatedValue','editProbability','editPriority','editProductionDays','editDeadline','editRevisionsIncluded','editDriveLink','editTargetSoftware','editVisualStyle','editStatus'];
+  fields.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { if (el.type === 'color') el.value = '#f97316'; else el.value = ''; }
+  });
+
+  // Defaults
+  if (document.getElementById('editProbability')) document.getElementById('editProbability').value = '50';
+  if (document.getElementById('editPriority')) document.getElementById('editPriority').value = 'media';
+  if (document.getElementById('editColor')) document.getElementById('editColor').value = '#f97316';
+
+  // Header do modal
+  var nameEl = document.getElementById('modalLeadName');
+  if (nameEl) nameEl.textContent = 'Criar Novo Lead';
+  var statusEl = document.getElementById('modalLeadStatus');
+  if (statusEl) statusEl.textContent = 'NOVO';
+
+  // Esconder botões de editar/converter (são para edição apenas)
+  var editBtn = document.getElementById('btn-edit-toggle');
+  if (editBtn) editBtn.style.display = 'none';
+  var convertBtn = document.getElementById('btn-convert-project');
+  if (convertBtn) convertBtn.style.display = 'none';
+
+  // Mostrar actions de salvar
+  var actions = document.getElementById('edit-actions');
+  if (actions) actions.classList.remove('hidden');
+
+  // Habilitar campos (modo edição ativo)
+  if (window.toggleEditMode) window.toggleEditMode(true);
+
+  // Resetar tabs para Perfil
+  if (window.switchTab) window.switchTab('details');
+
+  // Abrir modal
+  window._currentLeadId = null; // modo criação
+  var modal = document.getElementById('manageLeadModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+  }
+ };
+
+ // === GLOBAL MODAL TRIGGER (antigo — mantido para compatibilidade) ===
  window.openNewLeadModal = function() {
  const modal = document.getElementById('newLeadModal') || document.getElementById('newDealModal');
  if (!modal) return;
