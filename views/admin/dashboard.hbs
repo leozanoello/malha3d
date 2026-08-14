@@ -23,10 +23,8 @@
  ┌──────────────────────────────────────────────────────────────┐
  │  [Notif]   [Tarefas]   [Notas]   [Aprendizado]               │ LINHA 1
  ├──────────────────────────────────────────────────────────────┤
- │  [Financeiro ........ ocupa 2 colunas ........]   [Chat ..] │ LINHA 2
- │                                                   [2 linhas] │
- ├──────────────────────────────────────────────────────────────┤
- │  [Previsão Vendas]                                           │ LINHA 3
+ │  [Financeiro]  [Previsão Vendas]   [Chat .................. ] │ LINHA 2
+ │                                    [.... 2 colunas ........] │
  └──────────────────────────────────────────────────────────────┘
  Mobile/Tablet: tudo vira 1 coluna
  -->
@@ -159,8 +157,8 @@
 
  <!-- === LINHA 2 === -->
 
- <!-- Card 5: Previsão de Financeiro (ocupa 2 colunas no desktop) -->
- <div class="ds-card md:col-span-2 lg:col-span-2 flex flex-col overflow-hidden min-h-[260px]">
+ <!-- Card 5: Financeiro (1 coluna) -->
+ <div class="ds-card flex flex-col overflow-hidden min-h-[260px]">
  <div class="ds-card-header">
  <h3 class="ds-card-title">
  <span class="material-symbols-outlined text-emerald-400 text-sm">account_balance</span> Financeiro
@@ -187,7 +185,40 @@
  </div>
  </div>
 
- <!-- Card 6: Chat da Equipe (ocupa 2 colunas no desktop, linha 2 inteira) -->
+ <!-- Card 6: Previsão de Vendas (Flip Card) -->
+ <div class="uv-flip-card min-h-[260px]">
+ <div class="uv-flip-content">
+ <div class="uv-flip-back">
+ <div class="uv-flip-back-inner">
+ <span class="material-symbols-outlined text-3xl text-orange-400">monitoring</span>
+ <strong class="text-[9px] uppercase tracking-widest">Previsão de Vendas</strong>
+ <span class="text-lg font-black text-orange-400">{{formatCurrency forecast.med}}</span>
+ <span class="text-[7px] text-gray-500 uppercase">Ponderada</span>
+ </div>
+ </div>
+ <div class="uv-flip-front">
+ <div class="uv-flip-img">
+ <div class="uv-circle"></div>
+ <div class="uv-circle" id="uv-right"></div>
+ <div class="uv-circle" id="uv-bottom"></div>
+ </div>
+ <div class="uv-flip-front-content">
+ <small class="uv-flip-badge">Forecast CRM</small>
+ <div class="uv-flip-description">
+ <div class="uv-flip-title"><p><strong>Previsão Mensal</strong></p></div>
+ <div class="space-y-1 mt-2">
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Mínima</span><span class="text-[9px] font-black">{{formatCurrency forecast.min}}</span></div>
+ <div class="flex justify-between"><span class="text-[8px] text-orange-400">Ponderada</span><span class="text-[9px] font-black text-orange-400">{{formatCurrency forecast.med}}</span></div>
+ <div class="flex justify-between"><span class="text-[8px] text-gray-400">Máxima</span><span class="text-[9px] font-black">{{formatCurrency forecast.max}}</span></div>
+ </div>
+ <p class="uv-flip-footer"><a href="/admin/crm" class="text-orange-400 hover:text-white">Ver Funil →</a></p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Card 7: Chat da Equipe (ocupa 2 colunas) -->
  <div class="ds-card md:col-span-2 lg:col-span-2 flex flex-col overflow-hidden min-h-[260px]">
  <div class="ds-card-header">
  <h3 class="ds-card-title">
@@ -226,41 +257,6 @@
  </div>
  </div>
 
- </div>
-
- <!-- === LINHA 3 === -->
-
- <!-- Card 7: Previsão de Vendas (Flip Card Uiverse) — Movido para baixo -->
- <div class="uv-flip-card min-h-[260px]">
- <div class="uv-flip-content">
- <div class="uv-flip-back">
- <div class="uv-flip-back-inner">
- <span class="material-symbols-outlined text-3xl text-orange-400">monitoring</span>
- <strong class="text-[9px] uppercase tracking-widest">Previsão de Vendas</strong>
- <span class="text-lg font-black text-orange-400">{{formatCurrency forecast.med}}</span>
- <span class="text-[7px] text-gray-500 uppercase">Ponderada</span>
- </div>
- </div>
- <div class="uv-flip-front">
- <div class="uv-flip-img">
- <div class="uv-circle"></div>
- <div class="uv-circle" id="uv-right"></div>
- <div class="uv-circle" id="uv-bottom"></div>
- </div>
- <div class="uv-flip-front-content">
- <small class="uv-flip-badge">Forecast CRM</small>
- <div class="uv-flip-description">
- <div class="uv-flip-title"><p><strong>Previsão Mensal</strong></p></div>
- <div class="space-y-1 mt-2">
- <div class="flex justify-between"><span class="text-[8px] text-gray-400">Mínima</span><span class="text-[9px] font-black">{{formatCurrency forecast.min}}</span></div>
- <div class="flex justify-between"><span class="text-[8px] text-orange-400">Ponderada</span><span class="text-[9px] font-black text-orange-400">{{formatCurrency forecast.med}}</span></div>
- <div class="flex justify-between"><span class="text-[8px] text-gray-400">Máxima</span><span class="text-[9px] font-black">{{formatCurrency forecast.max}}</span></div>
- </div>
- <p class="uv-flip-footer"><a href="/admin/crm" class="text-orange-400 hover:text-white">Ver Funil →</a></p>
- </div>
- </div>
- </div>
- </div>
  </div>
 
  </div>
