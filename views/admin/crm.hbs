@@ -703,10 +703,10 @@
  </div>
  </div>
 
- <!-- ENTREGÁVEIS (tudo junto) -->
+ <!-- DETALHES DO PROJETO (Tipologia + Cor) -->
  <div class="p-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 space-y-2">
  <h5 class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
- <span class="material-symbols-outlined text-xs">inventory_2</span> Entregáveis
+ <span class="material-symbols-outlined text-xs">tune</span> Detalhes do Projeto
  </h5>
  <div class="grid grid-cols-2 gap-2">
  <div>
@@ -728,27 +728,6 @@
  <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">
  <input type="color" id="editColor" name="color" class="w-5 h-5 rounded cursor-pointer bg-transparent border-0">
  <span class="text-[10px] text-gray-400">Card Color</span>
- </div>
- </div>
- </div>
-
- <!-- ENTREGÁVEIS -->
- <div class="p-3 rounded-xl border border-white/10 bg-white/[0.02] space-y-2">
- <h5 class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
- <span class="material-symbols-outlined text-xs">inventory_2</span> Entregáveis
- </h5>
- <div class="grid grid-cols-3 gap-2">
- <div>
- <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Imagens</label>
- <input type="number" id="editImagesCount" name="imagesCount" min="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
- </div>
- <div>
- <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Animação (s)</label>
- <input type="number" id="editAnimationSeconds" name="animationSeconds" min="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
- </div>
- <div>
- <label class="block text-[7px] text-gray-400 font-bold uppercase mb-1 text-center">Plantas Hum.</label>
- <input type="number" id="editFloorPlansCount" name="floorPlansCount" min="0" class="w-full bg-white/5 border border-white/10 rounded-lg px-2 py-2 text-xs text-center text-white focus:border-orange-500 focus:outline-none">
  </div>
  </div>
  </div>
@@ -2929,19 +2908,19 @@ window.submitNewLead = async function(e) {
  };
 
  // === SAVE PRIMARY CONTACT TO CLIENT DATABASE ===
- window.savePrimaryContactToDatabase = async function() {
+ window.savePrimaryContactToDatabase = async function(e) {
  const name = document.getElementById('mainClientName')?.value;
  const email = document.getElementById('mainClientEmail')?.value;
  const phone = document.getElementById('mainClientPhone')?.value;
 
  if (!name || name.trim() === '') {
   if (window.showToast) window.showToast('Preencha o Nome do Contato antes de salvar', 'error');
-  else alert('Por favor, preencha o Nome do Contato 1 antes de salvar no sistema.');
+  else alert('Por favor, preencha o Nome do Contato antes de salvar no sistema.');
   return;
  }
 
- // Disable button durante requisição
- const btn = event?.target;
+ // Disable button durante requisição (previne duplo-clique)
+ const btn = (e && e.target) ? e.target.closest('button') : null;
  if (btn) {
   btn.disabled = true;
   btn.style.opacity = '0.5';

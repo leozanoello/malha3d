@@ -1443,6 +1443,73 @@ router.post('/negociacoes/novo', requireAuth, async (req, res) => {
         .catch(err => console.error('[CRM] Lead image generation failed:', err.message));
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // SALVAR CONTATO AUTOMATICAMENTE ao criar Lead/Projeto
+    // ═══════════════════════════════════════════════════════════════
+    try {
+      // Se tem email OU telefone OU nome de cliente, salvar como contato
+      const hasContactData = (lead.clientName && lead.clientName.trim() !== '') ||
+        (lead.email && lead.email.trim() !== '') ||
+        (lead.phone && lead.phone.trim() !== '');
+
+      if (hasContactData) {
+        const Op = require('sequelize').Op;
+
+        // Verificar se já existe (anti-duplicata)
+        const whereConditions = [];
+        if (lead.email && lead.email.trim() !== '') whereConditions.push({ email: lead.email });
+        if (lead.phone && lead.phone.trim() !== '') whereConditions.push({ phone: lead.phone });
+        if (lead.clientName && lead.clientName.trim() !== '') {
+          whereConditions.push(sequelize.where(
+            sequelize.fn('LOWER', sequelize.col('name')),
+            Op.eq,
+            lead.clientName.toLowerCase()
+          ));
+        }
+
+        let existingClient = null;
+        if (whereConditions.length > 0) {
+          existingClient = await Client.findOne({
+            where: { [Op.or]: whereConditions }
+          });
+        }
+
+        if (!existingClient && lead.clientName) {
+          // Criar novo cliente
+          const newClient = await Client.create({
+            name: lead.clientName.trim(),
+            email: lead.email ? lead.email.trim() : null,
+            phone: lead.phone ? lead.phone.trim() : null,
+            category: kanbanTypeResolved === 'modelagem' ? 'Cliente' : 'Lead',
+            source: kanbanTypeResolved === 'modelagem' ? 'Projeto Novo' : 'CRM Novo Lead',
+            city: lead.city || null,
+            state: lead.state || null,
+            jobTitle: lead.job_title || null
+          });
+
+          // Vincular ao lead recém-criado
+          await lead.update({ clientId: newClient.id });
+
+          // Registrar log
+          await CRMLeadLog.create({
+            budgetId: lead.id,
+            userId: req.user?.id || null,
+            userName: req.user?.name || 'Sistema',
+            action: 'contact_auto_created',
+            details: `Contato "${newClient.name}" criado automaticamente e vinculado a este ${kanbanTypeResolved === 'modelagem' ? 'Projeto' : 'Lead'}.`
+          });
+
+          console.log(`[CRM] Contato auto-criado: ${newClient.name} (ID: ${newClient.id})`);
+        } else if (existingClient) {
+          // Vincular ao cliente existente
+          await lead.update({ clientId: existingClient.id });
+          console.log(`[CRM] Lead vinculado a cliente existente: ${existingClient.name}`);
+        }
+      }
+    } catch (contactErr) {
+      console.error('[CRM] Falha ao criar/vincular contato automático:', contactErr.message);
+    }
+
     // === GATILHO AUTOMÁTICO: Se é um PROJETO com valor, cria recebíveis no Financeiro ===
     let financeCreated = false;
     if (kanbanTypeResolved === 'modelagem' && (lead.valorGanho || lead.estimatedValue)) {
@@ -8130,11 +8197,18 @@ router.use('/api/cpq', requireAuth, cpqRoutes);
 // Renderizar página CPQ
 router.get('/cpq/:budgetId', requireAuth, async (req, res) => {
   try {
-    const orcamento = await CpqOrcamento.findOne({ where: { budgetId: req.params.budgetId } });
-    if (!orcamento) {
-      // Cria orçamento vazio se não existir
-      await CpqOrcamento.create({ budgetId: req.params.budgetId, totalCached: 0 });
+    // Verifica se o Budget existe
+    const budget = await Budget.findByPk(req.params.budgetId);
+    if (!budget) {
+      return res.status(404).render('admin/error', { error: 'Orçamento não encontrado' });
     }
+
+    // Cria ou busca o CpqOrcamento
+    let orcamento = await CpqOrcamento.findOne({ where: { budgetId: req.params.budgetId } });
+    if (!orcamento) {
+      orcamento = await CpqOrcamento.create({ budgetId: req.params.budgetId, totalCached: 0 });
+    }
+
     res.render('admin/cpq', {
       layout: 'layouts/admin',
       title: 'Construtor de Orçamento CPQ',

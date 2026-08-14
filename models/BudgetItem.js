@@ -7,6 +7,11 @@ const BudgetItem = sequelize.define('BudgetItem', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
+  budgetId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    field: 'budget_id'
+  },
   description: {
     type: DataTypes.STRING,
     allowNull: false
