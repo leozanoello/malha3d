@@ -43,6 +43,17 @@ const CRMTask = sequelize.define('CRMTask', {
     type: DataTypes.STRING,
     allowNull: true,
     field: 'task_type'
+  },
+  stage: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: 'A Fazer',
+    comment: 'Coluna do Planejamento kanban onde este card está'
+  },
+  order: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    field: 'order'
   }
 }, {
   tableName: 'crm_tasks',

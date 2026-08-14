@@ -302,3 +302,56 @@ Elementos-chave presentes:
 6. VGV Total com imagem curta + badges + valor grande
 
 **Todos os componentes seguem: `#151515`, `5px radius`, `0 2px 8px shadow`, `1px solid rgba(255,255,255,0.06)`.**
+
+---
+
+## 15. REGRA DE ARQUITETURA DRY (COMPONENTES UNIVERSAIS)
+
+É **ESTRITAMENTE PROIBIDO** criar componentes duplicados para ferramentas que exercem a mesma função em módulos diferentes.
+
+### Princípio:
+- Ferramentas como **Chat**, **Tarefas**, **Upload de Arquivos** e **Histórico** devem ser OBRIGATORIAMENTE "Super Componentes Universais" localizados na pasta `/shared/components/`.
+- O Banco de Dados destas ferramentas deve utilizar **Associações Polimórficas** (colunas `model_type` e `model_id`) para centralizar os dados em uma única tabela, servindo a todos os módulos do ERP simultaneamente.
+- O componente renderizado deve adaptar seu contexto recebendo propriedades (Props) dinâmicas, ex: `<UniversalChat entityType="CRM" entityId={lead.id} />`.
+
+### Exemplo de Estrutura:
+
+```
+/shared/components/
+├── UniversalChat.hbs        ← Um único componente de Chat
+├── UniversalTasks.hbs       ← Um único componente de Tarefas
+├── UniversalFileUpload.hbs  ← Um único componente de Upload
+└── UniversalHistory.hbs     ← Um único componente de Histórico
+```
+
+### Exemplo de Model (Associação Polimórfica):
+
+```javascript
+// models/Message.js
+const Message = sequelize.define('Message', {
+  id: { type: DataTypes.UUID, primaryKey: true },
+  modelType: { type: DataTypes.STRING },   // 'Budget', 'Project', 'Client'
+  modelId: { type: DataTypes.UUID },        // ID da entidade associada
+  content: { type: DataTypes.TEXT },
+  authorId: { type: DataTypes.UUID }
+});
+```
+
+### Exemplo de Uso no Template:
+
+```handlebars
+{{!-- No CRM --}}
+{{> shared/UniversalChat entityType="Budget" entityId=lead.id }}
+
+{{!-- Em Projetos --}}
+{{> shared/UniversalChat entityType="Project" entityId=project.id }}
+
+{{!-- Em Clientes --}}
+{{> shared/UniversalChat entityType="Client" entityId=client.id }}
+```
+
+### Proibições DRY:
+- ❌ Criar `crmChat.hbs` + `projectChat.hbs` + `clientChat.hbs` (3 arquivos fazendo a mesma coisa)
+- ❌ Criar tabelas separadas `crm_messages`, `project_messages`, `client_messages`
+- ❌ Duplicar lógica de upload em cada módulo
+- ✅ UM componente, UMA tabela, Props dinâmicas para contexto

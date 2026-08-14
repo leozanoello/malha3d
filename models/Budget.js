@@ -542,6 +542,12 @@ const Budget = sequelize.define('Budget', {
   projectClass: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  plannerColumns: {
+    type: DataTypes.JSONB,
+    defaultValue: ['A Fazer', 'Em Andamento', 'Concluído'],
+    field: 'planner_columns',
+    comment: 'Colunas do Planejamento Kanban interno do card'
   }
 }, {
   tableName: 'budgets',

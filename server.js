@@ -491,6 +491,11 @@ const startServer = async () => {
       await safeAddColumn('accounts_payable', 'category', 'VARCHAR(255) DEFAULT \'operacional\'');
       await safeAddColumn('accounts_payable', 'edit_history', 'TEXT');
 
+      // Planejamento Kanban — colunas e tasks
+      await safeAddColumn('crm_tasks', 'stage', "VARCHAR(255) DEFAULT 'A Fazer'");
+      await safeAddColumn('crm_tasks', 'order', 'INTEGER DEFAULT 0');
+      await safeAddColumn('budgets', 'planner_columns', "TEXT DEFAULT '[]'");
+
       // Seed categorias financeiras
       try {
         const { seedFinanceCategories } = require('./scripts/seedFinanceCategories');

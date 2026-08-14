@@ -1,0 +1,160 @@
+{{!--
+  UNIVERSAL TASKS — Super Componente Polimórfico
+  Uso: {{> shared/universalTasks entityType="Budget" entityId=lead.id }}
+       {{> shared/universalTasks entityType="Project" entityId=project.id }}
+--}}
+<div class="universal-tasks-component" data-entity-type="{{entityType}}" data-entity-id="{{entityId}}">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-2">
+    <p class="text-[9px] font-black text-white uppercase tracking-[0.1em] flex items-center gap-1.5">
+      <span class="material-symbols-outlined text-emerald-400 text-[11px]">task_alt</span>
+      Tarefas <span class="ut-counter text-[8px] font-bold text-gray-500 bg-white/5 px-1.5 py-0.5 rounded-full ml-1">0</span>
+    </p>
+    <div class="flex items-center gap-1">
+      <button class="ut-btn-suggestions py-0.5 px-2 rounded-[3px] text-[7px] font-bold text-orange-400 hover:bg-orange-500/10 transition-colors" style="border:1px solid rgba(249,115,22,0.2);">
+        <span class="material-symbols-outlined text-[9px] align-middle">auto_awesome</span> Sugestões
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulário Nova Tarefa -->
+  <form class="ut-new-task-form flex items-center gap-1.5 mb-2">
+    <input type="text" class="ut-input flex-1 px-2 py-1.5 text-[9px] text-white rounded-[3px] placeholder-gray-600" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" placeholder="Nova tarefa...">
+    <select class="ut-priority px-1.5 py-1.5 text-[8px] font-bold text-gray-400 rounded-[3px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+      <option value="media">Média</option>
+      <option value="baixa">Baixa</option>
+      <option value="alta">Alta</option>
+      <option value="urgente">Urgente</option>
+    </select>
+    <button type="submit" class="w-7 h-7 rounded-[3px] bg-emerald-500 hover:bg-emerald-600 flex items-center justify-center text-white transition-colors shrink-0">
+      <span class="material-symbols-outlined text-[11px]">add</span>
+    </button>
+  </form>
+
+  <!-- Lista de Tarefas -->
+  <div class="ut-task-list space-y-1 max-h-[240px] overflow-y-auto custom-scrollbar">
+    <p class="text-[9px] text-gray-600 text-center py-3">Carregando...</p>
+  </div>
+
+  <!-- Sugestões IA (hidden por padrão) -->
+  <div class="ut-suggestions hidden mt-2 p-2 rounded-[4px]" style="background:rgba(249,115,22,0.04); border:1px solid rgba(249,115,22,0.15);">
+    <p class="text-[7px] font-black text-orange-400 uppercase tracking-widest mb-1.5 flex items-center gap-1">
+      <span class="material-symbols-outlined text-[9px]">auto_awesome</span> Sugestões Inteligentes
+    </p>
+    <div class="ut-suggestions-list space-y-1"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Inicializar todos os componentes UniversalTasks na página
+  document.querySelectorAll('.universal-tasks-component').forEach(function(container){
+    if(container.dataset.initialized) return;
+    container.dataset.initialized='1';
+
+    var entityType = container.dataset.entityType;
+    var entityId = container.dataset.entityId;
+    var API_BASE = '/admin/api/universal-tasks';
+
+    var taskList = container.querySelector('.ut-task-list');
+    var counter = container.querySelector('.ut-counter');
+    var form = container.querySelector('.ut-new-task-form');
+    var input = container.querySelector('.ut-input');
+    var priority = container.querySelector('.ut-priority');
+    var suggestionsPanel = container.querySelector('.ut-suggestions');
+    var suggestionsList = container.querySelector('.ut-suggestions-list');
+    var btnSuggestions = container.querySelector('.ut-btn-suggestions');
+
+    // === CARREGAR TAREFAS ===
+    function loadTasks(){
+      fetch(API_BASE + '?entityType=' + entityType + '&entityId=' + entityId)
+        .then(function(r){return r.json();})
+        .then(function(data){
+          if(!data.success || !data.tasks.length){
+            taskList.innerHTML='<p class="text-[9px] text-gray-600 text-center py-3">Nenhuma tarefa</p>';
+            counter.textContent='0';
+            return;
+          }
+          counter.textContent = data.tasks.filter(function(t){return t.status==='ativa';}).length;
+          taskList.innerHTML = data.tasks.map(function(t){
+            var isDone = t.status==='concluida';
+            var prioColor = t.priority==='alta'||t.priority==='urgente' ? 'text-red-400' : t.priority==='media' ? 'text-orange-400' : 'text-gray-500';
+            return '<div class="flex items-center gap-2 p-1.5 rounded-[3px] group hover:bg-white/[0.02] transition-colors" data-task-id="'+t.id+'">'
+              +'<button onclick="window._utToggle(this,\''+t.id+'\')" class="w-4 h-4 rounded-[3px] flex items-center justify-center shrink-0 '+(isDone?'bg-emerald-500/20 border-emerald-500/40':'bg-white/5 border-white/10')+'" style="border-width:1px;">'
+              +(isDone?'<span class="material-symbols-outlined text-[10px] text-emerald-400">check</span>':'')
+              +'</button>'
+              +'<span class="flex-1 text-[9px] '+(isDone?'line-through text-gray-600':'text-white')+' font-medium truncate">'+t.title+'</span>'
+              +'<span class="text-[7px] font-bold '+prioColor+' uppercase hidden group-hover:inline">'+t.priority+'</span>'
+              +'<button onclick="window._utDelete(this,\''+t.id+'\')" class="w-4 h-4 rounded flex items-center justify-center text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all shrink-0">'
+              +'<span class="material-symbols-outlined text-[10px]">close</span></button>'
+              +'</div>';
+          }).join('');
+        })
+        .catch(function(){ taskList.innerHTML='<p class="text-[9px] text-red-400 text-center py-2">Erro ao carregar</p>'; });
+    }
+
+    // === CRIAR TAREFA ===
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var title = input.value.trim();
+      if(!title) return;
+      fetch(API_BASE, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ entityType:entityType, entityId:entityId, title:title, priority:priority.value })
+      }).then(function(r){return r.json();}).then(function(data){
+        if(data.success){ input.value=''; loadTasks(); }
+      });
+    });
+
+    // === TOGGLE STATUS ===
+    window._utToggle = function(btn, id){
+      var row = btn.closest('[data-task-id]');
+      fetch(API_BASE + '/' + id + '/toggle', { method:'PUT' })
+        .then(function(r){return r.json();})
+        .then(function(data){ if(data.success) loadTasks(); });
+    };
+
+    // === DELETE ===
+    window._utDelete = function(btn, id){
+      fetch(API_BASE + '/' + id, { method:'DELETE' })
+        .then(function(r){return r.json();})
+        .then(function(data){ if(data.success) loadTasks(); });
+    };
+
+    // === SUGESTÕES IA ===
+    btnSuggestions.addEventListener('click', function(){
+      if(!suggestionsPanel.classList.contains('hidden')){
+        suggestionsPanel.classList.add('hidden'); return;
+      }
+      suggestionsPanel.classList.remove('hidden');
+      suggestionsList.innerHTML='<p class="text-[8px] text-gray-500">Gerando sugestões...</p>';
+      fetch(API_BASE + '/suggestions?entityType='+entityType+'&entityId='+entityId)
+        .then(function(r){return r.json();})
+        .then(function(data){
+          if(!data.success||!data.suggestions.length){
+            suggestionsList.innerHTML='<p class="text-[8px] text-gray-500">Nenhuma sugestão disponível</p>';
+            return;
+          }
+          suggestionsList.innerHTML=data.suggestions.map(function(s){
+            return '<button onclick="window._utAddSuggestion(this,\''+entityType+'\',\''+entityId+'\',\''+s.replace(/'/g,"\\'")+'\');" class="w-full text-left flex items-center gap-1.5 px-2 py-1 rounded-[3px] text-[8px] font-medium text-gray-300 hover:bg-white/5 hover:text-white transition-colors">'
+              +'<span class="material-symbols-outlined text-[9px] text-orange-400">add_circle</span>'+s+'</button>';
+          }).join('');
+        });
+    });
+
+    window._utAddSuggestion = function(btn, eType, eId, title){
+      fetch(API_BASE, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ entityType:eType, entityId:eId, title:title, priority:'media' })
+      }).then(function(r){return r.json();}).then(function(data){
+        if(data.success){ btn.remove(); loadTasks(); }
+      });
+    };
+
+    // Carregar ao inicializar
+    loadTasks();
+  });
+})();
+</script>

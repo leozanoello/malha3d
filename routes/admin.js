@@ -1789,6 +1789,107 @@ router.delete('/api/crm-tasks/:taskId', requireAuth, async (req, res) => {
   }
 });
 
+// ═══════════════════════════════════════════════════════════════
+// PLANEJAMENTO KANBAN — Endpoints do sub-kanban por Budget
+// ═══════════════════════════════════════════════════════════════
+
+// GET — Carrega colunas e cards do planejamento
+router.get('/api/planejamento/:budgetId', requireAuth, async (req, res) => {
+  try {
+    const budget = await Budget.findByPk(req.params.budgetId);
+    if (!budget) return res.status(404).json({ success: false, error: 'Budget não encontrado' });
+
+    const columns = budget.plannerColumns || ['A Fazer', 'Em Andamento', 'Concluído'];
+    const cards = (await CRMTask.findAll({
+      where: { budgetId: req.params.budgetId, category: 'planejamento' },
+      order: [['order', 'ASC'], ['createdAt', 'ASC']]
+    })).map(c => c.get({ plain: true }));
+
+    return res.json({ success: true, columns, cards });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// POST — Salva colunas do planejamento
+router.post('/api/planejamento/:budgetId/columns', requireAuth, async (req, res) => {
+  try {
+    const budget = await Budget.findByPk(req.params.budgetId);
+    if (!budget) return res.status(404).json({ success: false, error: 'Budget não encontrado' });
+
+    const { columns } = req.body;
+    if (!Array.isArray(columns)) return res.status(400).json({ success: false, error: 'columns deve ser um array' });
+
+    await budget.update({ plannerColumns: columns });
+    return res.json({ success: true, columns });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// POST — Cria card/tarefa no planejamento
+router.post('/api/planejamento/:budgetId/cards', requireAuth, async (req, res) => {
+  try {
+    const { title, dueDate, priority, stage, description } = req.body;
+    if (!title || !title.trim()) return res.status(400).json({ success: false, error: 'Título é obrigatório' });
+
+    const card = await CRMTask.create({
+      budgetId: req.params.budgetId,
+      title: title.trim(),
+      description: description || null,
+      dueDate: dueDate || null,
+      priority: priority || 'media',
+      status: 'ativa',
+      category: 'planejamento',
+      stage: stage || 'A Fazer',
+      order: 0
+    });
+
+    return res.json({ success: true, card: card.get({ plain: true }) });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// PUT — Atualiza card (status, título, mover entre colunas)
+router.put('/api/planejamento/:budgetId/cards/:cardId', requireAuth, async (req, res) => {
+  try {
+    const card = await CRMTask.findOne({
+      where: { id: req.params.cardId, budgetId: req.params.budgetId, category: 'planejamento' }
+    });
+    if (!card) return res.status(404).json({ success: false, error: 'Card não encontrado' });
+
+    const { title, dueDate, priority, stage, status, description, order } = req.body;
+    await card.update({
+      ...(title !== undefined && { title }),
+      ...(dueDate !== undefined && { dueDate: dueDate || null }),
+      ...(priority !== undefined && { priority }),
+      ...(stage !== undefined && { stage }),
+      ...(status !== undefined && { status }),
+      ...(description !== undefined && { description }),
+      ...(order !== undefined && { order })
+    });
+
+    return res.json({ success: true, card: card.get({ plain: true }) });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// DELETE — Remove card
+router.delete('/api/planejamento/:budgetId/cards/:cardId', requireAuth, async (req, res) => {
+  try {
+    const card = await CRMTask.findOne({
+      where: { id: req.params.cardId, budgetId: req.params.budgetId, category: 'planejamento' }
+    });
+    if (!card) return res.status(404).json({ success: false, error: 'Card não encontrado' });
+    await card.destroy();
+    return res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // === LEAD AUDIT TRAIL (Histórico) — read-only, entries are never edited or deleted ===
 router.get('/api/negociacoes/:id/logs', requireAuth, async (req, res) => {
   try {

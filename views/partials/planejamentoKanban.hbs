@@ -1,0 +1,337 @@
+<!--
+  PLANEJAMENTO KANBAN — Partial Reutilizável
+  Ferramenta padrão de Planejamento: sub-kanban com colunas e cards/tarefas.
+  Requisitos:
+    - A variável window._currentLeadId deve estar definida com o budgetId
+    - O backend precisa ter os endpoints /admin/api/planejamento/:budgetId/*
+-->
+
+<div id="modal-tab-planejamento" class="modal-pane hidden animate-in slide-in-from-right-4 space-y-3">
+ <!-- Header -->
+ <div class="flex items-center justify-between mb-2">
+  <h4 class="text-xs font-black text-white tracking-tight flex items-center gap-2">
+   <span class="material-symbols-outlined text-indigo-500">view_kanban</span> Planejamento
+  </h4>
+  <div class="flex gap-2">
+   <button type="button" onclick="window.planAddCard()" class="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500 hover:text-white transition-all flex items-center gap-1">
+    <span class="material-symbols-outlined text-xs">add</span> Novo Card
+   </button>
+  </div>
+ </div>
+ <p class="text-[9px] text-gray-500 mb-2">Organize tarefas em colunas. Cards com data viram tarefas no Dashboard.</p>
+
+ <!-- Container Kanban -->
+ <div id="planKanbanContainer" class="overflow-x-auto pb-2" style="max-height: 50vh;">
+  <div class="flex gap-3 min-w-max" id="planColumnsContainer">
+   <p class="text-[9px] text-gray-500 py-6 text-center w-full">Carregando...</p>
+  </div>
+ </div>
+
+ <!-- Botão Adicionar Coluna -->
+ <button type="button" onclick="window.planAddColumn()" class="text-[9px] font-black uppercase tracking-widest px-3 py-2 rounded-md flex items-center gap-1 transition-all" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color:#9ca3af;" onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.03)';this.style.color='#9ca3af'">
+  <span class="material-symbols-outlined text-xs">add</span> Adicionar Coluna
+ </button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- MODAL: ADICIONAR COLUNA -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="planColModal" class="fixed inset-0 z-[10000] hidden items-center justify-center bg-black/70" style="display:none;">
+ <div class="w-full max-w-sm rounded-[5px] p-5" style="background:#151515; border:1px solid rgba(255,255,255,0.06); box-shadow:0 2px 8px rgba(0,0,0,0.6);">
+  <h3 class="text-sm font-black text-white mb-4 flex items-center gap-2">
+   <span class="material-symbols-outlined text-indigo-400 text-base">view_column</span> Nova Coluna
+  </h3>
+  <input type="text" id="planColInput" placeholder="Nome da coluna..." class="w-full px-3 py-2 text-xs text-white rounded-[4px] mb-4" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" onkeydown="if(event.key==='Enter'){event.preventDefault();window.planSaveColumn();}">
+  <div class="flex gap-2">
+   <button onclick="window.planCloseColModal()" class="flex-1 py-2 rounded-md text-[8px] font-black uppercase tracking-wider text-gray-400" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Cancelar</button>
+   <button onclick="window.planSaveColumn()" class="flex-1 py-2 rounded-md bg-indigo-500 text-[8px] font-black uppercase tracking-wider text-white hover:bg-indigo-600 transition-colors">Criar</button>
+  </div>
+ </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- MODAL: NOVO CARD / TAREFA -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div id="planCardModal" class="fixed inset-0 z-[10000] hidden items-center justify-center bg-black/70" style="display:none;">
+ <div class="w-full max-w-md rounded-[5px] p-5" style="background:#151515; border:1px solid rgba(255,255,255,0.06); box-shadow:0 2px 8px rgba(0,0,0,0.6);">
+  <h3 class="text-sm font-black text-white mb-4 flex items-center gap-2">
+   <span class="material-symbols-outlined text-indigo-400 text-base">add_task</span> Novo Card / Tarefa
+  </h3>
+  <div class="space-y-3">
+   <div>
+    <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Título *</label>
+    <input type="text" id="planCardTitle" placeholder="Ex: Modelar fachada principal" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);" onkeydown="if(event.key==='Enter'){event.preventDefault();window.planSaveCard();}">
+   </div>
+   <div class="grid grid-cols-2 gap-3">
+    <div>
+     <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Data Limite</label>
+     <input type="date" id="planCardDate" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color-scheme:dark;">
+    </div>
+    <div>
+     <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Prioridade</label>
+     <select id="planCardPriority" class="w-full px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+      <option value="baixa">Baixa</option>
+      <option value="media" selected>Média</option>
+      <option value="alta">Alta</option>
+     </select>
+    </div>
+   </div>
+   <div>
+    <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Coluna</label>
+    <select id="planCardStage" class="w-full px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+     <!-- Preenchido via JS -->
+    </select>
+   </div>
+   <div>
+    <label class="block text-[8px] text-gray-400 font-bold uppercase mb-1">Descrição (opcional)</label>
+    <textarea id="planCardDesc" rows="2" placeholder="Detalhes da tarefa..." class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></textarea>
+   </div>
+  </div>
+  <div class="flex gap-2 mt-4">
+   <button onclick="window.planCloseCardModal()" class="flex-1 py-2 rounded-md text-[8px] font-black uppercase tracking-wider text-gray-400" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">Cancelar</button>
+   <button onclick="window.planSaveCard()" class="flex-1 py-2 rounded-md bg-indigo-500 text-[8px] font-black uppercase tracking-wider text-white hover:bg-indigo-600 transition-colors">Criar Card</button>
+  </div>
+ </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT — PLANEJAMENTO KANBAN ENGINE -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+ // State
+ let _planColumns = [];
+ let _planCards = [];
+ let _planBudgetId = null;
+
+ // ── LOAD ──────────────────────────────────────────────────────
+ window.loadPlanejamento = async function(budgetId) {
+  if (!budgetId) return;
+  _planBudgetId = budgetId;
+  try {
+   const res = await fetch('/admin/api/planejamento/' + budgetId);
+   const data = await res.json();
+   if (data.success) {
+    _planColumns = data.columns || ['A Fazer', 'Em Andamento', 'Concluído'];
+    _planCards = data.cards || [];
+    window.planRender();
+   }
+  } catch (e) {
+   console.error('[Planejamento] Load error:', e);
+  }
+ };
+
+ // ── RENDER ────────────────────────────────────────────────────
+ window.planRender = function() {
+  const container = document.getElementById('planColumnsContainer');
+  if (!container) return;
+
+  if (_planColumns.length === 0) {
+   container.innerHTML = '<p class="text-[9px] text-gray-500 py-6 text-center w-full">Nenhuma coluna. Clique em "Adicionar Coluna" para começar.</p>';
+   return;
+  }
+
+  container.innerHTML = _planColumns.map((colName, colIdx) => {
+   const colCards = _planCards.filter(c => c.stage === colName);
+   const cardsHtml = colCards.map(card => {
+    const priorityColor = card.priority === 'alta' ? 'text-red-400 bg-red-500/10 border-red-500/20' :
+                          card.priority === 'baixa' ? 'text-blue-400 bg-blue-500/10 border-blue-500/20' :
+                          'text-orange-400 bg-orange-500/10 border-orange-500/20';
+    const dateStr = card.dueDate ? new Date(card.dueDate).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' }) : '';
+    const isCompleted = card.status === 'concluida';
+    return `
+     <div class="p-2 rounded-[4px] group ${isCompleted ? 'opacity-50' : ''}" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+      <div class="flex items-start justify-between gap-1">
+       <div class="flex-1 min-w-0">
+        <p class="text-[9px] font-bold text-white truncate ${isCompleted ? 'line-through' : ''}">${card.title}</p>
+        ${card.description ? '<p class="text-[7px] text-gray-500 truncate mt-0.5">' + card.description + '</p>' : ''}
+       </div>
+       <div class="flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button onclick="window.planToggleCard('${card.id}')" title="${isCompleted ? 'Reabrir' : 'Concluir'}" class="w-4 h-4 rounded flex items-center justify-center hover:bg-emerald-500/20">
+         <span class="material-symbols-outlined text-[9px] ${isCompleted ? 'text-gray-500' : 'text-emerald-400'}">check_circle</span>
+        </button>
+        <button onclick="window.planDeleteCard('${card.id}')" title="Remover" class="w-4 h-4 rounded flex items-center justify-center hover:bg-red-500/20">
+         <span class="material-symbols-outlined text-[9px] text-red-400">close</span>
+        </button>
+       </div>
+      </div>
+      <div class="flex items-center gap-1.5 mt-1.5">
+       <span class="text-[7px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded border ${priorityColor}">${card.priority}</span>
+       ${dateStr ? '<span class="text-[7px] text-gray-500 flex items-center gap-0.5"><span class="material-symbols-outlined text-[8px]">event</span>' + dateStr + '</span>' : ''}
+      </div>
+     </div>`;
+   }).join('');
+
+   return `
+    <div class="w-56 shrink-0 flex flex-col rounded-[5px] overflow-hidden" style="background:#0d0f13; border:1px solid rgba(255,255,255,0.06);">
+     <div class="px-3 py-2 flex items-center justify-between" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+      <span class="text-[8px] font-black uppercase tracking-widest text-gray-300">${colName}</span>
+      <div class="flex items-center gap-1">
+       <span class="text-[7px] font-black text-gray-600">${colCards.length}</span>
+       <button onclick="window.planRemoveColumn('${colName}')" title="Remover coluna" class="w-4 h-4 rounded flex items-center justify-center hover:bg-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity">
+        <span class="material-symbols-outlined text-[8px] text-red-400">delete</span>
+       </button>
+      </div>
+     </div>
+     <div class="flex-1 p-2 space-y-2 overflow-y-auto" style="max-height:35vh;">
+      ${cardsHtml || '<p class="text-[7px] text-gray-600 text-center py-2">Vazio</p>'}
+     </div>
+    </div>`;
+  }).join('');
+ };
+
+ // ── COLUMN: ADD ───────────────────────────────────────────────
+ window.planAddColumn = function() {
+  const modal = document.getElementById('planColModal');
+  if (modal) {
+   modal.classList.remove('hidden');
+   modal.style.display = 'flex';
+   document.getElementById('planColInput').value = '';
+   setTimeout(() => document.getElementById('planColInput').focus(), 100);
+  }
+ };
+
+ window.planCloseColModal = function() {
+  const modal = document.getElementById('planColModal');
+  if (modal) { modal.classList.add('hidden'); modal.style.display = 'none'; }
+ };
+
+ window.planSaveColumn = async function() {
+  const input = document.getElementById('planColInput');
+  const name = input.value.trim();
+  if (!name) { alert('Digite um nome para a coluna'); return; }
+  if (_planColumns.includes(name)) { alert('Já existe uma coluna com este nome'); return; }
+
+  _planColumns.push(name);
+  window.planCloseColModal();
+  window.planRender();
+
+  // Salvar no backend
+  try {
+   await fetch('/admin/api/planejamento/' + _planBudgetId + '/columns', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ columns: _planColumns })
+   });
+  } catch (e) { console.error('[Planejamento] Save columns error:', e); }
+ };
+
+ // ── COLUMN: REMOVE ───────────────────────────────────────────
+ window.planRemoveColumn = async function(colName) {
+  const cardsInCol = _planCards.filter(c => c.stage === colName);
+  if (cardsInCol.length > 0) {
+   if (!confirm('Esta coluna tem ' + cardsInCol.length + ' card(s). Remover tudo?')) return;
+   // Deletar cards da coluna
+   for (const card of cardsInCol) {
+    await fetch('/admin/api/planejamento/' + _planBudgetId + '/cards/' + card.id, { method: 'DELETE' });
+   }
+   _planCards = _planCards.filter(c => c.stage !== colName);
+  } else {
+   if (!confirm('Remover coluna "' + colName + '"?')) return;
+  }
+
+  _planColumns = _planColumns.filter(c => c !== colName);
+  window.planRender();
+
+  try {
+   await fetch('/admin/api/planejamento/' + _planBudgetId + '/columns', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ columns: _planColumns })
+   });
+  } catch (e) { console.error('[Planejamento] Remove column error:', e); }
+ };
+
+ // ── CARD: ADD ────────────────────────────────────────────────
+ window.planAddCard = function() {
+  if (_planColumns.length === 0) { alert('Crie pelo menos uma coluna antes de adicionar cards.'); return; }
+  const modal = document.getElementById('planCardModal');
+  if (modal) {
+   modal.classList.remove('hidden');
+   modal.style.display = 'flex';
+   document.getElementById('planCardTitle').value = '';
+   document.getElementById('planCardDate').value = '';
+   document.getElementById('planCardPriority').value = 'media';
+   document.getElementById('planCardDesc').value = '';
+   // Popular select de colunas
+   const sel = document.getElementById('planCardStage');
+   sel.innerHTML = _planColumns.map(c => '<option value="' + c + '">' + c + '</option>').join('');
+   setTimeout(() => document.getElementById('planCardTitle').focus(), 100);
+  }
+ };
+
+ // Alias para compatibilidade
+ window.openAddPlanejamentoCard = window.planAddCard;
+ window.addPlanejamentoColumn = window.planAddColumn;
+
+ window.planCloseCardModal = function() {
+  const modal = document.getElementById('planCardModal');
+  if (modal) { modal.classList.add('hidden'); modal.style.display = 'none'; }
+ };
+
+ window.planSaveCard = async function() {
+  const title = document.getElementById('planCardTitle').value.trim();
+  if (!title) { alert('Título é obrigatório'); return; }
+
+  const dueDate = document.getElementById('planCardDate').value || null;
+  const priority = document.getElementById('planCardPriority').value || 'media';
+  const stage = document.getElementById('planCardStage').value || _planColumns[0];
+  const description = document.getElementById('planCardDesc').value.trim() || null;
+
+  window.planCloseCardModal();
+
+  try {
+   const res = await fetch('/admin/api/planejamento/' + _planBudgetId + '/cards', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, dueDate, priority, stage, description })
+   });
+   const data = await res.json();
+   if (data.success && data.card) {
+    _planCards.push(data.card);
+    window.planRender();
+    if (window.showToast) window.showToast('Card criado!', 'success');
+   } else {
+    alert('Erro: ' + (data.error || 'Falha ao criar card'));
+   }
+  } catch (e) {
+   alert('Erro de rede ao criar card');
+  }
+ };
+
+ // ── CARD: TOGGLE COMPLETE ────────────────────────────────────
+ window.planToggleCard = async function(cardId) {
+  const card = _planCards.find(c => c.id === cardId);
+  if (!card) return;
+  const newStatus = card.status === 'concluida' ? 'ativa' : 'concluida';
+
+  try {
+   await fetch('/admin/api/planejamento/' + _planBudgetId + '/cards/' + cardId, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: newStatus })
+   });
+   card.status = newStatus;
+   window.planRender();
+  } catch (e) { console.error('[Planejamento] Toggle error:', e); }
+ };
+
+ // ── CARD: DELETE ─────────────────────────────────────────────
+ window.planDeleteCard = async function(cardId) {
+  if (!confirm('Remover este card?')) return;
+  try {
+   await fetch('/admin/api/planejamento/' + _planBudgetId + '/cards/' + cardId, { method: 'DELETE' });
+   _planCards = _planCards.filter(c => c.id !== cardId);
+   window.planRender();
+  } catch (e) { console.error('[Planejamento] Delete error:', e); }
+ };
+
+ // ── ESC para fechar modais ───────────────────────────────────
+ document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+   window.planCloseColModal();
+   window.planCloseCardModal();
+  }
+ });
+})();
+</script>

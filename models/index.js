@@ -38,6 +38,8 @@ const TaskTemplate = require('./TaskTemplate');
 const CRMLeadLog = require('./CRMLeadLog');
 const CRMLeadMessage = require('./CRMLeadMessage');
 const CrmForecastProbability = require('./CrmForecastProbability');
+const UniversalTask = require('./UniversalTask');
+const UniversalMessage = require('./UniversalMessage');
 const CpqOrcamento = require('./CpqOrcamento');
 const CpqFase = require('./CpqFase');
 const CpqAmbiente = require('./CpqAmbiente');
@@ -296,6 +298,8 @@ const modelsToIsolate = [
   CRMLeadMessage,
   CrmForecastProbability,
   CpqOrcamento,
+  UniversalTask,
+  UniversalMessage,
   Lead
 ];
 
@@ -384,5 +388,7 @@ module.exports = {
   LeadAccountsPayable,
   LeadComment,
   LeadFocusSession,
-  FeatureToggle
+  FeatureToggle,
+  UniversalTask,
+  UniversalMessage
 };
