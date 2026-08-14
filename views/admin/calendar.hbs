@@ -133,35 +133,125 @@
 
 </div>
 
-<!-- Event Detail Modal (ao clicar em evento) -->
+<!-- Event Detail Modal (ao clicar em evento) — Com Edição + Histórico + Participantes -->
 <div id="eventDetailModal" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/80 backdrop-blur-sm" style="display:none;" onclick="if(event.target===this){this.style.display='none';this.classList.add('hidden');}">
- <div class="w-full max-w-md mx-4" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
- <div class="p-5" style="border-bottom:1px solid rgba(255,255,255,0.06);">
- <div class="flex items-center justify-between">
-  <h5 id="eventDetailTitle" class="text-sm font-black text-white"></h5>
-  <button onclick="document.getElementById('eventDetailModal').style.display='none';" class="w-6 h-6 rounded flex items-center justify-center text-gray-500 hover:text-white" style="background:rgba(255,255,255,0.05);">
-  <span class="material-symbols-outlined text-sm">close</span>
+ <div class="w-full max-w-lg mx-4 flex flex-col max-h-[85vh]" style="background:#151515; border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);">
+
+ <!-- Header -->
+ <div class="p-4 flex items-center justify-between shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+  <div class="flex items-center gap-2">
+   <span class="material-symbols-outlined text-orange-400">event</span>
+   <h5 id="eventDetailTitle" class="text-sm font-black text-white"></h5>
+  </div>
+  <div class="flex items-center gap-1">
+   <span id="eventDetailType" class="kcard-badge kcard-badge-orange" style="font-size:7px;"></span>
+   <button onclick="document.getElementById('eventDetailModal').style.display='none';document.getElementById('eventDetailModal').classList.add('hidden');" class="w-6 h-6 rounded flex items-center justify-center text-gray-500 hover:text-white" style="background:rgba(255,255,255,0.05);">
+    <span class="material-symbols-outlined text-sm">close</span>
+   </button>
+  </div>
+ </div>
+
+ <!-- Tabs -->
+ <div class="flex shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.06);">
+  <button onclick="switchEventTab('details')" id="evtTabDetails" class="flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest text-orange-400 border-b-2 border-orange-500">Detalhes</button>
+  <button onclick="switchEventTab('edit')" id="evtTabEdit" class="flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest text-gray-500 border-b-2 border-transparent hover:text-white">Editar</button>
+  <button onclick="switchEventTab('participants')" id="evtTabParticipants" class="flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest text-gray-500 border-b-2 border-transparent hover:text-white">Participantes</button>
+  <button onclick="switchEventTab('history')" id="evtTabHistory" class="flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest text-gray-500 border-b-2 border-transparent hover:text-white">Histórico</button>
+ </div>
+
+ <!-- Tab Content -->
+ <div class="flex-1 overflow-y-auto custom-scrollbar">
+
+  <!-- TAB: DETALHES -->
+  <div id="evtContentDetails" class="p-5 space-y-3">
+   <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-[13px] text-gray-500">schedule</span>
+    <span id="eventDetailTime" class="text-[9px] font-bold text-gray-300"></span>
+   </div>
+   <div class="flex items-center gap-2">
+    <span class="material-symbols-outlined text-[13px] text-gray-500">date_range</span>
+    <span id="eventDetailDuration" class="text-[9px] font-bold text-gray-300"></span>
+   </div>
+   <div id="eventDetailDescWrap" class="hidden">
+    <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1">Descrição</p>
+    <p id="eventDetailDesc" class="text-[9px] text-gray-300 p-2 rounded" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);"></p>
+   </div>
+   <div id="eventDetailParticipantsPreview" class="hidden">
+    <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1">Participantes</p>
+    <div id="eventParticipantsList" class="flex flex-wrap gap-1"></div>
+   </div>
+  </div>
+
+  <!-- TAB: EDITAR -->
+  <div id="evtContentEdit" class="p-5 space-y-3 hidden">
+   <form id="editEventForm" class="space-y-3">
+    <div>
+     <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Título</label>
+     <input type="text" id="editEvtTitle" required class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+     <div>
+      <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Início</label>
+      <input type="datetime-local" id="editEvtStart" required class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color-scheme:dark;">
+     </div>
+     <div>
+      <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Término</label>
+      <input type="datetime-local" id="editEvtEnd" class="w-full px-3 py-2 text-xs text-white rounded-[4px]" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color-scheme:dark;">
+     </div>
+    </div>
+    <div>
+     <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Tipo</label>
+     <select id="editEvtType" class="w-full px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+      <option value="reuniao">Reunião</option>
+      <option value="entrega">Entrega de Projeto</option>
+      <option value="deadline">Deadline</option>
+      <option value="followup">Follow-up</option>
+      <option value="interno">Compromisso Interno</option>
+      <option value="briefing">Briefing</option>
+      <option value="revisao">Revisão</option>
+     </select>
+    </div>
+    <div>
+     <label class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1 block">Descrição</label>
+     <textarea id="editEvtDesc" rows="3" class="w-full px-3 py-2 text-xs text-white rounded-[4px] resize-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);"></textarea>
+    </div>
+    <button type="submit" class="w-full flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-md bg-orange-500 text-[8px] font-black uppercase tracking-wider text-white hover:bg-orange-600 transition-colors">
+     <span class="material-symbols-outlined text-[11px]">save</span> Salvar Alterações
+    </button>
+   </form>
+  </div>
+
+  <!-- TAB: PARTICIPANTES -->
+  <div id="evtContentParticipants" class="p-5 space-y-3 hidden">
+   <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-2">Adicionar Participante</p>
+   <div class="flex gap-2">
+    <select id="addParticipantSelect" class="flex-1 px-3 py-2 text-xs text-white rounded-[4px] appearance-none" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+     <option value="">Selecione...</option>
+     {{#each users}}
+     <option value="{{this.id}}" data-name="{{this.name}}" data-role="{{this.role}}">{{this.name}}{{#if (eq this.role 'freelancer')}} (Freelancer){{/if}}</option>
+     {{/each}}
+    </select>
+    <button type="button" onclick="addEventParticipant()" class="px-3 py-2 rounded-md bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-[8px] font-black uppercase hover:bg-cyan-500 hover:text-white transition-all">+ Adicionar</button>
+   </div>
+   <p class="text-[7px] text-gray-500 mt-1">⚡ Ao adicionar, o participante será notificado e o evento aparecerá na agenda dele.</p>
+   <div id="participantsListEdit" class="space-y-1.5 mt-3"></div>
+  </div>
+
+  <!-- TAB: HISTÓRICO -->
+  <div id="evtContentHistory" class="p-5 space-y-2 hidden">
+   <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-2">Histórico de Alterações</p>
+   <div id="eventHistoryList" class="space-y-1.5">
+    <p class="text-[9px] text-gray-500 text-center py-4">Carregando...</p>
+   </div>
+  </div>
+ </div>
+
+ <!-- Footer -->
+ <div class="flex justify-between gap-2 p-4 shrink-0" style="border-top:1px solid rgba(255,255,255,0.06);">
+  <button onclick="deleteCurrentEvent()" class="px-3 py-1.5 text-[8px] font-black uppercase text-red-400 hover:bg-red-500/10 rounded transition-colors flex items-center gap-1">
+   <span class="material-symbols-outlined text-xs">delete</span> Excluir
   </button>
- </div>
- <span id="eventDetailType" class="kcard-badge kcard-badge-orange mt-2 inline-block" style="font-size:7px;"></span>
- </div>
- <div class="p-5 space-y-3">
- <div class="flex items-center gap-2">
-  <span class="material-symbols-outlined text-[13px] text-gray-500">schedule</span>
-  <span id="eventDetailTime" class="text-[9px] font-bold text-gray-300"></span>
- </div>
- <div class="flex items-center gap-2">
-  <span class="material-symbols-outlined text-[13px] text-gray-500">date_range</span>
-  <span id="eventDetailDuration" class="text-[9px] font-bold text-gray-300"></span>
- </div>
- <div id="eventDetailDescWrap" class="hidden">
-  <p class="text-[8px] font-bold text-gray-500 uppercase tracking-widest mb-1">Descrição</p>
-  <p id="eventDetailDesc" class="text-[9px] text-gray-300"></p>
- </div>
- </div>
- <div class="flex justify-end gap-2 p-4" style="border-top:1px solid rgba(255,255,255,0.06);">
- <button onclick="deleteCurrentEvent()" class="px-3 py-1.5 text-[8px] font-black uppercase text-red-400 hover:bg-red-500/10 rounded transition-colors">Excluir</button>
- <button onclick="document.getElementById('eventDetailModal').style.display='none';" class="px-3 py-1.5 text-[8px] font-black uppercase text-gray-400 hover:text-white">Fechar</button>
+  <button onclick="document.getElementById('eventDetailModal').style.display='none';document.getElementById('eventDetailModal').classList.add('hidden');" class="px-3 py-1.5 text-[8px] font-black uppercase text-gray-400 hover:text-white">Fechar</button>
  </div>
  </div>
 </div>
@@ -222,14 +312,31 @@
 </div>
 
 <script>
-// === CALENDAR — Event Detail + Actions ===
+// === CALENDAR — Event Detail + Edit + Participants + History ===
 var _calendarEvents = {{{json events}}};
 var _currentEventId = null;
+var _currentEvent = null;
+
+function switchEventTab(tab) {
+ ['details','edit','participants','history'].forEach(function(t) {
+  var content = document.getElementById('evtContent' + t.charAt(0).toUpperCase() + t.slice(1));
+  var tabBtn = document.getElementById('evtTab' + t.charAt(0).toUpperCase() + t.slice(1));
+  if (content) content.classList.toggle('hidden', t !== tab);
+  if (tabBtn) {
+   tabBtn.className = t === tab
+    ? 'flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest text-orange-400 border-b-2 border-orange-500'
+    : 'flex-1 py-2.5 text-[9px] font-black uppercase tracking-widest text-gray-500 border-b-2 border-transparent hover:text-white';
+  }
+ });
+ if (tab === 'history' && _currentEventId) loadEventHistory(_currentEventId);
+ if (tab === 'participants' && _currentEventId) renderParticipantsEdit();
+}
 
 function openEventDetail(eventId) {
  _currentEventId = eventId;
- var ev = _calendarEvents.find(function(e) { return e.id === eventId; });
+ var ev = _calendarEvents.find(function(e) { return String(e.id) === String(eventId); });
  if (!ev) return;
+ _currentEvent = ev;
 
  var modal = document.getElementById('eventDetailModal');
  document.getElementById('eventDetailTitle').textContent = ev.title;
@@ -261,10 +368,159 @@ function openEventDetail(eventId) {
   descWrap.classList.add('hidden');
  }
 
+ // Participantes preview
+ var participantsPreview = document.getElementById('eventDetailParticipantsPreview');
+ var participantsList = document.getElementById('eventParticipantsList');
+ var participants = ev.participants || [];
+ if (participants.length > 0) {
+  participantsPreview.classList.remove('hidden');
+  participantsList.innerHTML = participants.map(function(p) {
+   return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-bold text-cyan-400" style="background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.3);"><span class="material-symbols-outlined text-[9px]">person</span>' + (p.name || 'Sem nome') + '</span>';
+  }).join('');
+ } else {
+  participantsPreview.classList.add('hidden');
+ }
+
+ // Preencher campos de edição
+ document.getElementById('editEvtTitle').value = ev.title || '';
+ document.getElementById('editEvtStart').value = ev.startTime ? new Date(ev.startTime).toISOString().slice(0, 16) : '';
+ document.getElementById('editEvtEnd').value = ev.endTime ? new Date(ev.endTime).toISOString().slice(0, 16) : '';
+ document.getElementById('editEvtType').value = ev.type || 'reuniao';
+ document.getElementById('editEvtDesc').value = ev.description || '';
+
+ // Resetar para aba Detalhes
+ switchEventTab('details');
+
  modal.classList.remove('hidden');
  modal.style.display = 'flex';
 }
 
+// === EDIÇÃO DO EVENTO ===
+document.getElementById('editEventForm')?.addEventListener('submit', async function(e) {
+ e.preventDefault();
+ if (!_currentEventId) return;
+
+ var data = {
+  title: document.getElementById('editEvtTitle').value,
+  startTime: document.getElementById('editEvtStart').value,
+  endTime: document.getElementById('editEvtEnd').value || null,
+  type: document.getElementById('editEvtType').value,
+  description: document.getElementById('editEvtDesc').value
+ };
+
+ try {
+  var res = await fetch('/admin/api/agenda/' + _currentEventId, {
+   method: 'PATCH',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify(data)
+  });
+  var json = await res.json();
+  if (json.success) {
+   if (window.showToast) window.showToast('✓ Evento atualizado com sucesso', 'success');
+   setTimeout(function() { window.location.reload(); }, 800);
+  } else {
+   if (window.showToast) window.showToast('Erro: ' + (json.error || 'Desconhecido'), 'error');
+  }
+ } catch (err) {
+  if (window.showToast) window.showToast('Erro de rede', 'error');
+ }
+});
+
+// === PARTICIPANTES ===
+function renderParticipantsEdit() {
+ var list = document.getElementById('participantsListEdit');
+ if (!list || !_currentEvent) return;
+ var participants = _currentEvent.participants || [];
+ if (participants.length === 0) {
+  list.innerHTML = '<p class="text-[9px] text-gray-500 text-center py-3">Nenhum participante adicionado</p>';
+  return;
+ }
+ list.innerHTML = participants.map(function(p) {
+  return '<div class="flex items-center justify-between p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">' +
+   '<div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-[8px] font-black text-cyan-400">' + (p.name || '?')[0].toUpperCase() + '</span>' +
+   '<span class="text-[9px] font-bold text-white">' + (p.name || 'Participante') + '</span>' +
+   '<span class="text-[7px] text-gray-500">' + (p.role === 'freelancer' ? 'Freelancer' : 'Equipe') + '</span></div>' +
+   '<button onclick="removeEventParticipant(\'' + p.id + '\')" class="w-5 h-5 rounded flex items-center justify-center text-gray-500 hover:text-red-400" style="background:rgba(255,255,255,0.05);"><span class="material-symbols-outlined text-xs">close</span></button>' +
+  '</div>';
+ }).join('');
+}
+
+async function addEventParticipant() {
+ if (!_currentEventId) return;
+ var select = document.getElementById('addParticipantSelect');
+ var userId = select.value;
+ if (!userId) return;
+ var opt = select.options[select.selectedIndex];
+ var userName = opt.getAttribute('data-name') || opt.text;
+ var userRole = opt.getAttribute('data-role') || 'user';
+
+ try {
+  var res = await fetch('/admin/api/agenda/' + _currentEventId + '/participants', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({ userId: userId, userName: userName, userRole: userRole })
+  });
+  var json = await res.json();
+  if (json.success) {
+   _currentEvent.participants = json.participants;
+   renderParticipantsEdit();
+   select.value = '';
+   if (window.showToast) window.showToast('✓ ' + userName + ' adicionado e notificado', 'success');
+  } else {
+   if (window.showToast) window.showToast('Erro: ' + (json.error || 'Desconhecido'), 'error');
+  }
+ } catch (err) {
+  if (window.showToast) window.showToast('Erro de rede', 'error');
+ }
+}
+
+async function removeEventParticipant(userId) {
+ if (!_currentEventId) return;
+ try {
+  var res = await fetch('/admin/api/agenda/' + _currentEventId + '/participants/' + userId, { method: 'DELETE' });
+  var json = await res.json();
+  if (json.success) {
+   _currentEvent.participants = json.participants;
+   renderParticipantsEdit();
+   if (window.showToast) window.showToast('Participante removido', 'info');
+  }
+ } catch (err) {}
+}
+
+// === HISTÓRICO ===
+async function loadEventHistory(eventId) {
+ var list = document.getElementById('eventHistoryList');
+ if (!list) return;
+ list.innerHTML = '<p class="text-[9px] text-gray-500 text-center py-4">Carregando...</p>';
+
+ try {
+  var res = await fetch('/admin/api/agenda/' + eventId + '/history');
+  var json = await res.json();
+  if (json.success && json.history && json.history.length > 0) {
+   list.innerHTML = json.history.map(function(h) {
+    var date = new Date(h.date);
+    var dateStr = date.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    var iconMap = { created: 'add_circle', updated: 'edit', participant_added: 'person_add', participant_removed: 'person_remove', deleted: 'delete' };
+    var icon = iconMap[h.action] || 'history';
+    var colorMap = { created: 'text-emerald-400', updated: 'text-orange-400', participant_added: 'text-cyan-400', participant_removed: 'text-red-400' };
+    var color = colorMap[h.action] || 'text-gray-400';
+    return '<div class="flex items-start gap-2 p-2 rounded-[4px]" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04);">' +
+     '<span class="material-symbols-outlined text-[11px] ' + color + ' mt-0.5">' + icon + '</span>' +
+     '<div class="flex-1 min-w-0">' +
+      '<p class="text-[9px] font-bold text-white">' + (h.description || h.action) + '</p>' +
+      '<p class="text-[7px] text-gray-500">' + (h.userName || 'Sistema') + ' • ' + dateStr + '</p>' +
+     '</div>' +
+    '</div>';
+   }).join('');
+  } else {
+   list.innerHTML = '<p class="text-[9px] text-gray-500 text-center py-4">Nenhuma alteração registrada</p>';
+  }
+ } catch (err) {
+  list.innerHTML = '<p class="text-[9px] text-red-400 text-center py-4">Erro ao carregar histórico</p>';
+ }
+}
+
+// === DELETE ===
 async function deleteCurrentEvent() {
  if (!_currentEventId) return;
  if (!confirm('Excluir este evento?')) return;

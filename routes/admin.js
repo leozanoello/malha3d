@@ -1893,6 +1893,71 @@ router.post('/api/negociacoes/:id/save-contact', requireAuth, async (req, res) =
   }
 });
 
+// === LISTAR TODOS OS CONTATOS (para o menu sincronizado) ===
+router.get('/api/contacts/list', requireAuth, async (req, res) => {
+  try {
+    const tenantId = (req.user && (req.user.parentId || req.user.id)) || null;
+    const isMasterAdmin = req.user && req.user.role === 'admin' && (req.user.email === 'admin@zanoello.com' || req.user.email === 'admin@malha3d.com');
+    const where = isMasterAdmin || !tenantId ? {} : { [Op.or]: [{ id: tenantId }, { parentId: tenantId }] };
+
+    const contacts = await Client.findAll({
+      where,
+      attributes: ['id', 'name', 'email', 'phone', 'type', 'company', 'jobTitle', 'city', 'state', 'status'],
+      order: [['name', 'ASC']],
+      limit: 500
+    });
+    res.json({ success: true, contacts: contacts.map(c => c.get({ plain: true })) });
+  } catch (err) {
+    console.error('Contacts list error:', err);
+    res.json({ success: true, contacts: [] });
+  }
+});
+
+// === CRIAR CONTATO (com vinculação automática a CRM/Projeto) ===
+router.post('/api/contacts', requireAuth, async (req, res) => {
+  try {
+    const { name, document, type, category, jobTitle, email, phone, company, state, city, notes, autoLink, linkContext } = req.body;
+
+    if (!name || name.trim() === '') {
+      return res.status(400).json({ success: false, error: 'Nome é obrigatório.' });
+    }
+    if (!email || email.trim() === '') {
+      return res.status(400).json({ success: false, error: 'E-mail é obrigatório.' });
+    }
+
+    // Verificar duplicata por e-mail
+    const existing = await Client.findOne({ where: { email: email.trim() } });
+    if (existing) {
+      // Se já existe, apenas retorna o existente (será vinculado)
+      return res.json({ success: true, contact: existing.get({ plain: true }), alreadyExisted: true });
+    }
+
+    const tenantId = (req.user && (req.user.parentId || req.user.id)) || null;
+
+    const newContact = await Client.create({
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone ? phone.trim() : null,
+      document: document ? document.trim() : null,
+      type: type || 'PF',
+      category: category || 'Lead',
+      jobTitle: jobTitle ? jobTitle.trim() : null,
+      company: company ? company.trim() : null,
+      state: state || null,
+      city: city || null,
+      notes: notes || null,
+      status: 'active',
+      parentId: tenantId,
+      source: autoLink ? `quick-modal-${linkContext || 'geral'}` : 'manual'
+    });
+
+    res.json({ success: true, contact: newContact.get({ plain: true }) });
+  } catch (err) {
+    console.error('Create contact error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // QUICK CREATE CLIENT FROM CRM LEAD MODAL
 router.post('/api/clients/quick-create', requireAuth, async (req, res) => {
   try {
@@ -2863,6 +2928,14 @@ router.get('/agenda', requireAuth, async (req, res) => {
     const eventsThisWeek = events.filter(e => { const d = new Date(e.startTime); return d >= startOfWeek && d <= endOfWeek; }).length;
     const eventsThisMonth = events.filter(e => { const d = new Date(e.startTime); return d >= startOfMonth && d <= endOfMonth; }).length;
 
+    // Buscar equipe + freelancers para select de participantes
+    const tenantId = (req.user && (req.user.parentId || req.user.id)) || null;
+    const isMasterAdmin = req.user && req.user.role === 'admin' && (req.user.email === 'admin@zanoello.com' || req.user.email === 'admin@malha3d.com');
+    const userWhere = isMasterAdmin || !tenantId ? {} : { [Op.or]: [{ id: tenantId }, { parentId: tenantId }] };
+    const teamMembers = (await User.findAll({ where: userWhere, attributes: ['id', 'name', 'role'], order: [['name', 'ASC']] })).map(u => u.get({ plain: true }));
+    const activeFreelancers = (await Freelancer.findAll({ where: { status: 'active', isHidden: false }, attributes: ['id', 'name'], order: [['name', 'ASC']] })).map(f => ({ ...f.get({ plain: true }), role: 'freelancer' }));
+    const allUsers = [...teamMembers, ...activeFreelancers];
+
     res.render('admin/calendar', {
       layout: 'admin',
       title: 'Agenda de Produção',
@@ -2874,6 +2947,7 @@ router.get('/agenda', requireAuth, async (req, res) => {
       eventsByType,
       eventsThisWeek,
       eventsThisMonth,
+      users: allUsers,
       monthLabel: current.format('MMMM').replace(/^./, c => c.toUpperCase()),
       year,
       prevMonth: prev.month() + 1,
@@ -2903,7 +2977,16 @@ router.post('/api/agenda', requireAuth, async (req, res) => {
       startTime,
       endTime: endTime || null,
       type: type || 'reuniao',
-      description: description || null
+      description: description || null,
+      createdBy: req.user ? req.user.id : null,
+      participants: [],
+      history: [{
+        action: 'created',
+        description: 'Evento criado',
+        userName: req.user ? req.user.name : 'Sistema',
+        userId: req.user ? req.user.id : null,
+        date: new Date().toISOString()
+      }]
     });
     return res.json({ success: true, event });
   } catch (error) {
@@ -2920,6 +3003,162 @@ router.delete('/api/agenda/:id', requireAuth, async (req, res) => {
     return res.json({ success: true });
   } catch (error) {
     console.error('Delete calendar event error:', error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// === EDITAR EVENTO ===
+router.patch('/api/agenda/:id', requireAuth, async (req, res) => {
+  try {
+    const event = await CalendarEvent.findByPk(req.params.id);
+    if (!event) return res.status(404).json({ success: false, error: 'Evento não encontrado' });
+
+    const { title, startTime, endTime, type, description } = req.body;
+    const changes = [];
+
+    if (title && title !== event.title) changes.push(`Título: "${event.title}" → "${title}"`);
+    if (startTime && startTime !== (event.startTime ? event.startTime.toISOString() : '')) changes.push('Data de início alterada');
+    if (type && type !== event.type) changes.push(`Tipo: "${event.type}" → "${type}"`);
+    if (description !== undefined && description !== event.description) changes.push('Descrição atualizada');
+
+    await event.update({
+      title: title || event.title,
+      startTime: startTime || event.startTime,
+      endTime: endTime !== undefined ? endTime : event.endTime,
+      type: type || event.type,
+      description: description !== undefined ? description : event.description
+    });
+
+    // Registrar no histórico
+    if (changes.length > 0) {
+      const history = event.history || [];
+      history.push({
+        action: 'updated',
+        description: changes.join('; '),
+        userName: req.user ? req.user.name : 'Sistema',
+        userId: req.user ? req.user.id : null,
+        date: new Date().toISOString()
+      });
+      await event.update({ history });
+    }
+
+    return res.json({ success: true, event: event.get({ plain: true }) });
+  } catch (error) {
+    console.error('Update calendar event error:', error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// === HISTÓRICO DO EVENTO ===
+router.get('/api/agenda/:id/history', requireAuth, async (req, res) => {
+  try {
+    const event = await CalendarEvent.findByPk(req.params.id);
+    if (!event) return res.status(404).json({ success: false, error: 'Evento não encontrado' });
+    return res.json({ success: true, history: event.history || [] });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// === ADICIONAR PARTICIPANTE ===
+router.post('/api/agenda/:id/participants', requireAuth, async (req, res) => {
+  try {
+    const event = await CalendarEvent.findByPk(req.params.id);
+    if (!event) return res.status(404).json({ success: false, error: 'Evento não encontrado' });
+
+    const { userId, userName, userRole } = req.body;
+    if (!userId || !userName) return res.status(400).json({ success: false, error: 'userId e userName são obrigatórios' });
+
+    const participants = event.participants || [];
+    if (participants.find(p => p.id === userId)) {
+      return res.json({ success: true, participants, message: 'Já participa' });
+    }
+
+    participants.push({ id: userId, name: userName, role: userRole || 'user', addedAt: new Date().toISOString() });
+    await event.update({ participants });
+
+    // Registrar no histórico
+    const history = event.history || [];
+    history.push({
+      action: 'participant_added',
+      description: `${userName} adicionado como participante`,
+      userName: req.user ? req.user.name : 'Sistema',
+      userId: req.user ? req.user.id : null,
+      date: new Date().toISOString()
+    });
+    await event.update({ history });
+
+    // Criar notificação para o participante
+    try {
+      const { SystemLog } = require('../models');
+      if (SystemLog) {
+        await SystemLog.create({
+          level: 'info',
+          message: `Você foi adicionado ao evento "${event.title}" em ${new Date(event.startTime).toLocaleDateString('pt-BR')}`,
+          context: JSON.stringify({ type: 'calendar_invite', eventId: event.id, targetUserId: userId })
+        });
+      }
+    } catch (e) { /* notificação é best-effort */ }
+
+    // Enviar e-mail (best-effort, não bloqueia)
+    try {
+      const User = require('../models').User;
+      const targetUser = await User.findByPk(userId);
+      if (targetUser && targetUser.email) {
+        const nodemailer = require('nodemailer');
+        const transporter = nodemailer.createTransport({
+          host: process.env.SMTP_HOST || 'smtp.gmail.com',
+          port: parseInt(process.env.SMTP_PORT || '587'),
+          secure: false,
+          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+        });
+        if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+          transporter.sendMail({
+            from: `"Malha3D Agenda" <${process.env.SMTP_USER}>`,
+            to: targetUser.email,
+            subject: `📅 Novo compromisso: ${event.title}`,
+            html: `<h3>Você foi adicionado a um compromisso</h3>
+              <p><strong>${event.title}</strong></p>
+              <p>📅 ${new Date(event.startTime).toLocaleString('pt-BR')}</p>
+              <p>Tipo: ${event.type || 'Reunião'}</p>
+              ${event.description ? '<p>' + event.description + '</p>' : ''}
+              <p>Adicionado por: ${req.user ? req.user.name : 'Sistema'}</p>
+              <hr><p><small>Malha3D ERP — Agenda Inteligente</small></p>`
+          }).catch(() => {});
+        }
+      }
+    } catch (e) { /* e-mail é best-effort */ }
+
+    return res.json({ success: true, participants });
+  } catch (error) {
+    console.error('Add participant error:', error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// === REMOVER PARTICIPANTE ===
+router.delete('/api/agenda/:id/participants/:userId', requireAuth, async (req, res) => {
+  try {
+    const event = await CalendarEvent.findByPk(req.params.id);
+    if (!event) return res.status(404).json({ success: false, error: 'Evento não encontrado' });
+
+    const participants = (event.participants || []).filter(p => p.id !== req.params.userId);
+    await event.update({ participants });
+
+    // Registrar no histórico
+    const removed = (event.participants || []).find(p => p.id === req.params.userId);
+    const history = event.history || [];
+    history.push({
+      action: 'participant_removed',
+      description: `${removed ? removed.name : 'Participante'} removido do evento`,
+      userName: req.user ? req.user.name : 'Sistema',
+      userId: req.user ? req.user.id : null,
+      date: new Date().toISOString()
+    });
+    await event.update({ history });
+
+    return res.json({ success: true, participants });
+  } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
   }
 });
@@ -4561,48 +4800,18 @@ router.get('/freelancers', requireAuth, async (req, res) => {
 });
 
 router.get('/portal-cliente', requireAuth, async (req, res) => {
-  try {
-    const clients = (await Client.findAll({ order: [['name', 'ASC']] })).map(c => c.get({ plain: true }));
-
-    // Load Global Settings from DB
-    const cpSettingsRaw = await Setting.findAll({ where: { group: 'portal_cliente' } });
-    const cpSettings = {};
-    cpSettingsRaw.forEach(s => {
-      cpSettings[s.key] = s.value;
-    });
-
-    const defaults = {
-      'cp_domain': 'portal.zanoello3d.com',
-      'cp_expiry': 'never',
-      'cp_watermark': 'true',
-      'cp_wm_text': 'ZANOELLO 3D - PREVIEW',
-      'cp_wm_opacity': '30',
-      'cp_wm_pos': 'diagonal',
-      'cp_require_sig': 'true',
-      'cp_allow_4k': 'true',
-      'cp_color_accent': '#ff6f00',
-      'cp_color_bg': '#030712'
-    };
-
-    // Set defaults if they are missing
-    for (const key in defaults) {
-      if (cpSettings[key] === undefined) {
-        cpSettings[key] = defaults[key];
-      }
-    }
-
-    res.render('admin/client-portal', {
-      layout: 'admin',
-      title: 'Painel do Cliente',
-      currentPage: 'client-portal',
-      user: req.user,
-      clientsWithAccess: clients,
-      cpSettings
-    });
-  } catch (error) {
-    console.error('Error loading client portal:', error);
-    res.status(500).render('admin/error', { layout: 'admin', message: 'Erro ao carregar portal do cliente' });
-  }
+  // Versão 2.0 — preview bloqueado
+  res.render('admin/v2-preview', {
+    layout: 'admin',
+    title: 'Portal do Cliente — Versão 2.0',
+    currentPage: 'client-portal',
+    user: req.user,
+    moduleName: 'Portal do Cliente',
+    moduleIcon: 'badge',
+    moduleColor: 'indigo',
+    moduleDescription: 'Área exclusiva para clientes visualizarem renders, aprovarem entregas e assinarem documentos digitalmente.',
+    features: ['Galeria de renders com marca d\'água', 'Aprovação digital de entregas', 'Assinatura eletrônica', 'Download de arquivos 4K', 'Histórico de revisões', 'Chat direto com o estúdio']
+  });
 });
 
 router.post('/api/portal/settings', requireAuth, async (req, res) => {
@@ -5857,23 +6066,10 @@ router.delete('/api/tabelas/:name/:id', requireAuth, async (req, res) => {
 });
 
 // === CRIAR DRAFT DE PROJETO (ID imediato para ancorar abas) ===
+// DEPRECATED: Draft endpoint desabilitado — usar modal unificado (newCardModal partial)
+// router.post('/api/projetos/draft', ...) — removido para evitar criação involuntária de cards
 router.post('/api/projetos/draft', requireAuth, async (req, res) => {
-  try {
-    const columns = await KanbanColumn.findAll({ where: { type: 'modelagem' }, order: [['order', 'ASC']] });
-    const firstStatus = columns.length > 0 ? columns[0].statusKey : 'modelagem_novo_lead';
-    const draft = await Budget.create({
-      name: 'Novo Projeto (Rascunho)',
-      projectType: 'Outro',
-      status: firstStatus,
-      priority: 'media',
-      probability: 50,
-      source: 'draft',
-      color: '#f97316'
-    });
-    return res.json({ success: true, draft: draft.get({ plain: true }) });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
+  return res.status(410).json({ success: false, error: 'Endpoint descontinuado. Use o modal Criar Novo Projeto.' });
 });
 
 // Categorias separadas por tipo (tabelas distintas)

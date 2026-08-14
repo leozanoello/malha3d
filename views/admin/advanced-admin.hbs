@@ -1,4 +1,4 @@
-﻿<!-- 
+<!-- 
  MALHA 3D - ADVANCED ADMIN PANEL
  Design: Senior ArchViz SaaS / Liquid Glass / High Density
 -->
@@ -11,11 +11,11 @@
  <div class="flex flex-col gap-2">
  <button class="advanced-tab-btn" data-tab="usuarios">
  <span class="material-symbols-outlined text-lg">group</span>
- <span>GestÃ£o de Equipe</span>
+ <span>Gestão de Equipe</span>
  </button>
  <button class="advanced-tab-btn" data-tab="instancias">
  <span class="material-symbols-outlined text-lg">memory</span>
- <span>InstÃ¢ncias</span>
+ <span>Instâncias</span>
  </button>
  <button class="advanced-tab-btn" data-tab="planos">
  <span class="material-symbols-outlined text-lg">workspace_premium</span>
@@ -23,19 +23,19 @@
  </button>
  <button class="advanced-tab-btn" data-tab="bancario">
  <span class="material-symbols-outlined text-lg">account_balance</span>
- <span>BancÃ¡rio</span>
+ <span>Bancário</span>
  </button>
  <button class="advanced-tab-btn" data-tab="seguranca">
  <span class="material-symbols-outlined text-lg">admin_panel_settings</span>
- <span>SeguranÃ§a</span>
+ <span>Segurança</span>
  </button>
  <button class="advanced-tab-btn" data-tab="integracoes">
  <span class="material-symbols-outlined text-lg">api</span>
- <span>IntegraÃ§Ãµes & API</span>
+ <span>Integrações & API</span>
  </button>
  <button class="advanced-tab-btn" data-tab="notificacoes">
  <span class="material-symbols-outlined text-lg">notifications_active</span>
- <span>NotificaÃ§Ãµes</span>
+ <span>Notificações</span>
  </button>
  <button class="advanced-tab-btn" data-tab="backup">
  <span class="material-symbols-outlined text-lg">cloud_sync</span>
@@ -51,7 +51,7 @@
 
  <!-- Main Content Area -->
  <div class="flex-1 min-w-0">
- <!-- Tab: GestÃ£o de UsuÃ¡rios (Multi-Tenant) -->
+ <!-- Tab: Gestão de Usuários (Multi-Tenant) -->
  <div id="pane-usuarios" class="adv-pane hidden">
  <div class="space-y-8">
  <header class="flex justify-between items-end">
@@ -59,7 +59,7 @@
  <h2 class="text-3xl font-black text-white tracking-tighter">Painel Master de <span class="text-orange-500">Acessos</span></h2>
  <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gerenciamento de assinantes, staff e sub-contas (RBAC)</p>
  </div>
- <button id="btnOpenNewUser" class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px] hover:bg-orange-400 transition-all">Criar UsuÃ¡rio Manual</button>
+ <button id="btnOpenNewUser" class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px] hover:bg-orange-400 transition-all">Criar Usuário Manual</button>
  </header>
 
  <!-- Bloco de Assinantes -->
@@ -93,7 +93,7 @@
  <button class="btn-edit-user p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
  data-id="{{this.id}}" data-name="{{this.name}}" data-email="{{this.email}}" 
  data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}" data-menus="{{this.permissions.allowed_menus}}"
- title="Editar UsuÃ¡rio"><span class="material-symbols-outlined text-xs">edit</span></button>
+ title="Editar Usuário"><span class="material-symbols-outlined text-xs">edit</span></button>
  <button class="btn-reset-pass p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
  data-id="{{this.id}}" data-name="{{this.name}}"
  title="Redefinir Senha"><span class="material-symbols-outlined text-xs">lock_reset</span></button>
@@ -142,7 +142,7 @@
  </div>
  </div>
 
- <!-- Bloco de Outros UsuÃ¡rios (Staff/Admins/Avulsos) -->
+ <!-- Bloco de Outros Usuários (Staff/Admins/Avulsos) -->
  <div class="kcard border-white/5 overflow-hidden">
  <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center cursor-pointer" onclick="toggleCollapseCard('card-other-users')">
  <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Equipe Malha 3D</h4>
@@ -175,7 +175,7 @@
  <button class="btn-edit-user p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
  data-id="{{this.id}}" data-name="{{this.name}}" data-email="{{this.email}}" 
  data-role="{{this.role}}" data-parent="{{this.parentId}}" data-tenant="{{this.tenantName}}" data-menus="{{this.permissions.allowed_menus}}"
- title="Editar UsuÃ¡rio"><span class="material-symbols-outlined text-xs">edit</span></button>
+ title="Editar Usuário"><span class="material-symbols-outlined text-xs">edit</span></button>
  <button class="btn-reset-pass p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white transition-all" 
  data-id="{{this.id}}" data-name="{{this.name}}"
  title="Redefinir Senha"><span class="material-symbols-outlined text-xs">lock_reset</span></button>
@@ -193,30 +193,30 @@
  <!-- Dynamic Users View (Audit Mode) -->
  <div id="users-audit-view" class="hidden pt-10">
  <div class="p-6 border-b border-white/5 bg-white/5 flex justify-between items-center mb-6 rounded-[5px] cursor-pointer" onclick="toggleCollapseCard('card-audit-grid')">
- <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">VisualizaÃ§Ã£o de Auditoria Flat</h4>
+ <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Visualização de Auditoria Flat</h4>
  <span class="material-symbols-outlined text-gray-500 transition-transform duration-300" id="icon-card-audit-grid">expand_more</span>
  </div>
  <div id="card-audit-grid" class="users-grid grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
  </div>
  </div>
 
- <!-- Tab: InstÃ¢ncias -->
+ <!-- Tab: Instâncias -->
  <div id="pane-instancias" class="adv-pane hidden">
  <div class="space-y-8">
  <header class="flex justify-between items-end">
  <div>
- <h2 class="text-3xl font-black text-white tracking-tighter">Infraestrutura & <span class="text-orange-500">AutomaÃ§Ã£o</span></h2>
- <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">GestÃ£o de contÃªineres e render nodes</p>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Infraestrutura & <span class="text-orange-500">Automação</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gestão de contêineres e render nodes</p>
  </div>
  <div class="flex gap-4">
- <button class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px]" onclick="openNewInstanceModal()">Nova InstÃ¢ncia</button>
+ <button class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px]" onclick="openNewInstanceModal()">Nova Instância</button>
  <button class="px-6 py-3 bg-orange-500/10 border border-orange-500/20 text-orange-500 text-[10px] font-black uppercase tracking-widest rounded-[5px] hover:bg-orange-500 hover:text-white transition-all" onclick="syncCluster()">Sincronizar Cluster</button>
  </div>
  </header>
 
  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
  <div class="kcard p-6 border-white/5 bg-white/[0.01]">
- <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2">Total InstÃ¢ncias</p>
+ <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2">Total Instâncias</p>
  <h4 class="text-2xl font-black text-white">{{instances.length}}</h4>
  <div class="mt-4 flex items-center gap-2">
  <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
@@ -230,11 +230,11 @@
  <table class="w-full text-left">
  <thead class="bg-white/5 border-b border-white/5">
  <tr>
- <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">InstÃ¢ncia</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Instância</th>
  <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Status</th>
  <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Uptime</th>
  <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Carga</th>
- <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">AÃ§Ãµes</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Ações</th>
  </tr>
  </thead>
  <tbody class="divide-y divide-white/[0.03]">
@@ -285,8 +285,8 @@
  <div class="space-y-8">
  <header class="flex justify-between items-end">
  <div>
- <h2 class="text-3xl font-black text-white tracking-tighter">Planos & <span class="text-orange-500">RecorrÃªncia</span></h2>
- <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">GestÃ£o de assinaturas corporativas e SLAs</p>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Planos & <span class="text-orange-500">Recorrência</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gestão de assinaturas corporativas e SLAs</p>
  </div>
  <button class="px-6 py-3 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px]" onclick="document.getElementById('newPlanModal').classList.remove('hidden')">Criar Novo NÃ­vel</button>
  </header>
@@ -300,13 +300,13 @@
  <h3 class="text-2xl font-black text-white tracking-tighter mb-2 uppercase">{{this.name}}</h3>
  <div class="flex items-baseline gap-2 mb-8">
  <span class="text-4xl font-black text-white tracking-tighter">R$ {{numberFormat this.price 0 ',' '.'}}</span>
- <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">/mÃªs</span>
+ <span class="text-[10px] font-black text-gray-500 uppercase tracking-widest">/mês</span>
  </div>
 
  <div class="space-y-4 mb-10">
  <div class="flex items-center gap-3">
  <span class="material-symbols-outlined text-orange-500 text-sm">verified</span>
- <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{this.revisionsLimit}} RevisÃµes Inclusas</span>
+ <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{this.revisionsLimit}} Revisões Inclusas</span>
  </div>
  <div class="flex items-center gap-3">
  <span class="material-symbols-outlined text-orange-500 text-sm">schedule</span>
@@ -329,11 +329,11 @@
  </div>
  </div>
 
- <!-- Tab: BancÃ¡rio -->
+ <!-- Tab: Bancário -->
  <div id="pane-bancario" class="adv-pane hidden">
  <div class="space-y-10">
  <header>
- <h2 class="text-3xl font-black text-white tracking-tighter">InteligÃªncia <span class="text-orange-500">Financeira</span></h2>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Inteligência <span class="text-orange-500">Financeira</span></h2>
  <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Gateways de pagamento e regras de faturamento</p>
  </header>
 
@@ -374,7 +374,7 @@
  </h4>
  <div class="space-y-6">
  <div class="flex items-center justify-between p-4 bg-white/5 rounded-[5px] border border-white/10">
- <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sinal ObrigatÃ³rio (50%)</span>
+ <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sinal Obrigatório (50%)</span>
  <label class="switch">
  <input type="checkbox" data-setting="banking_require_signal" onchange="updateSystemSetting(this)" {{#if (eq settings.banking_require_signal 'true')}}checked{{/if}}>
  <span class="slider round"></span>
@@ -393,26 +393,26 @@
  </div>
  </div>
 
- <!-- Tab: SeguranÃ§a -->
+ <!-- Tab: Segurança -->
  <div id="pane-seguranca" class="adv-pane hidden">
  <div class="space-y-10">
  <header class="flex justify-between items-end">
  <div>
- <h2 class="text-3xl font-black text-white tracking-tighter">CiberseguranÃ§a & <span class="text-orange-500">RBAC</span></h2>
- <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">ProteÃ§Ã£o de IP e controle de acesso granular</p>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Cibersegurança & <span class="text-orange-500">RBAC</span></h2>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Proteção de IP e controle de acesso granular</p>
  </div>
- <button class="px-6 py-3 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px] shadow-red-500/20" onclick="terminateAllSessions()">Terminar Todas as SessÃµes</button>
+ <button class="px-6 py-3 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px] shadow-red-500/20" onclick="terminateAllSessions()">Terminar Todas as Sessões</button>
  </header>
 
  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
  <div class="lg:col-span-2 border-white/5 overflow-hidden">
  <div class="p-8 border-b border-white/5 bg-white/5">
- <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Matriz de PermissÃµes (Roles)</h4>
+ <h4 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">Matriz de Permissões (Roles)</h4>
  </div>
  <table class="w-full text-left">
  <thead class="bg-black/20">
  <tr>
- <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase">MÃ³dulo</th>
+ <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase">Módulo</th>
  <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase text-center">Admin</th>
  <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase text-center">Artista</th>
  <th class="px-8 py-4 text-[9px] font-black text-gray-500 uppercase text-center">Cliente</th>
@@ -444,7 +444,7 @@
  <button onclick="addIpWhitelist()" class="px-4 bg-orange-500 rounded-[5px] text-white"><span class="material-symbols-outlined">add</span></button>
  </div>
  <div class="p-3 rounded-[5px] bg-white/5 border border-white/5 flex justify-between items-center">
- <span class="text-[9px] font-black text-gray-500 tracking-widest uppercase">EscritÃ³rio Central</span>
+ <span class="text-[9px] font-black text-gray-500 tracking-widest uppercase">Escritório Central</span>
  <button class="text-red-500"><span class="material-symbols-outlined text-sm">delete</span></button>
  </div>
  </div>
@@ -454,7 +454,7 @@
  </div>
  </div>
 
- <!-- Tab: IntegraÃ§Ãµes & API -->
+ <!-- Tab: Integrações & API -->
  <div id="pane-integracoes" class="adv-pane hidden">
  <div class="space-y-10">
  <header>
@@ -468,15 +468,15 @@
  <span class="material-symbols-outlined text-4xl">webhook</span>
  </div>
  <h4 class="text-xs font-black text-white uppercase tracking-widest mb-2">Webhooks</h4>
- <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">Dispare aÃ§Ãµes para n8n/Zapier</p>
- <button onclick="alert('IntegraÃ§Ã£o Webhooks v2 em desenvolvimento. Ative o modo Dev para logs detalhados.')" class="w-full py-4 rounded-[5px] bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Configurar</button>
+ <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">Dispare ações para n8n/Zapier</p>
+ <button onclick="alert('Integração Webhooks v2 em desenvolvimento. Ative o modo Dev para logs detalhados.')" class="w-full py-4 rounded-[5px] bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Configurar</button>
  </div>
  <div class="kcard p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
  <div class="w-16 h-16 rounded-[5px] bg-blue-500/10 flex items-center justify-center text-blue-500 mb-6">
  <span class="material-symbols-outlined text-4xl">database</span>
  </div>
  <h4 class="text-xs font-black text-white uppercase tracking-widest mb-2">Supabase DB</h4>
- <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">ConexÃ£o direta ao banco neural</p>
+ <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mb-6">Conexão direta ao banco neural</p>
  <button class="w-full py-4 rounded-[5px] bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">Ver Credentials</button>
  </div>
  <div class="kcard p-8 border-white/5 bg-white/[0.01] flex flex-col items-center text-center">
@@ -491,12 +491,12 @@
  </div>
  </div>
 
- <!-- Tab: NotificaÃ§Ãµes -->
+ <!-- Tab: Notificações -->
  <div id="pane-notificacoes" class="adv-pane hidden">
  <div class="space-y-10">
  <header>
  <h2 class="text-3xl font-black text-white tracking-tighter">Central de <span class="text-orange-500">Mensageria</span></h2>
- <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">PersonalizaÃ§Ã£o de templates e fluxos de alerta</p>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Personalização de templates e fluxos de alerta</p>
  </header>
 
  <div class="kcard border-white/5 overflow-hidden">
@@ -532,7 +532,7 @@
  <div class="space-y-10">
  <header class="flex justify-between items-end">
  <div>
- <h2 class="text-3xl font-black text-white tracking-tighter">GestÃ£o de <span class="text-orange-500">Storage 3D</span></h2>
+ <h2 class="text-3xl font-black text-white tracking-tighter">Gestão de <span class="text-orange-500">Storage 3D</span></h2>
  <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Backups, snapshots e cold storage inteligente</p>
  </div>
  <button class="px-6 py-3 bg-white/5 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-[5px] hover:bg-white/10 transition-all flex items-center gap-3" onclick="generateSnapshot()">
@@ -542,7 +542,7 @@
 
  <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
  <div class="xl:col-span-2 p-10 border-white/5 bg-white/[0.01]">
- <h4 class="text-sm font-black text-white uppercase tracking-[0.2em] mb-8">Cold Storage AutomÃ¡tico</h4>
+ <h4 class="text-sm font-black text-white uppercase tracking-[0.2em] mb-8">Cold Storage Automático</h4>
  <div class="space-y-8">
  <div class="p-8 rounded-[2rem] bg-orange-500/5 border border-orange-500/10">
  <div class="flex justify-between items-center mb-6">
@@ -550,7 +550,7 @@
  <span class="px-3 py-1 bg-orange-500 text-white text-[8px] font-black uppercase tracking-widest rounded-lg">Ativo</span>
  </div>
  <p class="text-xs text-gray-500 font-bold uppercase leading-relaxed tracking-wider mb-8">
- Projetos finalizados hÃ¡ mais de <span class="text-orange-500">12 meses</span> serÃ£o automaticamente compactados e movidos para a camada de armazenamento de longo prazo (S3 Glacier).
+ Projetos finalizados há mais de <span class="text-orange-500">12 meses</span> serão automaticamente compactados e movidos para a camada de armazenamento de longo prazo (S3 Glacier).
  </p>
  <div class="flex gap-4">
  <button class="flex-1 py-4 rounded-[5px] bg-orange-500/10 text-orange-500 text-[10px] font-black uppercase tracking-widest">Alterar Limite</button>
@@ -561,7 +561,7 @@
  </div>
 
  <div class="kcard p-8 border-white/5 bg-white/[0.01] space-y-8">
- <h5 class="text-[11px] font-black text-white uppercase tracking-widest mb-6">HistÃ³rico de Snapshots</h5>
+ <h5 class="text-[11px] font-black text-white uppercase tracking-widest mb-6">Histórico de Snapshots</h5>
  <div class="space-y-4">
  <div class="p-4 rounded-[5px] bg-white/5 border border-white/5 flex justify-between items-center">
  <div>
@@ -589,11 +589,11 @@
  <header class="flex justify-between items-end">
  <div>
  <h2 class="text-3xl font-black text-white tracking-tighter">Auditoria de <span class="text-orange-500">Eventos</span></h2>
- <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Rastreabilidade inalterÃ¡vel de todas as aÃ§Ãµes no sistema</p>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-2">Rastreabilidade inalterável de todas as ações no sistema</p>
  </div>
  <div class="flex gap-4">
  <div class="relative">
- <input type="text" class="input-premium py-3 pr-10 min-w-[250px]" placeholder="Filtrar por UsuÃ¡rio ou AÃ§Ã£o...">
+ <input type="text" class="input-premium py-3 pr-10 min-w-[250px]" placeholder="Filtrar por Usuário ou Ação...">
  <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 text-lg">search</span>
  </div>
  <button class="p-3 bg-white/5 rounded-[5px] text-gray-400 hover:text-white transition-all"><span class="material-symbols-outlined">filter_list</span></button>
@@ -605,9 +605,9 @@
  <thead class="bg-white/5 border-b border-white/5">
  <tr>
  <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Data / Hora</th>
- <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">UsuÃ¡rio</th>
- <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">AÃ§Ã£o Realizada</th>
- <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">MÃ³dulo</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Usuário</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Ação Realizada</th>
+ <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Módulo</th>
  <th class="px-8 py-5 text-[9px] font-black text-gray-400 uppercase tracking-widest">Origem IP</th>
  </tr>
  </thead>
@@ -630,7 +630,7 @@
  {{/each}}
  {{#unless logs.length}}
  <tr>
- <td colspan="5" class="py-20 text-center text-gray-600 uppercase font-black text-[10px] tracking-[0.3em]">Nenhum log registrado nas Ãºltimas 24h</td>
+ <td colspan="5" class="py-20 text-center text-gray-600 uppercase font-black text-[10px] tracking-[0.3em]">Nenhum log registrado nas últimas 24h</td>
  </tr>
  {{/unless}}
  </tbody>
@@ -754,7 +754,7 @@ document.addEventListener('DOMContentLoaded', function() {
  const activeBtn = document.querySelector(`.advanced-tab-btn[data-tab="${hash}"]`);
  if (activeBtn) switchAdvTab(hash, activeBtn);
  } else {
- // Default: UsuÃ¡rios
+ // Default: Usuários
  switchAdvTab('usuarios', document.querySelector('.advanced-tab-btn[data-tab="usuarios"]'));
  }
 
@@ -812,7 +812,7 @@ document.addEventListener('DOMContentLoaded', function() {
  });
 
 function switchAdvTab(tabId, btn) {
- // Esconder todos os painÃ©is e remover classe active
+ // Esconder todos os painéis e remover classe active
  document.querySelectorAll('.adv-pane').forEach(p => {
  p.classList.add('hidden');
  p.classList.remove('active');
@@ -824,11 +824,11 @@ function switchAdvTab(tabId, btn) {
  target.classList.add('active');
  }
 
- // Atualizar botÃµes de navegaÃ§Ã£o
+ // Atualizar botões de navegação
  document.querySelectorAll('.advanced-tab-btn').forEach(b => b.classList.remove('active'));
  if (btn) btn.classList.add('active');
 
- // Carregar dados especÃ­ficos se necessÃ¡rio
+ // Carregar dados especÃ­ficos se necessário
  if (tabId === 'usuarios') {
  const auditView = document.getElementById('users-audit-view');
  if (auditView) auditView.classList.remove('hidden');
@@ -893,15 +893,15 @@ async function submitNewUser(e) {
  const json = await res.json();
  
  if (json.success) {
- showToast('UsuÃ¡rio criado com sucesso!');
+ showToast('Usuário criado com sucesso!');
  setTimeout(() => window.location.reload(), 1000);
  } else {
- showToast(json.error || 'Erro ao criar usuÃ¡rio', 'error');
+ showToast(json.error || 'Erro ao criar usuário', 'error');
  btn.disabled = false;
  btn.innerText = originalText;
  }
  } catch (err) {
- showToast('Erro de conexÃ£o', 'error');
+ showToast('Erro de conexão', 'error');
  btn.disabled = false;
  btn.innerText = originalText;
  }
@@ -911,17 +911,17 @@ async function loadUsers() {
  const container = document.querySelector('.users-grid');
  if (!container) return;
  
- container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500 font-bold uppercase tracking-widest animate-pulse">Carregando usuÃ¡rios do sistema...</div>';
+ container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500 font-bold uppercase tracking-widest animate-pulse">Carregando usuários do sistema...</div>';
  
  try {
  const response = await fetch('/admin/api/users');
  const data = await response.json();
  
- if (!data.success) throw new Error(data.message || 'Erro ao carregar usuÃ¡rios');
- if (!Array.isArray(data.users)) throw new Error('Dados de usuÃ¡rios invÃ¡lidos');
+ if (!data.success) throw new Error(data.message || 'Erro ao carregar usuários');
+ if (!Array.isArray(data.users)) throw new Error('Dados de usuários inválidos');
  
  if (data.users.length === 0) {
- container.innerHTML = '<div class="col-span-full text-center py-20 text-gray-500 font-bold uppercase tracking-widest">Nenhum usuÃ¡rio encontrado no sistema.</div>';
+ container.innerHTML = '<div class="col-span-full text-center py-20 text-gray-500 font-bold uppercase tracking-widest">Nenhum usuário encontrado no sistema.</div>';
  return;
  }
 
@@ -969,7 +969,7 @@ async function loadUsers() {
  <span class="material-symbols-outlined text-sm">key</span>
  </button>
  <button onclick="deleteUser('${u.id}')" 
- class="w-10 h-10 rounded-[5px] bg-white/5 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-white/5" title="Excluir UsuÃ¡rio">
+ class="w-10 h-10 rounded-[5px] bg-white/5 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-500/10 transition-all border border-white/5" title="Excluir Usuário">
  <span class="material-symbols-outlined text-sm">delete</span>
  </button>
  </div>
@@ -977,7 +977,7 @@ async function loadUsers() {
  `).join('');
  } catch (err) {
  console.error('LoadUsers Error:', err);
- container.innerHTML = `<div class="col-span-full text-center py-20 text-red-500/50 font-bold uppercase tracking-widest">Erro na comunicaÃ§Ã£o com o banco de dados: ${err.message}</div>`;
+ container.innerHTML = `<div class="col-span-full text-center py-20 text-red-500/50 font-bold uppercase tracking-widest">Erro na comunicação com o banco de dados: ${err.message}</div>`;
  }
 }
 
@@ -1033,7 +1033,7 @@ async function submitEditUser(e) {
  });
  const json = await res.json();
  if (json.success) {
- showToast('UsuÃ¡rio atualizado!');
+ showToast('Usuário atualizado!');
  closeEditUserModal();
  loadUsers();
  } else {
@@ -1042,31 +1042,31 @@ async function submitEditUser(e) {
  btn.innerText = originalText;
  }
  } catch (err) {
- showToast('Erro de conexÃ£o', 'error');
+ showToast('Erro de conexão', 'error');
  btn.disabled = false;
  btn.innerText = originalText;
  }
 }
 
 async function deleteUser(id) {
- if (!confirm('Tem certeza que deseja excluir este usuÃ¡rio permanentemente?')) return;
+ if (!confirm('Tem certeza que deseja excluir este usuário permanentemente?')) return;
  try {
  const res = await fetch(`/admin/api/users/${id}`, { method: 'DELETE' });
  const json = await res.json();
  if (json.success) {
- showToast('UsuÃ¡rio removido!');
+ showToast('Usuário removido!');
  loadUsers();
  } else {
  showToast(json.message, 'error');
  }
  } catch (err) {
- showToast('Erro ao excluir usuÃ¡rio', 'error');
+ showToast('Erro ao excluir usuário', 'error');
  }
 }
 
 async function generateSnapshot() {
  try {
- showToast('Iniciando geraÃ§Ã£o de snapshot...');
+ showToast('Iniciando geração de snapshot...');
  const res = await fetch('/admin/api/instances/snapshot', { method: 'POST' });
  const json = await res.json();
  if (json.success) {
@@ -1075,7 +1075,7 @@ async function generateSnapshot() {
  showToast('Falha ao gerar snapshot: ' + (json.error || 'Erro interno'), 'error');
  }
  } catch (err) {
- showToast('Erro de conexÃ£o com o banco', 'error');
+ showToast('Erro de conexão com o banco', 'error');
  }
 }
 
@@ -1116,7 +1116,7 @@ async function submitResetPassword(e) {
  showToast(json.error, 'error');
  }
  } catch (err) {
- showToast('Erro de conexÃ£o.', 'error');
+ showToast('Erro de conexão.', 'error');
  }
 }
 
@@ -1155,12 +1155,12 @@ async function submitInstance(e) {
  });
  const json = await res.json();
  if (json.success) {
- showToast('InstÃ¢ncia criada!');
+ showToast('Instância criada!');
  setTimeout(() => window.location.reload(), 1000);
  } else {
  showToast(json.message, 'error');
  submitBtn.disabled = false;
- submitBtn.innerText = 'Criar InstÃ¢ncia';
+ submitBtn.innerText = 'Criar Instância';
  }
  } catch (err) {
  showToast('Erro de rede.', 'error');
@@ -1176,10 +1176,10 @@ async function syncCluster() {
  if (json.success) {
  showToast(json.message);
  } else {
- showToast(json.error || 'Erro na sincronizaÃ§Ã£o', 'error');
+ showToast(json.error || 'Erro na sincronização', 'error');
  }
  } catch (err) {
- showToast('Erro de conexÃ£o', 'error');
+ showToast('Erro de conexão', 'error');
  }
 }
 
@@ -1199,9 +1199,9 @@ async function instanceAction(id, action) {
 }
 
 function viewInstanceLogs(id) {
- showToast('Consultando logs do nÃ³...', 'success');
+ showToast('Consultando logs do nó...', 'success');
  setTimeout(() => {
- alert('Logs da InstÃ¢ncia ' + id + ':\n[SYSTEM] Node.js process active\n[GPU] Usage 15%\n[OK] Listening on port 3000');
+ alert('Logs da Instância ' + id + ':\n[SYSTEM] Node.js process active\n[GPU] Usage 15%\n[OK] Listening on port 3000');
  }, 500);
 }
 
@@ -1302,25 +1302,25 @@ async function updateSystemSetting(el) {
  });
  const json = await res.json();
  if (json.success) {
- showToast('ConfiguraÃ§Ã£o salva.');
+ showToast('Configuração salva.');
  } else { showToast('Erro ao salvar', 'error'); }
- } catch (err) { showToast('Erro de conexÃ£o', 'error'); }
+ } catch (err) { showToast('Erro de conexão', 'error'); }
 }
 
 async function terminateAllSessions() {
- if (!confirm('ATENÃ‡ÃƒO: Isso irÃ¡ forÃ§ar o logout de TODOS os usuÃ¡rios exceto vocÃª. Continuar?')) return;
+ if (!confirm('ATENÃ‡ÃƒO: Isso irá forçar o logout de TODOS os usuários exceto você. Continuar?')) return;
  try {
  const res = await fetch('/admin/api/security/terminate-sessions', { method: 'POST' });
  const json = await res.json();
  if (json.success) {
  showToast(json.message);
- } else { showToast('Erro ao invalidar sessÃµes', 'error'); }
- } catch (err) { showToast('Erro de conexÃ£o', 'error'); }
+ } else { showToast('Erro ao invalidar sessões', 'error'); }
+ } catch (err) { showToast('Erro de conexão', 'error'); }
 }
 
 async function addIpWhitelist() {
  const ip = document.getElementById('newIpAddress').value;
- if (!ip) return showToast('Insira um IP vÃ¡lido.', 'error');
+ if (!ip) return showToast('Insira um IP válido.', 'error');
  
  try {
  const res = await fetch('/admin/api/settings/bulk', {
@@ -1373,13 +1373,13 @@ function toggleAccordion(id) {
 </style>
 
 <!-- Modals -->
-<!-- Criar Novo UsuÃ¡rio Modal -->
+<!-- Criar Novo Usuário Modal -->
 <div id="newUserModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80">
  <div class="kcard w-full max-w-lg p-8 relative">
  <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closeNewUserModal()">
  <span class="material-symbols-outlined">close</span>
  </button>
- <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Criar Novo UsuÃ¡rio Manual</h3>
+ <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Criar Novo Usuário Manual</h3>
  
  <form id="newUserForm" onsubmit="submitNewUser(event)" class="space-y-4">
  <div>
@@ -1391,14 +1391,14 @@ function toggleAccordion(id) {
  <input type="email" name="email" required class="input-premium w-full">
  </div>
  <div>
- <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Senha ProvisÃ³ria</label>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Senha Provisória</label>
  <input type="password" name="password" required class="input-premium w-full">
  </div>
  <div class="grid grid-cols-2 gap-4">
  <div>
  <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">NÃ­vel de Acesso (Role)</label>
  <select name="role" required class="input-premium w-full bg-dark-900 text-white">
- <option value="subscriber">Assinante (Dono de EstÃºdio)</option>
+ <option value="subscriber">Assinante (Dono de Estúdio)</option>
  <option value="staff">Staff (Equipe Master)</option>
  <option value="collaborator">Colaborador (Sub-conta)</option>
  <option value="admin">Super Admin</option>
@@ -1417,7 +1417,7 @@ function toggleAccordion(id) {
  </div>
  </div>
  <div>
- <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome do EstÃºdio / Tenant (Opcional)</label>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome do Estúdio / Tenant (Opcional)</label>
  <input type="text" name="tenantName" class="input-premium w-full" placeholder="Ex: Studio 3D Ltda">
  </div>
  <div class="grid grid-cols-2 gap-4">
@@ -1426,15 +1426,15 @@ function toggleAccordion(id) {
  <select name="specialty" class="input-premium w-full bg-dark-900 text-white">
  <option value="">Nenhuma / Gerencial</option>
  <option value="Modelagem 3D">Modelagem 3D</option>
- <option value="RenderizaÃ§Ã£o">RenderizaÃ§Ã£o</option>
- <option value="AnimaÃ§Ã£o">AnimaÃ§Ã£o</option>
- <option value="PÃ³s-ProduÃ§Ã£o">PÃ³s-ProduÃ§Ã£o</option>
+ <option value="Renderização">Renderização</option>
+ <option value="Animação">Animação</option>
+ <option value="Pós-Produção">Pós-Produção</option>
  </select>
  </div>
  <div>
  <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Ferramenta Principal</label>
  <select name="mainTool" class="input-premium w-full bg-dark-900 text-white">
- <option value="">NÃ£o AplicÃ¡vel</option>
+ <option value="">Não Aplicável</option>
  <option value="D5 Render">D5 Render</option>
  <option value="Corona">Corona Renderer</option>
  <option value="V-Ray">V-Ray</option>
@@ -1468,11 +1468,11 @@ function toggleAccordion(id) {
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="financeiro"><span class="slider round"></span></label>
  </div>
  <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
- <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">ConfiguraÃ§Ãµes</span>
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Configurações</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="configuracoes"><span class="slider round"></span></label>
  </div>
  <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
- <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">GestÃ£o de Equipe</span>
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Gestão de Equipe</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="equipe"><span class="slider round"></span></label>
  </div>
  </div>
@@ -1493,7 +1493,7 @@ function toggleAccordion(id) {
  <span class="material-symbols-outlined">close</span>
  </button>
  <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-2">Redefinir Senha</h3>
- <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6" id="resetPasswordUserName">Nome do UsuÃ¡rio</p>
+ <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6" id="resetPasswordUserName">Nome do Usuário</p>
  
  <form onsubmit="submitResetPassword(event)" class="space-y-4">
  <input type="hidden" name="userId" id="resetPasswordUserId">
@@ -1509,30 +1509,30 @@ function toggleAccordion(id) {
  </div>
 </div>
 
-<!-- Nova InstÃ¢ncia Modal -->
+<!-- Nova Instância Modal -->
 <div id="newInstanceModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80">
  <div class="kcard w-full max-w-lg p-8 relative">
  <button type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white" onclick="closeInstanceModal()">
  <span class="material-symbols-outlined">close</span>
  </button>
- <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Cadastrar Nova InstÃ¢ncia</h3>
+ <h3 class="text-xl font-black text-white uppercase tracking-tighter mb-6">Cadastrar Nova Instância</h3>
  
  <form id="newInstanceForm" onsubmit="submitInstance(event)" class="space-y-4">
  <div>
- <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome da InstÃ¢ncia</label>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome da Instância</label>
  <input type="text" name="name" required class="input-premium w-full" placeholder="Ex: Render Node 01">
  </div>
  <div>
- <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Tipo de IntegraÃ§Ã£o</label>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Tipo de Integração</label>
  <select name="integrationType" required class="input-premium w-full bg-dark-900 text-white">
  <option value="Render Farm API">Render Farm API</option>
- <option value="AutomaÃ§Ã£o WhatsApp">AutomaÃ§Ã£o WhatsApp</option>
+ <option value="Automação WhatsApp">Automação WhatsApp</option>
  <option value="Cloud Storage/AWS">Cloud Storage/AWS</option>
  <option value="Webhook">Webhook</option>
  </select>
  </div>
  <div>
- <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Token / Chave de AutenticaÃ§Ã£o</label>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Token / Chave de Autenticação</label>
  <input type="password" name="token" required class="input-premium w-full" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
  </div>
  <div>
@@ -1544,7 +1544,7 @@ function toggleAccordion(id) {
  </div>
  <div class="pt-4 flex justify-end gap-3">
  <button type="button" class="btn bg-white/5 text-white" onclick="closeInstanceModal()">Cancelar</button>
- <button type="submit" class="btn bg-orange-500 text-white">Criar InstÃ¢ncia</button>
+ <button type="submit" class="btn bg-orange-500 text-white">Criar Instância</button>
  </div>
  </form>
  </div>
@@ -1571,11 +1571,11 @@ function toggleAccordion(id) {
  </div>
  <div class="grid grid-cols-3 gap-4">
  <div>
- <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Limite UsuÃ¡rios</label>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Limite Usuários</label>
  <input type="number" name="usersLimit" required class="input-premium w-full" value="5">
  </div>
  <div>
- <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">RevisÃµes</label>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Revisões</label>
  <input type="number" name="revisionsLimit" required class="input-premium w-full" value="3">
  </div>
  <div>
@@ -1598,14 +1598,14 @@ function toggleAccordion(id) {
  </label>
  </div>
  <div class="flex items-center justify-between p-3 bg-white/5 rounded-[5px] border border-white/5">
- <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">MÃ³dulo Financeiro</span>
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Módulo Financeiro</span>
  <label class="switch scale-75">
  <input type="checkbox" name="hasFinance">
  <span class="slider round"></span>
  </label>
  </div>
  <div class="flex items-center justify-between p-3 bg-white/5 rounded-[5px] border border-white/5">
- <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard AvanÃ§ado</span>
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Dashboard Avançado</span>
  <label class="switch scale-75">
  <input type="checkbox" name="hasDashboard">
  <span class="slider round"></span>
@@ -1621,13 +1621,13 @@ function toggleAccordion(id) {
  </div>
 </div>
 
-<!-- Modal: Editar UsuÃ¡rio -->
+<!-- Modal: Editar Usuário -->
 <div id="editUserModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/80">
  <div class="bg-slate-900 border border-white/10 w-full max-w-lg rounded-[5px] p-8 shadow-2xl">
  <div class="flex justify-between items-center mb-8">
  <div>
- <h3 class="text-xl font-black text-white uppercase tracking-tight">Editar UsuÃ¡rio</h3>
- <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Modificar permissÃµes e dados</p>
+ <h3 class="text-xl font-black text-white uppercase tracking-tight">Editar Usuário</h3>
+ <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">Modificar permissões e dados</p>
  </div>
  <button onclick="closeEditUserModal()" class="text-gray-500 hover:text-white transition-colors">
  <span class="material-symbols-outlined">close</span>
@@ -1639,7 +1639,7 @@ function toggleAccordion(id) {
  <div class="grid grid-cols-2 gap-4">
  <div class="col-span-2">
  <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Nome Completo</label>
- <input type="text" name="name" required class="input-premium w-full" placeholder="Ex: JoÃ£o Silva">
+ <input type="text" name="name" required class="input-premium w-full" placeholder="Ex: João Silva">
  </div>
  <div class="col-span-2">
  <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">E-mail de Acesso</label>
@@ -1649,7 +1649,7 @@ function toggleAccordion(id) {
 
  <div class="grid grid-cols-2 gap-4">
  <div>
- <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Cargo / FunÃ§Ã£o</label>
+ <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Cargo / Função</label>
  <select name="role" required class="input-premium w-full">
  <option value="subscriber">Assinante (Dono)</option>
  <option value="staff">Staff (Equipe Master)</option>
@@ -1660,7 +1660,7 @@ function toggleAccordion(id) {
  <div>
  <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Vincular a Assinante</label>
  <select name="parentId" class="input-premium w-full">
- <option value="">Nenhum (OrfÃ£o/Staff)</option>
+ <option value="">Nenhum (Orfão/Staff)</option>
  {{#each users}}
  {{#if (eq this.role 'subscriber')}}
  <option value="{{this.id}}">{{this.name}}</option>
@@ -1693,11 +1693,11 @@ function toggleAccordion(id) {
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="financeiro"><span class="slider round"></span></label>
  </div>
  <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
- <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">ConfiguraÃ§Ãµes</span>
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Configurações</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="configuracoes"><span class="slider round"></span></label>
  </div>
  <div class="flex items-center justify-between p-2 bg-white/5 rounded-[5px] border border-white/5">
- <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">GestÃ£o de Equipe</span>
+ <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Gestão de Equipe</span>
  <label class="switch scale-75"><input type="checkbox" name="allowed_menus" value="equipe"><span class="slider round"></span></label>
  </div>
  </div>
@@ -1705,7 +1705,7 @@ function toggleAccordion(id) {
 
  <div class="pt-4 flex justify-end gap-3">
  <button type="button" class="btn bg-white/5 text-white" onclick="closeEditUserModal()">Cancelar</button>
- <button type="submit" class="btn bg-orange-500 text-white">Salvar AlteraÃ§Ãµes</button>
+ <button type="submit" class="btn bg-orange-500 text-white">Salvar Alterações</button>
  </div>
  </form>
  </div>

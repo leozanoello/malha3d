@@ -38,12 +38,39 @@ const CalendarEvent = sequelize.define('CalendarEvent', {
     type: DataTypes.UUID,
     allowNull: true,
     field: 'contact_id'
+  },
+  createdBy: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    field: 'created_by'
+  },
+  participants: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    get() {
+      const val = this.getDataValue('participants');
+      try { return val ? JSON.parse(val) : []; } catch (e) { return []; }
+    },
+    set(val) {
+      this.setDataValue('participants', JSON.stringify(val || []));
+    }
+  },
+  history: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    get() {
+      const val = this.getDataValue('history');
+      try { return val ? JSON.parse(val) : []; } catch (e) { return []; }
+    },
+    set(val) {
+      this.setDataValue('history', JSON.stringify(val || []));
+    }
   }
 }, {
   tableName: 'calendar_events',
   timestamps: true,
   createdAt: 'created_at',
-  updatedAt: false
+  updatedAt: 'updated_at'
 });
 
 module.exports = CalendarEvent;

@@ -72,7 +72,7 @@
      Gerar Imagens IA
     </button>
 
-    <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-2 px-3 rounded-xl shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 text-[9px] uppercase tracking-[0.15em]" onclick="window.createNewProjectDraft()">>
+    <button class="bg-orange-500 hover:bg-orange-600 text-white font-black py-2 px-3 rounded-xl shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2 text-[9px] uppercase tracking-[0.15em]" onclick="if(typeof window.openNewLeadModal === 'function'){ window.openNewLeadModal(); } else { const m = document.getElementById('newLeadModal'); if(m){ m.classList.remove('hidden'); m.style.display='flex'; } }">
      <span class="material-symbols-outlined text-sm">view_in_ar</span>
      Novo Projeto
     </button>
@@ -2271,50 +2271,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
  // === SAVE PRIMARY CONTACT TO CLIENT DATABASE ===
  window.savePrimaryContactToDatabase = async function() {
- const name = document.getElementById('mainClientName')?.value;
- const email = document.getElementById('mainClientEmail')?.value;
- const phone = document.getElementById('mainClientPhone')?.value;
- const estado = document.getElementById('newProjectEstado')?.value || document.querySelector('#newLeadModal select[name="state"]')?.value || '';
- const cidade = document.getElementById('newProjectCidade')?.value || document.querySelector('#newLeadModal select[name="city"]')?.value || '';
-
- if (!name || name.trim() === '') {
- alert('Por favor, preencha o Nome do Contato antes de salvar no sistema.');
- return;
- }
-
- // Interceptação: Abre o modal oficial de Novo Contato pré-preenchido
- const registryModal = document.getElementById('newRegistryModal');
- if (registryModal && typeof bootstrap !== 'undefined') {
-  // Pré-preencher campos do modal de contato
-  setTimeout(function() {
-   const regName = registryModal.querySelector('input[name="name"]');
-   const regEmail = registryModal.querySelector('input[name="email"]');
-   const regPhone = registryModal.querySelector('input[name="phone"]');
-   if (regName) regName.value = name;
-   if (regEmail && email) regEmail.value = email;
-   if (regPhone && phone) regPhone.value = phone;
-  }, 300);
-  const bsModal = new bootstrap.Modal(registryModal);
-  bsModal.show();
-  return;
- }
-
- // Fallback: quick-create direto
- try {
- const res = await fetch('/admin/api/clients/quick-create', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
- body: JSON.stringify({ name, email, phone, state: estado, city: cidade })
+ // Abre o modal sincronizado para criar/vincular contato
+ window.openContactQuickModal('modelagem', function(contact) {
+  window.fillNewLeadContactFromModal(contact);
  });
- const json = await res.json();
- if (json.success) {
- alert(`Contato "${json.client.name}" salvo com sucesso no cadastro geral de Clientes!`);
- } else {
- alert('Erro ao salvar contato: ' + (json.error || 'Erro desconhecido'));
+ };
+
+ // === PREENCHER CONTATO A PARTIR DO MODAL SINCRONIZADO ===
+ window.fillNewLeadContactFromModal = function(contact) {
+ if (!contact) return;
+ const mainName = document.getElementById('mainClientName');
+ const mainEmail = document.getElementById('mainClientEmail');
+ const mainPhone = document.getElementById('mainClientPhone');
+
+ if (mainName) mainName.value = contact.name || '';
+ if (mainEmail) mainEmail.value = contact.email || '';
+ if (mainPhone) mainPhone.value = contact.phone || '';
+
+ // Atualizar contatos vinculados
+ if (!Array.isArray(window._projectContacts)) window._projectContacts = [];
+ if (!window._projectContacts.find(function(c){ return c.id === contact.id; })) {
+  window._projectContacts.push({ id: contact.id, name: contact.name, email: contact.email, phone: contact.phone });
  }
- } catch (e) {
- alert('Erro ao conectar com o servidor para salvar o contato.');
- }
+
+ // Sincronizar hidden JSON
+ var hidden = document.getElementById('hiddenContactsJson');
+ if (hidden) hidden.value = JSON.stringify(window._projectContacts);
+
+ if (window.showToast) window.showToast('✓ Contato "' + contact.name + '" vinculado', 'success');
  };
 
  // === DYNAMIC DRIVE / REFERENCE LINKS GENERATOR ===

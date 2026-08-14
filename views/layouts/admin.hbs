@@ -649,8 +649,8 @@
         body.theme-light .text-amber-400 { color: #d97706 !important; }
 
         /* === UIVERSE FLIP CARD (ElSombrero2 — Card Oficial) === */
-        .uv-flip-card { overflow: visible; width: 100%; height: 220px; }
-        .uv-flip-content { width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 300ms; box-shadow: 0px 0px 10px 1px #000000ee; border-radius: 5px; position: relative; }
+        .uv-flip-card { overflow: visible; width: 100%; height: 100%; min-height: 260px; }
+        .uv-flip-content { width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 300ms; box-shadow: 0px 0px 10px 1px #000000ee; border-radius: 5px; position: relative; display: flex; }
         .uv-flip-back, .uv-flip-front { background-color: #151515; position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 5px; overflow: hidden; }
         .uv-flip-back { justify-content: center; display: flex; align-items: center; }
         .uv-flip-back::before { position: absolute; content: ''; display: block; width: 160px; height: 160%; background: rgba(255,255,255,0.05); }
@@ -1007,11 +1007,6 @@
                                 <span class="material-symbols-outlined text-lg">view_in_ar</span> Projetos
                             </a>
                         </li>
-                        <li>
-                            <a href="/admin/portal-cliente" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'client-portal')}}bg-indigo-500/10 text-indigo-400{{else}}text-gray-400 hover:bg-white/5 hover:text-white{{/if}}">
-                                <span class="material-symbols-outlined text-lg">badge</span> Portal do Cliente
-                            </a>
-                        </li>
                     </ul>
                 </div>
 
@@ -1093,43 +1088,49 @@
                 </div>
 
                 <!-- ═══════════════════════════════════════════ -->
-                <!-- ETAPA 2 — Visível apenas para o programador -->
+                <!-- VERSÃO 2.0 — Em desenvolvimento (preview) -->
                 <!-- ═══════════════════════════════════════════ -->
                 {{#if isAdmin}}
                 <div class="mt-4 pt-4 border-t border-amber-500/20">
                     <h3 class="px-4 text-[9px] font-black text-amber-500 uppercase tracking-[0.3em] mb-2 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">construction</span> Etapa 2
+                        <span class="material-symbols-outlined text-sm">rocket_launch</span> Versão 2.0
                     </h3>
                     <ul class="space-y-0.5 px-2">
                         <li>
-                            <a href="/admin/previsao" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Em Breve','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500">
+                            <a href="/admin/portal-cliente" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
+                                <span class="material-symbols-outlined text-lg">badge</span> Portal do Cliente
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/previsao" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500">
                                 <span class="material-symbols-outlined text-lg">query_stats</span> Previsão & Analytics
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/budget-generator" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Em Breve','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500">
+                            <a href="/admin/budget-generator" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500">
                                 <span class="material-symbols-outlined text-lg">magic_button</span> Gerador de Orçamento
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/rastreio-ativo" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento (Etapa 2)','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'active-tracking')}}bg-amber-500/10 text-amber-400{{else}}text-gray-500 hover:bg-white/5 hover:text-amber-400{{/if}}">
+                            <a href="/admin/rastreio-ativo" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
                                 <span class="material-symbols-outlined text-lg">timer</span> Rastreio Ativo
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/automacoes" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento (Etapa 2)','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'automations')}}bg-amber-500/10 text-amber-400{{else}}text-gray-500 hover:bg-white/5 hover:text-amber-400{{/if}}">
+                            <a href="/admin/automacoes" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
                                 <span class="material-symbols-outlined text-lg">bolt</span> Automações
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/marketing-ia" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento (Etapa 2)','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'marketing-ia')}}bg-amber-500/10 text-amber-400{{else}}text-gray-500 hover:bg-white/5 hover:text-amber-400{{/if}}">
+                            <a href="/admin/marketing-ia" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
                                 <span class="material-symbols-outlined text-lg">auto_awesome</span> Marketing IA
                             </a>
                         </li>
                         <li>
-                            <a href="/admin/marketplace" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento (Etapa 2)','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all {{#if (eq currentPage 'marketplace')}}bg-amber-500/10 text-amber-400{{else}}text-gray-500 hover:bg-white/5 hover:text-amber-400{{/if}}">
+                            <a href="/admin/marketplace" onclick="event.preventDefault(); if(window.showToast) window.showToast('Módulo em desenvolvimento — Versão 2.0','info');" style="opacity:0.5;" class="flex items-center gap-3 px-6 py-2 rounded-2xl text-xs font-bold transition-all text-gray-500 hover:bg-white/5 hover:text-amber-400">
                                 <span class="material-symbols-outlined text-lg">shopping_bag</span> Marketplace
                             </a>
+                        </li>
                         </li>
                     </ul>
                 </div>
@@ -1241,6 +1242,11 @@
     
     <!-- Global Modals Integration -->
     {{> globalModals}}
+
+    <!-- Contact Quick Modal (sincronizado com menu Contatos) -->
+    {{> contactQuickModal}}
+
+    <script src="/js/contactQuickModal.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {

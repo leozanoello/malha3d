@@ -2909,108 +2909,34 @@ window.submitNewLead = async function(e) {
 
  // === SAVE PRIMARY CONTACT TO CLIENT DATABASE ===
  window.savePrimaryContactToDatabase = async function(e) {
- const name = document.getElementById('mainClientName')?.value;
- const email = document.getElementById('mainClientEmail')?.value;
- const phone = document.getElementById('mainClientPhone')?.value;
+ // Abre o modal sincronizado para criar/vincular contato
+ window.openContactQuickModal('crm', function(contact) {
+  window.fillNewLeadContactFromModal(contact);
+ });
+ };
 
- if (!name || name.trim() === '') {
-  if (window.showToast) window.showToast('Preencha o Nome do Contato antes de salvar', 'error');
-  else alert('Por favor, preencha o Nome do Contato antes de salvar no sistema.');
-  return;
+ // === PREENCHER CONTATO A PARTIR DO MODAL SINCRONIZADO ===
+ window.fillNewLeadContactFromModal = function(contact) {
+ if (!contact) return;
+ const mainName = document.getElementById('mainClientName');
+ const mainEmail = document.getElementById('mainClientEmail');
+ const mainPhone = document.getElementById('mainClientPhone');
+
+ if (mainName) mainName.value = contact.name || '';
+ if (mainEmail) mainEmail.value = contact.email || '';
+ if (mainPhone) mainPhone.value = contact.phone || '';
+
+ // Atualizar contatos vinculados
+ if (!Array.isArray(window._projectContacts)) window._projectContacts = [];
+ if (!window._projectContacts.find(function(c){ return c.id === contact.id; })) {
+  window._projectContacts.push({ id: contact.id, name: contact.name, email: contact.email, phone: contact.phone });
  }
 
- // Disable button durante requisição (previne duplo-clique)
- const btn = (e && e.target) ? e.target.closest('button') : null;
- if (btn) {
-  btn.disabled = true;
-  btn.style.opacity = '0.5';
-  btn.style.pointerEvents = 'none';
- }
+ // Sincronizar hidden JSON
+ var hidden = document.getElementById('hiddenContactsJson');
+ if (hidden) hidden.value = JSON.stringify(window._projectContacts);
 
- try {
-  const res = await fetch('/admin/api/clients/quick-create', {
-   method: 'POST',
-   headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-   body: JSON.stringify({ name, email, phone })
-  });
-
-  const json = await res.json();
-
-  if (res.ok && json.success) {
-   // ✅ SUCESSO — Contato criado
-   const successMsg = `✅ Contato "${json.client.name}" salvo com sucesso!\n\nAgora você pode vincular este contato ao lead ou criar outro.`;
-   if (window.showToast) {
-    window.showToast(successMsg, 'success');
-   } else {
-    alert(successMsg);
-   }
-
-   // Limpar campos (opcional)
-   document.getElementById('mainClientEmail').value = '';
-   document.getElementById('mainClientPhone').value = '';
-   document.getElementById('mainClientName').value = '';
-
-  } else if (res.status === 409) {
-   // ⚠️ DUPLICATA OU SIMILAR ENCONTRADA
-
-   if (json.isDuplicate) {
-    // Duplicata completa (mesmos dados)
-    const existingData = json.existingClient;
-    const msg = `⚠️ ESTE CONTATO JÁ EXISTE!\n\n` +
-     `👤 Nome: ${existingData.name}\n` +
-     `📧 Email: ${existingData.email || '(não informado)'}\n` +
-     `📱 Telefone: ${existingData.phone || '(não informado)'}\n\n` +
-     `Não foi criado um duplicado. Use este contato existente.`;
-
-    if (window.showToast) {
-     window.showToast(msg, 'warning');
-    } else {
-     alert(msg);
-    }
-
-   } else if (json.similarFound) {
-    // Similar encontrado (dados diferentes)
-    const existingData = json.existingClient;
-    const msg = `ℹ️ CONTATO SIMILAR JÁ EXISTE\n\n` +
-     `Encontramos um contato parecido:\n` +
-     `👤 ${existingData.name}\n` +
-     `📧 ${existingData.email || '(sem email)'}\n` +
-     `📱 ${existingData.phone || '(sem telefone)'}\n\n` +
-     `Seus dados são diferentes. Quer criar um novo contato mesmo assim?\n` +
-     `(Modifique um dos campos para confirmar)`;
-
-    if (window.showToast) {
-     window.showToast(msg, 'info');
-    } else {
-     alert(msg);
-    }
-   }
-
-  } else {
-   // ❌ ERRO GENÉRICO
-   const errMsg = json.error || 'Erro desconhecido ao salvar contato';
-   if (window.showToast) {
-    window.showToast(`❌ ${errMsg}`, 'error');
-   } else {
-    alert(`Erro ao salvar contato: ${errMsg}`);
-   }
-  }
-
- } catch (e) {
-  const errMsg = 'Erro ao conectar com o servidor para salvar o contato.';
-  if (window.showToast) {
-   window.showToast(`❌ ${errMsg}`, 'error');
-  } else {
-   alert(errMsg);
-  }
- } finally {
-  // Re-enable button
-  if (btn) {
-   btn.disabled = false;
-   btn.style.opacity = '1';
-   btn.style.pointerEvents = 'auto';
-  }
- }
+ if (window.showToast) window.showToast('✓ Contato "' + contact.name + '" vinculado', 'success');
  };
 
  // === DYNAMIC DRIVE / REFERENCE LINKS GENERATOR ===

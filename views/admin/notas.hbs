@@ -198,7 +198,7 @@ function strip(h){var d=document.createElement('div');d.innerHTML=h;return d.tex
 function ago(s){var d=new Date(s),m=Math.floor((Date.now()-d)/60000);if(m<1)return'agora';if(m<60)return m+'min';var h=Math.floor(m/60);if(h<24)return h+'h';var dd=Math.floor(h/24);return dd+'d';}
 
 // Modal de edição rápida (pop-up)
-function showNoteQuickModal(){
+window.showNoteQuickModal = function(){
   var modal=document.getElementById('notesQuickModal');
   if(!modal){
     modal=document.createElement('div');
@@ -237,7 +237,7 @@ function showNoteQuickModal(){
   modal.classList.remove('hidden');
   document.getElementById('quickEditorTitle').focus();
   document.getElementById('quickEditorTitle').select();
-}
+};
 
 window.m3dNotes={
   renderList:function(){
