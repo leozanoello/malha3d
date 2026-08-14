@@ -55,12 +55,18 @@
  <div class="py-3 text-center text-[8px] font-black text-gray-600 uppercase tracking-widest" style="background:rgba(255,255,255,0.02);">Sex</div>
  <div class="py-3 text-center text-[8px] font-black text-gray-600 uppercase tracking-widest" style="background:rgba(255,255,255,0.02);">Sáb</div>
 
- <!-- Days (renderizados via JS para suportar eventos multi-dia) -->
+ <!-- Days -->
  {{#each weeks}}
  {{#each this}}
  <div class="relative min-h-[90px] p-1.5 calendar-day-cell {{#unless this.inMonth}}opacity-20{{/unless}}" data-date="{{this.fullDate}}" style="{{#if this.isToday}}background:rgba(249,115,22,0.05); border-left:2px solid rgba(249,115,22,0.4);{{else}}background:transparent; border-left:1px solid rgba(255,255,255,0.04);{{/if}}">
  <span class="text-[9px] font-black {{#if this.isToday}}text-orange-400{{else}}text-gray-500{{/if}}">{{this.day}}</span>
- <div class="mt-1 space-y-0.5 event-slot" data-day="{{this.day}}" data-in-month="{{this.inMonth}}"></div>
+ {{#if (length this.events)}}
+ <div class="mt-1 space-y-0.5">
+ {{#each this.events}}
+ <div class="{{this.badgeClass}} text-[7px] font-black text-white px-1.5 py-0.5 shadow-sm uppercase tracking-wider calendar-event-badge cursor-pointer truncate {{#if (and this.isStart this.isEnd)}}rounded-[3px]{{else if this.isStart}}rounded-l-[3px] -mr-1.5{{else if this.isEnd}}rounded-r-[3px] -ml-1.5{{else}}-mx-1.5{{/if}}" title="{{this.title}}{{#if (gt this.spanDays 1)}} ({{this.spanDays}} dias){{/if}}" onclick="openEventDetail('{{this.id}}')">{{#if this.isStart}}{{this.title}}{{else}}&#8203;{{/if}}</div>
+ {{/each}}
+ </div>
+ {{/if}}
  </div>
  {{/each}}
  {{/each}}
@@ -216,74 +222,9 @@
 </div>
 
 <script>
-// === CALENDAR ENGINE — Multi-day spanning events (Google Calendar style) ===
+// === CALENDAR — Event Detail + Actions ===
 var _calendarEvents = {{{json events}}};
 var _currentEventId = null;
-
-var EVENT_COLORS = {
- reuniao: { bg: 'rgba(59,130,246,0.8)', border: '#3b82f6' },
- entrega: { bg: 'rgba(16,185,129,0.8)', border: '#10b981' },
- deadline: { bg: 'rgba(239,68,68,0.8)', border: '#ef4444' },
- followup: { bg: 'rgba(245,158,11,0.8)', border: '#f59e0b' },
- interno: { bg: 'rgba(139,92,246,0.8)', border: '#8b5cf6' },
- briefing: { bg: 'rgba(6,182,212,0.8)', border: '#06b6d4' },
- revisao: { bg: 'rgba(251,146,60,0.8)', border: '#fb923c' }
-};
-
-function renderMultiDayEvents() {
- var grid = document.getElementById('calendarGrid');
- if (!grid) return;
- var dayCells = grid.querySelectorAll('.calendar-day-cell');
- var cellMap = {};
- dayCells.forEach(function(cell) {
-  var date = cell.dataset.date;
-  if (date) cellMap[date] = cell;
- });
-
- _calendarEvents.forEach(function(ev) {
-  if (!ev.startTime) return;
-  var start = new Date(ev.startTime);
-  var end = ev.endTime ? new Date(ev.endTime) : new Date(start.getTime() + 3600000);
-  var startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-  var endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-  var spanDays = Math.max(1, Math.round((endDay - startDay) / 86400000) + 1);
-  var colors = EVENT_COLORS[ev.type] || { bg: 'rgba(100,116,139,0.8)', border: '#64748b' };
-
-  // Renderizar evento em cada dia que cobre
-  var cursor = new Date(startDay);
-  for (var i = 0; i < spanDays; i++) {
-   var dateKey = cursor.getFullYear() + '-' + String(cursor.getMonth()+1).padStart(2,'0') + '-' + String(cursor.getDate()).padStart(2,'0');
-   var cell = cellMap[dateKey];
-   if (cell) {
-    var slot = cell.querySelector('.event-slot');
-    if (slot) {
-     var tag = document.createElement('div');
-     tag.className = 'calendar-event-badge cursor-pointer';
-     tag.dataset.eventId = ev.id;
-     tag.onclick = function(e) { e.stopPropagation(); openEventDetail(ev.id); };
-
-     // Estilo: início, meio, fim ou único dia
-     var isStart = (i === 0);
-     var isEnd = (i === spanDays - 1);
-     var borderRadius = '2px';
-     if (spanDays > 1) {
-      if (isStart && !isEnd) borderRadius = '3px 0 0 3px';
-      else if (!isStart && isEnd) borderRadius = '0 3px 3px 0';
-      else if (!isStart && !isEnd) borderRadius = '0';
-      else borderRadius = '3px';
-     }
-
-     tag.style.cssText = 'background:' + colors.bg + '; border-left:2px solid ' + colors.border + '; border-radius:' + borderRadius + '; padding:2px 4px; font-size:7px; font-weight:800; color:#fff; text-transform:uppercase; letter-spacing:0.05em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-right:' + (isEnd ? '0' : '-4px') + '; position:relative; z-index:2;';
-     tag.textContent = isStart ? ev.title : (spanDays > 2 && i === 1 ? '→ ' + ev.title : '');
-     tag.title = ev.title + ' (' + spanDays + ' dias)';
-
-     slot.appendChild(tag);
-    }
-   }
-   cursor.setDate(cursor.getDate() + 1);
-  }
- });
-}
 
 function openEventDetail(eventId) {
  _currentEventId = eventId;
@@ -299,7 +240,6 @@ function openEventDetail(eventId) {
  var opts = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
  document.getElementById('eventDetailTime').textContent = start.toLocaleString('pt-BR', opts) + (end ? ' → ' + end.toLocaleString('pt-BR', opts) : '');
 
- // Calcular duração
  if (end) {
   var diff = end - start;
   var days = Math.floor(diff / 86400000);
@@ -355,8 +295,5 @@ document.getElementById('newEventForm')?.addEventListener('submit', async functi
  else { alert('Erro: ' + (result.message || result.error)); }
  } catch (error) { alert('Erro ao processar'); }
 });
-
-// Render events after DOM ready
-document.addEventListener('DOMContentLoaded', renderMultiDayEvents);
-if (document.readyState !== 'loading') renderMultiDayEvents();
 </script>
+

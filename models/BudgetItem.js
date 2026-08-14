@@ -22,6 +22,11 @@ const BudgetItem = sequelize.define('BudgetItem', {
   totalPrice: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false
+  },
+  source: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: 'manual'
   }
 }, {
   tableName: 'budget_items'

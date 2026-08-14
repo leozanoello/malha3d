@@ -219,7 +219,7 @@
  <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] flex items-center gap-1.5"><span class="material-symbols-outlined text-emerald-400 text-[12px]">arrow_downward</span> Contas a Receber</p>
  <div class="flex items-center gap-2">
  <span class="text-[8px] font-bold text-gray-500" id="ar-summary">Carregando...</span>
- <button onclick="window.openGenerateReceivableModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] bg-emerald-500 text-[8px] font-black uppercase text-white hover:bg-emerald-600 transition-colors"><span class="material-symbols-outlined text-[10px]">add</span> Novo</button>
+ <button onclick="window.openCreateReceivableModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] bg-emerald-500 text-[8px] font-black uppercase text-white hover:bg-emerald-600 transition-colors"><span class="material-symbols-outlined text-[10px]">add</span> Novo</button>
  </div>
  </div>
  <!-- Filtros AR -->
@@ -254,12 +254,12 @@
  <table class="w-full text-left" id="erp-ar-table">
  <thead>
  <tr style="background:rgba(255,255,255,0.02);">
- <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Descrição</th>
- <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Valor Total</th>
- <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Valor Parcela</th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest cursor-pointer hover:text-white transition-colors" onclick="window.sortARTable('description')" title="Clique para ordenar"><span class="inline-flex items-center gap-1">Descrição <span class="material-symbols-outlined text-[10px]" id="sort-ar-description">unfold_more</span></span></th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest cursor-pointer hover:text-white transition-colors" onclick="window.sortARTable('amount')" title="Clique para ordenar"><span class="inline-flex items-center gap-1">Valor Total <span class="material-symbols-outlined text-[10px]" id="sort-ar-amount">unfold_more</span></span></th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest cursor-pointer hover:text-white transition-colors" onclick="window.sortARTable('installment')" title="Clique para ordenar"><span class="inline-flex items-center gap-1">Valor Parcela <span class="material-symbols-outlined text-[10px]" id="sort-ar-installment">unfold_more</span></span></th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Parcelas</th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Forma Pgto</th>
- <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Status</th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest cursor-pointer hover:text-white transition-colors" onclick="window.sortARTable('status')" title="Clique para ordenar"><span class="inline-flex items-center gap-1">Status <span class="material-symbols-outlined text-[10px]" id="sort-ar-status">unfold_more</span></span></th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest text-right">Ações</th>
  </tr>
  </thead>
@@ -278,7 +278,7 @@
  <p class="text-[9px] font-black text-white uppercase tracking-[0.12em] flex items-center gap-1.5"><span class="material-symbols-outlined text-red-400 text-[12px]">arrow_upward</span> Contas a Pagar</p>
  <div class="flex items-center gap-2">
  <span class="text-[8px] font-bold text-gray-500" id="ap-summary">Carregando...</span>
- <button onclick="window.openGeneratePayableModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] bg-orange-500 text-[8px] font-black uppercase text-white hover:bg-orange-600 transition-colors"><span class="material-symbols-outlined text-[10px]">add</span> Novo</button>
+ <button onclick="window.openCreatePayableModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-[4px] bg-orange-500 text-[8px] font-black uppercase text-white hover:bg-orange-600 transition-colors"><span class="material-symbols-outlined text-[10px]">add</span> Novo</button>
  </div>
  </div>
  <!-- Filtros AP -->
@@ -310,12 +310,12 @@
  <table class="w-full text-left" id="erp-ap-table">
  <thead>
  <tr style="background:rgba(255,255,255,0.02);">
- <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Descrição</th>
- <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Valor Total</th>
- <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Valor Parcela</th>
- <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Vencimento</th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest cursor-pointer hover:text-white transition-colors" onclick="window.sortAPTable('description')" title="Clique para ordenar"><span class="inline-flex items-center gap-1">Descrição <span class="material-symbols-outlined text-[10px]" id="sort-ap-description">unfold_more</span></span></th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest cursor-pointer hover:text-white transition-colors" onclick="window.sortAPTable('amount')" title="Clique para ordenar"><span class="inline-flex items-center gap-1">Valor Total <span class="material-symbols-outlined text-[10px]" id="sort-ap-amount">unfold_more</span></span></th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest cursor-pointer hover:text-white transition-colors" onclick="window.sortAPTable('installment')" title="Clique para ordenar"><span class="inline-flex items-center gap-1">Valor Parcela <span class="material-symbols-outlined text-[10px]" id="sort-ap-installment">unfold_more</span></span></th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest cursor-pointer hover:text-white transition-colors" onclick="window.sortAPTable('duedate')" title="Clique para ordenar"><span class="inline-flex items-center gap-1">Vencimento <span class="material-symbols-outlined text-[10px]" id="sort-ap-duedate">unfold_more</span></span></th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Tipo Custo</th>
- <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest">Status</th>
+ <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest cursor-pointer hover:text-white transition-colors" onclick="window.sortAPTable('status')" title="Clique para ordenar"><span class="inline-flex items-center gap-1">Status <span class="material-symbols-outlined text-[10px]" id="sort-ap-status">unfold_more</span></span></th>
  <th class="px-3 py-2 text-[7px] font-black text-gray-500 uppercase tracking-widest text-right">Ações</th>
  </tr>
  </thead>
@@ -1677,7 +1677,7 @@ window.loadPayables = async function() {
    var custoLabel = p.costClassification === 'fixo' ? 'Fixo' : 'Variável';
    var custoColor = p.costClassification === 'fixo' ? 'text-purple-400' : 'text-cyan-400';
    var valorParcela = p.installmentsCount > 0 ? parseFloat(p.totalAmount) / p.installmentsCount : parseFloat(p.totalAmount);
-   return '<tr class="ap-row" data-status="' + p.status + '" data-cost="' + (p.costClassification||'variavel') + '" data-amount="' + parseFloat(p.totalAmount||0) + '" data-desc="' + (p.description||'').toLowerCase() + '" style="border-top:1px solid rgba(255,255,255,0.04);">' +
+   return '<tr class="ap-row" data-status="' + p.status + '" data-cost="' + (p.costClassification||'variavel') + '" data-amount="' + parseFloat(p.totalAmount||0) + '" data-desc="' + (p.description||'').toLowerCase() + '" data-duedate="' + (p.dueDate||'') + '" style="border-top:1px solid rgba(255,255,255,0.04);">' +
     '<td class="px-3 py-2 text-[9px] font-bold text-white truncate max-w-[200px]">' + p.description + '</td>' +
     '<td class="px-3 py-2 text-[9px] font-black text-red-400">' + fmt(p.totalAmount) + '</td>' +
     '<td class="px-3 py-2 text-[9px] font-black text-blue-400">' + fmt(valorParcela) + '</td>' +
@@ -1875,4 +1875,141 @@ window.openGeneratePayableModal = function() {
   else alert(d.error||'Erro');
  });
 };
+
+// === ORDENAÇÃO DE TABELAS ===
+window._sortState = { ar: {}, ap: {} };
+
+window.sortARTable = function(column) {
+ var rows = Array.from(document.querySelectorAll('#erp-ar-tbody .ar-row'));
+ if (!rows.length) return;
+
+ var state = window._sortState.ar;
+ var isAsc = state[column] === 'asc';
+ var order = isAsc ? 'desc' : 'asc';
+
+ // Reset all icons
+ document.querySelectorAll('#erp-ar-table .material-symbols-outlined').forEach(function(el) {
+  el.textContent = 'unfold_more';
+ });
+ // Set current icon
+ var icon = document.getElementById('sort-ar-' + column);
+ if (icon) icon.textContent = order === 'asc' ? 'arrow_upward' : 'arrow_downward';
+
+ // Sort
+ rows.sort(function(a, b) {
+  var aVal, bVal;
+  if (column === 'description') {
+   aVal = a.dataset.desc;
+   bVal = b.dataset.desc;
+   return order === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+  } else if (column === 'amount' || column === 'installment') {
+   aVal = parseFloat(a.dataset.amount);
+   bVal = parseFloat(b.dataset.amount);
+   return order === 'asc' ? aVal - bVal : bVal - aVal;
+  } else if (column === 'status') {
+   var statusOrder = { 'quitado': 1, 'parcial': 2, 'aberto': 3, 'atrasado': 4, 'cancelado': 5 };
+   aVal = statusOrder[a.dataset.status] || 999;
+   bVal = statusOrder[b.dataset.status] || 999;
+   return order === 'asc' ? aVal - bVal : bVal - aVal;
+  }
+  return 0;
+ });
+
+ // Re-render
+ var tbody = document.getElementById('erp-ar-tbody');
+ rows.forEach(function(row) { tbody.appendChild(row); });
+
+ // Save state
+ window._sortState.ar = {};
+ window._sortState.ar[column] = order;
+};
+
+window.sortAPTable = function(column) {
+ var rows = Array.from(document.querySelectorAll('#erp-ap-tbody .ap-row'));
+ if (!rows.length) return;
+
+ var state = window._sortState.ap;
+ var isAsc = state[column] === 'asc';
+ var order = isAsc ? 'desc' : 'asc';
+
+ // Reset all icons
+ document.querySelectorAll('#erp-ap-table .material-symbols-outlined').forEach(function(el) {
+  el.textContent = 'unfold_more';
+ });
+ // Set current icon
+ var icon = document.getElementById('sort-ap-' + column);
+ if (icon) icon.textContent = order === 'asc' ? 'arrow_upward' : 'arrow_downward';
+
+ // Sort
+ rows.sort(function(a, b) {
+  var aVal, bVal;
+  if (column === 'description') {
+   aVal = a.dataset.desc;
+   bVal = b.dataset.desc;
+   return order === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+  } else if (column === 'amount' || column === 'installment') {
+   aVal = parseFloat(a.dataset.amount);
+   bVal = parseFloat(b.dataset.amount);
+   return order === 'asc' ? aVal - bVal : bVal - aVal;
+  } else if (column === 'duedate') {
+   aVal = new Date(a.dataset.duedate || 0);
+   bVal = new Date(b.dataset.duedate || 0);
+   return order === 'asc' ? aVal - bVal : bVal - aVal;
+  } else if (column === 'status') {
+   var statusOrder = { 'quitado': 1, 'parcial': 2, 'aberto': 3, 'atrasado': 4, 'cancelado': 5 };
+   aVal = statusOrder[a.dataset.status] || 999;
+   bVal = statusOrder[b.dataset.status] || 999;
+   return order === 'asc' ? aVal - bVal : bVal - aVal;
+  }
+  return 0;
+ });
+
+ // Re-render
+ var tbody = document.getElementById('erp-ap-tbody');
+ rows.forEach(function(row) { tbody.appendChild(row); });
+
+ // Save state
+ window._sortState.ap = {};
+ window._sortState.ap[column] = order;
+};
+
+// === CRIAR CONTA A RECEBER (Modal Visual) ===
+window.openCreateReceivableModal = function() {
+ const modalEl = document.getElementById('newTransactionModal');
+ if (!modalEl) return alert('Modal não encontrado');
+
+ // Reset form
+ document.getElementById('financeForm')?.reset();
+ document.getElementById('finance-type').value = 'receita';
+
+ // Mudar título
+ const titleEl = document.getElementById('newTransactionModalTitle');
+ if (titleEl) titleEl.textContent = 'Criar Conta a Receber';
+
+ // Show modal
+ const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+ setTimeout(function() { window.toggleTransactionType('receita'); modal.show(); }, 50);
+};
+
+// === CRIAR CONTA A PAGAR (Modal Visual) ===
+window.openCreatePayableModal = function() {
+ const modalEl = document.getElementById('newTransactionModal');
+ if (!modalEl) return alert('Modal não encontrado');
+
+ // Reset form
+ document.getElementById('financeForm')?.reset();
+ document.getElementById('finance-type').value = 'despesa';
+
+ // Mudar título
+ const titleEl = document.getElementById('newTransactionModalTitle');
+ if (titleEl) titleEl.textContent = 'Criar Conta a Pagar';
+
+ // Show modal
+ const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+ setTimeout(function() { window.toggleTransactionType('despesa'); modal.show(); }, 50);
+};
+
+// Retrocompat: manter openGenerateReceivableModal e openGeneratePayableModal chamando as novas
+window.openGenerateReceivableModal = window.openCreateReceivableModal;
+window.openGeneratePayableModal = window.openCreatePayableModal;
 </script>

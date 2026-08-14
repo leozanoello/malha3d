@@ -1513,8 +1513,19 @@ router.post('/api/negociacoes/:id/generate-image', requireAuth, async (req, res)
     if (!lead) {
       return res.status(404).json({ success: false, error: 'Lead não encontrado' });
     }
+    const previousImage = lead.leadImage;
     const { imageUrl, source } = await aiService.generateArchVizImage(lead);
     await lead.update({ leadImage: imageUrl });
+
+    // Registrar log
+    await CRMLeadLog.create({
+      budgetId: lead.id,
+      userId: req.user?.id || null,
+      userName: req.user?.name || 'Sistema',
+      action: 'banner_changed',
+      details: `Banner trocado (Gerado por IA${source ? ' - ' + source : ''}). Imagem anterior: ${previousImage || 'padrão'} → Nova: ${imageUrl}`
+    });
+
     return res.json({ success: true, imageUrl, source });
   } catch (err) {
     console.error('[CRM] Generate lead image error:', err);
@@ -1529,7 +1540,19 @@ router.post('/api/negociacoes/:id/save-banner', requireAuth, async (req, res) =>
     if (!lead) return res.status(404).json({ success: false, error: 'Card não encontrado' });
     const { imageUrl } = req.body;
     if (!imageUrl) return res.status(400).json({ success: false, error: 'imageUrl é obrigatório' });
+
+    const previousImage = lead.leadImage;
     await lead.update({ leadImage: imageUrl });
+
+    // Registrar log
+    await CRMLeadLog.create({
+      budgetId: lead.id,
+      userId: req.user?.id || null,
+      userName: req.user?.name || 'Sistema',
+      action: 'banner_changed',
+      details: `Banner trocado. De: "${previousImage || 'padrão'}" → Para: "${imageUrl}"`
+    });
+
     return res.json({ success: true, imageUrl });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -1542,8 +1565,20 @@ router.post('/api/negociacoes/:id/upload-banner', requireAuth, upload.single('ba
     const lead = await Budget.findByPk(req.params.id);
     if (!lead) return res.status(404).json({ success: false, error: 'Card não encontrado' });
     if (!req.file) return res.status(400).json({ success: false, error: 'Nenhum arquivo enviado' });
+
+    const previousImage = lead.leadImage;
     const imageUrl = `/uploads/${req.file.filename}`;
     await lead.update({ leadImage: imageUrl });
+
+    // Registrar log
+    await CRMLeadLog.create({
+      budgetId: lead.id,
+      userId: req.user?.id || null,
+      userName: req.user?.name || 'Sistema',
+      action: 'banner_uploaded',
+      details: `Banner customizado enviado: ${req.file.originalname} (${(req.file.size / 1024).toFixed(1)} KB). Anterior: "${previousImage || 'padrão'}"`
+    });
+
     return res.json({ success: true, imageUrl });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -1985,11 +2020,38 @@ router.post('/negociacoes/:id/update', requireAuth, async (req, res) => {
       const trackedFields = [
         'name', 'clientName', 'email', 'phone', 'projectType', 'status', 'priority',
         'estimatedValue', 'probability', 'assignedUserId', 'revisionsIncluded',
-        'nextActionDate', 'nextActionNote', 'state', 'city'
+        'nextActionDate', 'nextActionNote', 'state', 'city',
+        'leadImage', 'totalArea', 'description', 'color', 'complexity',
+        'targetSoftware', 'software', 'renderEngine', 'visualStyle', 'driveLink',
+        'imagesCount', 'animationSeconds', 'panoramasCount', 'floorPlansCount',
+        'productionDays', 'deadline', 'startDate', 'finalDeadline', 'firstPreviewDate',
+        'profileType', 'projectCategory', 'predominantStyle', 'location',
+        'desiredAtmosphere', 'humanizationLevel', 'specialElements',
+        'hasUrgency', 'urgencyFee', 'winStatus', 'lossReason',
+        'modelagemType', 'modelagemTypeCustom', 'projectClass',
+        'paymentStatus', 'proposalStatus', 'templateTheme',
+        'dataGanhoOportunidade', 'expectativaInicio', 'origemProjeto', 'prazoDias',
+        'observacao', 'cep', 'rua', 'numero', 'complemento', 'bairro'
       ];
+
+      // Campos JSONB (arrays/objects) — comparar como JSON string
+      const jsonFields = ['environments', 'lightingMood', 'tags', 'etiquetas',
+        'softwareStack', 'inputFormats', 'imageResolution', 'extraDeliverables',
+        'videoResolution', 'portfolioImages', 'contacts', 'installmentsData'];
+
       const changes = trackedFields
         .filter(f => String(before[f] ?? '') !== String(budget[f] ?? ''))
         .map(f => `${f}: "${before[f] ?? '-'}" → "${budget[f] ?? '-'}"`);
+
+      // Verificar mudanças em campos JSONB
+      jsonFields.forEach(f => {
+        const beforeVal = JSON.stringify(before[f] || []);
+        const afterVal = JSON.stringify(budget[f] || []);
+        if (beforeVal !== afterVal) {
+          changes.push(`${f}: atualizado`);
+        }
+      });
+
       if (changes.length > 0) {
         await CRMLeadLog.create({
           budgetId: budget.id,
@@ -2620,13 +2682,32 @@ function buildCalendarGrid(year, month, events) {
   const firstWeekday = startOfMonth.day(); // 0 = Sunday
   const today = moment();
 
+  // Mapear eventos por data (suporta multi-dia)
+  const eventsByDate = {};
+  events.forEach(ev => {
+    if (!ev.startTime) return;
+    const start = moment(ev.startTime);
+    const end = ev.endTime ? moment(ev.endTime) : start.clone().add(1, 'hour');
+    const startDay = start.clone().startOf('day');
+    const endDay = end.clone().startOf('day');
+    const spanDays = Math.max(1, endDay.diff(startDay, 'days') + 1);
+    const style = EVENT_TYPE_STYLES[ev.type] || { badge: 'bg-gray-500 shadow-gray-500/20', label: ev.type || 'Evento' };
+    const cursor = startDay.clone();
+    for (let i = 0; i < spanDays; i++) {
+      const key = cursor.format('YYYY-MM-DD');
+      if (!eventsByDate[key]) eventsByDate[key] = [];
+      eventsByDate[key].push({ ...ev, badgeClass: style.badge, typeLabel: style.label, isStart: i === 0, isEnd: i === spanDays - 1, spanDays });
+      cursor.add(1, 'day');
+    }
+  });
+
   const cells = [];
   const prevMonthMoment = moment({ year, month, day: 1 }).subtract(1, 'month');
   const prevMonthDays = prevMonthMoment.daysInMonth();
   for (let i = 0; i < firstWeekday; i++) {
     const d = prevMonthDays - (firstWeekday - 1 - i);
     const fullDate = prevMonthMoment.clone().date(d).format('YYYY-MM-DD');
-    cells.push({ day: d, inMonth: false, isToday: false, events: [], fullDate });
+    cells.push({ day: d, inMonth: false, isToday: false, events: eventsByDate[fullDate] || [], fullDate });
   }
   for (let d = 1; d <= daysInMonth; d++) {
     const fullDate = moment({ year, month, day: d }).format('YYYY-MM-DD');
@@ -2634,7 +2715,7 @@ function buildCalendarGrid(year, month, events) {
       day: d,
       inMonth: true,
       isToday: today.year() === year && today.month() === month && today.date() === d,
-      events: [],
+      events: eventsByDate[fullDate] || [],
       fullDate
     });
   }
@@ -2642,7 +2723,7 @@ function buildCalendarGrid(year, month, events) {
   let nextDay = 1;
   while (cells.length % 7 !== 0) {
     const fullDate = nextMonthMoment.clone().date(nextDay).format('YYYY-MM-DD');
-    cells.push({ day: nextDay++, inMonth: false, isToday: false, events: [], fullDate });
+    cells.push({ day: nextDay++, inMonth: false, isToday: false, events: eventsByDate[fullDate] || [], fullDate });
   }
 
   const weeks = [];
@@ -4130,7 +4211,18 @@ router.post('/api/financeiro/extract-receipt', requireAuth, upload.single('recei
 router.get('/relatorios', requireAuth, async (req, res) => {
   try {
     const projects = await Project.findAll({ raw: true });
-    const budgets = await Budget.findAll({ raw: true });
+    // APENAS budgets do CRM (vendas), excluindo dados de teste
+    const KanbanColumn = require('../models/KanbanColumn');
+    let crmColumns = await KanbanColumn.findAll({ where: { type: 'crm' }, raw: true });
+    if (crmColumns.length === 0) crmColumns = await KanbanColumn.findAll({ where: { type: 'vendas' }, raw: true });
+    const crmStatusKeys = crmColumns.map(c => c.statusKey);
+    const budgets = await Budget.findAll({
+      where: {
+        status: { [Op.in]: crmStatusKeys },
+        source: { [Op.or]: [{ [Op.ne]: 'test_data' }, { [Op.is]: null }] }
+      },
+      raw: true
+    });
 
     // 1. Render Engines (D5 Render vs 3ds Max/Corona vs Unreal)
     const renderEngines = { 'D5 Render': 0, '3ds Max/Corona': 0, 'Unreal': 0 };
@@ -4139,9 +4231,11 @@ router.get('/relatorios', requireAuth, async (req, res) => {
       if (re.includes('D5')) {renderEngines['D5 Render']++;} else if (re.includes('Corona') || re.includes('3ds')) {renderEngines['3ds Max/Corona']++;} else if (re.includes('Unreal')) {renderEngines['Unreal']++;} else {renderEngines['D5 Render']++;}
     });
     // Add realistic seed values to ensure beautiful density
-    renderEngines['D5 Render'] += 14;
-    renderEngines['3ds Max/Corona'] += 18;
-    renderEngines['Unreal'] += 6;
+    if (projects.length === 0) {
+      renderEngines['D5 Render'] += 14;
+      renderEngines['3ds Max/Corona'] += 18;
+      renderEngines['Unreal'] += 6;
+    }
 
     // 2. Average price per m2 by style
     const styleData = {
@@ -4178,10 +4272,10 @@ router.get('/relatorios', requireAuth, async (req, res) => {
       }
     });
 
-    // 3. Funnel conversions
-    const totalLeads = budgets.length + 25;
-    const totalProposals = budgets.filter(b => b.winStatus === 'aberto' || b.winStatus === 'ganho').length + 15;
-    const totalClosedProjects = projects.length + 8;
+    // 3. Funnel conversions (dados reais do CRM apenas)
+    const totalLeads = budgets.length;
+    const totalProposals = budgets.filter(b => b.winStatus === 'aberto' || b.winStatus === 'ganho').length;
+    const totalClosedProjects = budgets.filter(b => b.winStatus === 'ganho').length;
 
     const reportStats = {
       renderEngines,
@@ -5891,6 +5985,15 @@ router.post('/api/crm/probability/:budgetId', requireAuth, async (req, res) => {
 
     // Atualizar o campo probability no Budget principal também
     await budget.update({ probability: prob });
+
+    // Registrar log no histórico do projeto
+    await CRMLeadLog.create({
+      budgetId: budget.id,
+      userId: req.user?.id || null,
+      userName: req.user?.name || 'Sistema',
+      action: 'probability_changed',
+      details: `Probabilidade alterada de ${previousProbability}% para ${prob}%`
+    });
 
     return res.json({ success: true, probability: prob, weightedValue });
   } catch (error) {
@@ -7987,6 +8090,12 @@ router.get('/api/export/sheets', requireAuth, (req, res) => {
     sheetsUrl: `https://docs.google.com/spreadsheets/create?title=Malha3D_${type}_${new Date().toISOString().slice(0, 10)}`
   });
 });
+
+// =============================================================
+// CPQ (Configure, Price, Quote) — Motor de Orçamentos
+// =============================================================
+const cpqRoutes = require('./cpq');
+router.use('/api/cpq', requireAuth, cpqRoutes);
 
 module.exports = router;
 

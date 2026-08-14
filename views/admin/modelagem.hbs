@@ -2844,7 +2844,12 @@ window.renderEditProjectTags = function() {
   var container = document.getElementById('editProjectTagsContainer');
   var hidden = document.getElementById('editProjectTagsHidden');
   if (!container) return;
-  container.innerHTML = window._editProjectTags.map(t => '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-500/20 border border-orange-500/30 text-[9px] font-black text-orange-300">' + t.replace(/[<>]/g, '') + ' <button type="button" onclick="window.removeEditProjectTag(\'' + t.replace(/'/g, '') + '\')" class="text-orange-400 hover:text-white">&times;</button></span>').join('');
+  container.innerHTML = window._editProjectTags.map(t => {
+    var safeTag = t.replace(/[<>"']/g, '');
+    return '<div class="uv-tag-container">' +
+      '<button class="uv-tag-btn" type="button">' + safeTag + ' <span class="uv-tag-close" onclick="window.removeEditProjectTag(\'' + safeTag + '\')">&times;</span></button>' +
+    '</div>';
+  }).join('');
   if (hidden) hidden.value = JSON.stringify(window._editProjectTags);
 };
 
@@ -2915,7 +2920,15 @@ function renderProjectTags() {
   const container = document.getElementById('newProjectTagsContainer');
   const hidden = document.getElementById('newProjectTagsHidden');
   if (!container) return;
-  container.innerHTML = _projectTags.map(t => `<span class="inline-flex items-center gap-0.5 px-1.5 py-px rounded-full bg-orange-500/20 border border-orange-500/30 text-[8px] font-bold text-orange-300 leading-none">${t.replace(/[<>]/g, '')} <button type="button" onclick="window.removeProjectTag('${t.replace(/'/g, '')}')" class="text-orange-400 hover:text-white text-[9px] leading-none">&times;</button></span>`).join('');
+  container.innerHTML = _projectTags.map(t => {
+    var safeTag = t.replace(/[<>"']/g, '');
+    return '<div class="uv-tag-container">' +
+      '<div class="uv-tag-hover"></div>' +
+      '<div class="uv-tag-bt-1"></div><div class="uv-tag-bt-2"></div><div class="uv-tag-bt-3"></div>' +
+      '<div class="uv-tag-bt-4"></div><div class="uv-tag-bt-5"></div><div class="uv-tag-bt-6"></div>' +
+      '<div class="uv-tag-btn">' + safeTag + ' <span class="uv-tag-close" onclick="window.removeProjectTag(\'' + safeTag + '\')">&times;</span></div>' +
+    '</div>';
+  }).join('');
   if (hidden) hidden.value = JSON.stringify(_projectTags);
 }
 

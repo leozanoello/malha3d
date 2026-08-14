@@ -38,6 +38,10 @@ const TaskTemplate = require('./TaskTemplate');
 const CRMLeadLog = require('./CRMLeadLog');
 const CRMLeadMessage = require('./CRMLeadMessage');
 const CrmForecastProbability = require('./CrmForecastProbability');
+const CpqOrcamento = require('./CpqOrcamento');
+const CpqFase = require('./CpqFase');
+const CpqAmbiente = require('./CpqAmbiente');
+const CpqEntregavel = require('./CpqEntregavel');
 const BankAccount = require('./BankAccount');
 const ChartOfAccounts = require('./ChartOfAccounts');
 const CostCenter = require('./CostCenter');
@@ -191,6 +195,19 @@ Task.belongsTo(User, { as: 'assignee', foreignKey: 'assigneeId' });
 Task.belongsToMany(Task, { through: TaskDependency, as: 'dependencies', foreignKey: 'taskId', otherKey: 'dependsOnTaskId' });
 Task.belongsToMany(Task, { through: TaskDependency, as: 'dependentTasks', foreignKey: 'dependsOnTaskId', otherKey: 'taskId' });
 
+// === CPQ (Configure, Price, Quote) ===
+Budget.hasOne(CpqOrcamento, { as: 'cpqOrcamento', foreignKey: 'budgetId', onDelete: 'CASCADE' });
+CpqOrcamento.belongsTo(Budget, { as: 'budget', foreignKey: 'budgetId' });
+
+CpqOrcamento.hasMany(CpqFase, { as: 'fases', foreignKey: 'orcamentoId', onDelete: 'CASCADE' });
+CpqFase.belongsTo(CpqOrcamento, { as: 'orcamento', foreignKey: 'orcamentoId' });
+
+CpqFase.hasMany(CpqAmbiente, { as: 'ambientes', foreignKey: 'faseId', onDelete: 'CASCADE' });
+CpqAmbiente.belongsTo(CpqFase, { as: 'fase', foreignKey: 'faseId' });
+
+CpqAmbiente.hasMany(CpqEntregavel, { as: 'entregaveis', foreignKey: 'ambienteId', onDelete: 'CASCADE' });
+CpqEntregavel.belongsTo(CpqAmbiente, { as: 'ambiente', foreignKey: 'ambienteId' });
+
 // Dynamic Tenant Isolation Attribute and Hook Registration
 const { registerTenantHooks } = require('../utils/tenantContext');
 const modelsToIsolate = [
@@ -213,7 +230,8 @@ const modelsToIsolate = [
   TaskTemplate,
   CRMLeadLog,
   CRMLeadMessage,
-  CrmForecastProbability
+  CrmForecastProbability,
+  CpqOrcamento
 ];
 
 modelsToIsolate.forEach(model => {
@@ -282,5 +300,9 @@ module.exports = {
   ArInstallment,
   ApInstallment,
   CategoryReceita,
-  CategoryDespesa
+  CategoryDespesa,
+  CpqOrcamento,
+  CpqFase,
+  CpqAmbiente,
+  CpqEntregavel
 };

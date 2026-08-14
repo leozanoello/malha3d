@@ -852,6 +852,55 @@
           position: relative;
           z-index: 1;
         }
+
+        /* ══════════════════════════════════════════════════════════ */
+        /* UIVERSE TAG BUTTON — Etiquetas 3D (MuhammadHasann)        */
+        /* ══════════════════════════════════════════════════════════ */
+        .uv-tag-container {
+          display: inline-block;
+          position: relative;
+          perspective: 800px;
+          transition: all 0.3s ease-in-out;
+        }
+        .uv-tag-container:active {
+          transform: scale(0.95);
+        }
+        .uv-tag-btn {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          padding: 4px 10px;
+          font-size: 9px;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          white-space: nowrap;
+          color: #f5ae51;
+          background: rgba(245, 174, 81, 0.15);
+          border: 2px solid #f39923;
+          border-radius: 8px;
+          cursor: default;
+          transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .uv-tag-container:hover .uv-tag-btn {
+          transform: rotateX(8deg) rotateY(6deg);
+          box-shadow: -1px 1px rgba(24, 24, 24, 0.5);
+        }
+        .uv-tag-btn .uv-tag-close {
+          font-size: 11px;
+          line-height: 1;
+          color: #f39923;
+          cursor: pointer;
+          margin-left: 2px;
+          opacity: 0.7;
+          transition: color 0.2s, transform 0.2s;
+        }
+        .uv-tag-btn .uv-tag-close:hover {
+          color: #ffffff;
+          opacity: 1;
+          transform: scale(1.3);
+        }
     </style>
 </head>
 <body class="bg-dark-950 text-gray-100 overflow-x-hidden compact-mode">

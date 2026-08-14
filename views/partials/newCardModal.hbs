@@ -354,13 +354,12 @@
          </div>
          <!-- Hidden: Armazenar dados dos usuários para uso em JS -->
          <div style="display:none;" id="usersDataJson">{{#each users}}{{json this}}{{#unless @last}},{{/unless}}{{/each}}</div>
-             {{/each}}
-            </div>
-           </div>
-          </div>
-         </div>
         </div>
-        <input type="hidden" name="assignedUserId[]" id="respId_0" value="">
+       </div>
+      </div>
+     </div>
+    </div>
+    <input type="hidden" name="assignedUserId[]" id="respId_0" value="">
         <button type="button" onclick="this.closest('.modelagem-resp-item').remove(); window.reindexModelagemResps();" class="w-6 h-6 rounded-md bg-red-500/10 border border-red-500/30 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all" title="Remover">
          <span class="material-symbols-outlined text-xs text-red-400">close</span>
         </button>
